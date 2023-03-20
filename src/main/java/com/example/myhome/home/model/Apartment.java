@@ -13,32 +13,51 @@ public class Apartment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "building_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinTable(name="category_items",
+            joinColumns={@JoinColumn(name="apartment_id")},
+            inverseJoinColumns={@JoinColumn(name="building_id")})
     private Building building;
 
+    private Long section;
     private Long floor;
     private Long number;
 
+    private Double balance;
+
+    //В примере за каждой квартирой ставится только один лицевой счет
+    @OneToOne
+    private ApartmentAccount account;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
-    User user;
+    private Owner owner;
 
-    @OneToMany
-    @JoinColumn(name = "apartment")
-    List<MeterData> meterDataList;
+    @ManyToOne
+    @JoinColumn(name = "tariff_id")
+    private Tariff tariff;
 
-    @OneToMany
-    @JoinColumn(name = "apartment")
-    List<RepairRequests> repairRequestsList;
+    //Показания счётчиков
+    @OneToMany(mappedBy = "apartment")
+    private List<MeterData> meterDataList;
 
-    @OneToMany
-    @JoinColumn(name = "apartment")
-    List<ApartmentAccount> apartmentAccountList;
+    @OneToMany(mappedBy = "apartment")
+    private List<RepairRequests> repairRequestsList;
 
-    @OneToMany
-    @JoinColumn(name = "apartment")
-    List<ReceiptOfPayment> receiptOfPaymentList;
+    //Квитанции
+    @OneToMany(mappedBy = "apartment")
+    private List<Invoice> invoiceList;
 
-    private Double balance;
+    @Override
+    public String toString() {
+        return "Apartment{" +
+                "id=" + id +
+                ", building=" + building +
+                ", section=" + section +
+                ", floor=" + floor +
+                ", number=" + number +
+                ", owner=" + owner +
+                ", balance=" + balance +
+                "}\n";
+    }
 }

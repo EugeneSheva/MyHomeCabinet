@@ -9,12 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class MainController {
 
-
-
     @GetMapping("1")
     public String statistics(Model model) {
         return "/content";
     }
-
 
 }

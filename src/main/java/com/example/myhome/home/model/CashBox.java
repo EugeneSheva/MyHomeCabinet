@@ -4,7 +4,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -16,12 +16,11 @@ public class CashBox {
 
     private Long number;
 
-    @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date date;
+    private LocalDate date;
 
     @Enumerated(EnumType.STRING)
-    private IncomeExpenses incomeExpenses;
+    private IncomeExpenseType incomeExpenseType;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")

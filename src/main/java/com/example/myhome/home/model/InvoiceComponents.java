@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "receipt_of_payment_components")
-public class ReceiptOfPaymentComponents {
+public class InvoiceComponents {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,12 +16,14 @@ public class ReceiptOfPaymentComponents {
     @JoinColumn(name = "tariff_id")
     private Tariff tariff;
 
+    //насчет one to one хз
     @OneToOne
     @JoinColumn(name = "meter_data_id")
     private MeterData meterData;
+
     @ManyToOne
     @JoinColumn(name = "receipt_of_payment_id")
-    private ReceiptOfPayment receiptOfPayment;
+    private Invoice invoice;
 
 
 }

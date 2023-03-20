@@ -4,15 +4,17 @@ import lombok.Data;
 
 import javax.persistence.*;
 
+// --- СТАТЬИ ПРИХОДОВ/РАСХОДОВ ---
+
 @Data
 @Entity
-@Table(name = "items_of_income_expenses")
-public class ItemsOfIncomeExpenses {
+@Table(name = "income_expense_items")
+public class IncomeExpenseItems {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     @Enumerated(EnumType.STRING)
-    private IncomeExpenses incomeExpenses;
+    private IncomeExpenseType incomeExpenseType;
 
 }
