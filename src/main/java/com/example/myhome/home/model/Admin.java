@@ -8,15 +8,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 // --- ПОЛЬЗОВАТЕЛИ ---
 
 @Data
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "admins")
+public class Admin {
 
     /*
     пользователи-админы системы
@@ -48,12 +47,12 @@ public class User {
     @JoinColumn(name = "manager")
     private List<CashBox> cashBoxListManager;
 
-    @ManyToMany(mappedBy = "users")
+    @ManyToMany(mappedBy = "admins")
     List<Building> buildings;
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Admin{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", phone_number=" + phone_number +

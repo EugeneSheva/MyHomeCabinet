@@ -2,7 +2,6 @@ package com.example.myhome.home.model;
 
 import javax.persistence.*;
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.List;
 
@@ -16,9 +15,11 @@ public class Building {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Long section;
+    @ElementCollection
+    private List<String>sections;
     private String address;
-    private Long floors;
+    @ElementCollection
+    private List<String>floors;
 
     @OneToMany(mappedBy = "building")
     List<Apartment> apartments;
@@ -27,14 +28,14 @@ public class Building {
     @JoinTable(name="building_admins",
             joinColumns = @JoinColumn(name="building_id"),
             inverseJoinColumns = @JoinColumn(name="admin_id"))
-    List<User> users;
+    List<Admin> admins;
 
     @Override
     public String toString() {
         return "Building{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", section=" + section +
+                ", sections=" + sections +
                 ", address='" + address + '\'' +
                 ", floors=" + floors +
                 '}';
