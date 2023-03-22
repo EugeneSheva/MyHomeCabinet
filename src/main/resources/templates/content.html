@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>МойДом24</title>
   <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
-  <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-  <link rel="stylesheet" href="dist/css/adminlte.min.css">
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
+  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -61,13 +61,13 @@
 <!-- Icons -->
 <script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
 <!-- jQuery -->
-<script src="plugins/jquery/jquery.min.js"></script>
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
 <!-- Bootstrap -->
-<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <!-- overlayScrollbars -->
 <!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
 <!-- AdminLTE App -->
-<script src="dist/js/adminlte.js"></script>
+<script th:src="@{/dist/js/adminlte.js}"></script>
 
 <!-- PAGE PLUGINS -->
 <!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->

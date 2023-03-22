@@ -5,7 +5,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 // --- ЗАЯВКИ ВЫЗОВА МАСТЕРА ---
 
@@ -34,7 +33,7 @@ public class RepairRequests {
 
     @ManyToOne
     @JoinColumn(name = "master_id")
-    private User master;
+    private Admin master;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime request_date;

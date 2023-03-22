@@ -24,11 +24,11 @@ public class CashBox {
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    private User owner;
+    private Admin owner;
 
     @ManyToOne
     @JoinColumn(name = "manager_id")
-    private User manager;
+    private Admin manager;
 
     private String description;
 

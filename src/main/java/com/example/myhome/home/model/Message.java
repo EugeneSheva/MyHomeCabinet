@@ -1,12 +1,10 @@
 package com.example.myhome.home.model;
 
 import lombok.Data;
-import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 // --- СООБЩЕНИЯ ---
@@ -23,7 +21,7 @@ public class Message {
     //отправитель
     @ManyToOne
     @JoinColumn(name = "sender_id")
-    private User sender;
+    private Admin sender;
 
     //получатель(-и)
     @ManyToMany

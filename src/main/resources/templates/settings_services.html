@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>МойДом24</title>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
+  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
+<!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
+
+<!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">-->
+</head>
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+
+  <nav th:insert="~{main-template :: header}"></nav>
+  <aside th:insert="~{main-template :: sidebar}"></aside>
+
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Редактирование услуг</h1>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="page_content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box">
+              <div class="box-body">
+                <form method="post" enctype="multipart/form-data">
+
+                  <div class="row">
+                    <div class="col-xs-12 col-lg-7">
+                      <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                          <li class="active"><a href="#tab_service" data-toggle="tab" aria-expanded="true">Услуги</a></li>
+                          <li class=""><a href="#tab_serviceunit" data-toggle="tab" aria-expanded="false">Единицы измерения</a></li>
+                        </ul>
+                        <div class="tab-content">
+                          <div class="tab-pane clearfix active" id="tab_service">
+                            <div id="service_rows">
+                              <div id="form-service-0" class="row form-service">
+                                <div class="col-xs-12 col-sm-7">
+                                  <input type="hidden" id="service-0-id" name="Service[0][id]" value="2">
+                                  <div class="form-group">
+                                    <label for="service-0-name">Услуга</label>
+                                    <input type="text" id="service-0-name" class="form-control" name="Service[0][name]" value="">
+                                  </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-5">
+                                  <div class="form-group">
+                                    <label for="service-0-service_unit_id">Ед. изм.</label>
+                                    <div class="input-group">
+                                      <select id="service-0-service_unit_id" class="form-control" name="Service[0][service_unit_id]">
+                                        <option value="">Выберите...</option>
+                                        <option value="2">м31234</option>
+                                      </select>
+                                      <span class="input-group-btn">
+                                                <button type="button" class="btn btn-default form-row-remove-btn disabled" no-delete-msg="Эта услуга используется в квитанциях. Удаление невозможно.">
+                                                  <i class="fa fa-trash"></i>
+                                                </button>
+                                              </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-xs-12">
+                                  <input type="hidden" name="Service[0][is_counter]" value="0"><label><input type="checkbox" id="service-0-is_counter" name="Service[0][is_counter]" value="1" checked=""> Показывать в счетчиках</label>        <div style="margin-bottom: 16px;"></div>
+                                </div>
+                              </div>
+                              <div id="form-service-1" class="row form-service">
+                                <div class="col-xs-12 col-sm-7">
+                                  <input type="hidden" id="service-0-id" name="Service[0][id]" value="2">
+                                  <div class="form-group">
+                                    <label for="service-0-name">Услуга</label>
+                                    <input type="text" id="service-0-name" class="form-control" name="Service[0][name]" value="">
+                                  </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-5">
+                                  <div class="form-group">
+                                    <label for="service-0-service_unit_id">Ед. изм.</label>
+                                    <div class="input-group">
+                                      <select id="service-0-service_unit_id" class="form-control" name="Service[0][service_unit_id]">
+                                        <option value="">Выберите...</option>
+                                        <option value="2">м31234</option>
+                                      </select>
+                                      <span class="input-group-btn">
+                                                <button type="button" class="btn btn-default form-row-remove-btn disabled" no-delete-msg="Эта услуга используется в квитанциях. Удаление невозможно.">
+                                                  <i class="fa fa-trash"></i>
+                                                </button>
+                                              </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-xs-12">
+                                  <input type="hidden" name="Service[0][is_counter]" value="0"><label><input type="checkbox" id="service-0-is_counter" name="Service[0][is_counter]" value="1" checked=""> Показывать в счетчиках</label>        <div style="margin-bottom: 16px;"></div>
+                                </div>
+                              </div>
+                            </div>
+                            <button type="button" class="btn btn-default btn-hover-change pull-left form-row-add-service-btn">Добавить</button>
+                          </div>
+                          <div class="tab-pane clearfix" id="tab_serviceunit">
+                            <div id="form-serviceunit-0" class="row form-serviceunit">
+                              <div class="col-xs-12">
+                                <input type="hidden" id="serviceunit-0-id" name="ServiceUnit[0][id]" value="2">        <div class="form-group">
+                                <label for="serviceunit-0-name">Ед. изм.</label>
+                                <div class="input-group">
+                                  <input type="text" id="serviceunit-0-name" class="form-control" name="ServiceUnit[0][name]" value="м31234">                <span class="input-group-btn">
+                                                <button type="button" class="btn btn-default form-row-remove-btn" no-delete-msg="Эта ед.изм. используется в услуге. Удаление невозможно."><i class="fa fa-trash"></i></button>                </span>
+                                </div>
+                              </div>
+                              </div>
+                            </div>
+                            <div id="form-serviceunit-1" class="row form-serviceunit">
+                              <div class="col-xs-12">
+                                <input type="hidden" id="serviceunit-0-id" name="ServiceUnit[0][id]" value="2">        <div class="form-group">
+                                <label for="serviceunit-0-name">Ед. изм.</label>
+                                <div class="input-group">
+                                  <input type="text" id="serviceunit-0-name" class="form-control" name="ServiceUnit[0][name]" value="м31234">                <span class="input-group-btn">
+                                                <button type="button" class="btn btn-default form-row-remove-btn" no-delete-msg="Эта ед.изм. используется в услуге. Удаление невозможно."><i class="fa fa-trash"></i></button>                </span>
+                                </div>
+                              </div>
+                              </div>
+                            </div>
+                            <button type="button" class="btn btn-default btn-hover-change pull-left form-row-add-serviceunit-btn">Добавить</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group submit-buttons">
+                      <a href="admin/website/home" class="btn btn-default">Отменить</a>
+                      <button type="submit" class="btn btn-success">Сохранить</button>
+                    </div>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</div>
+
+  <!-- Main Footer -->
+  <footer th:insert="~{main-template :: footer}"></footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+<!-- Icons -->
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- overlayScrollbars -->
+<!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+
+<!-- PAGE PLUGINS -->
+<!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->
+<!--<script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>-->
+<!--<script src="plugins/raphael/raphael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/jquery.mapael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/maps/usa_states.min.js"></script>-->
+<!--&lt;!&ndash; ChartJS &ndash;&gt;-->
+<!--<script src="plugins/chart.js/Chart.min.js"></script>-->
+
+<!--&lt;!&ndash; AdminLTE for demo purposes &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/demo.js}"></script>-->
+<!--&lt;!&ndash; AdminLTE dashboard demo (This is only for demo purposes) &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/pages/dashboard2.js}"></script>-->
+</body>
+</html>
