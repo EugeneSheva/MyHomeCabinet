@@ -10,10 +10,10 @@
   <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
   <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
   <link rel="stylesheet" th:href="@{/dist/css/website.css}">
-<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
-<!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
+  <!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
+  <!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
 
-<!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">-->
+  <!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">-->
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -26,12 +26,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Статьи приходов/расходов</h1>
+            <h1 class="m-0">Новая статья</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item active">Статьи приходов/расходов</li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/income-expense}">Статьи приходов/расходов</a></li>
+              <li class="breadcrumb-item active">Новая статья</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -41,44 +42,38 @@
 
     <!-- Main content -->
     <section class="page_content">
-      <div class="row mr-2" style="justify-content: flex-end">
-        <div class="col-xs-12">
-          <div class="pull-right margin-bottom">
-            <a class="btn btn-success" th:href="@{/admin/income-expense/create}">Добавить статью</a>
-          </div>
-        </div>
-      </div>
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
             <div class="box" style="padding:0;">
-              <div class="box-body table-responsive">
-                <table class="table table-bordered table-hover table-striped linkedRow">
-                  <thead>
-                  <tr>
-                    <th>Название</th>
-                    <th><a href="/admin/transaction-purpose/index?sort=type" data-sort="type">Приход/расход</a></th>
-                    <th style="width: 80px; min-width: 80px">&nbsp;</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                    <tr th:each="transaction : ${transactions}" th:attr="data-href=@{/admin/income-expense/update/{id}(id=${transaction.id})}" data-key="51">
-                      <a href="/">
-                        <td th:text="${transaction.name}">*)(@*^$%#&amp;#(#)#(</td>
-                        <td>
-                          <span th:if="${transaction.incomeExpenseType.name.equalsIgnoreCase('income')}" class="text text-green">Приход</span>
-                          <span th:if="${transaction.incomeExpenseType.name.equalsIgnoreCase('expense')}" class="text text-red">Расход</span>
-                        </td>
-                        <td>
-                          <div class="btn-group pull-right">
-                            <a class="btn btn-default btn-sm" th:href="@{/admin/income-expense/update/{id}(id=${transaction.id})}" title="Редактировать" data-toggle="tooltip"><i class="fa fa-pencil"></i></a>
-                            <a class="btn btn-default btn-sm" th:href="@{/admin/income-expense/delete/{id}(id=${transaction.id})}" title="Удалить" data-toggle="tooltip" data-pjax="0" data-method="post" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash"></i></a>
-                          </div>
-                        </td>
-                      </a>
-                    </tr>
-                  </tbody>
-                </table>
+              <div class="box-body">
+                <form method="post">
+                  <div class="row">
+                    <div class="col-xs-12 col-lg-7">
+                      <div class="form-group">
+                        <label for="trans_name" class="control-label">Название</label>
+                        <input type="text" class="form_control" th:value="${transaction.name}" name="name" id="trans_name">
+                      </div>
+                      <div class="form-group">
+                        <label for="trans_type" class="control-label">Приход/расход</label>
+                        <select class="form_control"
+                                th:value="${transaction.incomeExpenseType != null} ?
+                                 ${transaction.incomeExpenseType.name()} : Приход" name="type" id="trans_type">
+                          <option value="INCOME">Приход</option>
+                          <option value="EXPENSE">Расход</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <div class="form-group">
+                        <a th:href="@{/admin/income-expense}" class="btn btn-default">Отменить</a>
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
               </div>
               <div class="box-footer clearfix"></div>
             </div>

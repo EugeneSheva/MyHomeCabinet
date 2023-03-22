@@ -52,34 +52,40 @@
                 </div>
               </div>
               <div class="box-body">
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" th:object="${page}" enctype="multipart/form-data">
                   <h3 class="page-header">Карусель(слайдер)</h3>
                   <div class="row">
                     <div class="col-md-4">
                       <h4>Слайд 1</h4>
-                      <img th:src="@{/images/1.jpg}" alt="">
+                      <img th:src="${page.slide1 != null && !page.slide1.isEmpty()} ?
+                                   @{/images/{url}(url=${page.slide1})} :
+                                   @{/images/placeholder.jpg}" class="page_image" alt="">
                       <div class="form-group mb-30">
-                        <label for="websitehomeslide-0-imagefile" class="control-label">Рекомендуемый размер: (1920х800)</label>
+                        <label for="page_slide1" class="control-label">Рекомендуемый размер: (1920х800)</label>
                         <input type="hidden" name="WebsiteHomeSlide[0][imageFile]" id="">
-                        <input type="file" name="WebsiteHomeSlide[0][imageFile]" id="websitehomeslide-0-imagefile" accept="image/*">
+                        <input type="file" name="page_slide1" id="page_slide1" accept="image/*">
                       </div>
                     </div>
                     <div class="col-md-4">
                       <h4>Слайд 2</h4>
-                      <img th:src="@{/images/2.jpg}" alt="">
+                      <img th:src="${page.slide2 != null && !page.slide2.isEmpty()} ?
+                                   @{/images/{url}(url=${page.slide2})} :
+                                   @{/images/placeholder.jpg}" class="page_image" alt="">
                       <div class="form-group mb-30">
-                        <label for="websitehomeslide-1-imagefile" class="control-label">Рекомендуемый размер: (1920х800)</label>
+                        <label for="page_slide2" class="control-label">Рекомендуемый размер: (1920х800)</label>
                         <input type="hidden" name="WebsiteHomeSlide[1][imageFile]" id="">
-                        <input type="file" name="WebsiteHomeSlide[1][imageFile]" id="websitehomeslide-1-imagefile" accept="image/*">
+                        <input type="file" name="page_slide2" id="page_slide2" accept="image/*">
                       </div>
                     </div>
                     <div class="col-md-4">
                       <h4>Слайд 3</h4>
-                      <img th:src="@{/images/3.jpg}" alt="">
+                      <img th:src="${page.slide3 != null && !page.slide3.isEmpty()} ?
+                                   @{/images/{url}(url=${page.slide3})} :
+                                   @{/images/placeholder.jpg}" class="page_image" alt="">
                       <div class="form-group mb-30">
-                        <label for="websitehomeslide-2-imagefile" class="control-label">Рекомендуемый размер: (1920х800)</label>
+                        <label for="page_slide3" class="control-label">Рекомендуемый размер: (1920х800)</label>
                         <input type="hidden" name="WebsiteHomeSlide[2][imageFile]" id="">
-                        <input type="file" name="WebsiteHomeSlide[2][imageFile]" id="websitehomeslide-2-imagefile" accept="image/*">
+                        <input type="file" name="page_slide3" id="page_slide3" accept="image/*">
                       </div>
                     </div>
                   </div>
@@ -88,12 +94,12 @@
                       <h3 class="page-header">Краткая информация</h3>
                       <div class="form-group">
 
-                        <label for="websitehomeform-hometitle" class="control-label">Заголовок</label>
-                        <input type="text" class="form-control" value="О управляющей компании" name="websitehomeform[homeTitle]" id="websitehomeform-hometitle">
+                        <label class="control-label">Заголовок</label>
+                        <input type="text" class="form-control" th:field="*{title}" placeholder="Об управляющей компании">
 
                       </div>
                       <div class="form-group field-websitehomeform-homedescription">
-                        <label class="control-label" for="websitehomeform-homedescription">Краткий текст</label>
+                        <label class="control-label" for="">Краткий текст</label>
                         <ul class="wysihtml5-toolbar"><li class="dropdown">
                           <a class="btn btn-default dropdown-toggle btn-none" data-toggle="dropdown">
 
@@ -145,11 +151,11 @@
                             </div>
                           </li>
                         </ul>
-                        <textarea name="" id="websitemain-description"></textarea>
+                        <textarea placeholder="Описание..." th:field="*{description}"></textarea>
                         <div class="help-block"></div>
                       </div>
                       <div class="form-group">
-                        <label><input type="checkbox" id="websitehomeform-homeisshowapps" name="WebsiteHomeForm[homeIsShowApps]" value="1" checked=""> Показать ссылки на приложения</label>
+                        <label><input type="checkbox" id="websitehomeform-homeisshowapps" name="show_links" value="1" checked=""> Показать ссылки на приложения</label>
                       </div>
                     </div>
                   </div>
@@ -160,15 +166,17 @@
                     <div class="row">
                       <div class="col-md-4">
                         <h4>Блок 1</h4>
-                        <img th:src="@{/images/1.jpg}" alt="">
+                        <img th:src="${page.block_1_img != null && !page.block_1_img.isEmpty()} ?
+                                   @{/images/{url}(url=${page.block_1_img})} :
+                                   @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
-                          <label for="websitehomeslide-0-imagefile" class="control-label">Рекомендуемый размер: (1920х800)</label>
+                          <label for="page_block_1_img" class="control-label">Рекомендуемый размер: (1920х800)</label>
                           <input type="hidden" name="WebsiteHomeSlide[0][imageFile]" id="">
-                          <input type="file" name="WebsiteHomeSlide[0][imageFile]" id="websitehomeslide-0-imagefile" accept="image/*">
+                          <input type="file" name="page_block_1_img" id="page_block_1_img" accept="image/*">
                         </div>
                         <div class="form-group mb-30">
-                          <label for="websitehomeform-hometitle" class="control-label">Заголовок блока</label>
-                          <input type="text" class="form-control" value="О управляющей компании" name="websitehomeform[homeTitle]" id="websitehomeform-hometitle">
+                          <label for="block_1_title" class="control-label">Заголовок блока</label>
+                          <input type="text" class="form-control" placeholder="О управляющей компании" th:field="*{block_1_title}" id="block_1_title">
                         </div>
                         <div class="form-group field-websitehomeform-homedescription">
                           <label class="control-label" for="websitehomeform-homedescription">Краткий текст</label>
@@ -223,22 +231,24 @@
                               </div>
                             </li>
                           </ul>
-                          <textarea name="" id="websitemain-description"></textarea>
+                          <textarea th:field="*{block_1_description}" id="block_1_description"></textarea>
                           <div class="help-block"></div>
                         </div>
 
                       </div>
                       <div class="col-md-4">
                         <h4>Блок 2</h4>
-                        <img th:src="@{/images/2.jpg}" alt="">
+                        <img th:src="${page.block_2_img != null && !page.block_2_img.isEmpty()} ?
+                                   @{/images/{url}(url=${page.block_2_img})} :
+                                   @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
-                          <label for="websitehomeslide-0-imagefile" class="control-label">Рекомендуемый размер: (1920х800)</label>
+                          <label for="page_block_2_img" class="control-label">Рекомендуемый размер: (1920х800)</label>
                           <input type="hidden" name="WebsiteHomeSlide[0][imageFile]" id="">
-                          <input type="file" name="WebsiteHomeSlide[0][imageFile]" id="websitehomeslide-0-imagefile" accept="image/*">
+                          <input type="file" name="page_block_2_img" id="page_block_2_img" accept="image/*">
                         </div>
                         <div class="form-group mb-30">
-                          <label for="websitehomeform-hometitle" class="control-label">Заголовок блока</label>
-                          <input type="text" class="form-control" value="О управляющей компании" name="websitehomeform[homeTitle]" id="websitehomeform-hometitle">
+                          <label for="block_2_title" class="control-label">Заголовок блока</label>
+                          <input type="text" class="form-control" placeholder="О управляющей компании" th:field="*{block_2_title}" id="block_2_title">
                         </div>
                         <div class="form-group field-websitehomeform-homedescription">
                           <label class="control-label" for="websitehomeform-homedescription">Краткий текст</label>
@@ -293,22 +303,24 @@
                               </div>
                             </li>
                           </ul>
-                          <textarea name="" id="websitemain-description"></textarea>
+                          <textarea th:field="*{block_2_description}" id="block_2_description"></textarea>
                           <div class="help-block"></div>
                         </div>
 
                       </div>
                       <div class="col-md-4">
                         <h4>Блок 3</h4>
-                        <img th:src="@{/images/3.jpg}" alt="">
+                        <img th:src="${page.block_3_img != null && !page.block_3_img.isEmpty()} ?
+                                   @{/images/{url}(url=${page.block_3_img})} :
+                                   @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
-                          <label for="websitehomeslide-0-imagefile" class="control-label">Рекомендуемый размер: (1920х800)</label>
+                          <label for="page_block_3_img" class="control-label">Рекомендуемый размер: (1920х800)</label>
                           <input type="hidden" name="WebsiteHomeSlide[0][imageFile]" id="">
-                          <input type="file" name="WebsiteHomeSlide[0][imageFile]" id="websitehomeslide-0-imagefile" accept="image/*">
+                          <input type="file" name="page_block_3_img" id="page_block_3_img" accept="image/*">
                         </div>
                         <div class="form-group mb-30">
-                          <label for="websitehomeform-hometitle" class="control-label">Заголовок блока</label>
-                          <input type="text" class="form-control" value="О управляющей компании" name="websitehomeform[homeTitle]" id="websitehomeform-hometitle">
+                          <label for="block_1_title" class="control-label">Заголовок блока</label>
+                          <input type="text" class="form-control" placeholder="О управляющей компании" th:field="*{block_3_title}" id="block_3_title">
                         </div>
                         <div class="form-group field-websitehomeform-homedescription">
                           <label class="control-label" for="websitehomeform-homedescription">Краткий текст</label>
@@ -363,22 +375,24 @@
                               </div>
                             </li>
                           </ul>
-                          <textarea name="" id="websitemain-description"></textarea>
+                          <textarea th:field="*{block_3_description}" id="block_3_description"></textarea>
                           <div class="help-block"></div>
                         </div>
 
                       </div>
                       <div class="col-md-4">
                         <h4>Блок 4</h4>
-                        <img th:src="@{/images/4.jpg}" alt="">
+                        <img th:src="${page.block_4_img != null && !page.block_4_img.isEmpty()} ?
+                                   @{/images/{url}(url=${page.block_4_img})} :
+                                   @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
-                          <label for="websitehomeslide-0-imagefile" class="control-label">Рекомендуемый размер: (1920х800)</label>
+                          <label for="page_block_4_img" class="control-label">Рекомендуемый размер: (1920х800)</label>
                           <input type="hidden" name="WebsiteHomeSlide[0][imageFile]" id="">
-                          <input type="file" name="WebsiteHomeSlide[0][imageFile]" id="websitehomeslide-0-imagefile" accept="image/*">
+                          <input type="file" name="page_block_4_img" id="page_block_4_img" accept="image/*">
                         </div>
                         <div class="form-group mb-30">
-                          <label for="websitehomeform-hometitle" class="control-label">Заголовок блока</label>
-                          <input type="text" class="form-control" value="О управляющей компании" name="websitehomeform[homeTitle]" id="websitehomeform-hometitle">
+                          <label for="block_4_title" class="control-label">Заголовок блока</label>
+                          <input type="text" class="form-control" placeholder="О управляющей компании" th:field="*{block_4_title}" id="block_4_title">
                         </div>
                         <div class="form-group field-websitehomeform-homedescription">
                           <label class="control-label" for="websitehomeform-homedescription">Краткий текст</label>
@@ -433,22 +447,24 @@
                               </div>
                             </li>
                           </ul>
-                          <textarea name="" id="websitemain-description"></textarea>
+                          <textarea th:field="*{block_4_description}" id="block_4_description"></textarea>
                           <div class="help-block"></div>
                         </div>
 
                       </div>
                       <div class="col-md-4">
                         <h4>Блок 5</h4>
-                        <img th:src="@{/images/5.jpg}" alt="">
+                        <img th:src="${page.block_5_img != null && !page.block_5_img.isEmpty()} ?
+                                   @{/images/{url}(url=${page.block_5_img})} :
+                                   @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
-                          <label for="websitehomeslide-0-imagefile" class="control-label">Рекомендуемый размер: (1920х800)</label>
+                          <label for="page_block_5_img" class="control-label">Рекомендуемый размер: (1920х800)</label>
                           <input type="hidden" name="WebsiteHomeSlide[0][imageFile]" id="">
-                          <input type="file" name="WebsiteHomeSlide[0][imageFile]" id="websitehomeslide-0-imagefile" accept="image/*">
+                          <input type="file" name="page_block_5_img" id="page_block_5_img" accept="image/*">
                         </div>
                         <div class="form-group mb-30">
-                          <label for="websitehomeform-hometitle" class="control-label">Заголовок блока</label>
-                          <input type="text" class="form-control" value="О управляющей компании" name="websitehomeform[homeTitle]" id="websitehomeform-hometitle">
+                          <label for="block_5_title" class="control-label">Заголовок блока</label>
+                          <input type="text" class="form-control" placeholder="О управляющей компании" th:field="*{block_5_title}" id="block_5_title">
                         </div>
                         <div class="form-group field-websitehomeform-homedescription">
                           <label class="control-label" for="websitehomeform-homedescription">Краткий текст</label>
@@ -503,22 +519,24 @@
                               </div>
                             </li>
                           </ul>
-                          <textarea name="" id="websitemain-description"></textarea>
+                          <textarea th:field="*{block_5_description}" id="block_5_description"></textarea>
                           <div class="help-block"></div>
                         </div>
 
                       </div>
                       <div class="col-md-4">
                         <h4>Блок 6</h4>
-                        <img th:src="@{/images/6.jpg}" alt="">
+                        <img th:src="${page.block_6_img != null && !page.block_6_img.isEmpty()} ?
+                                   @{/images/{url}(url=${page.block_6_img})} :
+                                   @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
-                          <label for="websitehomeslide-0-imagefile" class="control-label">Рекомендуемый размер: (1920х800)</label>
+                          <label for="page_block_6_img" class="control-label">Рекомендуемый размер: (1920х800)</label>
                           <input type="hidden" name="WebsiteHomeSlide[0][imageFile]" id="">
-                          <input type="file" name="WebsiteHomeSlide[0][imageFile]" id="websitehomeslide-0-imagefile" accept="image/*">
+                          <input type="file" name="page_block_6_img" id="page_block_6_img" accept="image/*">
                         </div>
                         <div class="form-group mb-30">
-                          <label for="websitehomeform-hometitle" class="control-label">Заголовок блока</label>
-                          <input type="text" class="form-control" value="О управляющей компании" name="websitehomeform[homeTitle]" id="websitehomeform-hometitle">
+                          <label for="block_6_title" class="control-label">Заголовок блока</label>
+                          <input type="text" class="form-control" placeholder="О управляющей компании" th:field="*{block_6_title}" id="block_6_title">
                         </div>
                         <div class="form-group field-websitehomeform-homedescription">
                           <label class="control-label" for="websitehomeform-homedescription">Краткий текст</label>
@@ -573,7 +591,7 @@
                               </div>
                             </li>
                           </ul>
-                          <textarea name="" id="websitemain-description"></textarea>
+                          <textarea th:field="*{block_6_description}" id="block_6_description"></textarea>
                           <div class="help-block"></div>
                         </div>
 
@@ -585,21 +603,20 @@
                       <h3 class="page-header">Настройки SEO</h3>
                       <div class="form-group field-websitehomeform-homemetatitle">
 
-                        <label class="control-label" for="websitehomeform-homemetatitle">Title</label>
-                        <input type="text" id="websitehomeform-homemetatitle" class="form-control" name="WebsiteHomeForm[homeMetaTitle]" value="Сайт Управляющей Компании ЖКХ - &quot;МОЙ ДОМ 24&quot;!">
+                        <label class="control-label" for="seo_title">Title</label>
+                        <input type="text" id="seo_title" class="form-control" th:field="*{seo_title}" placeholder="Текст">
 
                       </div>
                       <div class="form-group field-websitehomeform-homemetadescription">
 
-                        <label class="control-label" for="websitehomeform-homemetadescription">Description</label>
-                        <textarea id="websitehomeform-homemetadescription" class="form-control" name="WebsiteHomeForm[homeMetaDescription]" rows="6">Универсальная система для управляющей компании ЖКХ многоквартирного дома "МОЙ ДОМ 24" - сайт управляющей компании + база управления квартирами + мобильное приложение - гибкая индивидуальная настройка для любой организации. Удобная комьютерная программа для ОСМД!
-                        </textarea>
+                        <label class="control-label" for="seo_description">Description</label>
+                        <textarea id="seo_description" class="form-control" th:field="*{seo_description}" rows="6"></textarea>
 
                       </div>
                       <div class="form-group field-websitehomeform-homemetakeywords">
 
-                        <label class="control-label" for="websitehomeform-homemetakeywords">Keywords</label>
-                        <textarea id="websitehomeform-homemetakeywords" class="form-control" name="WebsiteHomeForm[homeMetaKeywords]" rows="6">программа для ОСМД, управление домом, управление многоквартирным домом, система учета квартир, программа для жильцов дома,  сайт управляющей компании, мой дом 21, crm для жильцо!</textarea>
+                        <label class="control-label" for="seo_keywords">Keywords</label>
+                        <textarea id="seo_keywords" class="form-control" th:field="*{seo_keywords}" rows="6"></textarea>
 
                       </div>
                     </div>
@@ -625,17 +642,34 @@
 </div>
 <!-- ./wrapper -->
 
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dist/js/adminlte.js}"></script>
+
+<script>
+
+  $(document).ready(function() {
+
+    $('input[type="file"]').change(function() {
+      console.log(this);
+      let photo = this.files[0];
+      let image = this.parentElement.previousElementSibling;
+      let imagePath = URL.createObjectURL(photo);
+
+      image.src = imagePath;
+    });
+
+  })
+</script>
+
 <!-- REQUIRED SCRIPTS -->
 <!-- Icons -->
-<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
 <!-- jQuery -->
-<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
 <!-- Bootstrap -->
-<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <!-- overlayScrollbars -->
 <!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
 <!-- AdminLTE App -->
-<script th:src="@{/dist/js/adminlte.js}"></script>
 
 <!-- PAGE PLUGINS -->
 <!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->

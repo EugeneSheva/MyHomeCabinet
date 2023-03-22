@@ -8,10 +8,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name="page_about")
-public class AboutPage {
-
-    @Id
-    private int id = 1;
+public class AboutPage extends Page {
 
     //Информация
     private String title, description;
@@ -38,6 +35,4 @@ public class AboutPage {
         private String photo;
     }
 
-    //SEO
-    private String seo_title, seo_description, seo_keywords;
 }

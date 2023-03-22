@@ -49,7 +49,7 @@
                 <h3 class="box-title">Редактирование страницы "Контакты"</h3>
               </div>
               <div class="box-body">
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" th:object="${page}" enctype="multipart/form-data">
                   <div class="row">
                     <div class="col-md-8">
                       <h3 class="page-header">Контактная информация</h3>
@@ -57,7 +57,7 @@
                       <div class="form-group">
 
                         <label for="websitehomeform-hometitle" class="control-label">Заголовок</label>
-                        <input type="text" class="form-control" value="О управляющей компании" name="websitehomeform[homeTitle]" id="websitehomeform-hometitle">
+                        <input type="text" class="form-control" th:field="*{title}">
 
                       </div>
                       <div class="form-group field-websitehomeform-homedescription">
@@ -113,14 +113,14 @@
                             </div>
                           </li>
                         </ul>
-                        <textarea name="" id="websitemain-description"></textarea>
+                        <textarea th:field="*{description}" id="websitemain-description"></textarea>
                         <div class="help-block"></div>
                       </div>
 
                       <div class="form-group">
 
                         <label for="websitehomeform-hometitle" class="control-label">Ссылка на коммерческий сайт</label>
-                        <input type="text" class="form-control" value="О управляющей компании" name="websitehomeform[homeTitle]" id="websitehomeform-hometitle">
+                        <input type="text" class="form-control" th:field="*{website_link}">
 
                       </div>
                     </div>
@@ -130,31 +130,31 @@
                       <div class="form-group">
 
                         <label for="websitehomeform-hometitle" class="control-label">ФИО</label>
-                        <input type="text" class="form-control" value="О управляющей компании" name="websitehomeform[homeTitle]" id="websitehomeform-hometitle">
+                        <input type="text" class="form-control" th:field="*{name}">
 
                       </div>
                       <div class="form-group">
 
                         <label for="websitehomeform-hometitle" class="control-label">Локация</label>
-                        <input type="text" class="form-control" value="О управляющей компании" name="websitehomeform[homeTitle]" id="websitehomeform-hometitle">
+                        <input type="text" class="form-control" th:field="*{location}">
 
                       </div>
                       <div class="form-group">
 
                         <label for="websitehomeform-hometitle" class="control-label">Адрес</label>
-                        <input type="text" class="form-control" value="О управляющей компании" name="websitehomeform[homeTitle]" id="websitehomeform-hometitle">
+                        <input type="text" class="form-control" th:field="*{address}" id="websitehomeform-hometitle">
 
                       </div>
                       <div class="form-group">
 
                         <label for="websitehomeform-hometitle" class="control-label">Телефон</label>
-                        <input type="text" class="form-control" value="О управляющей компании" name="websitehomeform[homeTitle]" id="websitehomeform-hometitle">
+                        <input type="text" class="form-control" th:field="*{phone}" id="websitehomeform-hometitle">
 
                       </div>
                       <div class="form-group">
 
                         <label for="websitehomeform-hometitle" class="control-label">E-mail</label>
-                        <input type="text" class="form-control" value="О управляющей компании" name="websitehomeform[homeTitle]" id="websitehomeform-hometitle">
+                        <input type="text" class="form-control" th:field="*{email}" id="websitehomeform-hometitle">
 
                       </div>
                     </div>
@@ -165,7 +165,7 @@
                       <div class="form-group field-websitehomeform-homemetadescription">
 
                         <label class="control-label" for="websitehomeform-homemetadescription">Код карты</label>
-                        <textarea style="width: 100%;" id="websitehomeform-homemetadescription" class="form-control" name="WebsiteHomeForm[homeMetaDescription]" rows="6">Универсальная система для управляющей компании ЖКХ многоквартирного дома "МОЙ ДОМ 24" - сайт управляющей компании + база управления квартирами + мобильное приложение - гибкая индивидуальная настройка для любой организации. Удобная комьютерная программа для ОСМД!
+                        <textarea th:field="*{map_code}" style="width: 100%;" class="form-control" rows="6">
                         </textarea>
 
                       </div>
@@ -177,20 +177,19 @@
                       <div class="form-group field-websitehomeform-homemetatitle">
 
                         <label class="control-label" for="websitehomeform-homemetatitle">Title</label>
-                        <input type="text" id="websitehomeform-homemetatitle" class="form-control" name="WebsiteHomeForm[homeMetaTitle]" value="Сайт Управляющей Компании ЖКХ - &quot;МОЙ ДОМ 24&quot;!">
+                        <input type="text" id="websitehomeform-homemetatitle" class="form-control" th:field="*{seo_title}">
 
                       </div>
                       <div class="form-group field-websitehomeform-homemetadescription">
 
                         <label class="control-label" for="websitehomeform-homemetadescription">Description</label>
-                        <textarea id="websitehomeform-homemetadescription" class="form-control" name="WebsiteHomeForm[homeMetaDescription]" rows="6">Универсальная система для управляющей компании ЖКХ многоквартирного дома "МОЙ ДОМ 24" - сайт управляющей компании + база управления квартирами + мобильное приложение - гибкая индивидуальная настройка для любой организации. Удобная комьютерная программа для ОСМД!
-                        </textarea>
+                        <textarea id="websitehomeform-homemetadescription" class="form-control" th:field="*{seo_description}" rows="6"></textarea>
 
                       </div>
                       <div class="form-group field-websitehomeform-homemetakeywords">
 
                         <label class="control-label" for="websitehomeform-homemetakeywords">Keywords</label>
-                        <textarea id="websitehomeform-homemetakeywords" class="form-control" name="WebsiteHomeForm[homeMetaKeywords]" rows="6">программа для ОСМД, управление домом, управление многоквартирным домом, система учета квартир, программа для жильцов дома,  сайт управляющей компании, мой дом 21, crm для жильцо!</textarea>
+                        <textarea id="websitehomeform-homemetakeywords" class="form-control" th:field="*{seo_keywords}" rows="6"></textarea>
 
                       </div>
                     </div>

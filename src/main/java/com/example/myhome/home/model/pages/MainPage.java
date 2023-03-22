@@ -9,10 +9,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name="page_main")
-public class MainPage {
-
-    @Id
-    private int id = 1;
+public class MainPage extends Page {
 
     //Слайдер
     private String slide1, slide2, slide3;
@@ -26,6 +23,4 @@ public class MainPage {
     private String block_1_title, block_2_title, block_3_title, block_4_title, block_5_title, block_6_title;
     private String block_1_description, block_2_description, block_3_description, block_4_description, block_5_description, block_6_description;
 
-    //SEO
-    private String seo_title, seo_description, seo_keywords;
 }

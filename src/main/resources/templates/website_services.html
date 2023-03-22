@@ -49,7 +49,7 @@ website_home.html<!DOCTYPE html>
                 <h3 class="box-title">Редактирование страницы "Услуги"</h3>
               </div>
               <div class="box-body">
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" th:object="${page}" enctype="multipart/form-data">
                   <h3 class="page-header">Услуги</h3>
                   <div class="row">
                     <div class="col-md-12">
@@ -57,20 +57,19 @@ website_home.html<!DOCTYPE html>
                       <div class="form-group field-websitehomeform-homemetatitle">
 
                         <label class="control-label" for="websitehomeform-homemetatitle">Title</label>
-                        <input type="text" id="websitehomeform-homemetatitle" class="form-control" name="WebsiteHomeForm[homeMetaTitle]" value="Сайт Управляющей Компании ЖКХ - &quot;МОЙ ДОМ 24&quot;!">
+                        <input th:field="*{seo_title}" type="text" id="websitehomeform-homemetatitle" class="form-control">
 
                       </div>
                       <div class="form-group field-websitehomeform-homemetadescription">
 
                         <label class="control-label" for="websitehomeform-homemetadescription">Description</label>
-                        <textarea id="websitehomeform-homemetadescription" class="form-control" name="WebsiteHomeForm[homeMetaDescription]" rows="6">Универсальная система для управляющей компании ЖКХ многоквартирного дома "МОЙ ДОМ 24" - сайт управляющей компании + база управления квартирами + мобильное приложение - гибкая индивидуальная настройка для любой организации. Удобная комьютерная программа для ОСМД!
-                        </textarea>
+                        <textarea th:field="*{seo_description}" id="websitehomeform-homemetadescription" class="form-control" rows="6"></textarea>
 
                       </div>
                       <div class="form-group field-websitehomeform-homemetakeywords">
 
                         <label class="control-label" for="websitehomeform-homemetakeywords">Keywords</label>
-                        <textarea id="websitehomeform-homemetakeywords" class="form-control" name="WebsiteHomeForm[homeMetaKeywords]" rows="6">программа для ОСМД, управление домом, управление многоквартирным домом, система учета квартир, программа для жильцов дома,  сайт управляющей компании, мой дом 21, crm для жильцо!</textarea>
+                        <textarea th:field="*{seo_keywords}" id="websitehomeform-homemetakeywords" class="form-control" rows="6"></textarea>
 
                       </div>
                     </div>

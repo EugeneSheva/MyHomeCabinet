@@ -8,10 +8,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name="page_tariffs")
-public class TariffsPage {
-
-    @Id
-    private int id = 1;
+public class TariffsPage extends Page {
 
     //Информация
     private String title, description;
@@ -25,8 +22,5 @@ public class TariffsPage {
         private String title;
         private String photo;
     }
-
-    //SEO
-    private String seo_title, seo_description, seo_keywords;
 
 }

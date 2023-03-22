@@ -23,4 +23,12 @@ public class Service {
     @JoinColumn(name = "unit_ID")
     private Unit unit;
 
+    public Service() {
+    }
+
+    public Service(String name, boolean show_in_meters, Unit unit) {
+        this.name = name;
+        this.show_in_meters = show_in_meters;
+        this.unit = unit;
+    }
 }

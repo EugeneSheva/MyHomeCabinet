@@ -17,4 +17,11 @@ public class IncomeExpenseItems {
     @Enumerated(EnumType.STRING)
     private IncomeExpenseType incomeExpenseType;
 
+    public IncomeExpenseItems() {
+    }
+
+    public IncomeExpenseItems(String name, IncomeExpenseType incomeExpenseType) {
+        this.name = name;
+        this.incomeExpenseType = incomeExpenseType;
+    }
 }

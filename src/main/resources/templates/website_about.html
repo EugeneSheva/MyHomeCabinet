@@ -49,14 +49,14 @@
                 <h3 class="box-title">Редактирование страницы "О нас"</h3>
               </div>
               <div class="box-body">
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" th:object="${page}" enctype="multipart/form-data">
                   <h3 class="page-header">Информация</h3>
                   <div class="row">
                     <div class="col-md-8">
                       <div class="form-group">
 
                         <label for="websitehomeform-hometitle" class="control-label">Заголовок</label>
-                        <input type="text" class="form-control" value="О управляющей компании" name="websitehomeform[homeTitle]" id="websitehomeform-hometitle">
+                        <input type="text" class="form-control" th:field="*{title}" id="websitehomeform-hometitle">
 
                       </div>
                       <div class="form-group field-websitehomeform-homedescription">
@@ -112,17 +112,19 @@
                             </div>
                           </li>
                         </ul>
-                        <textarea name="" id="websitemain-description"></textarea>
+                        <textarea th:field="*{description}" id="websitemain-description"></textarea>
                         <div class="help-block"></div>
                       </div>
                     </div>
                     <div class="col-md-4">
                       <h4>Фото директора</h4>
-                      <img src="images/2.jpg" alt="">
+                      <img th:src="${page.director_photo != null && !page.director_photo.isEmpty()} ?
+                                   @{/images/{url}(url=${page.director_photo})} :
+                                   @{/images/placeholder.jpg}" alt="">
                       <div class="form-group mb-30">
                         <label for="websitehomeslide-1-imagefile" class="control-label">Рекомендуемый размер: (1920х800)</label>
                         <input type="hidden" name="WebsiteHomeSlide[1][imageFile]" id="">
-                        <input type="file" name="WebsiteHomeSlide[1][imageFile]" id="websitehomeslide-1-imagefile" accept="image/*">
+                        <input type="file" name="director_photo" id="director_photo" accept="image/*">
                       </div>
                     </div>
                   </div>
@@ -130,20 +132,8 @@
                     <div class="col-xs-12" style="width: 100%">
                       <h3 class="page-header">Фотогалерея</h3>
                     </div>
-                    <div class="col-xs-4 col-sm-2 text-center">
-                      <img src="http://myhouse24.avada-media.ua/site/glide?path=%2Fupload%2FWebsiteAboutImage%2F159%2Fimage.png&amp;w=250&amp;h=150&amp;fit=crop" alt="" class="margin-bottom-15 img-thumbnail">
-                      <div class="form-group margin-bottom-15">
-                        <a href="/admin/website/delete-about-image/159" data-confirm="Удалить?" title="Удалить"><i class="fa fa-trash text-red" aria-hidden="true"></i></a>
-                      </div>
-                    </div>
-                    <div class="col-xs-4 col-sm-2 text-center">
-                      <img src="http://myhouse24.avada-media.ua/site/glide?path=%2Fupload%2FWebsiteAboutImage%2F159%2Fimage.png&amp;w=250&amp;h=150&amp;fit=crop" alt="" class="margin-bottom-15 img-thumbnail">
-                      <div class="form-group margin-bottom-15">
-                        <a href="/admin/website/delete-about-image/159" data-confirm="Удалить?" title="Удалить"><i class="fa fa-trash text-red" aria-hidden="true"></i></a>
-                      </div>
-                    </div>
-                    <div class="col-xs-4 col-sm-2 text-center">
-                      <img src="http://myhouse24.avada-media.ua/site/glide?path=%2Fupload%2FWebsiteAboutImage%2F159%2Fimage.png&amp;w=250&amp;h=150&amp;fit=crop" alt="" class="margin-bottom-15 img-thumbnail">
+                    <div th:if="${page.photos != null}" th:each="photo : ${page.photos}" class="col-xs-4 col-sm-2 text-center">
+                      <img th:src="@{/images/{url}(url=${photo})}" alt="" class="margin-bottom-15 img-thumbnail">
                       <div class="form-group margin-bottom-15">
                         <a href="/admin/website/delete-about-image/159" data-confirm="Удалить?" title="Удалить"><i class="fa fa-trash text-red" aria-hidden="true"></i></a>
                       </div>
@@ -153,10 +143,99 @@
                       <label for="websitehomeslide-1-imagefile" class="control-label">Рекомендуемый размер: (1200x1200)</label>
                       <br>
                       <input type="hidden" name="WebsiteHomeSlide[1][imageFile]" id="">
-                      <input type="file" name="WebsiteHomeSlide[1][imageFile]" id="websitehomeslide-1-imagefile" accept="image/*">
+                      <input type="file" name="photos" id="photos" accept="image/*">
 
                     </div>
                   </div>
+
+                  <h3 class="page-header">Дополнительная информация</h3>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+
+                        <label for="websitehomeform-hometitle" class="control-label">Заголовок</label>
+                        <input type="text" class="form-control" th:field="*{add_title}" id="websitehomeform-homeaddtitle">
+
+                      </div>
+                      <div class="form-group field-websitehomeform-homedescription">
+                        <label class="control-label" for="websitehomeform-homedescription">Краткий текст</label>
+                        <ul class="wysihtml5-toolbar"><li class="dropdown">
+                          <a class="btn btn-default dropdown-toggle btn-none" data-toggle="dropdown">
+
+                            <span class="fa fa-font"></span>
+
+                            <span class="current-font">Обычный текст</span>
+                            <b class="caret"></b>
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="p" tabindex="-1" href="javascript:;" unselectable="on">Обычный текст</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 1</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 2</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 3</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 4</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 5</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 6</a></li>
+                          </ul>
+                        </li>
+                          <li>
+                            <div class="btn-group">
+                              <a class="btn btn-none btn-default" id="bold-button" data-wysihtml5-command="bold" title="CTRL+B" tabindex="-1" href="javascript:;" unselectable="on">Полужирный</a>
+                              <a class="btn btn-none btn-default" id="italic-button" data-wysihtml5-command="italic" title="CTRL+I" tabindex="-1" href="javascript:;" unselectable="on">Курсив</a>
+                              <a class="btn btn-none btn-default" id="underline-button" data-wysihtml5-command="underline" title="CTRL+U" tabindex="-1" href="javascript:;" unselectable="on">Подчёркнутый</a>
+
+                            </div>
+                          </li>
+                          <li>
+                            <div class="btn-group">
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="insertUnorderedList" title="Маркированный список" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-list-ul"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="insertOrderedList" title="Нумерованный список" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-list-ol"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="Outdent" title="Уменьшить отступ" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-outdent"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="Indent" title="Увеличить отступ" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-indent"></span>
+
+                              </a>
+                            </div>
+                          </li>
+                        </ul>
+                        <textarea th:field="*{add_description}" id="websitemain-adddescription"></textarea>
+                        <div class="help-block"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-xs-12" style="width: 100%">
+                      <h3 class="page-header">Дополнительная фотогалерея</h3>
+                    </div>
+                    <div th:each="photo : ${page.add_photos}" class="col-xs-4 col-sm-2 text-center">
+                      <img th:src="@{/images/{url}(url=${photo})}" alt="" class="margin-bottom-15 img-thumbnail">
+                      <div class="form-group margin-bottom-15">
+                        <a href="/admin/website/delete-about-image/159" data-confirm="Удалить?" title="Удалить"><i class="fa fa-trash text-red" aria-hidden="true"></i></a>
+                      </div>
+                    </div>
+                    <div class="col-xs-12" style="width: 100%">
+
+                      <label for="" class="control-label">Рекомендуемый размер: (1200x1200)</label>
+                      <br>
+                      <input type="hidden" name="WebsiteHomeSlide[1][imageFile]" id="">
+                      <input type="file" name="add_photos" id="add_photos" accept="image/*">
+
+                    </div>
+                  </div>
+
                   <div class="row">
                     <div class="col-xs-12" style="width: 100%">
                       <h3 class="page-header">Документы</h3>
@@ -191,20 +270,19 @@
                       <div class="form-group field-websitehomeform-homemetatitle">
 
                         <label class="control-label" for="websitehomeform-homemetatitle">Title</label>
-                        <input type="text" id="websitehomeform-homemetatitle" class="form-control" name="WebsiteHomeForm[homeMetaTitle]" value="Сайт Управляющей Компании ЖКХ - &quot;МОЙ ДОМ 24&quot;!">
+                        <input th:field="*{seo_title}" type="text" id="websitehomeform-homemetatitle" class="form-control">
 
                       </div>
                       <div class="form-group field-websitehomeform-homemetadescription">
 
                         <label class="control-label" for="websitehomeform-homemetadescription">Description</label>
-                        <textarea id="websitehomeform-homemetadescription" class="form-control" name="WebsiteHomeForm[homeMetaDescription]" rows="6">Универсальная система для управляющей компании ЖКХ многоквартирного дома "МОЙ ДОМ 24" - сайт управляющей компании + база управления квартирами + мобильное приложение - гибкая индивидуальная настройка для любой организации. Удобная комьютерная программа для ОСМД!
-                        </textarea>
+                        <textarea th:field="*{seo_description}" id="websitehomeform-homemetadescription" class="form-control" name="WebsiteHomeForm[homeMetaDescription]" rows="6"></textarea>
 
                       </div>
                       <div class="form-group field-websitehomeform-homemetakeywords">
 
                         <label class="control-label" for="websitehomeform-homemetakeywords">Keywords</label>
-                        <textarea id="websitehomeform-homemetakeywords" class="form-control" name="WebsiteHomeForm[homeMetaKeywords]" rows="6">программа для ОСМД, управление домом, управление многоквартирным домом, система учета квартир, программа для жильцов дома,  сайт управляющей компании, мой дом 21, crm для жильцо!</textarea>
+                        <textarea th:field="*{seo_keywords}" id="websitehomeform-homemetakeywords" class="form-control" name="WebsiteHomeForm[homeMetaKeywords]" rows="6"></textarea>
 
                       </div>
                     </div>
