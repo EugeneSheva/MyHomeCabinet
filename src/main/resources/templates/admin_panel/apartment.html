@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>МойДом24-Квартиры</title>
+    <link rel="stylesheet"
+          th:href="@{https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback}">
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+</head>
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+
+
+    <!-- navbar header/sidebar -->
+    <div th:insert="~{main-template :: loading}"></div>
+    <nav th:insert="~{main-template :: header}"></nav>
+    <aside th:insert="~{main-template :: sidebar}"></aside>
+    <!-- /.navbar header/sidebar -->
+
+    <!--content-header -->
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                    <h1 class="m-0" th:text="'Квартира '+${apartment.number} + ', '  + '.'"></h1>
+<!--                                                            +${apartment.building.name}-->
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/buildings/}">Дома</a></li>
+                            <!--                            <li class="breadcrumb-item active"-->
+                            <!--                                th:text="'Квартира '+${apartment.number} + ', ' +${apartment.building.name} + '.'"></li>-->
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+
+                <div class="card" style="padding: 10px">
+                    <div class="form-group">
+                        <a th:href="@{edit/{id}(id=${id})}" class="btn btn-primary btn-sm float-right" style="margin-left: 2px">Редактировать
+                            квартиру</a>
+                        <a  class="btn btn-secondary btn-sm float-right" style="margin-left: 2px">Оформить квитанцию</a>
+                        <a  class="btn btn-secondary btn-sm float-right" style="margin-left: 2px">Принять платеж</a>
+                        <h4 class="float-left">Просмотр квартиры</h4>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <table class="table table-striped" width="100%">
+                                <col style="width:40%">
+                                <col style="width:60%">
+                                <tbody>
+                                <tr>
+                                    <td>Лицевой счет</td>
+                                    <td>?</td>
+                                </tr>
+                                <tr>
+                                    <td>Номер квартиры</td>
+                                    <td th:text="${apartment.number}">?</td>
+                                </tr>
+                                <tr>
+                                    <td>Площадь</td>
+                                    <td th:text="${apartment.square}">?</td>
+                                </tr>
+                                <tr>
+                                    <td>Дом</td>
+                                    <td>?</td>
+                                </tr>
+                                <tr>
+                                    <td>Секция</td>
+                                    <td th:text="${apartment.section}">?</td>
+                                </tr>
+                                <tr>
+                                    <td>Этаж</td>
+                                    <td th:text="${apartment.floor}">?</td>
+                                </tr>
+                                <tr>
+                                    <td>Владелец</td>
+                                    <td>?</td>
+                                </tr>
+                                <tr>
+                                    <td>Тариф</td>
+                                    <td>?</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div style="margin: 10px">
+                                <a href="#">Посмотреть показания счетчиков</a><br>
+                                <a href="#">Посмотреть приходы</a><br>
+                                <a href="#">Посмотреть увитанции</a><br>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- /.Main content -->
+
+
+    <!-- Footer -->
+    <footer th:insert="~{main-template :: footer}"></footer>
+    <!-- /.Footer -->
+</div>
+
+
+<!-- REQUIRED SCRIPTS -->
+<!-- Icons -->
+<script th:src="@{https://kit.fontawesome.com/41663a8b50.js}" crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+
+</body>
+</html>

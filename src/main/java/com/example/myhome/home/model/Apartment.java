@@ -14,9 +14,7 @@ public class Apartment {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinTable(name="category_items",
-            joinColumns={@JoinColumn(name="apartment_id")},
-            inverseJoinColumns={@JoinColumn(name="building_id")})
+    @JoinColumn(name="building_id")
     private Building building;
 
     private Long section;
@@ -24,6 +22,8 @@ public class Apartment {
     private Long number;
 
     private Double balance;
+
+    private Double square;
 
     //В примере за каждой квартирой ставится только один лицевой счет
     @OneToOne

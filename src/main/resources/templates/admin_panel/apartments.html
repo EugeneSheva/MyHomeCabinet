@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>МойДом24-Дома</title>
+  <title>МойДом24-Квартиры</title>
   <link rel="stylesheet"
         th:href="@{https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback}">
   <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -26,12 +26,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Дома</h1>
+            <h1 class="m-0">Квартиры</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
-              <li class="breadcrumb-item active">Дома</li>
+              <li class="breadcrumb-item active">Квартиры</li>
             </ol>
           </div>
         </div>
@@ -45,30 +45,42 @@
 
         <div class="card" style="padding: 10px">
           <div class="form-group">
-            <a th:href="@{/buildings/new}" class="btn btn-success btn-sm float-right">Добавить дом</a>
+            <a th:href="@{/apartments/new}" class="btn btn-success btn-sm float-right">Добавить квартиру</a>
           </div>
           <div class="card-body">
             <table id="example2" class="table table-bordered table-hover" width="100%">
               <col style="width:5%">
-              <col style="width:40%">
-              <col style="width:50%">
+              <col style="width:25%">
+              <col style="width:15%">
+              <col style="width:15%">
+              <col style="width:25%">
+              <col style="width:10%">
               <col style="width:5%">
               <thead>
               <tr>
-                <th>#</th>
-                <th>Название</th>
-                <th>Адрес</th>
+                <th>№ квартиры</th>
+                <th>Дом</th>
+                <th>Секция</th>
+                <th>Этаж</th>
+                <th>Владелец</th>
+                <th>Остаток</th>
                 <th></th>
               </tr>
               </thead>
               <tbody>
-              <tr th:each="building : ${buildings}">
-                <td ><a style="display: block; color: black;" th:text="${building.id}" th:href="@{{id}(id=${building.id})}"></a></td>
-                <td ><a style="display: block; color: black;" th:text="${building.name}" th:href="@{{id}(id=${building.id})}"></a></td>
-                <td ><a style="display: block; color: black;" th:text="${building.address}" th:href="@{{id}(id=${building.id})}"></a></td>
+              <tr th:each="apartment : ${apartments}">
+                <td ><a style="display: block; color: black;" th:text="${apartment.number}" th:href="@{{id}(id=${apartment.id})}"></a></td>
+                <td ><a style="display: block; color: black;"  ></a></td>
+<!--                th:text="${apartment.building.name}" th:href="@{{id}(id=${apartment.id})}"-->
+                <td ><a style="display: block; color: black;" th:text="${apartment.section}" th:href="@{{id}(id=${apartment.id})}"></a></td>
+                <td ><a style="display: block; color: black;" th:text="${apartment.floor}" th:href="@{{id}(id=${apartment.id})}"></a></td>
+                <td ><a style="display: block; color: black;"  th:href="@{{id}(id=${apartment.id})}"></a></td>
+<!--                th:text="${apartment.owner.first_name}+' '+${apartment.owner.last_name}+-->
+<!--                ' '+${apartment.owner.fathers_name}"-->
+                <td ><a style="display: block; color: black;" th:text="${apartment.balance}" th:href="@{{id}(id=${apartment.id})}"></a></td>
                 <td><div class="btn-group" role="group" aria-label="Basic outlined button group">
-                  <a th:href="@{edit/{id}(id=${building.id})}" class="btn btn-secondary btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>
-                  <a th:href="@{delete/{id}(id=${building.id})}" class="btn btn-secondary btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></i></a>
+                  <a th:href="@{edit/{id}(id=${apartment.id})}" class="btn btn-secondary btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>
+                  <a th:href="@{delete/{id}(id=${apartment.id})}" class="btn btn-secondary btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></i></a>
                 </div></td>
               </tr>
               </tbody>
