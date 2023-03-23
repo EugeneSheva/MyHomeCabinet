@@ -43,13 +43,16 @@
     <section class="content">
       <div class="container-fluid">
 
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">DataTable with minimal features & hover style</h3>
+        <div class="card" style="padding: 10px">
+          <div class="form-group">
+            <a th:href="@{new}" class="btn btn-success btn-sm float-right">Добавить дом</a>
           </div>
-          <!-- /.card-header -->
           <div class="card-body">
-            <table id="example2" class="table table-bordered table-hover">
+            <table id="example2" class="table table-bordered table-hover" width="100%">
+              <col style="width:5%">
+              <col style="width:40%">
+              <col style="width:50%">
+              <col style="width:5%">
               <thead>
               <tr>
                 <th>#</th>
@@ -64,8 +67,8 @@
                 <td ><a style="display: block; color: black;" th:text="${building.name}" th:href="@{{id}(id=${building.id})}"></a></td>
                 <td ><a style="display: block; color: black;" th:text="${building.address}" th:href="@{{id}(id=${building.id})}"></a></td>
                 <td><div class="btn-group" role="group" aria-label="Basic outlined button group">
-                  <a th:href="@{edit/{id}(id=${building.id})}" class="btn btn-secondary "><i class="fa fa-pencil" aria-hidden="true"></i></i></a>
-                  <a th:href="@{delete/{id}(id=${building.id})}" class="btn btn-danger "><i class="fa fa-trash-o" aria-hidden="true"></i></i></a>
+                  <a th:href="@{edit/{id}(id=${building.id})}" class="btn btn-secondary btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>
+                  <a th:href="@{delete/{id}(id=${building.id})}" class="btn btn-secondary btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></i></a>
                 </div></td>
               </tr>
               </tbody>

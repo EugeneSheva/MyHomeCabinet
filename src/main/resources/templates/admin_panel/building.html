@@ -1,151 +1,127 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>МойДом24-Дома</title>
-  <link rel="stylesheet"
-        th:href="@{https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback}">
-  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
-  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
-  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>МойДом24-Дома</title>
+    <link rel="stylesheet"
+          th:href="@{https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback}">
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
 
 
-  <!-- navbar header/sidebar -->
-  <div th:insert="~{main-template :: loading}"></div>
-  <nav th:insert="~{main-template :: header}"></nav>
-  <aside th:insert="~{main-template :: sidebar}"></aside>
-  <!-- /.navbar header/sidebar -->
+    <!-- navbar header/sidebar -->
+    <div th:insert="~{main-template :: loading}"></div>
+    <nav th:insert="~{main-template :: header}"></nav>
+    <aside th:insert="~{main-template :: sidebar}"></aside>
+    <!-- /.navbar header/sidebar -->
 
-  <!--content-header -->
-  <div class="content-wrapper">
-      <div class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1 class="m-0" th:text="'Дом '+${building.name}"></h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/building/}">Home</a></li>
-              <li class="breadcrumb-item active" th:text="'Дом '+${building.name}"></li>
-            </ol>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- /.content-header -->
-
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-
-        <div class="card">
-          <div class="form-group">
-            <!--                  th:href="@{edit/{id}(id=${building.id})}" -->
-              <a class="btn btn-primary btn-sm float-right">Редактировать дом</a>
-          </div>
-          <div class="row">
-            <div class="col-md-4">
-              <div class="card">
-                <div class="card-body p-0">
-                  <table class="table table-striped">
-                    <tbody>
-                    <tr>
-                      <td>Название</td>
-                      <td th:text="${building.name}">?</td>
-                    </tr>
-                    <tr>
-                      <td>Адрес</td>
-                      <td th:text="${building.address}">?</td>
-                    </tr>
-                    <tr>
-                      <td>Секций</td>
-                      <td><td th:text="${building.sections.size()}">?</td></td>
-                    </tr>
-                    <tr>
-                      <td>Этажей</td>
-                      <td><td th:text="${building.floors.size()}">?</td></td>
-                    </tr>
-                    <tr th:each="admin : ${building.getAdmins()}">
-                      <td>Пользователи</td>
-                      <td><div><a th:text="${admin.role}+${admin.name}" th:href="@{users/{id}(id=${admin.id})}"></a></div></td>
-                    </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <!-- /.card-body -->
-              </div>
-            </div>
-            <div class="col-md-8">
-              <div class="post">
-<!--                <div class="user-block">-->
-<!--                  <img class="img-circle img-bordered-sm" src="../../dist/img/user6-128x128.jpg" alt="Admin Image">-->
-<!--                  <span class="username">-->
-<!--                          <a href="#">Adam Jones</a>-->
-<!--                          <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a>-->
-<!--                        </span>-->
-<!--                  <span class="description">Posted 5 photos - 5 days ago</span>-->
-<!--                </div>-->
-                <!-- /.user-block -->
-                <div class="row mb-3">
-                  <div class="col-sm-6">
-                    <img class="img-fluid" src="../../dist/img/photo1.png" alt="Photo">
-                  </div>
-                  <!-- /.col -->
-                  <div class="col-sm-6">
-                    <div class="row">
-                      <div class="col-sm-6">
-                        <img class="img-fluid mb-3" src="../../dist/img/photo2.png" alt="Photo">
-                        <img class="img-fluid" src="../../dist/img/photo3.jpg" alt="Photo">
-                      </div>
-                      <!-- /.col -->
-                      <div class="col-sm-6">
-                        <img class="img-fluid mb-3" src="../../dist/img/photo4.jpg" alt="Photo">
-                        <img class="img-fluid" src="../../dist/img/photo1.png" alt="Photo">
-                      </div>
-                      <!-- /.col -->
+    <!--content-header -->
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0" th:text="'Дом '+${building.name}"></h1>
                     </div>
-                    <!-- /.row -->
-                  </div>
-                  <!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/buildings/}">Дома</a></li>
+                            <li class="breadcrumb-item active" th:text="'Дом '+${building.name}"></li>
+                        </ol>
+                    </div>
                 </div>
-                <!-- /.row -->
-
-<!--                <p>-->
-<!--                  <a href="#" class="link-black text-sm mr-2"><i class="fas fa-share mr-1"></i> Share</a>-->
-<!--                  <a href="#" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Like</a>-->
-<!--                  <span class="float-right">-->
-<!--                          <a href="#" class="link-black text-sm">-->
-<!--                            <i class="far fa-comments mr-1"></i> Comments (5)-->
-<!--                          </a>-->
-<!--                        </span>-->
-<!--                </p>-->
-
-<!--                <input class="form-control form-control-sm" type="text" placeholder="Type a comment">-->
-              </div>
             </div>
-
-
-
-          <!-- /.card-body -->
         </div>
-        <!-- /.card -->
+        <!-- /.content-header -->
 
-      </div>
-    </section>
-  </div>
-  <!-- /.Main content -->
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+
+                <div class="card" style="padding: 10px">
+                    <div class="form-group">
+                        <a th:href="@{edit/{id}(id=${id})}" class="btn btn-primary btn-sm float-right">Редактировать
+                            дом</a>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body p-0">
+                                    <table class="table table-striped" width="100%">
+                                        <col style="width:50%">
+                                        <col style="width:50%">
+                                        <tbody>
+                                        <tr>
+                                            <td>Название</td>
+                                            <td th:text="${building.name}">?</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Адрес</td>
+                                            <td th:text="${building.address}">?</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Секций</td>
+                                            <td th:text="${building.sections.size()}">?</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Этажей</td>
+                                            <td th:text="${building.floors.size()}">?</td>
+                                        </tr>
+                                        <tr th:each="admin : ${building.getAdmins()}">
+                                            <td>Пользователи</td>
+                                            <td>
+                                                <div><a th:text="${admin.role}+${admin.name}"
+                                                        th:href="@{users/{id}(id=${admin.id})}"></a></div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="post">
+                                <div class="row mb-3">
+                                    <div class="col-sm-6">
+                                        <img class="img-fluid" th:src="${building.img1 != null && !building.img1.isEmpty()} ?
+                                   @{${building.img1}} :  @{/images/placeholder.jpg}" alt="Photo">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <img class="img-fluid mb-3" th:src="${building.img2 != null && !building.img2.isEmpty()} ?
+                                   @{${building.img2}} :  @{/images/placeholder.jpg}" alt="Photo">
+                                                <img class="img-fluid" th:src="${building.img3 != null && !building.img3.isEmpty()} ?
+                                   @{${building.img3}} :  @{/images/placeholder.jpg}" alt="Photo">
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <img class="img-fluid mb-3" th:src="${building.img4 != null && !building.img4.isEmpty()} ?
+                                   @{${building.img4}} :  @{/images/placeholder.jpg}" alt="Photo">
+                                                <img class="img-fluid" th:src="${building.img5 != null && !building.img5.isEmpty()} ?
+                                   @{${building.img5}} :  @{/images/placeholder.jpg}" alt="Photo">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </section>
+    </div>
+    <!-- /.Main content -->
 
 
-
-  <!-- Footer -->
-  <footer th:insert="~{main-template :: footer}"></footer>
-  <!-- /.Footer -->
+    <!-- Footer -->
+    <footer th:insert="~{main-template :: footer}"></footer>
+    <!-- /.Footer -->
 </div>
 
 

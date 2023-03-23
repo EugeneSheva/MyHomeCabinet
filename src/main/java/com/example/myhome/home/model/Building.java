@@ -3,6 +3,7 @@ package com.example.myhome.home.model;
 import javax.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // --- ДОМА ---
@@ -16,13 +17,19 @@ public class Building {
     private Long id;
     private String name;
     @ElementCollection
-    private List<String>sections;
+    private List<String>sections  = new ArrayList<>();
     private String address;
     @ElementCollection
-    private List<String>floors;
+    private List<String>floors = new ArrayList<>();
 
     @OneToMany(mappedBy = "building")
     List<Apartment> apartments;
+
+    private String img1;
+    private String img2;
+    private String img3;
+    private String img4;
+    private String img5;
 
     @ManyToMany
     @JoinTable(name="building_admins",
