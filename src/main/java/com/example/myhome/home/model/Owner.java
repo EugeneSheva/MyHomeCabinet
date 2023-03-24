@@ -51,7 +51,7 @@ public class Owner {
     private boolean has_debt;
 
     private String description;
-
+    @Enumerated(EnumType.STRING)
     private UserStatus status;
 
     //аватарка

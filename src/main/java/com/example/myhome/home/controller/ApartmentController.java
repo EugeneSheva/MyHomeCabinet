@@ -4,6 +4,8 @@ import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Building;
 import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -25,6 +27,8 @@ public class ApartmentController {
     @Value("${upload.path}")
     private String uploadPath;
     private final ApartmentService apartmentService;
+    private final BuildingService buildingService;
+
 
     @GetMapping("/")
     public String getApartment(Model model) {
@@ -41,46 +45,32 @@ public class ApartmentController {
     }
 
     @GetMapping("/new")
-    public String createApartment(Model model) {
+    public String createApartment(Model model) throws JsonProcessingException {
         Apartment apartment = new Apartment();
         model.addAttribute("apartment", apartment);
+        List<Building> buildingList = buildingService.findAll();
+        model.addAttribute("buildings", buildingList);
         return "admin_panel/apartment_edit";
     }
     @GetMapping("edit/{id}")
     public String editApartment(@PathVariable("id") Long id, Model model) {
         Apartment apartment = apartmentService.findById(id);
         model.addAttribute("apartment", apartment);
+        List<Building> buildingList = buildingService.findAll();
+        model.addAttribute("buildings", buildingList);
         return "admin_panel/apartment_edit";
     }
 
-//    @PostMapping("/save")
-//    public String saveCoffee(@RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam("name") String name, @RequestParam("address") String address,
-//                             @RequestParam("sections") List<String> sections, @RequestParam("floors") List<String> floors, @RequestParam("img1") MultipartFile file1,
-//                             @RequestParam("img2") MultipartFile file2, @RequestParam("img3") MultipartFile file3, @RequestParam("img4") MultipartFile file4,
-//                             @RequestParam("img5") MultipartFile file5) throws IOException {
-//        Building building = buildingService.saveBuildindImages(id, file1, file2, file3, file4, file5);
-//        building.setName(name);
-//        building.setAddress(address);
-//        building.setFloors(floors);
-//        building.setSections(sections);
-//
-//        buildingService.save(building);
-//        return "redirect:/buildings/";
-//    }
-//
-//    @GetMapping("/delete/{id}")
-//    public String dellete(@PathVariable("id") Long id) {
-//        Building building = buildingService.findById(id);
-//        try {
-//            Files.deleteIfExists(Path.of(uploadPath + building.getImg1()));
-//            Files.deleteIfExists(Path.of(uploadPath + building.getImg2()));
-//            Files.deleteIfExists(Path.of(uploadPath + building.getImg3()));
-//            Files.deleteIfExists(Path.of(uploadPath + building.getImg4()));
-//            Files.deleteIfExists(Path.of(uploadPath + building.getImg5()));
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//        buildingService.deleteById(id);
-//        return "redirect:/buildings/";
-//    }
+    @PostMapping("/save")
+    public String saveCoffee(@ModelAttribute("apartment") Apartment apartment) throws IOException {
+//        Apartment building = buildingService.saveBuildindImages(id, file1, file2, file3, file4, file5);
+        apartmentService.save(apartment);
+        return "redirect:/apartments/";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String dellete(@PathVariable("id") Long id) {
+        apartmentService.deleteById(id);
+        return "redirect:/apartments/";
+    }
 }

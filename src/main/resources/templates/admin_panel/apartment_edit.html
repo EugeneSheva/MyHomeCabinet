@@ -15,6 +15,9 @@
     <!-- add & del input field in navigation card bootstrap-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
+
+
+
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -51,32 +54,37 @@
         <section class="content">
             <div class="container-fluid">
                 <form class="row g-3 needs-validation" novalidate th:method="POST"
-                      th:action="@{/apartment/save}" th:object="${apartment}" enctype="multipart/form-data">
+                      th:action="@{/apartments/save}" th:object="${apartment}" enctype="multipart/form-data">
                     <div class="card" style="padding: 10px">
                         <div class="row">
                             <div class="col-md-6">
 
+                                <input type="hidden" id="id" class="form-control"  name="id"
+                                       th:field="*{id}" placeholder="">
+
                                 <label for="number">Номер квартиры</label>
                                 <input type="number" id="number" class="form-control"  name="number"
-                                       placeholder="">
+                                       th:field="*{number}" placeholder="">
 
                                 <label for="square">Площадь (кв.м.)</label>
                                 <input type="number" id="square" class="form-control"  name="square"
-                                       placeholder="">
+                                       th:field="*{square}" placeholder="">
 
-                                <label for="building" class="form-label" >Дом</label>
-                                <select class="form-select" id="building" name="buildind">
+                                <label for="building" th:field="*{building}" class="form-label" >Дом</label>
+                                <select class="form-select" id="building" name="building" th:onchange="selectBuilding()">
                                     <option selected="" disabled="" value="">Choose...</option>
-                                    <option>1</option>
+                                    <option  th:each="building, item : ${buildings}"
+                                    th:text="${buildings[__${item.index}__].name}"
+                                    th:value="${buildings[__${item.index}__].id}" th:id="${item.count}"></option>
                                 </select>
 
-                                <label for="section" class="form-label" >Секция</label>
+                                <label for="section" th:field="*{section}"  class="form-label" >Секция</label>
                                 <select class="form-select" id="section" name="section">
                                     <option selected="" disabled="" value="">Choose...</option>
-                                    <option>1</option>
+
                                 </select>
 
-                                <label for="floor" class="form-label" >Этаж</label>
+                                <label for="floor" th:field="*{floor}" class="form-label" >Этаж</label>
                                 <select class="form-select" id="floor" name="floor">
                                     <option selected="" disabled="" value="">Choose...</option>
                                     <option>1</option>
@@ -113,14 +121,40 @@
         </section>
     </div>
     <!-- /.Main content -->
-
-
     <!-- Footer -->
     <footer th:insert="~{main-template :: footer}"></footer>
     <!-- /.Footer -->
 </div>
 
+<script th:inline="javascript">
 
+    function selectBuilding() {
+
+        var list = /*[[${buildings}]]*/ [];
+        var selectedIndex = document.getElementById("building").selectedIndex-1;
+
+        //sections
+        var select = document.getElementById("section");
+        select.innerHTML = "<option selected=\"\" disabled=\"\" value=\"\">Choose...</option>";
+        var options = list[selectedIndex].sections;
+        for (let i = 0; i < options.length; i++) {
+            const option = document.createElement("option");
+            option.value = options[i];
+            option.textContent = options[i];
+            select.appendChild(option);
+        }
+        //floors
+        var selectF = document.getElementById("floor");
+        selectF.innerHTML = "<option selected=\"\" disabled=\"\" value=\"\">Choose...</option>";
+        var optionsF = list[selectedIndex].floors;
+        for (let i = 0; i < optionsF.length; i++) {
+            const optionF = document.createElement("option");
+            optionF.value = optionsF[i];
+            optionF.textContent = optionsF[i];
+            selectF.appendChild(optionF);
+        }
+    }
+</script>
 <!-- REQUIRED SCRIPTS -->
 <!-- Icons -->
 <script th:src="@{https://kit.fontawesome.com/41663a8b50.js}" crossorigin="anonymous"></script>

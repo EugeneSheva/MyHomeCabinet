@@ -1,6 +1,8 @@
 package com.example.myhome.home.model;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.List;
@@ -12,13 +14,13 @@ public class Apartment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="building_id")
     private Building building;
 
-    private Long section;
-    private Long floor;
+    private String section;
+    private String floor;
     private Long number;
 
     private Double balance;
@@ -52,7 +54,6 @@ public class Apartment {
     public String toString() {
         return "Apartment{" +
                 "id=" + id +
-                ", building=" + building +
                 ", section=" + section +
                 ", floor=" + floor +
                 ", number=" + number +
