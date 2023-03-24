@@ -62,7 +62,10 @@
                   </tr>
                   </thead>
                   <tbody>
-                    <tr th:each="transaction : ${transactions}" th:attr="data-href=@{/admin/income-expense/update/{id}(id=${transaction.id})}" data-key="51">
+                    <tr th:each="transaction, iter : ${transactions}"
+                        th:attr="data-href=@{/admin/income-expense/update/{id}(id=${transaction.id})}"
+                        class="transaction-row" style="cursor: pointer" data-key="51">
+                      <input type="hidden" th:id="'input-' + ${iter.index}" th:value="${transaction.id}" name="">
                       <a href="/">
                         <td th:text="${transaction.name}">*)(@*^$%#&amp;#(#)#(</td>
                         <td>
@@ -94,17 +97,33 @@
 </div>
 <!-- ./wrapper -->
 
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dist/js/adminlte.js}"></script>
+
+
+<script>
+  $(document).ready(function() {
+
+    let transaction_rows = document.getElementsByClassName("transaction-row");
+    console.log(transaction_rows);
+    for(let i = 0; i < transaction_rows.length; i++) {
+      console.log(transaction_rows[i]);
+      transaction_rows[i].addEventListener('click', () => {
+        window.location.href = '/admin/income-expense/update/' + document.getElementById("input-" + i).value;
+      });
+    }
+  });
+</script>
+
 <!-- REQUIRED SCRIPTS -->
 <!-- Icons -->
-<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
 <!-- jQuery -->
-<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
 <!-- Bootstrap -->
-<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <!-- overlayScrollbars -->
 <!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
 <!-- AdminLTE App -->
-<script th:src="@{/dist/js/adminlte.js}"></script>
 
 <!-- PAGE PLUGINS -->
 <!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->

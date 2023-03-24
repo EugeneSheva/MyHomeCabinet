@@ -1,0 +1,69 @@
+body {
+    background-color: #d2d6de;
+}
+
+.login-container {
+    width: 100%;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-box {
+    display: flex;
+    flex-direction: column;
+    width: 360px;
+    font-size: 14px;
+}
+
+.credentials {
+    background-color: white;
+    padding-top: 0px;
+    padding-bottom: 30px;
+    
+}
+
+.credentials > * {
+    padding-inline: 40px;
+    margin-block: 10px;
+}
+
+.tabs {
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    caret-color: transparent;
+}
+
+.tabs > * {
+    border: 1px solid rgb(236, 232, 232);
+}
+
+.tabs p {
+    margin: 0;
+    padding-block: 10px;
+}
+
+.active-tab {
+    border: none;
+    border-top: 2px solid blue;
+}
+
+.inputs {
+    position: relative;
+}
+
+input {
+    border: 1px solid silver;
+    padding-block: 5px;
+}
+
+.inputs i {
+    position: absolute;
+    width: 5%;
+    right: 15%;
+    top: 30%;
+    filter: opacity(50%)
+}
+

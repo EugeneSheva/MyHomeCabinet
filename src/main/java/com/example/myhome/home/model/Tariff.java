@@ -25,8 +25,9 @@ public class Tariff {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime date;
 
-    @OneToMany
-    @JoinColumn(name = "tariff")
+//    @OneToMany
+//    @JoinColumn(name = "tariff")
+    @ElementCollection
     private List<TariffComponents> tariffComponentsList;
 
 

@@ -1,18 +1,16 @@
 package com.example.myhome.home.controller.admin_panel;
 
-import com.example.myhome.home.model.IncomeExpenseItems;
-import com.example.myhome.home.model.IncomeExpenseType;
-import com.example.myhome.home.model.Service;
-import com.example.myhome.home.model.Unit;
-import com.example.myhome.home.repos.IncomeExpenseRepository;
-import com.example.myhome.home.repos.ServiceRepository;
-import com.example.myhome.home.repos.UnitRepository;
+import com.example.myhome.home.model.*;
+import com.example.myhome.home.repos.*;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -28,24 +26,60 @@ public class SettingsController {
     @Autowired
     private IncomeExpenseRepository incomeExpenseRepository;
 
+    @Autowired
+    private TariffRepository tariffRepository;
+
+    @Autowired
+    private PaymentDetailsRepository paymentDetailsRepository;
+
+    @Autowired
+    private AdminRepository adminRepository;
+
     @GetMapping("/admin/services")
-    public String showEditHomePage(Model model) {
+    public String showServicesPage(Model model) {
         model.addAttribute("services", serviceRepository.findAll());
         model.addAttribute("units", unitRepository.findAll());
         return "settings_services";
     }
 
     @GetMapping("/admin/tariffs")
-    public String showEditAboutPage(Model model) {return "settings_tariffs";}
+    public String showTariffsPage(Model model) {
+        model.addAttribute("tariffs", tariffRepository.findAll());
+        return "settings_tariffs";
+    }
 
-    @GetMapping("/admin/users")
-    public String showEditServicesPage(Model model) {return "settings_users";}
+    @GetMapping("/admin/admins")
+    public String showAdminsPage(Model model) {
+        model.addAttribute("admins", adminRepository.findAll());
+        return "settings_users";
+    }
+
+    @GetMapping("/admin/admins/{id}")
+    public String showAdminProfile(@PathVariable long id, Model model) {
+        model.addAttribute("admin", adminRepository.findById(id).orElseGet(Admin::new));
+        return "admin_profile";
+    }
+
+    @GetMapping("/admin/admins/create")
+    public String showCreateAdminPage(Model model) {
+        model.addAttribute("admin", new Admin());
+        return "admin_card";
+    }
+
+    @GetMapping("/admin/admins/update/{id}")
+    public String showUpdateAdminPage(@PathVariable long id, Model model) {
+        model.addAttribute("admin", adminRepository.findById(id).orElseGet(Admin::new));
+        return "admin_card";
+    }
 
     @GetMapping("/admin/payment-details")
-    public String showEditTariffsPage(Model model) {return "settings_payment";}
+    public String showPaymentDetailsPage(Model model) {
+        model.addAttribute("details", paymentDetailsRepository.findById(1L).orElseGet(PaymentDetails::new));
+        return "settings_payment";
+    }
 
     @GetMapping("/admin/income-expense")
-    public String showEditContactsPage(Model model) {
+    public String showTransactionsPage(Model model) {
         model.addAttribute("transactions", incomeExpenseRepository.findAll());
         return "settings_inc_exp";
     }
@@ -114,6 +148,102 @@ public class SettingsController {
     public String deleteTransaction(@PathVariable long id) {
         incomeExpenseRepository.deleteById(id);
         return "redirect:/admin/income-expense";
+    }
+
+    @GetMapping("/admin/tariffs/create")
+    public String showCreateTariffCard(Model model){
+        model.addAttribute("tariff", new Tariff());
+        model.addAttribute("services", serviceRepository.findAll());
+        return "tariff_card";
+    }
+
+    @PostMapping("/admin/tariffs/create")
+    public String createTariff(@RequestParam String name,
+                               @RequestParam String description,
+                               @RequestParam String[] service_names,
+                               @RequestParam String[] prices) {
+        Tariff tariff = new Tariff();
+        tariff.setName(name);
+        tariff.setDescription(description);
+        tariff.setDate(LocalDateTime.now());
+        tariff.setTariffComponentsList(new ArrayList<>());
+
+        for (int i = 1; i < service_names.length; i++) {
+            log.info(service_names[i]);
+            log.info(prices[i]);
+            tariff.getTariffComponentsList().add(new TariffComponents(service_names[i], Double.parseDouble(prices[i])));
+        }
+
+        tariffRepository.save(tariff);
+
+        return "redirect:/admin/tariffs";
+    }
+
+    @GetMapping("/admin/tariffs/update/{id}")
+    public String showUpdateTariffPage(@PathVariable long id, Model model) {
+        model.addAttribute("tariff", tariffRepository.findById(id).orElseGet(Tariff::new));
+        model.addAttribute("services", serviceRepository.findAll());
+        return "tariff_card";
+    }
+
+    @PostMapping("/admin/tariffs/update/{id}")
+    public String updateTariff(@PathVariable long id,
+                               @RequestParam String name,
+                               @RequestParam String description,
+                               @RequestParam String[] service_names,
+                               @RequestParam String[] prices) {
+        Tariff tariff = new Tariff();
+        tariff.setId(id);
+        tariff.setName(name);
+        tariff.setDescription(description);
+        tariff.setDate(LocalDateTime.now());
+        tariff.setTariffComponentsList(new ArrayList<>());
+
+        for (int i = 1; i < service_names.length; i++) {
+            log.info(service_names[i]);
+            log.info(prices[i]);
+            tariff.getTariffComponentsList().add(new TariffComponents(service_names[i], Double.parseDouble(prices[i])));
+        }
+
+        tariffRepository.save(tariff);
+
+        return "redirect:/admin/tariffs";
+    }
+
+    @GetMapping("/admin/tariffs/delete/{id}")
+    public String deleteTariff(@PathVariable long id) {
+        tariffRepository.deleteById(id);
+        return "redirect:/admin/tariffs";
+    }
+
+    @PostMapping("/admin/payment-details")
+    public String updatePaymentDetails(@ModelAttribute PaymentDetails details, RedirectAttributes redirectAttributes) {
+        details.setId(1L);
+        paymentDetailsRepository.save(details);
+
+        redirectAttributes.addFlashAttribute("success_message", "Сохранено!");
+        return "redirect:/admin/payment-details";
+    }
+
+    // АДМИНЫ - ДОБАВИТЬ ВАЛИДАЦИЮ
+
+    @PostMapping("/admin/admins/create")
+    public String createAdmin(@ModelAttribute Admin admin) {
+        adminRepository.save(admin);
+        return "redirect:/admin/admins";
+    }
+
+    @PostMapping("/admin/admins/update/{id}")
+    public String updateAdmin(@PathVariable long id, @ModelAttribute Admin admin) {
+        admin.setId(id);
+        adminRepository.save(admin);
+        return "redirect:/admin/admins";
+    }
+
+    @GetMapping("/admin/admins/delete/{id}")
+    public String deleteAdmin(@PathVariable long id) {
+        adminRepository.deleteById(id);
+        return "redirect:/admin/admins";
     }
 
 }

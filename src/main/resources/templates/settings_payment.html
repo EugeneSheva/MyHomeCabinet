@@ -47,19 +47,19 @@
           <div class="col-md-12">
             <div class="box">
               <div class="box-body">
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" th:object="${details}" enctype="multipart/form-data">
                   <div class="row">
                     <div class="col-md-12">
                       <div class="form-group field-websitehomeform-homemetatitle">
 
                         <label class="control-label" for="websitehomeform-homemetatitle">Название компании</label>
-                        <input type="text" id="websitehomeform-homemetatitle" class="form-control" name="WebsiteHomeForm[homeMetaTitle]" value="Сайт Управляющей Компании ЖКХ - &quot;МОЙ ДОМ 24&quot;!">
+                        <input type="text" id="websitehomeform-homemetatitle" class="form-control" name="WebsiteHomeForm[homeMetaTitle]" th:field="*{name}">
 
                       </div>
                       <div class="form-group field-websitehomeform-homemetadescription">
 
-                        <label class="control-label" for="websitehomeform-homemetadescription">Информацияч</label>
-                        <textarea id="websitehomeform-homemetadescription" class="form-control" name="WebsiteHomeForm[homeMetaDescription]" rows="6">Универсальная система для управляющей компании ЖКХ многоквартирного дома "МОЙ ДОМ 24" - сайт управляющей компании + база управления квартирами + мобильное приложение - гибкая индивидуальная настройка для любой организации. Удобная комьютерная программа для ОСМД!
+                        <label class="control-label" for="websitehomeform-homemetadescription">Информация</label>
+                        <textarea id="websitehomeform-homemetadescription" class="form-control" name="WebsiteHomeForm[homeMetaDescription]" th:field="*{description}" rows="6">
                         </textarea>
 
                       </div>
@@ -69,6 +69,9 @@
                     <div class="form-group submit-buttons">
                       <a href="admin/website/home" class="btn btn-default">Отменить</a>
                       <button type="submit" class="btn btn-success">Сохранить</button>
+                    </div>
+                    <div style="text-align: center; color: green; font-size: 20px; width: 100%">
+                      <span th:text="${success_message}"></span>
                     </div>
                   </div>
                 </form>

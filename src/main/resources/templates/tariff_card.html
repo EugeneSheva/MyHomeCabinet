@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>МойДом24</title>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
+  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+  <!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
+  <!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
+
+  <!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">-->
+</head>
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+
+  <nav th:insert="~{main-template :: header}"></nav>
+  <aside th:insert="~{main-template :: sidebar}"></aside>
+
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Новый тариф</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/tariffs}">Тарифы</a></li>
+              <li class="breadcrumb-item active">Новый тариф</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="page_content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box">
+              <div class="box-body">
+                <form method="post">
+                  <div class="row">
+                    <div class="col-xs-12 col-lg-7">
+                      <div class="form-group">
+                        <label for="name" class="control-label">Название тарифа</label>
+                        <input type="text" style="width: 100%;" class="form_control" th:value="${tariff.name}" name="name" id="name">
+                      </div>
+                      <div class="form-group">
+                        <label for="description" class="control-label">Описание тарифа</label>
+                        <textarea id="description" th:text="${tariff.description}" class="form-control" name="description" rows="5" aria-invalid="false"></textarea>
+                      </div>
+                    </div>
+                    <div class="col-xs-12 col-lg-7" id="services">
+                      <div class="service-row" id="service_row">
+                        <div th:each="component : ${tariff.getTariffComponentsList()}" class="row form-tariffservice">
+                          <div class="col-xs-6 col-md-4">
+                            <div class="form-group">
+                              <label>Услуга</label>
+                              <select th:value="${component.service_name}" name="service_names" class="form-control service-select">
+                                <option value="">Выберите...</option>
+                                <option th:each="service : ${services}" th:value="${service.name}" th:text="${service.name}"></option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="col-xs-6 col-md-3">
+                            <div class="form-group">
+                              <label>Цена</label>
+                              <input type="text" th:value="${component.price}" name="prices" class="form-control">
+                            </div>
+                          </div>
+                          <div class="col-xs-6 col-md-2">
+                            <div class="form-group">
+                              <label>Валюта</label>
+                              <input type="text" class="form-control" value="грн" disabled="">
+                            </div>
+                          </div>
+                          <div class="col-xs-6 col-md-3">
+                            <div class="form-group">
+                              <label>Ед. изм.</label>
+                              <div class="input-group">
+                                <select disabled="">
+                                  <option value="">Выберите...</option>
+                                  <option value="2">м31234</option>
+                                  <option value="3">кв.м.к</option>
+                                </select>
+                                <span class="input-group-btn">
+                                  <button type="button" class="btn btn-default form-row-remove-btn service-delete-button" onclick="deleteService(this)">
+                                    <i class="fa fa-trash"></i>
+                                  </button>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div style="display: none" class="service-row" id="form-tariffservice-rows-template">
+                        <div class="row form-tariffservice">
+                          <div class="col-xs-6 col-md-4">
+                            <div class="form-group">
+                              <label>Услуга</label>
+                              <select name="service_names" class="form-control service-select">
+                                <option value="">Выберите...</option>
+                                <option th:each="service : ${services}" th:value="${service.name}" th:text="${service.name}"></option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="col-xs-6 col-md-3">
+                            <div class="form-group">
+                              <label>Цена</label>
+                              <input type="text" name="prices" class="form-control">
+                            </div>
+                          </div>
+                          <div class="col-xs-6 col-md-2">
+                            <div class="form-group">
+                              <label>Валюта</label>
+                              <input type="text" class="form-control" value="грн" disabled="">
+                            </div>
+                          </div>
+                          <div class="col-xs-6 col-md-3">
+                            <div class="form-group">
+                              <label>Ед. изм.</label>
+                              <div class="input-group">
+                                <select id="0-serviceunit-name" disabled="">
+                                  <option value="">Выберите...</option>
+                                  <option value="2">м31234</option>
+                                  <option value="3">кв.м.к</option>
+                                </select>
+                                <span class="input-group-btn">
+                                  <button type="button" class="btn btn-default form-row-remove-btn service-delete-button" onclick="deleteService(this)">
+                                    <i class="fa fa-trash"></i>
+                                  </button>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <button type="button" id="add_service_btn" class="btn btn-default btn-hover-change pull-left margin-bottom-15 form-row-add-tariffservice-btn">Добавить услугу</button>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <div class="form-group">
+                        <a th:href="@{/admin/tariffs}" class="btn btn-default">Отменить</a>
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="box-footer clearfix"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Main Footer -->
+  <footer th:insert="~{main-template :: footer}"></footer>
+</div>
+<!-- ./wrapper -->
+
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dist/js/adminlte.js}"></script>
+
+<script>
+  function deleteService(button) {
+    let service_row = button.closest(".service-row");
+    console.log(service_row);
+    if(confirm('Удалить?')) {
+      service_row.remove();
+    }
+  }
+
+  $(document).ready(function() {
+
+    let services_container = document.getElementById("services");
+    let service_template = document.getElementById("form-tariffservice-rows-template");
+    console.log(services_container);
+    console.log(service_template);
+    $("#add_service_btn").click(function() {
+      let new_slot = service_template.cloneNode(true);
+      console.log(new_slot);
+      new_slot.id = "form-tariffservice-rows";
+      new_slot.style.display = 'block';
+      services_container.insertBefore(new_slot, this);
+    });
+  } )
+</script>
+
+<!-- REQUIRED SCRIPTS -->
+<!-- Icons -->
+<!-- jQuery -->
+<!-- Bootstrap -->
+<!-- overlayScrollbars -->
+<!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
+<!-- AdminLTE App -->
+
+<!-- PAGE PLUGINS -->
+<!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->
+<!--<script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>-->
+<!--<script src="plugins/raphael/raphael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/jquery.mapael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/maps/usa_states.min.js"></script>-->
+<!--&lt;!&ndash; ChartJS &ndash;&gt;-->
+<!--<script src="plugins/chart.js/Chart.min.js"></script>-->
+
+<!--&lt;!&ndash; AdminLTE for demo purposes &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/demo.js}"></script>-->
+<!--&lt;!&ndash; AdminLTE dashboard demo (This is only for demo purposes) &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/pages/dashboard2.js}"></script>-->
+</body>
+</html>
