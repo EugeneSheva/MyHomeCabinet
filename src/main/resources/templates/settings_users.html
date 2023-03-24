@@ -48,13 +48,13 @@
           </div>
         </div>
       </div>
-      <div class="container-fluid">
+      <div class="container-fluid" style="caret-color:transparent;">
         <div class="row">
           <div class="col-md-12">
             <div class="box" style="padding:0;">
-              <div class="box-header with-border">
+              <div class="box-header with-border" style="padding-block: 10px;">
                 <h3 class="box-title"></h3>
-                <div class="box-tools">
+                <div class="box-tools" style="top: 5px;">
                   <a href="/admin/user-admin/index" class="btn btn-default btn-sm">
                     <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                   </a>
@@ -129,12 +129,12 @@
                       <input type="hidden" th:id="'input-' + ${iter.index}" th:value="${admin.id}">
                       <td th:text="${iter.index+1}">1</td>
                       <td th:text="${admin.first_name + ' ' + admin.last_name}">Elon Musk</td>
-                      <td th:text="${admin.role}">Директор</td>
+                      <td th:text="${admin.role != null} ? ${admin.role.getName()}"></td>
                       <td th:text="${admin.phone_number}">+380990010101</td>
                       <td th:text="${admin.email}">admin@admin.com</td>
                       <td>
                         <small th:if="${admin.active}" class="label label-success">Активен</small>
-                        <small th:if="${!admin.active}" class="label label-success">Неактивен</small>
+                        <small th:if="${!admin.active}" class="label label-inactive">Неактивен</small>
                       </td>
                       <td>
                         <div class="btn-group pull-right">

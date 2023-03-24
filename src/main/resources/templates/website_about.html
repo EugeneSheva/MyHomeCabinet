@@ -124,7 +124,7 @@
                       <div class="form-group mb-30">
                         <label for="websitehomeslide-1-imagefile" class="control-label">Рекомендуемый размер: (1920х800)</label>
                         <input type="hidden" name="WebsiteHomeSlide[1][imageFile]" id="">
-                        <input type="file" name="director_photo" id="director_photo" accept="image/*">
+                        <input type="file" name="page_director_photo" id="director_photo" accept="image/*">
                       </div>
                     </div>
                   </div>
@@ -132,8 +132,8 @@
                     <div class="col-xs-12" style="width: 100%">
                       <h3 class="page-header">Фотогалерея</h3>
                     </div>
-                    <div th:if="${page.photos != null}" th:each="photo : ${page.photos}" class="col-xs-4 col-sm-2 text-center">
-                      <img th:src="@{/images/{url}(url=${photo})}" alt="" class="margin-bottom-15 img-thumbnail">
+                    <div style="width: 100%;" th:if="${page.photos != null}" th:each="photo : ${page.photos}" class="col-xs-4 col-sm-2 text-center">
+                      <img style="width: 100%;" th:src="@{/images/{url}(url=${photo})}" alt="" class="margin-bottom-15 img-thumbnail">
                       <div class="form-group margin-bottom-15">
                         <a href="/admin/website/delete-about-image/159" data-confirm="Удалить?" title="Удалить"><i class="fa fa-trash text-red" aria-hidden="true"></i></a>
                       </div>
@@ -143,7 +143,7 @@
                       <label for="websitehomeslide-1-imagefile" class="control-label">Рекомендуемый размер: (1200x1200)</label>
                       <br>
                       <input type="hidden" name="WebsiteHomeSlide[1][imageFile]" id="">
-                      <input type="file" name="photos" id="photos" accept="image/*">
+                      <input type="file" name="page_photos" id="photos" accept="image/*" multiple>
 
                     </div>
                   </div>
@@ -231,7 +231,7 @@
                       <label for="" class="control-label">Рекомендуемый размер: (1200x1200)</label>
                       <br>
                       <input type="hidden" name="WebsiteHomeSlide[1][imageFile]" id="">
-                      <input type="file" name="add_photos" id="add_photos" accept="image/*">
+                      <input type="file" name="page_add_photos" id="add_photos" accept="image/*">
 
                     </div>
                   </div>
@@ -319,6 +319,42 @@
 <!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
+
+<script>
+
+  $(document).ready(function() {
+
+    $('#director_photo').change(function() {
+      console.log(this);
+      let photo = this.files[0];
+      let image = this.parentElement.previousElementSibling;
+      let imagePath = URL.createObjectURL(photo);
+
+      image.src = imagePath;
+    });
+
+    $('#photos').change(function() {
+      console.log(this);
+      let input_div = this.parentElement;
+
+      for(let i = 0; i < this.files.length; i++) {
+        let photo = this.files[i];
+        let photoImgPath = URL.createObjectURL(photo);
+        let new_image_div = document.createElement('div');
+        new_image_div.innerHTML = '<div style="width:100%" th:if="${page.photos != null}" th:each="photo : ${page.photos}"' +
+                                  'class="">' +
+                                  '<img style="width:100%" src="' + photoImgPath + '" alt="" class="margin-bottom-15 img-thumbnail">' +
+                                  '<div class="form-group margin-bottom-15">' +
+                                  '<a href="/admin/website/delete-about-image/159" data-confirm="Удалить?" title="Удалить">'+
+                                  '<i class="fa fa-trash text-red" aria-hidden="true"></i></a></div></div>';
+        input_div.parentElement.insertBefore(new_image_div,input_div);
+      }
+
+
+    });
+
+  })
+</script>
 
 <!-- PAGE PLUGINS -->
 <!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->

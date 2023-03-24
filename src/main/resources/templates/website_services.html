@@ -49,8 +49,170 @@ website_home.html<!DOCTYPE html>
                 <h3 class="box-title">Редактирование страницы "Услуги"</h3>
               </div>
               <div class="box-body">
-                <form method="post" th:object="${page}" enctype="multipart/form-data">
+                <form id="service_container" method="post" th:object="${page}" enctype="multipart/form-data">
                   <h3 class="page-header">Услуги</h3>
+                  <div id="template" style="display: none;" class="row">
+                    <div class="col-md-8">
+                      <div class="form-group">
+
+                        <label for="websitehomeform-hometitle" class="control-label">Название услуги</label>
+                        <input type="text" class="form-control" name="titles" id="websitehomeform-hometitle">
+
+                      </div>
+                      <div class="form-group field-websitehomeform-homedescription">
+                        <label class="control-label" for="websitehomeform-homedescription">Описание услуги</label>
+                        <ul class="wysihtml5-toolbar"><li class="dropdown">
+                          <a class="btn btn-default dropdown-toggle btn-none" data-toggle="dropdown">
+
+                            <span class="fa fa-font"></span>
+
+                            <span class="current-font">Обычный текст</span>
+                            <b class="caret"></b>
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="p" tabindex="-1" href="javascript:;" unselectable="on">Обычный текст</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 1</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 2</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 3</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 4</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 5</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 6</a></li>
+                          </ul>
+                        </li>
+                          <li>
+                            <div class="btn-group">
+                              <a class="btn btn-none btn-default" id="bold-button" data-wysihtml5-command="bold" title="CTRL+B" tabindex="-1" href="javascript:;" unselectable="on">Полужирный</a>
+                              <a class="btn btn-none btn-default" id="italic-button" data-wysihtml5-command="italic" title="CTRL+I" tabindex="-1" href="javascript:;" unselectable="on">Курсив</a>
+                              <a class="btn btn-none btn-default" id="underline-button" data-wysihtml5-command="underline" title="CTRL+U" tabindex="-1" href="javascript:;" unselectable="on">Подчёркнутый</a>
+
+                            </div>
+                          </li>
+                          <li>
+                            <div class="btn-group">
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="insertUnorderedList" title="Маркированный список" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-list-ul"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="insertOrderedList" title="Нумерованный список" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-list-ol"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="Outdent" title="Уменьшить отступ" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-outdent"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="Indent" title="Увеличить отступ" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-indent"></span>
+
+                              </a>
+                            </div>
+                          </li>
+                        </ul>
+                        <textarea name="descriptions" id="websitemain-description"></textarea>
+                        <button onclick="if(confirm('Удалить услугу?')) this.parentElement.parentElement.parentElement.remove()"
+                                class="btn btn-danger mt-4"
+                                style="font-size: 20px; width: 100%;"><b>- Удалить услугу</b></button>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <h4 style="font-weight: bold;">Фото услуги</h4>
+                      <img th:src="@{/images/placeholder.jpg}" alt="">
+                      <div class="form-group mb-30">
+                        <label for="websitehomeslide-1-imagefile" class="control-label">Рекомендуемый размер: (1920х800)</label>
+                        <input type="hidden" name="WebsiteHomeSlide[1][imageFile]" id="">
+                        <input type="file" name="service_images" onchange="showPhoto(this)" accept="image/*">
+                      </div>
+                    </div>
+                  </div>
+                  <div th:each="service, iter : ${page.getServiceDescriptions()}" class="row">
+                    <div class="col-md-8">
+                      <div class="form-group">
+
+                        <label for="websitehomeform-hometitle" class="control-label">Название услуги</label>
+                        <input type="text" class="form-control" th:value="${service.title}" name="titles" id="websitehomeform-hometitle">
+
+                      </div>
+                      <div class="form-group field-websitehomeform-homedescription">
+                        <label class="control-label" for="websitehomeform-homedescription">Описание услуги</label>
+                        <ul class="wysihtml5-toolbar"><li class="dropdown">
+                          <a class="btn btn-default dropdown-toggle btn-none" data-toggle="dropdown">
+
+                            <span class="fa fa-font"></span>
+
+                            <span class="current-font">Обычный текст</span>
+                            <b class="caret"></b>
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="p" tabindex="-1" href="javascript:;" unselectable="on">Обычный текст</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 1</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 2</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 3</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 4</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 5</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 6</a></li>
+                          </ul>
+                        </li>
+                          <li>
+                            <div class="btn-group">
+                              <a class="btn btn-none btn-default" id="bold-button" data-wysihtml5-command="bold" title="CTRL+B" tabindex="-1" href="javascript:;" unselectable="on">Полужирный</a>
+                              <a class="btn btn-none btn-default" id="italic-button" data-wysihtml5-command="italic" title="CTRL+I" tabindex="-1" href="javascript:;" unselectable="on">Курсив</a>
+                              <a class="btn btn-none btn-default" id="underline-button" data-wysihtml5-command="underline" title="CTRL+U" tabindex="-1" href="javascript:;" unselectable="on">Подчёркнутый</a>
+
+                            </div>
+                          </li>
+                          <li>
+                            <div class="btn-group">
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="insertUnorderedList" title="Маркированный список" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-list-ul"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="insertOrderedList" title="Нумерованный список" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-list-ol"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="Outdent" title="Уменьшить отступ" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-outdent"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="Indent" title="Увеличить отступ" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-indent"></span>
+
+                              </a>
+                            </div>
+                          </li>
+                        </ul>
+                        <textarea th:text="${service.description}" name="descriptions" id="websitemain-description"></textarea>
+                        <button onclick="if(confirm('Удалить услугу?')) this.parentElement.parentElement.parentElement.remove()"
+                                class="btn btn-danger mt-4"
+                                style="font-size: 20px; width: 100%;"><b>- Удалить услугу</b></button>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <h4 style="font-weight: bold;">Фото услуги</h4>
+                      <img th:src="${service.photo != null && service.photo != ''} ?
+                       @{/images/pages/services/{url}(url=${service.photo})} :
+                       @{/images/placeholder.jpg}" alt="">
+                      <div class="form-group mb-30">
+                        <label for="websitehomeslide-1-imagefile" class="control-label">Рекомендуемый размер: (1920х800)</label>
+                        <input type="hidden" name="WebsiteHomeSlide[1][imageFile]" id="">
+                        <input type="file" name="service_images" onchange="showPhoto(this)" accept="image/*">
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div id="btn_container" class="row">
+                    <button type="button" id="add_service_btn"
+                            class="btn btn-warning"
+                            style="margin-inline: 20px; width: 100%;"><b style="font-size: 24px; color:white">+ Добавить услугу</b></button>
+                  </div>
                   <div class="row">
                     <div class="col-md-12">
                       <h3 class="page-header">Настройки SEO</h3>
@@ -106,6 +268,26 @@ website_home.html<!DOCTYPE html>
 <!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
+
+<script>
+
+  function showPhoto(input) {
+      console.log(input);
+      let photo = input.files[0];
+      let image = input.parentElement.previousElementSibling;
+      let imagePath = URL.createObjectURL(photo);
+      image.src = imagePath;
+  }
+
+  $(document).ready(function(){
+    $("#add_service_btn").click(() => {
+      let new_service_div = document.getElementById('template').cloneNode(true);
+      new_service_div.id = '';
+      new_service_div.style = '';
+      document.getElementById('service_container').insertBefore(new_service_div, document.getElementById('btn_container'));
+    });
+  })
+</script>
 
 <!-- PAGE PLUGINS -->
 <!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->

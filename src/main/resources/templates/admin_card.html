@@ -45,55 +45,58 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
-            <div class="box">
+            <div class="box" style="caret-color:transparent;">
               <div class="box-body">
                 <form method="post" th:object="${admin}">
+
                   <div class="row">
                     <div class="col-xs-12 col-md-6">
-                      <div class="form-group">
-                        <label for="first_name" class="control-label">Имя</label>
-                        <input type="text" class="form_control" th:value="${admin.first_name}" name="first_name" id="first_name">
-                      </div>
-                      <div class="form-group">
-                        <label for="last_name" class="control-label">Фамилия</label>
-                        <input type="text" class="form_control" th:value="${admin.last_name}" name="last_name" id="last_name">
-                      </div>
-                      <div class="form-group">
-                        <label for="phone_number" class="control-label">Телефон</label>
-                        <input type="text" class="form_control" th:value="${admin.phone_number}" name="phone_number" id="phone_number">
-                      </div>
+                      <h4><b>Имя</b></h4>
+                      <input type="text"
+                             placeholder="Джо"
+                             style="width: 100%;"
+                             th:attr="data-value=${admin != null} ? '1' : '0'"
+                             class="form_control"
+                             th:value="${admin.first_name}"
+                             name="first_name"
+                             id="first_name">
+                      <br>
+                      <br>
+                      <h4><b>Фамилия</b></h4>
+                      <input type="text" placeholder="Байден" style="width: 100%;" th:attr="data-value=${admin != null} ? '1' : '0'" class="form_control" th:value="${admin.last_name}" name="last_name" id="last_name">
+                      <br>
+                      <br>
+                      <h4><b>Телефон</b></h4>
+                      <input type="text" placeholder="(302) 404-0880" style="width: 100%;" th:attr="data-value=${admin != null} ? '1' : '0'" class="form_control" th:value="${admin.phone_number}" name="phone_number" id="phone_number">
                     </div>
                     <div class="col-xs-12 col-md-6">
-                      <div class="form-group">
-                        <label for="email" class="control-label">Email(логин)</label>
-                        <input type="text" class="form_control" th:value="${admin.email}" name="email" id="email">
-                      </div>
-                      <div class="form-group">
-                        <label for="password" class="control-label">Пароль</label>
-                        <div class="input-group">
-                          <input type="password" class="form_control" name="password" id="password">
-                          <span class="input-group-btn">
-                            <button class="btn btn-default" type="button" onclick="generatePassword('.pass-value')">
-                                Сгенерировать
-                            </button>
-                            <button type="button" class="btn btn-primary" id="showPass">
-                                <i class="fa fa-eye" aria-hidden="true"></i>
-                            </button>
-                          </span>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="repeat_password" class="control-label">Повторить пароль</label>
-                        <input type="password" class="form_control" name="repeat_password" id="repeat_password">
-                      </div>
+                      <h4><b>E-mail(логин)</b></h4>
+                      <input type="text" placeholder="president@whitehouse.gov" th:attr="data-value=${admin != null} ? '1' : '0'" style="width: 100%;" class="form_control" th:value="${admin.email}" name="email" id="email">
+                      <br>
+                      <br>
+                      <h4><b>Пароль</b></h4>
+                      <input type="password" placeholder="********" style="width: 70%;" data-value="0" class="form_control" name="password" id="password">
+                      <span class="input-group-btn">
+                        <button style="padding-block:2px;" class="btn btn-default" type="button" id="generate">
+                            Сгенерировать
+                        </button>
+                        <button style="padding-block:2px;" type="button" class="btn btn-primary" id="showPass">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </button>
+                      </span>
+                      <br>
+                      <br>
+                      <h4><b>Повторить пароль</b></h4>
+                      <input type="password" placeholder="********" data-value="0" style="width: 100%;" class="form_control" name="repeat_password" id="repeat_password">
                     </div>
                   </div>
+
                   <div class="row">
                     <div class="col-xs-12">
-                      <div class="form-group">
                         <a th:href="@{/admin/admins}" class="btn btn-default">Отменить</a>
-                        <button type="submit" class="btn btn-success">Сохранить</button>
-                      </div>
+                        <button type="submit" id="save_button"
+                                class="btn btn-default"
+                                style="transition: background-color 0.5s" disabled>Сохранить</button>
                     </div>
                   </div>
                 </form>
@@ -112,17 +115,20 @@
 </div>
 <!-- ./wrapper -->
 
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dist/js/adminlte.js}"></script>
+
+<script th:src="@{/dist/js/user_validation.js}"></script>
+
 <!-- REQUIRED SCRIPTS -->
 <!-- Icons -->
-<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
 <!-- jQuery -->
-<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
 <!-- Bootstrap -->
-<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <!-- overlayScrollbars -->
 <!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
 <!-- AdminLTE App -->
-<script th:src="@{/dist/js/adminlte.js}"></script>
 
 <!-- PAGE PLUGINS -->
 <!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->

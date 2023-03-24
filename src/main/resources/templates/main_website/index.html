@@ -230,6 +230,28 @@
             current_indicator = document.querySelector('.slide-block[data-index="' + current_index + '"]')
             current_indicator.classList.add('current');
         });
+
+        window.addEventListener('keydown', (event) => {
+            if(event.keyCode === 37) {
+                current_slide.classList.remove('active');
+                current_indicator.classList.remove('current');
+                current_index--;
+                if(current_index < 0) current_index = 2;
+                current_slide = document.querySelector('[data-index="' + current_index + '"]');
+                current_slide.classList.add('active');
+                current_indicator = document.querySelector('.slide-block[data-index="' + current_index + '"]')
+                current_indicator.classList.add('current');
+            } else if(event.keyCode === 39) {
+                current_indicator.classList.remove('current');
+                current_slide.classList.remove('active');
+                current_index++;
+                if(current_index > 2) current_index = 0;
+                current_slide = document.querySelector('[data-index="' + current_index + '"]');
+                current_slide.classList.add('active');
+                current_indicator = document.querySelector('.slide-block[data-index="' + current_index + '"]')
+                current_indicator.classList.add('current');
+            }
+        });
     </script>
   </body>
 </html>

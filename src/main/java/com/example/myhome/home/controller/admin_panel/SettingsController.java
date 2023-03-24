@@ -2,6 +2,7 @@ package com.example.myhome.home.controller.admin_panel;
 
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.repos.*;
+import com.example.myhome.util.UserRole;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -229,6 +230,7 @@ public class SettingsController {
 
     @PostMapping("/admin/admins/create")
     public String createAdmin(@ModelAttribute Admin admin) {
+        admin.setRole(UserRole.ADMIN);
         adminRepository.save(admin);
         return "redirect:/admin/admins";
     }
@@ -236,6 +238,7 @@ public class SettingsController {
     @PostMapping("/admin/admins/update/{id}")
     public String updateAdmin(@PathVariable long id, @ModelAttribute Admin admin) {
         admin.setId(id);
+        admin.setRole(UserRole.ADMIN); // пока не добавил выбор ролей , всем ставится админ
         adminRepository.save(admin);
         return "redirect:/admin/admins";
     }
@@ -244,6 +247,20 @@ public class SettingsController {
     public String deleteAdmin(@PathVariable long id) {
         adminRepository.deleteById(id);
         return "redirect:/admin/admins";
+    }
+
+    @GetMapping("/admin/admins/invite/{id}")
+    public void inviteAdmin(@PathVariable long id) {}
+
+    @GetMapping("/admin/roles")
+    public String showRolesPage(Model model) {
+        return "admin_panel/roles";
+    }
+
+    @PostMapping("/admin/roles")
+    public String saveRolesPage(RedirectAttributes redirectAttributes, Model model) {
+        redirectAttributes.addFlashAttribute("success", "Сохранено!");
+        return "redirect:/admin/roles";
     }
 
 }

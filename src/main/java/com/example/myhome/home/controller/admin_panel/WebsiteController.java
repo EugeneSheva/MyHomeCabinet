@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -120,33 +122,44 @@ public class WebsiteController {
 
     @PostMapping("/about")
     public String editAboutPage(@ModelAttribute AboutPage page,
-                                @RequestPart(required = false) MultipartFile director_photo,
-                                @RequestPart(required = false) MultipartFile[] photos,
-                                @RequestPart(required = false) MultipartFile[] add_photos) throws IOException {
+                                @RequestPart(required = false) MultipartFile page_director_photo,
+                                @RequestPart(required = false) MultipartFile[] page_photos,
+                                @RequestPart(required = false) MultipartFile[] page_add_photos) throws IOException {
 
         AboutPage originalPage = pageRepository.getAboutPage().orElseGet(AboutPage::new);
         page.setId(1);
 
         log.info("Saving director photo");
-        if(!director_photo.isEmpty() && director_photo.getOriginalFilename() != null && !director_photo.getOriginalFilename().equals("")) {
-            page.setDirector_photo(director_photo.getOriginalFilename());
-            fileUploadUtil.saveFile(imageSaveDir, director_photo.getOriginalFilename(), director_photo);
-        }
+        if(page_director_photo.getSize() > 0) {
+            fileUploadUtil.saveFile(imageSaveDir, page_director_photo.getOriginalFilename(), page_director_photo);
+            page.setDirector_photo(page_director_photo.getOriginalFilename());
+        } else page.setDirector_photo(originalPage.getDirector_photo());
         log.info("Saving photos...");
-        if(photos.length != 0) {
+        if(page_photos.length != 0) {
+            log.info("Photos found on page");
+            log.info(Arrays.toString(page_photos));
             List<String> list = new ArrayList<>();
-            for(MultipartFile photo : photos) {
-                list.add(photo.getOriginalFilename());
-                fileUploadUtil.saveFile(imageSaveDir, photo.getOriginalFilename(), photo);
+            for(MultipartFile photo : page_photos) {
+                log.info("Printing photo info:");
+                log.info(photo.toString());
+                if(photo.getSize() > 0) {
+                    list.add(photo.getOriginalFilename());
+                    fileUploadUtil.saveFile(imageSaveDir, photo.getOriginalFilename(), photo);
+                }
             }
+            log.info(list.toString());
             page.setPhotos(list);
+            log.info(page.toString());
+            log.info(page.getPhotos().toString());
         }
         log.info("Saving additional photos...");
-        if(add_photos.length != 0) {
+        if(page_add_photos.length != 0) {
             List<String> list = new ArrayList<>();
-            for(MultipartFile photo : add_photos) {
-                list.add(photo.getOriginalFilename());
-                fileUploadUtil.saveFile(imageSaveDir, photo.getOriginalFilename(), photo);
+            for(MultipartFile photo : page_add_photos) {
+                if(photo.getSize() > 0) {
+                    list.add(photo.getOriginalFilename());
+                    fileUploadUtil.saveFile(imageSaveDir, photo.getOriginalFilename(), photo);
+                }
             }
             page.setPhotos(list);
         }
@@ -158,13 +171,39 @@ public class WebsiteController {
     }
 
     @PostMapping("/services")
-    public String editServicesPage(@ModelAttribute ServicesPage page) {
+    public String editServicesPage(@ModelAttribute ServicesPage page,
+                                   @RequestParam String[] titles,
+                                   @RequestParam String[] descriptions,
+                                   @RequestParam MultipartFile[] service_images) {
         page.setId(1);
+        List<ServicesPage.ServiceDescription> originalList = pageRepository.getServicesPage().orElseThrow().getServiceDescriptions();
+        page.setServiceDescriptions(new ArrayList<>());
+        for (int i = 1; i < titles.length; i++) {
+            ServicesPage.ServiceDescription service = new ServicesPage.ServiceDescription();
+            service.setTitle(titles[i]);
+            service.setDescription(descriptions[i]);
+            if(service_images.length > 0) {
+                if(service_images[i].getSize() > 0) {
+                    try {
+                        fileUploadUtil.saveFile(imageSaveDir + "/services/",
+                                service_images[i].getOriginalFilename(),
+                                service_images[i]);
+                        service.setPhoto(service_images[i].getOriginalFilename());
+                    } catch(Exception e) {
+                        log.info(e.getMessage());
+                        log.info(Arrays.toString(e.getStackTrace()));
+                        log.info("Can't save image");
+                    }
+                } else if (i <= originalList.size()) service.setPhoto(originalList.get(i-1).getPhoto());
+            }
+            page.getServiceDescriptions().add(service);
+        }
+
         pageRepository.save(page);
         return "redirect:/admin/website/services";
     }
 
-    //ТАРИФЫ ДОДЕЛАТЬ
+
 
     @PostMapping("/contacts")
     public String editContactsPage(@ModelAttribute ContactsPage page){

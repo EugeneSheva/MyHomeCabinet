@@ -1,6 +1,9 @@
 package com.example.myhome.home.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 
 import com.example.myhome.util.UserRole;
 import lombok.Data;
@@ -24,6 +27,7 @@ public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String first_name, last_name;
     private String phone_number;
     private String email;
