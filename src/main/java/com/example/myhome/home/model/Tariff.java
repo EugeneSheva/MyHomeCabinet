@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 // --- ТАРИФЫ ---
 
@@ -25,10 +26,16 @@ public class Tariff {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime date;
 
+    @ElementCollection
+    @CollectionTable(name="tariff_services_mapping",
+    joinColumns = @JoinColumn(name="tariff_id"))
+    @MapKeyJoinColumn(name="service_id")
+    @Column(name="price")
+    private Map<Service, Double> tariffComponents;
+
 //    @OneToMany
 //    @JoinColumn(name = "tariff")
-    @ElementCollection
-    private List<TariffComponents> tariffComponentsList;
+//    private List<TariffComponents> tariffComponentsList;
 
 
 }

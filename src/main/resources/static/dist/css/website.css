@@ -163,7 +163,7 @@
     font-weight: bold;
 }
 
-form input {
+form input, select {
     border: 0.5px solid silver;
     border-radius: 5px;
     padding-inline: 10px;

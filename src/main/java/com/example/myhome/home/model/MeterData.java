@@ -33,6 +33,4 @@ public class MeterData {
     private LocalDate date;
 
 
-
-
 }

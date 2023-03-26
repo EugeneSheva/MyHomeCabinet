@@ -47,25 +47,26 @@
           <div class="col-md-12">
             <div class="box">
               <div class="box-body">
-                <form method="post">
+                <form method="post" th:object="${tariff}">
                   <div class="row">
                     <div class="col-xs-12 col-lg-7">
                       <div class="form-group">
-                        <label for="name" class="control-label">Название тарифа</label>
-                        <input type="text" style="width: 100%;" class="form_control" th:value="${tariff.name}" name="name" id="name">
+                        <label class="control-label">Название тарифа</label>
+                        <input type="text" style="width: 100%;" class="form_control" th:field="*{name}">
                       </div>
                       <div class="form-group">
                         <label for="description" class="control-label">Описание тарифа</label>
-                        <textarea id="description" th:text="${tariff.description}" class="form-control" name="description" rows="5" aria-invalid="false"></textarea>
+                        <textarea id="description" th:field="*{description}" class="form-control" rows="5" aria-invalid="false"></textarea>
                       </div>
                     </div>
                     <div class="col-xs-12 col-lg-7" id="services">
                       <div class="service-row" id="service_row">
-                        <div th:each="component : ${tariff.getTariffComponentsList()}" class="row form-tariffservice">
+                        <div th:each="component, iter : *{tariffComponents}" class="row form-tariffservice">
                           <div class="col-xs-6 col-md-4">
                             <div class="form-group">
                               <label>Услуга</label>
-                              <select th:value="${component.service_name}" name="service_names" class="form-control service-select">
+                              <input type="hidden" th:value="${component.key.name}">
+                              <select th:value="${component.key.name}" name="service_names" class="form-control service-select">
                                 <option value="">Выберите...</option>
                                 <option th:each="service : ${services}" th:value="${service.name}" th:text="${service.name}"></option>
                               </select>
@@ -74,7 +75,7 @@
                           <div class="col-xs-6 col-md-3">
                             <div class="form-group">
                               <label>Цена</label>
-                              <input type="text" th:value="${component.price}" name="prices" class="form-control">
+                              <input type="text" th:value="${component.value}" name="prices" class="form-control">
                             </div>
                           </div>
                           <div class="col-xs-6 col-md-2">
@@ -86,11 +87,11 @@
                           <div class="col-xs-6 col-md-3">
                             <div class="form-group">
                               <label>Ед. изм.</label>
+                              <input type="hidden" th:id="'id-'+${iter.index}" th:value="${component.key.unit.name}">
                               <div class="input-group">
-                                <select disabled="">
-                                  <option value="">Выберите...</option>
-                                  <option value="2">м31234</option>
-                                  <option value="3">кв.м.к</option>
+                                <select th:id="'unit-'+${iter.index}" disabled="">
+                                  <option value="0">Выберите...</option>
+                                  <option th:each="unit : ${units}" th:value="${unit.name}" th:text="${unit.name}"></option>
                                 </select>
                                 <span class="input-group-btn">
                                   <button type="button" class="btn btn-default form-row-remove-btn service-delete-button" onclick="deleteService(this)">
@@ -116,7 +117,7 @@
                           <div class="col-xs-6 col-md-3">
                             <div class="form-group">
                               <label>Цена</label>
-                              <input type="text" name="prices" class="form-control">
+                              <input type="text" name="prices-t" class="form-control">
                             </div>
                           </div>
                           <div class="col-xs-6 col-md-2">
@@ -129,7 +130,7 @@
                             <div class="form-group">
                               <label>Ед. изм.</label>
                               <div class="input-group">
-                                <select id="0-serviceunit-name" disabled="">
+                                <select name="service_currency" id="0-serviceunit-name" disabled="">
                                   <option value="">Выберите...</option>
                                   <option value="2">м31234</option>
                                   <option value="3">кв.м.к</option>
@@ -148,7 +149,7 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-md-12">
                       <div class="form-group">
                         <a th:href="@{/admin/tariffs}" class="btn btn-default">Отменить</a>
                         <button type="submit" class="btn btn-success">Сохранить</button>
@@ -185,6 +186,10 @@
     }
   }
 
+  function changeUnit() {
+
+  }
+
   $(document).ready(function() {
 
     let services_container = document.getElementById("services");
@@ -196,9 +201,19 @@
       console.log(new_slot);
       new_slot.id = "form-tariffservice-rows";
       new_slot.style.display = 'block';
-      services_container.insertBefore(new_slot, this);
+      services_container.insertBefore(new_slot, service_template);
+      console.log(document.getElementsByName("prices-t"));
+      document.getElementsByName("prices-t")[0].value = '0';
+      document.getElementsByName("prices-t")[0].name = 'prices';
     });
-  } )
+
+    let services = document.getElementsByName("service_names");
+    for(let i = 0; i < services.length; i++) {
+      services[i].value = services[i].previousElementSibling.value;
+      let unit_element = document.getElementById("unit-"+i);
+      unit_element.value = document.getElementById("id-"+i).value;
+    }
+  });
 </script>
 
 <!-- REQUIRED SCRIPTS -->

@@ -5,27 +5,25 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Data
-//@Entity
-//@Table(name = "tariff_components")
-@Embeddable
+@Entity
+@Table(name = "tariff_components")
 public class TariffComponents {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 //
-//    @ManyToOne
-//    @JoinColumn(name = "service_id")
-//    private Service service;
+    @ManyToOne
+    @JoinColumn(name = "service_id")
+    private Service service;
 //
 //    private Long price;
 //    private String currency;
 //
-//    @ManyToOne
-//    @JoinColumn(name = "tariff_id")
-//    private Tariff tariff;
+    @ManyToOne
+    @JoinColumn(name = "tariff_id")
+    private Tariff tariff;
 
-    private String service_name;
     private double price;
     private String currency;
     private String unit;
@@ -33,8 +31,8 @@ public class TariffComponents {
     public TariffComponents() {
     }
 
-    public TariffComponents(String service_name, double price) {
-        this.service_name = service_name;
+    public TariffComponents(Service service, double price) {
+        this.service = service;
         this.price = price;
     }
 }

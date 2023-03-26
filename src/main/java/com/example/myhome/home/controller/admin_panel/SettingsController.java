@@ -14,7 +14,9 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @Log
@@ -38,11 +40,21 @@ public class SettingsController {
     @Autowired
     private AdminRepository adminRepository;
 
+//    @GetMapping("/admin/services")
+//    public String showServicesPage(@ModelAttribute Service service, Model model) {
+//        model.addAttribute("services", serviceRepository.findAll());
+//        model.addAttribute("units", unitRepository.findAll());
+//        return "settings_services";
+//    }
+
     @GetMapping("/admin/services")
-    public String showServicesPage(Model model) {
-        model.addAttribute("services", serviceRepository.findAll());
+    public String showServicesPage(Model model){
+        ServiceForm serviceForm = new ServiceForm();
+        serviceForm.setServiceList(serviceRepository.findAll());
+        serviceForm.setUnitList(unitRepository.findAll());
+        model.addAttribute("serviceForm", serviceForm);
         model.addAttribute("units", unitRepository.findAll());
-        return "settings_services";
+        return "settings_services2";
     }
 
     @GetMapping("/admin/tariffs")
@@ -95,51 +107,119 @@ public class SettingsController {
 
     // ==========================
 
+//    @PostMapping("/admin/services")
+//    public String editServices(@RequestParam String[] units,
+//                               @RequestParam String[] service_names,
+//                               @RequestParam String[] service_unit_names,
+//                               @RequestParam String[] service_unit_ids,
+//                               @RequestParam boolean[] show_in_meters, RedirectAttributes redirectAttributes) {
+//        try {
+//            for(int i = 0; i < service_unit_ids.length; i++) unitRepository.deleteById(Long.parseLong(service_unit_ids[0]));
+//
+//            for(int i = 0; i < units.length-1; i++) {
+//
+//                    if(units[i].isEmpty() || units[i].equals("")) continue;
+//                    Unit u = new Unit();
+//                    u.setName(units[i]);
+//                    unitRepository.save(u);
+//
+//            }
+//
+//
+//        } catch (Exception e) {
+//            redirectAttributes.addFlashAttribute("fail", "Что-то уже используется в расчётах");
+//            e.printStackTrace();
+//            return "redirect:/admin/services#tab_serviceunit";
+//        }
+//
+//        log.info(Arrays.toString(service_names));
+//        log.info(Arrays.toString(service_unit_names));
+//        log.info(Arrays.toString(show_in_meters));
+//        log.info(String.valueOf(service_names.length));
+//        log.info(String.valueOf(service_unit_names.length));
+//        log.info(String.valueOf(show_in_meters.length));
+//
+//        // удаляются все услуги из БД , потом добавляются заново - не совсем удобно
+//
+//        serviceRepository.deleteAll();
+//
+//        for (int i = 0; i < service_names.length-1; i++) {
+//            if(service_names[i].isEmpty() || service_names[i].equals("")) continue;
+//
+//            Service service =
+//                    new Service(service_names[i],
+//                            show_in_meters[i],
+//                            unitRepository.findByName(service_unit_names[i]).orElseThrow());
+//            serviceRepository.save(service);
+//        }
+//        return "redirect:/admin/services";
+//    }
+
     @PostMapping("/admin/services")
-    public String editServices(@RequestParam String[] units,
-                               @RequestParam String[] service_names,
-                               @RequestParam String[] service_unit_names,
-                               @RequestParam String[] service_unit_ids,
-                               @RequestParam boolean[] show_in_meters, RedirectAttributes redirectAttributes) {
-        try {
-            for(int i = 0; i < service_unit_ids.length; i++) unitRepository.deleteById(Long.parseLong(service_unit_ids[0]));
+    public String updateServices(@ModelAttribute ServiceForm serviceForm,
+                                 @RequestParam String[] new_service_names,
+                                 @RequestParam String[] new_service_unit_names,
+                                 @RequestParam(required = false) boolean[] new_service_show_in_meters,
+                                 @RequestParam(required = false) String[] new_unit_names,
+                                 RedirectAttributes redirectAttributes) {
+        List<Service> serviceList = serviceForm.getServiceList();
+        List<Unit> unitList = serviceForm.getUnitList().stream().filter((unit) -> unit.getId() != null).collect(Collectors.toList());
 
-            for(int i = 0; i < units.length-1; i++) {
+        log.info(unitList.toString());
 
-                    if(units[i].isEmpty() || units[i].equals("")) continue;
-                    Unit u = new Unit();
-                    u.setName(units[i]);
-                    unitRepository.save(u);
+        if(new_unit_names != null) {
 
+            log.info(Arrays.toString(new_unit_names));
+
+            for (int i = 0; i < new_unit_names.length-1; i++) {
+                log.info("creating new unit");
+                Unit unit = new Unit();
+                unit.setName(new_unit_names[i]);
+                unitList.add(unit);
             }
-
-
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("fail", "Что-то уже используется в расчётах");
-            return "redirect:/admin/services#tab_serviceunit";
         }
 
-        log.info(Arrays.toString(service_names));
-        log.info(Arrays.toString(service_unit_names));
-        log.info(Arrays.toString(show_in_meters));
-        log.info(String.valueOf(service_names.length));
-        log.info(String.valueOf(service_unit_names.length));
-        log.info(String.valueOf(show_in_meters.length));
+        log.info(unitList.toString());
 
-        // удаляются все услуги из БД , потом добавляются заново - не совсем удобно
+        unitRepository.saveAll(unitList);
+        unitList.forEach(System.out::println);
 
-        serviceRepository.deleteAll();
-
-        for (int i = 0; i < service_names.length-1; i++) {
-            if(service_names[i].isEmpty() || service_names[i].equals("")) continue;
-
-            Service service =
-                    new Service(service_names[i],
-                            show_in_meters[i],
-                            unitRepository.findByName(service_unit_names[i]).orElseThrow());
-            serviceRepository.save(service);
+        for (int i = 0; i < new_service_names.length-1; i++) {
+            Service service = new Service();
+            service.setName(new_service_names[i]);
+            service.setShow_in_meters(new_service_show_in_meters[i]);
+            service.setUnit(unitRepository.findByName(new_service_unit_names[i]).orElseGet(Unit::new));
+            serviceList.add(service);
         }
+
+        serviceRepository.saveAll(serviceList);
+        serviceList.forEach(System.out::println);
+
         return "redirect:/admin/services";
+    }
+
+    @GetMapping("/admin/services/delete/{id}")
+    public String deleteService(@PathVariable long id, RedirectAttributes redirectAttributes) {
+        try {
+            serviceRepository.deleteById(id);
+            return "redirect:/admin/services";
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("fail", "Нельзя удалить услугу, она уже где-то используется");
+            return "redirect:/admin/services";
+        }
+    }
+
+    @GetMapping("/admin/services/delete-unit/{id}")
+    public String deleteServiceUnit(@PathVariable long id, RedirectAttributes redirectAttributes) {
+        try {
+            unitRepository.deleteById(id);
+            return "redirect:/admin/services";
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("fail", "Нельзя удалить единицу");
+            return "redirect:/admin/services";
+        }
     }
 
     @PostMapping("/admin/income-expense/create")
@@ -174,6 +254,7 @@ public class SettingsController {
     public String showCreateTariffCard(Model model){
         model.addAttribute("tariff", new Tariff());
         model.addAttribute("services", serviceRepository.findAll());
+        model.addAttribute("units", unitRepository.findAll());
         return "tariff_card";
     }
 
@@ -186,13 +267,19 @@ public class SettingsController {
         tariff.setName(name);
         tariff.setDescription(description);
         tariff.setDate(LocalDateTime.now());
-        tariff.setTariffComponentsList(new ArrayList<>());
+        tariff.setTariffComponents(new HashMap<>());
 
-        for (int i = 1; i < service_names.length; i++) {
+        for (int i = 0; i < service_names.length; i++) {
+            log.info("cycle");
+            if(service_names[i].isEmpty() || prices[i].isEmpty()) continue;
             log.info(service_names[i]);
             log.info(prices[i]);
-            tariff.getTariffComponentsList().add(new TariffComponents(service_names[i], Double.parseDouble(prices[i])));
+            tariff.getTariffComponents().put(serviceRepository.findByName(service_names[i]).orElseThrow(),
+                    Double.parseDouble(prices[i]));
+            log.info(tariff.getTariffComponents().toString());
         }
+
+        log.info(tariff.toString());
 
         tariffRepository.save(tariff);
 
@@ -201,8 +288,11 @@ public class SettingsController {
 
     @GetMapping("/admin/tariffs/update/{id}")
     public String showUpdateTariffPage(@PathVariable long id, Model model) {
-        model.addAttribute("tariff", tariffRepository.findById(id).orElseGet(Tariff::new));
+        Tariff tariff = tariffRepository.findById(id).orElseGet(Tariff::new);
+        model.addAttribute("tariff", tariff);
+        model.addAttribute("components", tariff.getTariffComponents().entrySet());
         model.addAttribute("services", serviceRepository.findAll());
+        model.addAttribute("units", unitRepository.findAll());
         return "tariff_card";
     }
 
@@ -210,20 +300,29 @@ public class SettingsController {
     public String updateTariff(@PathVariable long id,
                                @RequestParam String name,
                                @RequestParam String description,
-                               @RequestParam String[] service_names,
-                               @RequestParam String[] prices) {
+                               @RequestParam(defaultValue = "0", required = false) String[] service_names,
+                               @RequestParam(defaultValue = "0", required = false) String[] prices) {
         Tariff tariff = new Tariff();
         tariff.setId(id);
         tariff.setName(name);
         tariff.setDescription(description);
         tariff.setDate(LocalDateTime.now());
-        tariff.setTariffComponentsList(new ArrayList<>());
+        tariff.setTariffComponents(new HashMap<>());
 
-        for (int i = 1; i < service_names.length; i++) {
+        log.info(Arrays.toString(service_names));
+        log.info(Arrays.toString(prices));
+
+        for (int i = 0; i < service_names.length; i++) {
+            log.info("cycle");
+            if(service_names[i].isEmpty() || prices[i].isEmpty()) continue;
             log.info(service_names[i]);
             log.info(prices[i]);
-            tariff.getTariffComponentsList().add(new TariffComponents(service_names[i], Double.parseDouble(prices[i])));
+            tariff.getTariffComponents().put(serviceRepository.findByName(service_names[i]).orElseThrow(),
+                    Double.parseDouble(prices[i]));
+            log.info(tariff.getTariffComponents().toString());
         }
+
+        log.info(tariff.toString());
 
         tariffRepository.save(tariff);
 
