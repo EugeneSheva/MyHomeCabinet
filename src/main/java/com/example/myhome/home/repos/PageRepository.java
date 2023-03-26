@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface PageRepository extends JpaRepository<Page, Integer> {
+public interface PageRepository extends JpaRepository<Page, Long> {
 
     @Query("SELECT p FROM MainPage p WHERE p.id=1")
     Optional<MainPage> getMainPage();
@@ -18,6 +18,5 @@ public interface PageRepository extends JpaRepository<Page, Integer> {
     Optional<ContactsPage> getContactsPage();
     @Query("SELECT p FROM ServicesPage p WHERE p.id=1")
     Optional<ServicesPage> getServicesPage();
-    @Query("SELECT p FROM TariffsPage p WHERE p.id=1")
-    Optional<TariffsPage> getTariffsPage();
+
 }

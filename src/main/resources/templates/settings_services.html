@@ -53,35 +53,43 @@
                         <div class="tab-content">
 
                           <div class="tab-pane clearfix active" id="tab_service">
+
+                            <span th:if="${fail}" th:text="${fail}" style="margin-block: 15px; color: red; font-size: 18px; font-weight: bold;" class="mt-5 mb-5"></span>
+
                             <div id="service_rows">
+
                               <div th:each="service : ${services}" class="row s form-service">
                                 <div class="col-xs-12 col-sm-7">
                                   <div class="form-group">
                                     <label for="service-0-name">Услуга</label>
-                                    <input type="text" id="service-0-name" class="form-control" name="service_names" th:value="${service.name}">
+                                    <input type="text" class="form-control" name="service_names" th:value="${service.name}">
                                   </div>
                                 </div>
                                 <div class="col-xs-12 col-sm-5">
                                   <div class="form-group">
                                     <label for="service-0-service_unit_id">Ед. изм.</label>
                                     <div class="input-group">
-                                      <select th:value="${service.unit.name}" class="form-control" name="service_unit_names">
+                                      <p th:text="${service.unit.getName()}" style="display:none;"></p>
+                                      <select th:value="${service.unit.getName()}" class="form-control" name="service_unit_names" value="undefined">
                                         <option value="undefined">Выберите...</option>
-                                        <option th:each="unit : ${units}" th:value="${unit.name}" th:text="${unit.name}"></option>
+                                        <option th:each="unit : ${units}" th:if="${unit.id != 0}" th:value="${unit.name}" th:text="${unit.name}"></option>
                                       </select>
                                       <span class="input-group-btn">
-                                        <button type="button" class="btn btn-default form-row-remove-btn disabled" no-delete-msg="Эта услуга используется в квитанциях. Удаление невозможно.">
+                                        <button type="button"
+                                                class="btn btn-default form-row-remove-btn"
+                                                onclick="this.parentElement.parentElement.parentElement.parentElement.parentElement.remove()"
+                                                no-delete-msg="Эта услуга используется в квитанциях. Удаление невозможно.">
                                           <i class="fa fa-trash"></i>
                                         </button>
                                       </span>
                                     </div>
                                   </div>
                                 </div>
-                                <div class="col-xs-12">
+                                <div class="col-xs-12 col-sm-12">
                                   <label><input type="checkbox" name="show_in_meters" th:checked="${service.show_in_meters}"> Показывать в счетчиках</label>        <div style="margin-bottom: 16px;"></div>
                                 </div>
                               </div>
-                              <div id="service_template" class="row form-service">
+                              <div id="service_template" style="display:none;" class="row form-service">
                                 <div class="col-xs-12 col-sm-7">
                                   <div class="form-group">
                                     <label for="service-0-name">Услуга</label>
@@ -92,20 +100,24 @@
                                   <div class="form-group">
                                     <label>Ед. изм.</label>
                                     <div class="input-group">
-                                      <select class="form-control" name="service_unit_names">
+                                      <select class="form-control" name="service_unit_names" value="undefined">
                                         <option value="undefined">Выберите...</option>
                                         <option th:each="unit : ${units}" th:value="${unit.name}" th:text="${unit.name}"></option>
                                       </select>
                                       <span class="input-group-btn">
-                                                <button type="button" class="btn btn-default form-row-remove-btn disabled" no-delete-msg="Эта услуга используется в квитанциях. Удаление невозможно.">
-                                                  <i class="fa fa-trash"></i>
-                                                </button>
-                                              </span>
+                                        <button type="button"
+                                                class="btn btn-default form-row-remove-btn"
+                                                onclick="this.parentElement.parentElement.parentElement.parentElement.parentElement.remove()"
+                                                no-delete-msg="Эта услуга используется в квитанциях. Удаление невозможно.">
+                                          <i class="fa fa-trash"></i>
+                                        </button>
+                                      </span>
                                     </div>
                                   </div>
                                 </div>
-                                <div class="col-xs-12">
-                                  <input type="hidden" name="show_in_meters" value="0"><label><input type="checkbox" id="service-0-is_counter" name="Service[0][is_counter]" value="1" checked=""> Показывать в счетчиках</label>        <div style="margin-bottom: 16px;"></div>
+                                <div class="col-xs-12 col-sm-12">
+                                  <label><input type="checkbox" id="service-0-is_counter" name="show_in_meters" value="1" checked=""> Показывать в счетчиках</label>
+                                  <div style="margin-bottom: 16px;"></div>
                                 </div>
                               </div>
 
@@ -115,6 +127,8 @@
 
                           <div class="tab-pane clearfix" id="tab_serviceunit">
 
+                            <span th:if="${fail}" th:text="${fail}" style="margin-block: 15px; color: red; font-size: 18px; font-weight: bold;" class="mt-5 mb-5"></span>
+
                             <div id="service_unit_rows">
 
                               <div th:each="unit : ${units}" th:if="${unit.id != 0}" class="row form-serviceunit">
@@ -122,22 +136,29 @@
                                   <div class="form-group">
                                     <label for="serviceunit-0-name">Ед. изм.</label>
                                     <div class="input-group">
+                                      <input type="hidden" name="service_unit_ids" th:value="${unit.id}">
                                       <input type="text" id="serviceunit-0-name" class="form-control" name="units" th:value="${unit.name}">
                                       <span class="input-group-btn">
-                                        <button type="button" class="btn btn-default form-row-remove-btn" no-delete-msg="Эта ед.изм. используется в услуге. Удаление невозможно."><i class="fa fa-trash"></i></button>
+                                        <button type="button"
+                                                class="btn btn-default form-row-remove-btn"
+                                                onclick="this.parentElement.parentElement.parentElement.parentElement.parentElement.remove()"
+                                                no-delete-msg="Эта ед.изм. используется в услуге. Удаление невозможно."><i class="fa fa-trash"></i></button>
                                       </span>
                                     </div>
                                   </div>
                                 </div>
                               </div>
 
-                              <div id="service_unit_template" class="row form-serviceunit">
+                              <div id="service_unit_template" style="display:none;" class="row form-serviceunit">
                                 <div class="col-xs-12">
                                   <label for="serviceunit-0-name">Ед. изм.</label>
                                   <div class="input-group">
                                     <input type="text" class="form-control" name="units">
                                     <span class="input-group-btn">
-                                      <button type="button" class="btn btn-default form-row-remove-btn" no-delete-msg="Эта ед.изм. используется в услуге. Удаление невозможно."><i class="fa fa-trash"></i></button>
+                                      <button type="button"
+                                              class="btn btn-default form-row-remove-btn"
+                                              onclick="this.parentElement.parentElement.parentElement.parentElement.remove()"
+                                              no-delete-msg="Эта ед.изм. используется в услуге. Удаление невозможно."><i class="fa fa-trash"></i></button>
                                     </span>
                                   </div>
                                 </div>
@@ -210,6 +231,7 @@
         console.log(service_template);
 
         let new_slot = service_template.cloneNode(true);
+        new_slot.style = '';
 
         console.log(new_slot);
 
@@ -223,6 +245,7 @@
         console.log(service_unit_template);
 
         let new_slot = service_unit_template.cloneNode(true);
+        new_slot.style = '';
 
         console.log(new_slot);
 

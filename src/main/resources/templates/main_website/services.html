@@ -52,47 +52,14 @@
         <div class="container mt-5">
             <h2>Наши услуги</h2>
             <hr>
-            <div class="row align-items-center mb-3">
+            <div th:each="service : ${page.serviceDescriptions}" class="row align-items-center mb-3">
                 <div class="col-md-7">
-                    <img th:src="@{/images/2.jpg}" class="img-fluid" alt="">
+                    <img th:src="@{/images/pages/services/{url}(url=${service.photo})}" class="img-fluid" alt="">
                 </div>
                 <div class="col-md-5">
-                    <h3>Уборка придомовой территории</h3>
+                    <h3 th:text="${service.title}"></h3>
                     <hr>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar odio eget blandit maximus. 
-                        Quisque accumsan venenatis eros sit amet vulputate. Mauris at ex sed mauris faucibus aliquet ac ac augue. 
-                        Nulla finibus, quam ut posuere aliquam, tortor urna ornare nibh, eu dictum erat tortor sit amet leo. 
-                        Curabitur interdum ipsum placerat ex tristique, ut venenatis velit vehicula. 
-                        Duis ac lacus euismod neque imperdiet rhoncus et vitae metus. Etiam cursus tristique rutrum. 
-                        Etiam finibus, purus sed aliquet bibendum, velit justo fringilla tortor, nec pharetra diam ipsum non erat. 
-                        Suspendisse a aliquam ipsum, ut pellentesque ligula. Sed nunc nisl, vulputate eu suscipit nec, venenatis quis lorem. 
-                        Curabitur consectetur dui risus, vitae malesuada odio gravida quis. In malesuada est eget justo ullamcorper venenatis. 
-                        Praesent at placerat enim. Praesent fermentum, sapien quis mollis tincidunt, massa leo viverra enim, 
-                        eu bibendum tortor elit a mauris. Nulla metus purus, pretium quis sapien et, hendrerit vestibulum felis. 
-                        Mauris molestie viverra nibh, in fringilla ligula iaculis eu.
-                    </p>
-                </div>
-            </div>
-            <div class="row align-items-center mb-3">
-                <div class="col-md-7">
-                    <img th:src="@{/images/2.jpg}" class="img-fluid" alt="">
-                </div>
-                <div class="col-md-5">
-                    <h3>Уборка придомовой территории</h3>
-                    <hr>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar odio eget blandit maximus. 
-                        Quisque accumsan venenatis eros sit amet vulputate. Mauris at ex sed mauris faucibus aliquet ac ac augue. 
-                        Nulla finibus, quam ut posuere aliquam, tortor urna ornare nibh, eu dictum erat tortor sit amet leo. 
-                        Curabitur interdum ipsum placerat ex tristique, ut venenatis velit vehicula. 
-                        Duis ac lacus euismod neque imperdiet rhoncus et vitae metus. Etiam cursus tristique rutrum. 
-                        Etiam finibus, purus sed aliquet bibendum, velit justo fringilla tortor, nec pharetra diam ipsum non erat. 
-                        Suspendisse a aliquam ipsum, ut pellentesque ligula. Sed nunc nisl, vulputate eu suscipit nec, venenatis quis lorem. 
-                        Curabitur consectetur dui risus, vitae malesuada odio gravida quis. In malesuada est eget justo ullamcorper venenatis. 
-                        Praesent at placerat enim. Praesent fermentum, sapien quis mollis tincidunt, massa leo viverra enim, 
-                        eu bibendum tortor elit a mauris. Nulla metus purus, pretium quis sapien et, hendrerit vestibulum felis. 
-                        Mauris molestie viverra nibh, in fringilla ligula iaculis eu.
+                    <p th:text="${service.description}">
                     </p>
                 </div>
             </div>

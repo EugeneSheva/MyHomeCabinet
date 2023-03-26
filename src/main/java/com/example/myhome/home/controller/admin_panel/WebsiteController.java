@@ -1,6 +1,7 @@
 package com.example.myhome.home.controller.admin_panel;
 
 import com.example.myhome.home.model.pages.*;
+import com.example.myhome.home.repos.DocumentRepository;
 import com.example.myhome.home.repos.PageRepository;
 import com.example.myhome.util.FileUploadUtil;
 import lombok.extern.java.Log;
@@ -14,7 +15,9 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/website")
@@ -23,6 +26,9 @@ public class WebsiteController {
 
     @Autowired
     private PageRepository pageRepository;
+
+    @Autowired
+    private DocumentRepository documentRepository;
 
     @Autowired
     private FileUploadUtil fileUploadUtil;
@@ -37,20 +43,54 @@ public class WebsiteController {
 
     @GetMapping("/about")
     public String showEditAboutPage(Model model) {
-        model.addAttribute("page", pageRepository.getAboutPage().orElseGet(AboutPage::new));;
+        AboutPage page = pageRepository.getAboutPage().orElseGet(AboutPage::new);
+        List<String> photos = Arrays.stream(page.getPhotos().split(","))
+                .filter((photo) -> !photo.equals(""))
+                .collect(Collectors.toList());
+        List<String> add_photos = Arrays.stream(page.getAdd_photos().split(","))
+                .filter((photo) -> !photo.equals(""))
+                .collect(Collectors.toList());
+        model.addAttribute("page", page);
+        model.addAttribute("photos", photos);
+        model.addAttribute("add_photos", add_photos);
+        model.addAttribute("documents", documentRepository.findAll());
         return "website_about";
+    }
+
+    @GetMapping("/delete-about-image/{index}")
+    public String deleteAboutImage(@PathVariable int index, Model model) {
+        AboutPage page = pageRepository.getAboutPage().orElseGet(AboutPage::new);
+        String photos = page.getPhotos();
+        String photoToDelete = photos.split(",")[index];
+        photos = Arrays.stream(photos.split(","))
+                .filter((photo) -> !photo.equals(photoToDelete))
+                .collect(Collectors.joining(","));
+        page.setPhotos(photos);
+        pageRepository.save(page);
+        return "redirect:/admin/website/about";
+    }
+
+    @GetMapping("/delete-about-add-image/{index}")
+    public String deleteAboutAddImage(@PathVariable int index, Model model) {
+        AboutPage page = pageRepository.getAboutPage().orElseGet(AboutPage::new);
+        String photos = page.getAdd_photos();
+        List<String> photos_l = new ArrayList<>(Arrays.asList(photos.split(",")));
+        photos_l.remove(index);
+        page.setAdd_photos(String.join(",", photos_l));
+        pageRepository.save(page);
+        return "redirect:/admin/website/about";
+    }
+
+    @GetMapping("/delete-document/{id}")
+    public String deleteDocument(@PathVariable long id) {
+        documentRepository.deleteById(id);
+        return "redirect:/admin/website/about";
     }
 
     @GetMapping("/services")
     public String showEditServicesPage(Model model) {
         model.addAttribute("page", pageRepository.getServicesPage().orElseGet(ServicesPage::new));
         return "website_services";
-    }
-
-    @GetMapping("/tariffs")
-    public String showEditTariffsPage(Model model) {
-        model.addAttribute("page", pageRepository.getTariffsPage().orElseGet(TariffsPage::new));
-        return "website_tariffs";
     }
 
     @GetMapping("/contacts")
@@ -73,7 +113,7 @@ public class WebsiteController {
                                @RequestPart(required = false) MultipartFile page_block_5_img,
                                @RequestPart(required = false) MultipartFile page_block_6_img) throws IOException {
 
-        MainPage originalPage = pageRepository.getMainPage().orElseThrow();
+        MainPage originalPage = pageRepository.getMainPage().orElseGet(MainPage::new);
         page.setId(1);
 
         log.info("Setting and saving images for main page...");
@@ -124,45 +164,100 @@ public class WebsiteController {
     public String editAboutPage(@ModelAttribute AboutPage page,
                                 @RequestPart(required = false) MultipartFile page_director_photo,
                                 @RequestPart(required = false) MultipartFile[] page_photos,
-                                @RequestPart(required = false) MultipartFile[] page_add_photos) throws IOException {
+                                @RequestPart(required = false) MultipartFile[] page_add_photos,
+                                @RequestParam(required = false) String[] document_names,
+                                @RequestParam(required = false) MultipartFile[] document_files) throws IOException {
 
         AboutPage originalPage = pageRepository.getAboutPage().orElseGet(AboutPage::new);
+        log.info(originalPage.toString());
         page.setId(1);
 
+        //Сохранение единичного фото директора
         log.info("Saving director photo");
         if(page_director_photo.getSize() > 0) {
             fileUploadUtil.saveFile(imageSaveDir, page_director_photo.getOriginalFilename(), page_director_photo);
             page.setDirector_photo(page_director_photo.getOriginalFilename());
         } else page.setDirector_photo(originalPage.getDirector_photo());
+        log.info("Saved director photo");
+
+        //Сохранение фото из фотогалереи
         log.info("Saving photos...");
-        if(page_photos.length != 0) {
+        if(page_photos.length > 1) {
+            log.info(String.valueOf(page_photos.length));
             log.info("Photos found on page");
             log.info(Arrays.toString(page_photos));
-            List<String> list = new ArrayList<>();
+            String photosToSave = "";
+            List<String> list = Arrays.stream(originalPage.getPhotos().split(",")).collect(Collectors.toList());
             for(MultipartFile photo : page_photos) {
                 log.info("Printing photo info:");
                 log.info(photo.toString());
                 if(photo.getSize() > 0) {
-                    list.add(photo.getOriginalFilename());
                     fileUploadUtil.saveFile(imageSaveDir, photo.getOriginalFilename(), photo);
+                    list.add(photo.getOriginalFilename());
                 }
             }
-            log.info(list.toString());
-            page.setPhotos(list);
-            log.info(page.toString());
-            log.info(page.getPhotos().toString());
-        }
+            photosToSave = String.join(",", list);
+            log.info("Saved photos: " + photosToSave);
+            page.setPhotos(photosToSave);
+
+        } else if(page_photos.length == 1 && page_photos[0].getSize() > 0) {
+            MultipartFile photo = page_photos[0];
+            List<String> list = Arrays.stream(originalPage.getPhotos().split(",")).collect(Collectors.toList());
+            fileUploadUtil.saveFile(imageSaveDir, photo.getOriginalFilename(), photo);
+            log.info("Saved single photo: " + photo.getOriginalFilename());
+            page.setPhotos(String.join(",", list) +","+ photo.getOriginalFilename());
+        } else page.setPhotos(originalPage.getPhotos());
+
+        log.info(page.toString());
+        log.info(page.getPhotos());
+
+        //Сохранение фото из доп.фотогалереи
         log.info("Saving additional photos...");
-        if(page_add_photos.length != 0) {
-            List<String> list = new ArrayList<>();
+        if(page_add_photos.length > 1) {
+            log.info(String.valueOf(page_add_photos.length));
+            log.info("Photos found on page");
+            log.info(Arrays.toString(page_add_photos));
+            String photosToSave = "";
+            List<String> list = Arrays.stream(originalPage.getAdd_photos().split(",")).collect(Collectors.toList());
             for(MultipartFile photo : page_add_photos) {
+                log.info("Printing photo info:");
+                log.info(photo.toString());
                 if(photo.getSize() > 0) {
-                    list.add(photo.getOriginalFilename());
                     fileUploadUtil.saveFile(imageSaveDir, photo.getOriginalFilename(), photo);
+                    list.add(photo.getOriginalFilename());
                 }
             }
-            page.setPhotos(list);
+            photosToSave = String.join(",", list);
+            log.info("Saved photos: " + photosToSave);
+            page.setAdd_photos(photosToSave);
+
+        } else if(page_add_photos.length == 1 && page_add_photos[0].getSize() > 0) {
+            MultipartFile photo = page_add_photos[0];
+            List<String> list = Arrays.stream(originalPage.getAdd_photos().split(",")).collect(Collectors.toList());
+            fileUploadUtil.saveFile(imageSaveDir, photo.getOriginalFilename(), photo);
+            log.info("Saved single photo: " + photo.getOriginalFilename());
+            page.setAdd_photos(String.join(",", list) +","+ photo.getOriginalFilename());
+        } else page.setAdd_photos(originalPage.getAdd_photos());
+
+        log.info(page.toString());
+        log.info(page.getAdd_photos());
+
+        //Сохранение документов
+        log.info("Saving documents...");
+        for (int i = 1; i < document_names.length; i++) {
+            if(document_names[i].isEmpty()) continue;
+            AboutPage.Document document = new AboutPage.Document();
+            document.setPage(originalPage);
+            document.setName(document_names[i]);
+            MultipartFile fileToSave = document_files[i];
+            if(fileToSave.getSize() > 0) {
+                fileUploadUtil.saveFile("/documents/", fileToSave.getOriginalFilename(), fileToSave);
+                document.setFile(fileToSave.getOriginalFilename());
+            } else continue;
+            documentRepository.save(document);
         }
+
+        log.info("Final page info to save: " + page);
 
         pageRepository.save(page);
         log.info("Saved about page");
@@ -176,7 +271,7 @@ public class WebsiteController {
                                    @RequestParam String[] descriptions,
                                    @RequestParam MultipartFile[] service_images) {
         page.setId(1);
-        List<ServicesPage.ServiceDescription> originalList = pageRepository.getServicesPage().orElseThrow().getServiceDescriptions();
+        List<ServicesPage.ServiceDescription> originalList = pageRepository.getServicesPage().orElseGet(ServicesPage::new).getServiceDescriptions();
         page.setServiceDescriptions(new ArrayList<>());
         for (int i = 1; i < titles.length; i++) {
             ServicesPage.ServiceDescription service = new ServicesPage.ServiceDescription();

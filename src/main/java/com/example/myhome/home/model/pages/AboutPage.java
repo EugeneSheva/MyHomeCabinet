@@ -15,24 +15,30 @@ public class AboutPage extends Page {
     private String director_photo;
 
     //Фотогалерея
-    @ElementCollection
-    private List<String> photos;
+    private String photos = "";
 
     //Дополнительная информация
     private String add_title, add_description;
 
     //Дополнительная фотогалерея
-    @ElementCollection
-    private List<String> add_photos;
+    private String add_photos = "";
 
     //Документы
-    @ElementCollection
+    @OneToMany
     private List<Document> documents;
 
-    @Embeddable
-    static class Document {
+    @Data
+    @Entity
+    @Table(name="documents")
+    public static class Document {
+        @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private long id;
         private String name;
-        private String photo;
+        private String file;
+
+        @ManyToOne
+        private AboutPage page;
     }
+
 
 }

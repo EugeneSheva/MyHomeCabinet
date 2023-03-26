@@ -10,8 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -97,22 +99,39 @@ public class SettingsController {
     public String editServices(@RequestParam String[] units,
                                @RequestParam String[] service_names,
                                @RequestParam String[] service_unit_names,
-                               @RequestParam boolean[] show_in_meters) {
-        for(String unit : units) {
-            if(!unit.equals("") && !unitRepository.existsByName(unit)) {
-                Unit u = new Unit();
-                u.setName(unit);
-                unitRepository.save(u);
+                               @RequestParam String[] service_unit_ids,
+                               @RequestParam boolean[] show_in_meters, RedirectAttributes redirectAttributes) {
+        try {
+            for(int i = 0; i < service_unit_ids.length; i++) unitRepository.deleteById(Long.parseLong(service_unit_ids[0]));
+
+            for(int i = 0; i < units.length-1; i++) {
+
+                    if(units[i].isEmpty() || units[i].equals("")) continue;
+                    Unit u = new Unit();
+                    u.setName(units[i]);
+                    unitRepository.save(u);
+
             }
+
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("fail", "Что-то уже используется в расчётах");
+            return "redirect:/admin/services#tab_serviceunit";
         }
+
+        log.info(Arrays.toString(service_names));
+        log.info(Arrays.toString(service_unit_names));
+        log.info(Arrays.toString(show_in_meters));
+        log.info(String.valueOf(service_names.length));
+        log.info(String.valueOf(service_unit_names.length));
+        log.info(String.valueOf(show_in_meters.length));
 
         // удаляются все услуги из БД , потом добавляются заново - не совсем удобно
 
         serviceRepository.deleteAll();
 
-        for (int i = 0; i < service_names.length; i++) {
-            if(service_names[i].isEmpty()) continue;
-            log.info(service_unit_names[i]);
+        for (int i = 0; i < service_names.length-1; i++) {
+            if(service_names[i].isEmpty() || service_names[i].equals("")) continue;
 
             Service service =
                     new Service(service_names[i],

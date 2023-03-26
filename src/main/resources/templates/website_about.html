@@ -132,17 +132,18 @@
                     <div class="col-xs-12" style="width: 100%">
                       <h3 class="page-header">Фотогалерея</h3>
                     </div>
-                    <div style="width: 100%;" th:if="${page.photos != null}" th:each="photo : ${page.photos}" class="col-xs-4 col-sm-2 text-center">
+                    <div style="width: 100%;" th:each="photo, iter : ${photos}" class="col-xs-4 col-sm-3 text-center">
                       <img style="width: 100%;" th:src="@{/images/{url}(url=${photo})}" alt="" class="margin-bottom-15 img-thumbnail">
                       <div class="form-group margin-bottom-15">
-                        <a href="/admin/website/delete-about-image/159" data-confirm="Удалить?" title="Удалить"><i class="fa fa-trash text-red" aria-hidden="true"></i></a>
+                        <a class="delete-about-button"
+                           th:attr="data-url='/admin/website/delete-about-image/'+${iter.index}"
+                           style="cursor: pointer;"><i class="fa fa-trash text-red" aria-hidden="true"></i></a>
                       </div>
                     </div>
                     <div class="col-xs-12" style="width: 100%">
 
                       <label for="websitehomeslide-1-imagefile" class="control-label">Рекомендуемый размер: (1200x1200)</label>
                       <br>
-                      <input type="hidden" name="WebsiteHomeSlide[1][imageFile]" id="">
                       <input type="file" name="page_photos" id="photos" accept="image/*" multiple>
 
                     </div>
@@ -220,10 +221,12 @@
                     <div class="col-xs-12" style="width: 100%">
                       <h3 class="page-header">Дополнительная фотогалерея</h3>
                     </div>
-                    <div th:each="photo : ${page.add_photos}" class="col-xs-4 col-sm-2 text-center">
-                      <img th:src="@{/images/{url}(url=${photo})}" alt="" class="margin-bottom-15 img-thumbnail">
+                    <div style="width: 100%;" th:each="photo, iter : ${add_photos}" class="col-xs-4 col-sm-3 text-center">
+                      <img style="width: 100%;" th:src="@{/images/{url}(url=${photo})}" alt="" class="margin-bottom-15 img-thumbnail">
                       <div class="form-group margin-bottom-15">
-                        <a href="/admin/website/delete-about-image/159" data-confirm="Удалить?" title="Удалить"><i class="fa fa-trash text-red" aria-hidden="true"></i></a>
+                        <a class="delete-about-button"
+                           th:attr="data-url='/admin/website/delete-about-add-image/'+${iter.index}"
+                           style="cursor: pointer;"><i class="fa fa-trash text-red" aria-hidden="true"></i></a>
                       </div>
                     </div>
                     <div class="col-xs-12" style="width: 100%">
@@ -231,7 +234,7 @@
                       <label for="" class="control-label">Рекомендуемый размер: (1200x1200)</label>
                       <br>
                       <input type="hidden" name="WebsiteHomeSlide[1][imageFile]" id="">
-                      <input type="file" name="page_add_photos" id="add_photos" accept="image/*">
+                      <input type="file" name="page_add_photos" id="add_photos" multiple accept="image/*">
 
                     </div>
                   </div>
@@ -241,24 +244,49 @@
                       <h3 class="page-header">Документы</h3>
                     </div>
                     <div class="col-xs-12 col-md-6">
-                      <div id="form-websitedocument-rows">
-                        <div id="form-websitedocument-0" class="form-websitedocument">
-                          <input type="hidden" id="websitedocument-0-id" name="WebsiteDocument[0][id]" value="44">
+                      <div id="documents">
+                        <div id="document_template" style="display:none" class="form-websitedocument">
                           <div class="form-group">
-                            <a href="/admin/website/delete-document/44" class="pull-right text-red" data-confirm="Удалить?"><i class="fa fa-trash"></i></a>
-                            <img style="width: 30px; height: 40px;" class="fa fa-3x pull-left" src="http://myhouse24.avada-media.ua/site/glide?path=%2Fupload%2FWebsiteDocument%2F44%2Ffile44_202302051707.jpg&amp;w=32&amp;h=42&amp;fit=crop" alt="">
-                            <label for="websitedocument-0-filefile">PDF, JPG (макс. размер 20 Mb)</label>
-                            <input type="hidden" name="WebsiteDocument[0][fileFile]" value=""><input type="file" id="websitedocument-0-filefile" name="WebsiteDocument[0][fileFile]">
+                            <a onclick="this.parentElement.parentElement.remove()"
+                               style="cursor: pointer;"
+                               class="pull-right text-red" data-confirm="Удалить?"><i class="fa fa-trash"></i></a>
+                            <img style="width: 30px; height: 40px;  margin-right: 10px;"
+                                 class="fa fa-3x pull-left"
+                                 th:src="@{/images/placeholder.jpg}"
+                                 alt="">
+                            <label> PDF, JPG (макс. размер 20 Mb)</label>
+                            <input type="file" name="document_files">
                           </div>
 
                           <div class="form-group">
-                            <label for="websiteservice-0-title">Название документа</label>
-                            <input type="text" id="websitedocument-0-title" class="form-control" name="WebsiteDocument[0][title]" value="grt">
+                            <label>Название документа</label>
+                            <input type="text" class="form-control" placeholder="Введите название" name="document_names">
+                          </div>
+                        </div>
+                        <div th:each="document : ${documents}" class="form-websitedocument">
+                          <div class="form-group">
+                            <a onclick="if(confirm('Удалить?')) window.location.href=this.dataset.url"
+                               style="cursor:pointer;"
+                               th:attr="data-url='/admin/website/delete-document/'+${document.id}"
+                               class="pull-right text-red" data-confirm="Удалить?"><i class="fa fa-trash"></i></a>
+                            <img style="width: 30px; height: 40px; margin-right: 10px;"
+                                 class="fa fa-3x pull-left"
+                                 th:src="${document.file != null} ?
+                                 @{/images/documents/{url}(url=${document.file})} :
+                                 @{/images/placeholder.jpg}"
+                                 alt="">
+                            <label> PDF, JPG (макс. размер 20 Mb)</label>
+                            <input type="file" name="document_files" accept="application/pdf, image/jpeg">
+                          </div>
+
+                          <div class="form-group">
+                            <label>Название документа</label>
+                            <input type="text" class="form-control" th:value="${document.name}" name="document_names">
                           </div>
                         </div>
                       </div>
                       <div class="btn-group">
-                        <button type="button" class="btn btn-success margin-bottom-15 form-row-add-websitedocument-btn">
+                        <button type="button" id="add_document_button" class="btn btn-success margin-bottom-15 form-row-add-websitedocument-btn">
                           Добавить документ
                         </button>
                       </div>
@@ -324,6 +352,14 @@
 
   $(document).ready(function() {
 
+    let delete_buttons = document.querySelectorAll('.delete-about-button');
+    for(let i = 0; i < delete_buttons.length; i++) {
+      delete_buttons[i].addEventListener('click', () => {
+        if(confirm('Удалить?')) window.location.href = delete_buttons[i].dataset.url;
+      });
+    }
+
+
     $('#director_photo').change(function() {
       console.log(this);
       let photo = this.files[0];
@@ -333,7 +369,7 @@
       image.src = imagePath;
     });
 
-    $('#photos').change(function() {
+    $('#photos, #add_photos').change(function() {
       console.log(this);
       let input_div = this.parentElement;
 
@@ -341,17 +377,23 @@
         let photo = this.files[i];
         let photoImgPath = URL.createObjectURL(photo);
         let new_image_div = document.createElement('div');
-        new_image_div.innerHTML = '<div style="width:100%" th:if="${page.photos != null}" th:each="photo : ${page.photos}"' +
-                                  'class="">' +
-                                  '<img style="width:100%" src="' + photoImgPath + '" alt="" class="margin-bottom-15 img-thumbnail">' +
-                                  '<div class="form-group margin-bottom-15">' +
-                                  '<a href="/admin/website/delete-about-image/159" data-confirm="Удалить?" title="Удалить">'+
-                                  '<i class="fa fa-trash text-red" aria-hidden="true"></i></a></div></div>';
+        new_image_div.classList.add('col-xs-4','col-sm-3','text-center');
+        new_image_div.innerHTML = '<img style="width:100%" src="' + photoImgPath + '" alt="" class="margin-bottom-15 img-thumbnail">';
         input_div.parentElement.insertBefore(new_image_div,input_div);
       }
-
-
     });
+
+    document.getElementById("add_document_button").addEventListener('click', () => {
+      let document_container = document.getElementById("documents");
+      let document_template = document.getElementById("document_template");
+      let new_slot = document_template.cloneNode(true);
+      new_slot.id = '';
+      new_slot.style = '';
+
+      document_container.appendChild(new_slot);
+    });
+
+
 
   })
 </script>
