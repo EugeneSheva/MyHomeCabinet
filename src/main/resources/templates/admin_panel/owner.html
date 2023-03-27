@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>МойДом24-Владельцы</title>
+  <link rel="stylesheet"
+        th:href="@{https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback}">
+  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+</head>
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+
+
+  <!-- navbar header/sidebar -->
+  <nav th:insert="~{main-template :: header}"></nav>
+  <aside th:insert="~{main-template :: sidebar}"></aside>
+  <!-- /.navbar header/sidebar -->
+
+  <!--content-header -->
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0" th:text="'Профиль владельца'"></h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/owners/}">Владельцы квартир</a></li>
+              <li class="breadcrumb-item active" th:text="'Профиль владельца'"></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+
+        <div class="card" style="padding: 10px">
+          <div class="form-group">
+            <a th:href="@{edit/{id}(id=${id})}" class="btn btn-primary btn-sm float-right" style="margin-left: 2px">Редактировать профиль</a>
+            <a  class="btn btn-secondary btn-sm float-right" style="margin-left: 2px">Перейти в кабинет</a>
+          </div>
+          <div class="card">
+            <div class="card-body p-0">
+              <img src="../../dist/img/user1-128x128.jpg" alt="user-avatar" class="img-circle img-fluid">
+              <table class="table table-striped" width="100%">
+                <col style="width:50%">
+                <col style="width:50%">
+                <tbody>
+                <tr>
+                  <td>Статус</td>
+                  <td th:text="${owner.status}">?</td>
+                </tr>
+                <tr>
+                  <td>ID</td>
+                  <td th:text="${owner.id}">?</td>
+                </tr>
+                <tr>
+                  <td>Фамилия</td>
+                  <td th:text="${owner.first_name}">?</td>
+                </tr>
+                <tr>
+                  <td>Имя</td>
+                  <td th:text="${owner.last_name}">?</td>
+                </tr>
+                <tr>
+                  <td>Отчество</td>
+                  <td th:text="${owner.fathers_name}">?</td>
+                </tr>
+                <tr>
+                  <td>Дата рождения</td>
+                  <td th:text="${owner.birthdate}">?</td>
+                </tr>
+                <tr>
+                  <td>О владельце (заметки)</td>
+                  <td th:text="${owner.description}">?</td>
+                </tr>
+                <tr>
+                  <td>Телефон</td>
+                  <td th:text="${owner.phone_number}">?</td>
+                </tr>
+                <tr>
+                  <td>Viber</td>
+                  <td th:text="${owner.viber}">?</td>
+                </tr>
+                <tr>
+                  <td>Telegram</td>
+                  <td th:text="${owner.telegram}">?</td>
+                </tr>
+                <tr>
+                  <td>Email</td>
+                  <td th:text="${owner.email}">?</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- /.card-body -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!-- /.Main content -->
+
+
+  <!-- Footer -->
+  <footer th:insert="~{main-template :: footer}"></footer>
+  <!-- /.Footer -->
+</div>
+
+
+<!-- REQUIRED SCRIPTS -->
+<!-- Icons -->
+<script th:src="@{https://kit.fontawesome.com/41663a8b50.js}" crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+
+</body>
+</html>

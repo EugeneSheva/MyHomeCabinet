@@ -1,5 +1,18 @@
 package com.example.myhome.home.model;
 
 public enum MeterPaymentStatus {
-    NEW, COUNTED, COUNTED_AND_PAID, PAID
+    NEW("Новое"),
+    COUNTED("Учтено"),
+    COUNTED_AND_PAID("Учтено и оплачено"),
+    PAID("Оплачено");
+
+    private final String name;
+
+    MeterPaymentStatus(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

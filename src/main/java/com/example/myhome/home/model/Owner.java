@@ -1,6 +1,7 @@
 package com.example.myhome.home.model;
 
 import com.example.myhome.util.UserStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -42,7 +43,8 @@ public class Owner {
 
     private String viber, telegram;
 
-    @OneToMany(mappedBy = "owner")
+    @JsonIgnore
+    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private List<Apartment> apartments;
 
     @ManyToMany(mappedBy = "receivers")
@@ -51,10 +53,22 @@ public class Owner {
     private boolean has_debt;
 
     private String description;
-
+    @Enumerated(EnumType.STRING)
     private UserStatus status;
 
     //аватарка
     private String profile_picture;
 
+    public Owner() {
+    }
+
+    public Owner(Long id, String first_name, String last_name, String fathers_name, String phone_number, String email, String password) {
+        this.id = id;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.fathers_name = fathers_name;
+        this.phone_number = phone_number;
+        this.email = email;
+        this.password = password;
+    }
 }

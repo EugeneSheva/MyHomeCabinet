@@ -25,6 +25,9 @@ public class MeterData {
 
     private double currentReadings;
 
+    @Enumerated(EnumType.STRING)
+    private MeterPaymentStatus status;
+
     @ManyToOne
     @JoinColumn(name = "service_id")
     private Service service;

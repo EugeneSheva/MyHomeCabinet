@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>МойДом24-Дома</title>
+  <link rel="stylesheet"
+        th:href="@{https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback}">
+  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+  <!--    navigation card bootstrap-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- add & del input field in navigation card bootstrap-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+
+
+
+</head>
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+
+
+  <!-- navbar header/sidebar -->
+  <nav th:insert="~{main-template :: header}"></nav>
+  <aside th:insert="~{main-template :: sidebar}"></aside>
+  <!-- /.navbar header/sidebar -->
+
+  <!--content-header -->
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <!--                        <h1 class="m-0" th:text="'Квартира '+${apartment.number} + ', ' +${apartment.building.name} + ' редакторование'"></h1>-->
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/apartments/}">Квартиры</a></li>
+              <!--                            <li class="breadcrumb-item active"-->
+              <!--                                th:text="'Квартира '+${apartment.number} + ', ' +${apartment.building.name} + ' редакторование'"></li>-->
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <form class="row g-3 needs-validation" novalidate th:method="POST"
+              th:action="@{/apartments/save}" th:object="${apartment}" enctype="multipart/form-data">
+          <div class="card" style="padding: 10px">
+            <div class="row">
+              <div class="col-md-6">
+
+                <input type="hidden" id="id" class="form-control"  name="id"
+                       th:field="*{id}" placeholder="">
+
+                <label for="number">Номер квартиры</label>
+                <input type="number" id="number" class="form-control"  name="number"
+                       th:field="*{number}" placeholder="">
+
+                <label for="square">Площадь (кв.м.)</label>
+                <input type="number" id="square" class="form-control"  name="square"
+                       th:field="*{square}" placeholder="">
+
+                <label for="building" th:field="*{building}" class="form-label" >Дом</label>
+                <select class="form-select" id="building" name="building" th:onchange="selectBuilding()">
+                  <option selected="" disabled="" value="">Choose...</option>
+                  <option  th:each="building, item : ${buildings}"
+                           th:text="${buildings[__${item.index}__].name}"
+                           th:value="${buildings[__${item.index}__].id}" th:id="${item.count}"></option>
+                </select>
+
+                <label for="section" th:field="*{section}"  class="form-label" >Секция</label>
+                <select class="form-select" id="section" name="section">
+                  <option selected="" disabled="" value="">Choose...</option>
+
+                </select>
+
+                <label for="floor" th:field="*{floor}" class="form-label" >Этаж</label>
+                <select class="form-select" id="floor" name="floor">
+                  <option selected="" disabled="" value="">Choose...</option>
+                  <option>1</option>
+                </select>
+
+                <label for="owner" class="form-label" >Владелец</label>
+                <select class="form-select" id="owner" name="owner">
+                  <option selected="" disabled="" value="">Choose...</option>
+                  <option>1</option>
+                </select>
+
+                <label for="tariff" class="form-label" >Тариф</label>
+                <select class="form-select" id="tariff" name="tariff">
+                  <option selected="" disabled="" value="">Choose...</option>
+                  <option>1</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+
+                <label for="account" class="form-label" >Лицевой счет</label>
+                <input type="account" id="account" class="form-control" name="square"
+                       placeholder="">
+                <select class="form-select" id="accounts" name="accounts">
+                  <option selected="" disabled="" value="">Choose...</option>
+                  <option>1</option>
+                </select>
+
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-secondary">Сохранить</button>
+        </form>
+      </div>
+    </section>
+  </div>
+  <!-- /.Main content -->
+  <!-- Footer -->
+  <footer th:insert="~{main-template :: footer}"></footer>
+  <!-- /.Footer -->
+</div>
+
+<script th:inline="javascript">
+
+    function selectBuilding() {
+
+        var list = /*[[${buildings}]]*/ [];
+        var selectedIndex = document.getElementById("building").selectedIndex-1;
+
+        //sections
+        var select = document.getElementById("section");
+        select.innerHTML = "<option selected=\"\" disabled=\"\" value=\"\">Choose...</option>";
+        var options = list[selectedIndex].sections;
+        for (let i = 0; i < options.length; i++) {
+            const option = document.createElement("option");
+            option.value = options[i];
+            option.textContent = options[i];
+            select.appendChild(option);
+        }
+        //floors
+        var selectF = document.getElementById("floor");
+        selectF.innerHTML = "<option selected=\"\" disabled=\"\" value=\"\">Choose...</option>";
+        var optionsF = list[selectedIndex].floors;
+        for (let i = 0; i < optionsF.length; i++) {
+            const optionF = document.createElement("option");
+            optionF.value = optionsF[i];
+            optionF.textContent = optionsF[i];
+            selectF.appendChild(optionF);
+        }
+    }
+</script>
+<!-- REQUIRED SCRIPTS -->
+<!-- Icons -->
+<script th:src="@{https://kit.fontawesome.com/41663a8b50.js}" crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+
+</body>
+</html>

@@ -91,6 +91,30 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
+            <a th:href="@{/apartments/}" class="nav-link">
+              <i class="fa fa-key" aria-hidden="true"></i>
+              <p>
+                Квартиры
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a th:href="@{/owners/}" class="nav-link">
+              <i class="fa fa-users" aria-hidden="true"></i>
+              <p>
+                Владельцы квартир
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a th:href="@{/buildings/}" class="nav-link">
+              <i class="fa fa-building" aria-hidden="true"></i>
+              <p>
+                Дома
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             <a th:href="@{/admin/messages}" class="nav-link">
               <i class="fa fa-envelope-o" aria-hidden="true"></i>
               <p class="pl-1">
