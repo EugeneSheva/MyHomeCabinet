@@ -70,7 +70,7 @@
               <tbody>
               <tr th:each="apartment : ${apartments}">
                 <td ><a style="display: block; color: black;" th:text="${apartment.number}" th:href="@{{id}(id=${apartment.id})}"></a></td>
-                <td ><a style="display: block; color: black;"  ></a></td>
+                <td ><a style="display: block; color: black;" th:text="${apartment.building.name}" th:href="@{{id}(id=${apartment.id})}" ></a></td>
 <!--                th:text="${apartment.building.name}" th:href="@{{id}(id=${apartment.id})}"-->
                 <td ><a style="display: block; color: black;" th:text="${apartment.section}" th:href="@{{id}(id=${apartment.id})}"></a></td>
                 <td ><a style="display: block; color: black;" th:text="${apartment.floor}" th:href="@{{id}(id=${apartment.id})}"></a></td>

@@ -59,15 +59,15 @@
           <div class="card-body">
             <table id="example2" class="table table-bordered table-hover" width="100%">
               <col style="width:7%">
-              <col style="width:18%">
+              <col style="width:25%">
+              <col style="width:10%">
               <col style="width:15%">
               <col style="width:10%">
-              <col style="width:10%">
-              <col style="width:10%">
-              <col style="width:10%">
+              <col style="width:9%">
+              <col style="width:7%">
               <col style="width:5%">
               <col style="width:5%">
-              <col style="width:10%">
+              <col style="width:7%">
               <thead>
               <tr>
                 <th>ID</th>
@@ -85,7 +85,7 @@
               <tbody>
               <tr th:each="owner : ${owners}">
                 <td ><a style="display: block; color: black;" th:text="${owner.id}" th:href="@{{id}(id=${owner.id})}"></a></td>
-                <td ><a style="display: block; color: black;" th:text="${owner.fathers_name}+' '+${owner.last_name}+' '+${owner.fathers_name}" th:href="@{{id}(id=${owner.id})}"></a></td>
+                <td ><a style="display: block; color: black;" th:text="${owner.first_name}+' '+${owner.last_name}+' '+${owner.fathers_name}" th:href="@{{id}(id=${owner.id})}"></a></td>
                 <td ><a style="display: block; color: black;" th:text="${owner.phone_number}" th:href="@{{id}(id=${owner.id})}" ></a></td>
             <td ><a style="display: block; color: black;" th:text="${owner.email}" th:href="@{{id}(id=${owner.id})}" ></a></td>
             <td ><a style="display: block; color: black;"  ></a></td>

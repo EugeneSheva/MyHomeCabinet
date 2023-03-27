@@ -55,24 +55,21 @@ public class OwnerController {
     }
 
     @PostMapping("/save")
-    public String saveCoffee(@ModelAttribute("owner") Owner owner) throws IOException {
+    public String saveCoffee(@ModelAttribute("owner") Owner owner, @RequestParam("img1") MultipartFile file) throws IOException {
+        owner.setProfile_picture(ownerService.saveOwnerImage(owner.getId(), file));
         ownerService.save(owner);
         return "redirect:/owners/";
     }
 
-//    @GetMapping("/delete/{id}")
-//    public String dellete(@PathVariable("id") Long id) {
-//        Building building = buildingService.findById(id);
-//        try {
-//            Files.deleteIfExists(Path.of(uploadPath + building.getImg1()));
-//            Files.deleteIfExists(Path.of(uploadPath + building.getImg2()));
-//            Files.deleteIfExists(Path.of(uploadPath + building.getImg3()));
-//            Files.deleteIfExists(Path.of(uploadPath + building.getImg4()));
-//            Files.deleteIfExists(Path.of(uploadPath + building.getImg5()));
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//        buildingService.deleteById(id);
-//        return "redirect:/buildings/";
-//    }
+    @GetMapping("/delete/{id}")
+    public String dellete(@PathVariable("id") Long id) {
+        Owner owner = ownerService.findById(id);
+        try {
+            Files.deleteIfExists(Path.of(uploadPath + owner.getProfile_picture()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        ownerService.deleteById(id);
+        return "redirect:/owners/";
+    }
 }
