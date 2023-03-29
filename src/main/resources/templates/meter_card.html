@@ -42,14 +42,14 @@
 
     <!-- Main content -->
     <section class="page_content">
-      <form method="post" th:object="${meter}">
+      <form method="post" th:object="${meter}" th:action="${meter.id == null} ? @{/admin/meters/create} : @{/admin/meters/create-add}">
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-3">
               <div class="input-group-addon">
                 №
               </div>
-              <input type="hidden" disabled th:field="*{id}">
+              <input type="hidden" disabled id="id" th:field="*{id}">
               <input disabled style="width: 90%;" type="text" id="counterdata-uid" class="form-control"
                      th:value="${T(java.lang.String).format('%010d',id)}" aria-required="true">
             </div>
@@ -89,18 +89,19 @@
 
                         </select>
                         <h4 class="mt-4"><b>Квартира</b></h4>
+                        <input type="hidden" id="section_name" th:if="${meter.apartment != null}" th:value="${meter.apartment.section}">
                         <select class="selects" disabled th:field="*{apartment}" id="apartment_select">
                           <option value="0">Сначала выберите секцию</option>
                         </select>
                         <h4 class="mt-4"><b>Счётчик</b></h4>
                         <select class="selects" th:field="*{service}">
                           <option value="0">Выберите услугу...</option>
-                          <option th:each="service : ${services}" th:value="${service.name}" th:text="${service.name}"></option>
+                          <option th:each="s_service : ${services}" th:value="${s_service.id}" th:text="${s_service.name}"></option>
                         </select>
                       </div>
                       <div class="col-xs-12 col-md-6">
                         <h4><b>Статус</b></h4>
-                        <select class="selects" th:field="*{status}">
+                        <select class="selects" id="status" th:field="*{status}">
                           <option th:each="status : ${T(com.example.myhome.home.model.MeterPaymentStatus).values()}"
                                   th:value="${status}" th:text="${status.getName()}"></option>
                         </select>
@@ -113,7 +114,7 @@
                         <div class="form-group">
                           <a th:href="@{/admin/meters}" class="btn btn-default">Отменить</a>
                           <button type="submit" class="btn btn-success">Сохранить</button>
-                          <button type="button" class="btn btn-warning">Сохранить и добавить новые показания</button>
+                          <button type="button" id="new_meter_btn" class="btn btn-warning">Сохранить и добавить новые показания</button>
                         </div>
                       </div>
                     </div>
@@ -154,12 +155,66 @@
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
 
-<script>
+<script th:inline="javascript">
   $(document).ready(function(){
 
+    let meter_section = [[${meter.apartment.section}]];
+    let meter_apartment_number = [[${meter.apartment.number}]];
+    let meter_apartment_number_id = [[${meter.apartment.id}]]
+    let meter_service_id = [[${meter.service.id}]]
+
+    console.log(meter_section);
+    console.log(meter_apartment_number);
+
     if(document.getElementById("apartment_exists").value === '1') {
-      document.getElementById("section_select").disabled = false;
-      document.getElementById("apartment_select").disabled = false;
+
+      let house_select = document.getElementById("house_select");
+      let section_select = document.getElementById("section_select");
+      let apartment_select = document.getElementById("apartment_select");
+
+      let section_name = document.getElementById("section_name");
+
+      section_select.disabled = false;
+      apartment_select.disabled = false;
+
+      section_select.innerHTML = '';
+      apartment_select.innerHTML = '';
+
+      $.get('/admin/buildings/get-sections/'+house_select.value, function(data){
+
+            console.log(data);
+
+            for(let i = 0; i < data.length; i++) {
+              option = document.createElement("option");
+              option.value = data[i];
+              option.text = data[i];
+              section_select.appendChild(option);
+              section_select.value = data[0];
+            }
+
+            section_select.value = meter_section;
+            console.log(section_select.value);
+      });
+
+      console.log("house id " + house_select.value);
+      console.log("section name " + section_name.value);
+
+      $.get('/admin/buildings/get-section-apartments/'+house_select.value, {section_name:section_name.value}, function(data){
+
+            console.log(data);
+
+            for(let i = 0; i < data.length; i++) {
+              option = document.createElement("option");
+              option.value = data[i].id;
+              option.text = 'кв. ' + data[i].number;
+              apartment_select.appendChild(option);
+            }
+
+            console.log('кв. ' + meter_apartment_number);
+            apartment_select.value=meter_apartment_number_id;
+            console.log(apartment_select.value);
+
+      });
 
       //надо подгрузить в селекты все опции
     }
@@ -220,8 +275,8 @@
 
             for(let i = 0; i < data.length; i++) {
               option = document.createElement("option");
-              option.value = data[i].id;
-              option.text = data[i].name;
+              option.value = data[i];
+              option.text = data[i];
               section_select.appendChild(option);
             }
           });
@@ -231,6 +286,9 @@
     $("#section_select").change(function(){
         console.log(this);
         console.log(this.value);
+
+        let house_select = document.getElementById("house_select");
+        console.log(house_select.value);
 
         let apartment_select = document.getElementById("apartment_select");
         apartment_select.innerHTML = '';
@@ -243,7 +301,7 @@
 
         apartment_select.appendChild(option);
 
-        $.get('/admin/buildings/get-section-apartments/'+this.value, function(data){
+        $.get('/admin/buildings/get-section-apartments/'+house_select.value, {section_name:this.value}, function(data){
 
           console.log(data);
 
@@ -255,7 +313,41 @@
           }
 
         });
-    })
+    });
+
+    document.getElementById("new_meter_btn").addEventListener('click', function(){
+      let date = document.getElementById("date").value;
+      let apart_id = document.getElementById("apartment_select").value;
+      let serv_id = document.getElementById("service").value;
+      let stat = document.getElementById("status").value;
+      let readings = document.getElementById("currentReadings").value
+
+      let meter = {
+        'apartment_id': apart_id,
+        'readings':readings,
+        'stat':stat,
+        'service_id': serv_id,
+        'date':date
+      }
+
+      console.log(meter);
+
+      $.ajax({
+        type:"POST",
+        url:'http://localhost:8980/admin/meters/save-meter',
+        data: {
+          'apartment_id': apart_id,
+          'readings':readings,
+          'stat':stat,
+          'service_id': serv_id,
+          'date':date
+        },
+        success:function(){
+          alert("Сохранил заебись");
+          window.location.href='/admin/meters/create-add?flat_id='+apart_id+'&service_id='+serv_id;
+        },
+      });
+    });
 
   })
 </script>

@@ -3,10 +3,12 @@ package com.example.myhome.util;
 public enum UserRole {
 
     // директор, админ, сантехник, управляющий и т.д...
+    ANY("Любой специалист"),
     DIRECTOR("Директор"),
     ADMIN("Администратор"),
-    TECHNICIAN("Сантехник"),
-    MANAGER("Управляющий");
+    PLUMBER("Сантехник"),
+    MANAGER("Управляющий"),
+    ELECTRICIAN("Электрик");
 
     private final String name;
 

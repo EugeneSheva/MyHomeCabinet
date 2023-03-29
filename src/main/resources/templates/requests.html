@@ -176,9 +176,23 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr data-href="/admin/master-request/146" data-key="146"><td>146</td><td>21.07.2022 - 15:48</td><td>Любой специалист</td><td>Проблема</td><td>кв.3425, ЖК "Башня Чкалов"</td><td>Иванов 122 Иван 22 Сидорович 22</td><td>+380990220202</td><td><span class="not-set">(не задано)</span></td><td><small class="label label-primary">Новое</small></td><td><div class="btn-group pull-right"><a class="btn btn-default btn-sm" href="/admin/master-request/update/146" title="Редактировать" data-toggle="tooltip"><i class="fa fa-pencil"></i></a> <a class="btn btn-default btn-sm" href="/admin/master-request/delete/146" title="Удалить" data-toggle="tooltip" data-pjax="0" data-method="post" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash"></i></a></div></td></tr>
-                                    <tr data-href="/admin/master-request/145" data-key="145"><td>145</td><td>21.07.2022 - 15:48</td><td>Любой специалист</td><td>Проблема</td><td>кв.3425, ЖК "Башня Чкалов"</td><td>Иванов 122 Иван 22 Сидорович 22</td><td>+380990220202</td><td><span class="not-set">(не задано)</span></td><td><small class="label label-primary">Новое</small></td><td><div class="btn-group pull-right"><a class="btn btn-default btn-sm" href="/admin/master-request/update/145" title="Редактировать" data-toggle="tooltip"><i class="fa fa-pencil"></i></a> <a class="btn btn-default btn-sm" href="/admin/master-request/delete/145" title="Удалить" data-toggle="tooltip" data-pjax="0" data-method="post" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash"></i></a></div></td></tr>
-                                    <tr data-href="/admin/master-request/144" data-key="144"><td>144</td><td>21.07.2022 - 15:48</td><td>Любой специалист</td><td>Проблема</td><td>кв.3425, ЖК "Башня Чкалов"</td><td>Иванов 122 Иван 22 Сидорович 22</td><td>+380990220202</td><td><span class="not-set">(не задано)</span></td><td><small class="label label-primary">Новое</small></td><td><div class="btn-group pull-right"><a class="btn btn-default btn-sm" href="/admin/master-request/update/144" title="Редактировать" data-toggle="tooltip"><i class="fa fa-pencil"></i></a> <a class="btn btn-default btn-sm" href="/admin/master-request/delete/144" title="Удалить" data-toggle="tooltip" data-pjax="0" data-method="post" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash"></i></a></div></td></tr>
+                                        <tr style="cursor: pointer;" class="request" th:each="request : ${requests}">
+                                            <td th:text="${request.id}"></td>
+                                            <td th:text="${request.best_time}"></td>
+                                            <td th:text="${request.master_type.getName()}"></td>
+                                            <td th:text="${request.description}"></td>
+                                            <td><a th:href="@{/apartments/{id}(id=${request.apartment.id})}" th:text="'кв. ' + ${request.apartment.number} + ', ' + ${request.apartment.building.name}"></a></td>
+                                            <td><a th:href="@{/owners/{id}(id=${request.apartment.owner.id})}" th:text="${request.apartment.owner.getFullName()}"></a></td>
+                                            <td th:text="${request.apartment.owner.phone_number}"></td>
+                                            <td><a th:href="@{/admin/admins/{id}(id=${request.master.id})}" th:text="${request.master.getFullName()}"></a></td>
+                                            <td><small class="label label-success" th:text="${request.status.getName()}"></small></td>
+                                            <td>
+                                                <div class="btn-group pull-right">
+                                                    <a class="btn btn-default btn-sm" th:href="@{/admin/requests/update/{id}(id=${request.id})}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                                                    <a class="btn btn-default btn-sm" th:href="@{/admin/requests/delete/{id}(id=${request.id})}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -207,6 +221,21 @@
 <!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
+
+<script>
+    let request_rows = document.getElementsByClassName("request");
+    for(let i = 0; i < request_rows.length; i++) {
+        let request_row_cells = request_rows[i].children;
+        let request_id = request_rows[i].children[0].innerText;
+        console.log(request_rows[i].children[0]);
+        console.log(request_id);
+        for(let j = 0; j < request_row_cells.length-1; j++) {
+            request_row_cells[j].addEventListener('click', function(){
+                window.location.href = '/admin/requests/info/' + request_id;
+            });
+        }
+    }
+</script>
 
 <!-- PAGE PLUGINS -->
 <!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->

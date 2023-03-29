@@ -63,29 +63,7 @@ public class SettingsController {
         return "settings_tariffs";
     }
 
-    @GetMapping("/admin/admins")
-    public String showAdminsPage(Model model) {
-        model.addAttribute("admins", adminRepository.findAll());
-        return "settings_users";
-    }
 
-    @GetMapping("/admin/admins/{id}")
-    public String showAdminProfile(@PathVariable long id, Model model) {
-        model.addAttribute("admin", adminRepository.findById(id).orElseGet(Admin::new));
-        return "admin_profile";
-    }
-
-    @GetMapping("/admin/admins/create")
-    public String showCreateAdminPage(Model model) {
-        model.addAttribute("admin", new Admin());
-        return "admin_card";
-    }
-
-    @GetMapping("/admin/admins/update/{id}")
-    public String showUpdateAdminPage(@PathVariable long id, Model model) {
-        model.addAttribute("admin", adminRepository.findById(id).orElseGet(Admin::new));
-        return "admin_card";
-    }
 
     @GetMapping("/admin/payment-details")
     public String showPaymentDetailsPage(Model model) {
@@ -346,29 +324,7 @@ public class SettingsController {
 
     // АДМИНЫ - ДОБАВИТЬ ВАЛИДАЦИЮ
 
-    @PostMapping("/admin/admins/create")
-    public String createAdmin(@ModelAttribute Admin admin) {
-        admin.setRole(UserRole.ADMIN);
-        adminRepository.save(admin);
-        return "redirect:/admin/admins";
-    }
 
-    @PostMapping("/admin/admins/update/{id}")
-    public String updateAdmin(@PathVariable long id, @ModelAttribute Admin admin) {
-        admin.setId(id);
-        admin.setRole(UserRole.ADMIN); // пока не добавил выбор ролей , всем ставится админ
-        adminRepository.save(admin);
-        return "redirect:/admin/admins";
-    }
-
-    @GetMapping("/admin/admins/delete/{id}")
-    public String deleteAdmin(@PathVariable long id) {
-        adminRepository.deleteById(id);
-        return "redirect:/admin/admins";
-    }
-
-    @GetMapping("/admin/admins/invite/{id}")
-    public void inviteAdmin(@PathVariable long id) {}
 
     @GetMapping("/admin/roles")
     public String showRolesPage(Model model) {

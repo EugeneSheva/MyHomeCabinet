@@ -32,14 +32,14 @@ public class RepairRequest {
     private String phone_number;
 
     @ManyToOne
-    @JoinColumn(name = "master_id")
+    @JoinColumn(name = "admin_id")
     private Admin master;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime request_date;
 
     @Enumerated(EnumType.STRING)
-    private RepairStatus repairStatus;
+    private RepairStatus status;
 
 
 }

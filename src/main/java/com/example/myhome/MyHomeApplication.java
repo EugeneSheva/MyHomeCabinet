@@ -27,11 +27,7 @@ public class MyHomeApplication {
     @Autowired
     private OwnerRepository ownerRepository;
 
-    @Autowired
-    private BuildingSectionRepository buildingSectionRepository;
 
-    @Autowired
-    private BuildingFloorsRepository buildingFloorsRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(MyHomeApplication.class, args);
@@ -41,49 +37,36 @@ public class MyHomeApplication {
     @Transactional
     public void populateDB(){
 
-        //buildingRepository.deleteAll();
-        //ownerRepository.deleteAll();
-        //apartmentRepository.deleteAll();
-
+//        buildingRepository.deleteAll();
+////        ownerRepository.deleteAll();
+//        apartmentRepository.deleteAll();
+//
 //        List<Building> buildingList = new ArrayList<>();
-//        List<Owner> ownerList = new ArrayList<>();
-
+////        List<Owner> ownerList = new ArrayList<>();
+//
 //        log.info("CREATING START BUILDINGS");
 //        for (long i = 1; i <= 5; i++) {
 //            Building building =
 //                    new Building(i,
 //                            "ЖК \"Тест-"+i+"\"",
-//                            "Тестовый адрес");
+//                            "Тестовый адрес",
+//                            List.of("Секция 1", "Секция 2", "Секция 3"),
+//                            List.of("Этажик 1", "Этажик 2", "Этажик 3"));
 //            buildingList.add(building);
 //        }
 //        buildingRepository.saveAll(buildingList);
 //
-//        log.info("FILLING BUILDINGS WITH SECTIONS AND FLOORS");
-//        List<Building> buildings2 = buildingRepository.findAll();
-//        for(int i = 0; i < 5; i++) {
-//            List<BuildingSection> sections = new ArrayList<>();
-//            List<BuildingFloor> floors = new ArrayList<>();
-//            for (int j = 0; j < 5; j++) {
-//                BuildingSection section = new BuildingSection(0L, buildings2.get(i), "Секция " + j);
-//                sections.add(section);
-//                BuildingFloor floor = new BuildingFloor(0L, buildings2.get(i), "Этажик " + j);
-//                floors.add(floor);
-//            }
-//            buildingSectionRepository.saveAll(sections);
-//            buildingFloorsRepository.saveAll(floors);
-//        }
-
-//        log.info("CREATING START OWNERS");
-//        for (long i = 1; i <= 15; i++) {
-//            Owner owner =
-//                    new Owner(i,
-//                            "Тест", "Тест", "Тестович",
-//                            "+380501111111",
-//                            "test@gmail.com", "testPassword");
-//            ownerList.add(owner);
-//        }
-//        ownerRepository.saveAll(ownerList);
-
+////        log.info("CREATING START OWNERS");
+////        for (long i = 1; i <= 15; i++) {
+////            Owner owner =
+////                    new Owner(i,
+////                            "Тест", "Тест", "Тестович",
+////                            "+380501111111",
+////                            "test@gmail.com", "testPassword");
+////            ownerList.add(owner);
+////        }
+////        ownerRepository.saveAll(ownerList);
+//
 //        List<Apartment> apartmentList = new ArrayList<>();
 //        List<Building> buildings = buildingRepository.findAll();
 //        List<Owner> owners = ownerRepository.findAll();

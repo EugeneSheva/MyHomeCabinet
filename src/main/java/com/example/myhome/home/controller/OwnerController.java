@@ -1,5 +1,6 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.services.OwnerService;
 import lombok.RequiredArgsConstructor;
@@ -54,19 +55,10 @@ public class OwnerController {
         return "redirect:/owners/";
     }
 
-//    @GetMapping("/delete/{id}")
-//    public String dellete(@PathVariable("id") Long id) {
-//        Building building = buildingService.findById(id);
-//        try {
-//            Files.deleteIfExists(Path.of(uploadPath + building.getImg1()));
-//            Files.deleteIfExists(Path.of(uploadPath + building.getImg2()));
-//            Files.deleteIfExists(Path.of(uploadPath + building.getImg3()));
-//            Files.deleteIfExists(Path.of(uploadPath + building.getImg4()));
-//            Files.deleteIfExists(Path.of(uploadPath + building.getImg5()));
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//        buildingService.deleteById(id);
-//        return "redirect:/buildings/";
-//    }
+
+    //Получить квартиры какого-то владельца
+    @GetMapping("/get-apartments/{id}")
+    public @ResponseBody List<Apartment> getOwnerApartments(@PathVariable long id) {
+        return ownerService.findById(id).getApartments();
+    }
 }

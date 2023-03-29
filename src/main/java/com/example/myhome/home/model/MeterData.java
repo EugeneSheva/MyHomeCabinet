@@ -33,7 +33,7 @@ public class MeterData {
     private Service service;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate date;
+    private LocalDate date = LocalDate.now();
 
 
 }

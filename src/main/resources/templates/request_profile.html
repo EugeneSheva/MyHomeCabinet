@@ -26,13 +26,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Пользователь</h1>
+            <h1 class="m-0">Заявка №<span th:text="${request.id}"></span></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/income-expense}">Пользователи</a></li>
-              <li class="breadcrumb-item active">Пользователь</li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/meters}">Заявки вызова мастера</a></li>
+              <li class="breadcrumb-item active">Заявка №<span th:text="${request.id}"></span></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -43,14 +43,26 @@
     <!-- Main content -->
     <section class="page_content">
       <div class="container-fluid">
+
+        <div class="row">
+          <div class="col-md-3">
+            <input type="text" disabled style="width: 90%;" th:value="${request_date}" class="form-control">
+          </div>
+          <div class="col-md-3">
+            <span style="display:inline;">от </span>
+            <input type="text" disabled style="width: 90%; display:inline;" th:value="${request_time}" class="form-control">
+          </div>
+          <div class="col-md-6"></div>
+        </div>
+
         <div class="row">
           <div class="col-md-12">
             <div class="box" style="caret-color:transparent;">
               <div class="box-header with-border" style="padding-block: 7px;">
                 <h3 class="box-title"></h3>
                 <div class="box-tools">
-                  <a th:href="@{/admin/admins/update/{id}(id=${admin.id})}" class="btn btn-primary btn-sm">
-                    <span class="hidden-xs">Редактировать пользователя  </span><i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                  <a th:href="@{/admin/requests/update/{id}(id=${request.id})}" class="btn btn-primary btn-sm">
+                    <span class="hidden-xs">Редактировать заявку  </span><i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
                   </a>
                 </div>
               </div>
@@ -60,24 +72,36 @@
                     <table class="table table-bordered table-striped table-view">
                       <tbody>
                       <tr>
-                        <td>Пользователь</td>
-                        <td th:text="${admin.first_name + ' ' + admin.last_name}">Elon Musk</td>
+                        <td style="font-weight:bold">Статус</td>
+                        <td><small class="label label-success" th:text="${request.status.getName()}"></small></td>
                       </tr>
                       <tr>
-                        <td>Роль</td>
-                        <td th:text="${admin.role.getName()}">Директор</td>
+                        <td style="font-weight:bold">Владелец</td>
+                        <td><a th:href="@{/owners/{id}(id=${request.apartment.owner.id})}" th:text="${request.apartment.owner.getFullName()}"></a></td>
                       </tr>
                       <tr>
-                        <td>Телефон</td>
-                        <td th:text="${admin.phone_number}">+380990010101</td>
+                        <td style="font-weight:bold">Телефон</td>
+                        <td th:text="${request.apartment.owner.phone_number}"></td>
                       </tr>
                       <tr>
-                        <td>Email(логин)</td>
-                        <td th:text="${admin.email}">admin@admin.com</td>
+                        <td style="font-weight:bold">Квартира</td>
+                        <td><a th:href="@{/apartments/{id}(id=${request.apartment.id})}" th:text="${request.apartment.number} + ', ' + ${request.apartment.building.name}"></a></td>
                       </tr>
                       <tr>
-                        <td>Статус</td>
-                        <td><small class="label label-success">Активен</small></td>
+                        <td style="font-weight:bold">Тип мастера</td>
+                        <td th:text="${request.master_type.getName()}"></td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight:bold">Мастер</td>
+                        <td><a th:href="@{/admin/admins/{id}(id=${request.master.id})}" th:text="${request.master.getFullName()}"></a></td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight:bold">Описание</td>
+                        <td th:text="${request.description}"></td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight:bold">Добавлено</td>
+                        <td th:text="${#temporals.format(request.request_date, 'yyyy-MM-dd - HH:mm')}"></td>
                       </tr>
                       </tbody>
                     </table>

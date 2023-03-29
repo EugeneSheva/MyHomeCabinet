@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -29,8 +30,6 @@ public class AdminPanelController {
     @Autowired
     private BuildingRepository buildingRepository;
 
-    @Autowired
-    private BuildingSectionRepository buildingSectionRepository;
 
     @GetMapping("/messages")
     public String showMessagesPage(Model model) {return "messages";}
@@ -41,64 +40,21 @@ public class AdminPanelController {
         return "message_card";
     }
 
-    @GetMapping("/requests")
-    public String showRequestsPage(Model model) {return "requests";}
-
-    @GetMapping("/requests/create")
-    public String showCreateRequestPage(Model model) {
-        model.addAttribute("request", new RepairRequest());
-        return "request_card";
-    }
-
-    @GetMapping("/requests/update/{id}")
-    public String showUpdateRequestPage(@PathVariable long id, Model model) {
-        model.addAttribute("request", repairRequestRepository.findById(id).orElseGet(RepairRequest::new));
-        return "request_card";
-    }
-
-    @GetMapping("/meters")
-    public String showMetersPage(Model model) {
-        model.addAttribute("now", LocalDate.now());
-        return "meters";
-    }
-
-    @GetMapping("/meters/create")
-    public String showCreateMeterPage(Model model) {
-        //Добавить дома, потом их секции, потом квартиры
-        //model.addAttribute("buildings", );
-        long newId = 0L;
-        Optional<MeterData> meterWithBiggestId = meterDataRepository.findFirstByOrderByIdDesc();
-        if(meterWithBiggestId.isEmpty()) newId = 1L;
-        else newId = meterWithBiggestId.get().getId()+1;
-        log.info("new id for meter data: " + newId);
-        model.addAttribute("id",newId);
-        model.addAttribute("meter", new MeterData());
-        model.addAttribute("services", serviceRepository.findAll());
-        model.addAttribute("buildings", buildingRepository.findAll());
-        model.addAttribute("now", LocalDate.now());
-        return "meter_card";
-    }
-
-    @GetMapping("/meters/update/{id}")
-    public String showUpdateMeterPage(@PathVariable long id, Model model) {
-        model.addAttribute("meter", meterDataRepository.findById(id).orElseGet(MeterData::new));
-        model.addAttribute("now", LocalDate.now());
-        return "meter_card";
-    }
-
-    @GetMapping("/meters/data")
-    public String showSingleMeterDataPage(@RequestParam long id, Model model) {
-        model.addAttribute("meter", meterDataRepository.findById(id).orElseGet(MeterData::new));
-        return "meter_card";
-    }
-
     @GetMapping("/buildings/get-sections/{id}")
-    public @ResponseBody List<BuildingSection> getBuildingSections(@PathVariable long id) {
+    public @ResponseBody List<String> getBuildingSections(@PathVariable long id) {
         return buildingRepository.findById(id).orElseThrow().getSections();
     }
 
+    @GetMapping("/buildings/get-section-apartments")
+    public @ResponseBody List<Apartment> getBuildingSectionApartments(@RequestParam long id, @RequestParam String section_name) {
+
+        List<Apartment> apartments = buildingRepository.findById(id).orElseThrow().getApartments();
+        return apartments.stream().filter((apartment) -> apartment.getSection().equals(section_name)).collect(Collectors.toList());
+
+    }
+    //через @Query
     @GetMapping("/buildings/get-section-apartments/{id}")
-    public @ResponseBody List<Apartment> getBuildingSectionApartments(@PathVariable long id) {
-        return buildingSectionRepository.findById(id).orElseThrow().getApartments();
+    public @ResponseBody List<Apartment> getBuildingSectionApartmentsFromQuery(@PathVariable long id, @RequestParam String section_name) {
+        return buildingRepository.getSectionApartments(id, section_name);
     }
 }

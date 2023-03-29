@@ -20,15 +20,21 @@ public class Building {
     private String name;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "building")
-    private List<BuildingSection> sections  = new ArrayList<>();
+//    @OneToMany(mappedBy = "building")
+//    private List<BuildingSection> sections  = new ArrayList<>();
+
+    @ElementCollection
+    private List<String> sections = new ArrayList<>();
 
     private String address;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "building")
-    private List<BuildingFloor> floors = new ArrayList<>();
+//    @OneToMany(mappedBy = "building")
+//    private List<BuildingFloor> floors = new ArrayList<>();
+    @ElementCollection
+    private List<String> floors = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "building")
     List<Apartment> apartments;
 
@@ -47,10 +53,12 @@ public class Building {
     public Building() {
     }
 
-    public Building(Long id, String name, String address) {
+    public Building(Long id, String name, String address, List<String> sections, List<String> floors) {
         this.id = id;
         this.name = name;
         this.address = address;
+        this.sections = sections;
+        this.floors = floors;
     }
 
     @Override

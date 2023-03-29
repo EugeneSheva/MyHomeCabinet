@@ -15,26 +15,28 @@ public class Apartment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonIgnore
     @ManyToOne
     @JoinTable(name="building_apartments",
             joinColumns = @JoinColumn(name="apartment_id"),
             inverseJoinColumns = @JoinColumn(name="building_id"))
     private Building building;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinTable(name="building_section_apartments",
-            joinColumns = @JoinColumn(name="apartment_id"),
-            inverseJoinColumns = @JoinColumn(name="building_section_id"))
-    private BuildingSection section;
+    private String section;
+    private String floor;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinTable(name="building_floor_apartments",
-            joinColumns = @JoinColumn(name="apartment_id"),
-            inverseJoinColumns = @JoinColumn(name="building_floor_id"))
-    private BuildingFloor floor;
+//    @JsonIgnore
+//    @ManyToOne
+//    @JoinTable(name="building_section_apartments",
+//            joinColumns = @JoinColumn(name="apartment_id"),
+//            inverseJoinColumns = @JoinColumn(name="building_section_id"))
+//    private BuildingSection section;
+//
+//    @JsonIgnore
+//    @ManyToOne
+//    @JoinTable(name="building_floor_apartments",
+//            joinColumns = @JoinColumn(name="apartment_id"),
+//            inverseJoinColumns = @JoinColumn(name="building_floor_id"))
+//    private BuildingFloor floor;
 
     private Long number;
 
@@ -52,25 +54,29 @@ public class Apartment {
             inverseJoinColumns = @JoinColumn(name="owner_id"))
     private Owner owner;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "tariff_id")
     private Tariff tariff;
 
     //Показания счётчиков
+    @JsonIgnore
     @OneToMany(mappedBy = "apartment")
     private List<MeterData> meterDataList;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "apartment")
     private List<RepairRequest> repairRequestsList;
 
     //Квитанции
+    @JsonIgnore
     @OneToMany(mappedBy = "apartment")
     private List<Invoice> invoiceList;
 
     public Apartment() {
     }
 
-    public Apartment(Long id, Building building, BuildingSection section, BuildingFloor floor, Long number, Double balance, Double square, Owner owner) {
+    public Apartment(Long id, Building building, String section, String floor, Long number, Double balance, Double square, Owner owner) {
         this.id = id;
         this.building = building;
         this.section = section;
@@ -81,6 +87,17 @@ public class Apartment {
         this.owner = owner;
     }
 
+    //    public Apartment(Long id, Building building, BuildingSection section, BuildingFloor floor, Long number, Double balance, Double square, Owner owner) {
+//        this.id = id;
+//        this.building = building;
+//        this.section = section;
+//        this.floor = floor;
+//        this.number = number;
+//        this.balance = balance;
+//        this.square = square;
+//        this.owner = owner;
+//    }
+
     @Override
     public String toString() {
         return "Apartment{" +
@@ -88,7 +105,6 @@ public class Apartment {
                 ", section=" + section +
                 ", floor=" + floor +
                 ", number=" + number +
-                ", owner=" + owner +
                 ", balance=" + balance +
                 "}\n";
     }

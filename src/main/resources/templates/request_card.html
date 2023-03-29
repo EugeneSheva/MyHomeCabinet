@@ -26,13 +26,14 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Новая заявка</h1>
+            <h1 class="m-0"
+                th:text="${request.id != null} ? 'Заявка №' + ${request.id} + ' - редактирование' : 'Новая заявка'"></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/meters}">Вызов мастера</a></li>
-              <li class="breadcrumb-item active">Новая заявка</li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/requests}">Вызовы мастера</a></li>
+              <li class="breadcrumb-item active" th:text="${request.id != null} ? 'Заявка №' + ${request.id} : 'Новая заявка'"></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -42,138 +43,150 @@
 
     <!-- Main content -->
     <section class="page_content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-xs-12 col-md-7 col-lg-6">
-            <div class="page-header-spec">
-              <div class="form-group field-masterrequest-date_request">
-                <div id="masterrequest-date_request-kvdate" class="input-group  date"><input type="text" id="masterrequest-date_request" class="form-control krajee-datepicker" name="MasterRequest[date_request]" value="24.03.2023" data-datepicker-source="masterrequest-date_request-kvdate" data-datepicker-type="3" data-krajee-kvdatepicker="kvDatepicker_1643d6f1"><span class="input-group-addon kv-date-calendar" title="Выбрать дату"><i class="glyphicon glyphicon-calendar"></i></span></div>
-              </div>                <span class="label-mid">от</span>
-              <div class="form-group field-masterrequest-time_request has-success">
-
-                <div class="input-group bootstrap-timepicker"><div class="bootstrap-timepicker-widget dropdown-menu"><table><tbody><tr><td><a href="#" data-action="incrementHour"><i class="glyphicon glyphicon-chevron-up"></i></a></td><td class="separator">&nbsp;</td><td><a href="#" data-action="incrementMinute"><i class="glyphicon glyphicon-chevron-up"></i></a></td></tr><tr><td><span class="bootstrap-timepicker-hour">03</span></td> <td class="separator">:</td><td><span class="bootstrap-timepicker-minute">00</span></td> </tr><tr><td><a href="#" data-action="decrementHour"><i class="glyphicon glyphicon-chevron-down"></i></a></td><td class="separator"></td><td><a href="#" data-action="decrementMinute"><i class="glyphicon glyphicon-chevron-down"></i></a></td></tr></tbody></table></div><input type="text" id="masterrequest-time_request" class="form-control" name="MasterRequest[time_request]" aria-invalid="false">
-
-                  <div class="input-group-addon">
-                    <i class="fa fa-clock-o"></i>
-                  </div>
-                </div>
-              </div>            </div>
+      <form method="post" th:object="${request}">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-3">
+              <input style="width: 90%;" th:value="${date}" th:disabled="${request.id != null}" name="date" id="date" type="date" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <span style="display:inline;">от </span>
+              <input style="width: 90%; display:inline;" th:disabled="${request.id != null}" th:value="${#temporals.format(time, 'HH:mm')}" name="time" id="time" type="time" class="form-control">
+            </div>
+            <div class="col-md-6"></div>
           </div>
-        </div>
 
-        <div class="row">
-          <div class="col-md-12">
-            <div class="box" style="padding:15px;">
-              <div class="box-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="box" style="padding:15px;">
+                <div class="box-body">
 
-                <div class="row">
-                  <div class="col-md-6">
-                    <h5>Владелец квартиры</h5>
-                    <select name="" id="">
-                      <option value="0">Выберите...</option>
-                    </select>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h5>Владелец квартиры</h5>
+                      <select class="selects" th:field="*{apartment.owner}">
+                        <option value="0">Выберите...</option>
+                        <option th:each="owner : ${owners}"
+                                th:value="${owner.id}"
+                                th:text="${owner.getFullName()} + ' (ID: ' + ${owner.id} + ')'"></option>
+                      </select>
+                    </div>
                   </div>
-                </div>
 
-                <div class="row">
-                  <div class="col-md-6">
-                    <p>Описание</p>
-                    <textarea name="" id="" cols="30" rows="10"></textarea>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h4 style="font-weight:bold">Описание</h4>
+                      <textarea class="textareas" th:field="*{description}" style="width: 100%;" rows="10"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <h4 style="font-weight:bold">Квартира</h4>
+                      <select th:if="*{apartment.owner != null}" class="selects mb-3" th:field="*{apartment}">
+                        <option value="0">Выберите...</option>
+                        <option th:each="(flat : *{apartment.owner.getApartments()})"
+                                th:value="${flat.id}"
+                                th:text="'кв. ' + ${flat.number} + ', ' + ${flat.building.name}"></option>
+                      </select>
+                      <select th:if="*{apartment.owner == null}" disabled class="selects mb-3" th:field="*{apartment}">
+                        <option value="0">Выберите...</option>
+                      </select>
+                      <h4 style="font-weight:bold">Тип мастера</h4>
+                      <select class="selects mb-3" id="master_type" th:field="*{master_type}">
+                        <option th:each="type : ${T(com.example.myhome.home.model.RepairMasterType).values()}"
+                                th:value="${type}"
+                                th:text="${type.getName()}"></option>
+                      </select>
+                      <h4 style="font-weight:bold">Статус</h4>
+                      <select class="selects mb-3" th:field="*{status}">
+                        <option th:each="status : ${T(com.example.myhome.home.model.RepairStatus).values()}"
+                                th:value="${status}"
+                                th:text="${status.getName()}"></option>
+                      </select>
+                      <h4 style="font-weight:bold">Мастер</h4>
+                      <select class="selects" id="masters" th:field="*{master}">
+                        <option value="0">Выберите...</option>
+                        <option th:each="master : ${masters}"
+                                th:if="${master != null}"
+                                th:value="${master.id}"
+                                th:text="${master.role.getName()} + ' - ' + ${master.getFullName()}"></option>
+                      </select>
+                    </div>
                   </div>
-                  <div class="col-md-6">
-                    <p>Квартира</p>
-                    <select name="" id="">
-                      <option value="0">Выберите...</option>
-                    </select>
-                    <p>Тип мастера</p>
-                    <select name="" id="">
-                      <option value="0">Любой специалист</option>
-                    </select>
-                    <p>Статус</p>
-                    <select name="" id="">
-                      <option value="0">Новое</option>
-                    </select>
-                    <p>Мастер</p>
-                    <select name="" id="">
-                      <option value="0">Выберите...</option>
-                    </select>
+
+                  <div class="row mt-2 mb-2">
+                    <div class="col-md-12">
+                      <h4 style="font-weight:bold">Комментарий</h4>
+                      <div class="form-group field-websitehomeform-homedescription">
+                        <ul class="wysihtml5-toolbar"><li class="dropdown">
+                          <a class="btn btn-default dropdown-toggle btn-none" data-toggle="dropdown">
+
+                            <span class="fa fa-font" aria-hidden="true"></span>
+
+                            <span class="current-font">Обычный текст</span>
+                            <b class="caret"></b>
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="p" tabindex="-1" href="javascript:;" unselectable="on">Обычный текст</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 1</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 2</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 3</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 4</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 5</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 6</a></li>
+                          </ul>
+                        </li>
+                          <li>
+                            <div class="btn-group">
+                              <a class="btn btn-none btn-default" id="bold-button" data-wysihtml5-command="bold" title="CTRL+B" tabindex="-1" href="javascript:;" unselectable="on">Полужирный</a>
+                              <a class="btn btn-none btn-default" id="italic-button" data-wysihtml5-command="italic" title="CTRL+I" tabindex="-1" href="javascript:;" unselectable="on">Курсив</a>
+                              <a class="btn btn-none btn-default" id="underline-button" data-wysihtml5-command="underline" title="CTRL+U" tabindex="-1" href="javascript:;" unselectable="on">Подчёркнутый</a>
+
+                            </div>
+                          </li>
+                          <li>
+                            <div class="btn-group">
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="insertUnorderedList" title="Маркированный список" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-list-ul" aria-hidden="true"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="insertOrderedList" title="Нумерованный список" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-list-ol" aria-hidden="true"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="Outdent" title="Уменьшить отступ" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-outdent" aria-hidden="true"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="Indent" title="Увеличить отступ" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-indent" aria-hidden="true"></span>
+
+                              </a>
+                            </div>
+                          </li>
+                        </ul>
+                        <textarea class="textareas" th:field="*{comment}" placeholder="Описание..." rows="5" style="width:100%"></textarea>
+                      </div>
+                    </div>
                   </div>
-                </div>
 
-                <div class="row">
-                  <p>Комментарий</p>
-                  <div class="form-group field-websitehomeform-homedescription">
-                    <label class="control-label" for="">Краткий текст</label>
-                    <ul class="wysihtml5-toolbar"><li class="dropdown">
-                      <a class="btn btn-default dropdown-toggle btn-none" data-toggle="dropdown">
-
-                        <span class="fa fa-font" aria-hidden="true"></span>
-
-                        <span class="current-font">Обычный текст</span>
-                        <b class="caret"></b>
-                      </a>
-                      <ul class="dropdown-menu">
-                        <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="p" tabindex="-1" href="javascript:;" unselectable="on">Обычный текст</a></li>
-                        <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 1</a></li>
-                        <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 2</a></li>
-                        <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 3</a></li>
-                        <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 4</a></li>
-                        <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 5</a></li>
-                        <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 6</a></li>
-                      </ul>
-                    </li>
-                      <li>
-                        <div class="btn-group">
-                          <a class="btn btn-none btn-default" id="bold-button" data-wysihtml5-command="bold" title="CTRL+B" tabindex="-1" href="javascript:;" unselectable="on">Полужирный</a>
-                          <a class="btn btn-none btn-default" id="italic-button" data-wysihtml5-command="italic" title="CTRL+I" tabindex="-1" href="javascript:;" unselectable="on">Курсив</a>
-                          <a class="btn btn-none btn-default" id="underline-button" data-wysihtml5-command="underline" title="CTRL+U" tabindex="-1" href="javascript:;" unselectable="on">Подчёркнутый</a>
-
-                        </div>
-                      </li>
-                      <li>
-                        <div class="btn-group">
-                          <a class="btn btn-none btn-default" data-wysihtml5-command="insertUnorderedList" title="Маркированный список" tabindex="-1" href="javascript:;" unselectable="on">
-
-                            <span class="fa fa-list-ul" aria-hidden="true"></span>
-
-                          </a>
-                          <a class="btn btn-none btn-default" data-wysihtml5-command="insertOrderedList" title="Нумерованный список" tabindex="-1" href="javascript:;" unselectable="on">
-
-                            <span class="fa fa-list-ol" aria-hidden="true"></span>
-
-                          </a>
-                          <a class="btn btn-none btn-default" data-wysihtml5-command="Outdent" title="Уменьшить отступ" tabindex="-1" href="javascript:;" unselectable="on">
-
-                            <span class="fa fa-outdent" aria-hidden="true"></span>
-
-                          </a>
-                          <a class="btn btn-none btn-default" data-wysihtml5-command="Indent" title="Увеличить отступ" tabindex="-1" href="javascript:;" unselectable="on">
-
-                            <span class="fa fa-indent" aria-hidden="true"></span>
-
-                          </a>
-                        </div>
-                      </li>
-                    </ul>
-                    <textarea placeholder="Описание..." id="description" name="description">111</textarea>
-                    <div class="help-block"></div>
-                  </div>
-                </div>
-
-                <div class="row justify-content-end">
-                  <div class="col-xs-12">
-                    <div class="form-group">
-                      <a th:href="@{/admin/requests}" class="btn btn-default">Отменить</a>
-                      <button type="submit" class="btn btn-success">Сохранить</button>
+                  <div class="row justify-content-end">
+                    <div class="col-xs-12">
+                      <div class="form-group">
+                        <a th:href="@{/admin/requests}" class="btn btn-default">Отменить</a>
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                      </div>
                     </div>
                   </div>
                 </div>
+                <div class="box-footer clearfix"></div>
               </div>
-              <div class="box-footer clearfix"></div>
             </div>
           </div>
         </div>
-      </div>
+      </form>
     </section>
 
   </div>
@@ -194,6 +207,84 @@
 <!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
+
+<script>
+
+  function loadApartments(input) {
+    let owner_id = input.value;
+    console.log(owner_id);
+
+    $("#apartment").prop("disabled", (owner_id != '0') ? false : true);
+
+    $.get('/owners/get-apartments/' + owner_id, function(data){
+      alert("получил квартиры");
+      console.log(data);
+
+      $("#apartment").html('');
+
+      for(let i = 0; i < data.length; i++) {
+        let option = document.createElement("option");
+        option.value = data[i].id;
+        option.text = 'кв. ' + data[i].number + ', ' + data[i].building.name;
+        $("#apartment").append(option);
+      }
+    });
+  }
+
+  $(document).ready(function(){
+    $("#date, #time").change(function(){
+      alert("change");
+      console.log($(this).val());
+    });
+
+    let owner_input = document.getElementById("apartment.owner");
+    owner_input.addEventListener('change', () => loadApartments(owner_input));
+
+
+    $("#owner").change(function(){
+      let owner_id = $("#owner").val();
+      console.log(owner_id);
+
+      $("#apartment").prop("disabled", (owner_id != '0') ? false : true);
+
+      $.get('/owners/get-apartment/' + owner_id, function(data){
+        alert("получил квартиры");
+        console.log(data);
+
+        $("#apartment").html('');
+
+        for(let i = 0; i < data.length; i++) {
+          let option = document.createElement("option");
+          option.value = data[i].id;
+          option.text = 'кв. ' + data[i].number + ', ' + data[i].building.name;
+          $("#apartment").append(option);
+        }
+      });
+    });
+
+    $("#master_type").change(function(){
+      let master_type = $(this).val();
+      let master_type_name = $( "#master_type option:selected" ).text();
+      console.log(master_type.toLowerCase());
+      console.log(master_type_name);
+
+      $.get('/admin/admins/get-masters-by-type', {type:master_type}, function(data){
+        alert("получил мастеров типа: " + master_type_name);
+        console.log(data);
+
+        $("#masters").html('');
+
+        for(let i = 0; i < data.length; i++) {
+          let option = document.createElement("option");
+          console.log(data[i].role);
+          option.value = data[i].id;
+          option.text = master_type_name + ' - ' + data[i].first_name + ' ' + data[i].last_name;
+          $("#masters").append(option);
+        }
+      })
+    });
+  })
+</script>
 
 <!-- PAGE PLUGINS -->
 <!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->

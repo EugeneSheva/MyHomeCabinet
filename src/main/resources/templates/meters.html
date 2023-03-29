@@ -55,7 +55,7 @@
               <div class="box-header with-border" style="padding-block:15px;">
                 <h3 class="box-title"></h3>
                 <div class="box-tools">
-                  <a href="/admin/user-admin/index" class="btn btn-default btn-sm">
+                  <a href="" class="btn btn-default btn-sm">
                     <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                   </a>
                 </div>
@@ -138,11 +138,22 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr data-href="/admin/counter-data/counter-list?CounterDataSearch%5Bflat_id%5D=282&amp;CounterDataSearch%5Bservice_id%5D=16" data-key=""><td>ЖК "Дом Каркашадзе"</td><td>Секция 4</td><td>2147483647</td><td>Уборка !!!</td><td style="background-color: #DFD5; font-weight: normal">32.0</td><td style="background-color: #DFD5; font-weight: normal">m²</td><td><div class="btn-group pull-right"><a class="btn btn-default btn-sm" href="/admin/counter-data/create?flat_id=282&amp;service_id=16" title="Снять новое показание счетчика" target="_blank" data-toggle="tooltip"><i class="fa fa-dashboard"></i></a> <a class="btn btn-default btn-sm" href="/admin/counter-data/counter-list?CounterDataSearch%5Bflat_id%5D=282&amp;CounterDataSearch%5Bservice_id%5D=16" title="Открыть историю показаний для счетчика" data-toggle="tooltip"><i class="fa fa-eye"></i></a></div></td></tr>
-                  <tr data-href="/admin/counter-data/counter-list?CounterDataSearch%5Bflat_id%5D=212&amp;CounterDataSearch%5Bservice_id%5D=6" data-key=""><td>ЖК "Королевские сады"</td><td>Секция 3</td><td>95</td><td>отопление&amp;</td><td style="background-color: #DFD5; font-weight: normal">54.0</td><td style="background-color: #DFD5; font-weight: normal">m²</td><td><div class="btn-group pull-right"><a class="btn btn-default btn-sm" href="/admin/counter-data/create?flat_id=212&amp;service_id=6" title="Снять новое показание счетчика" target="_blank" data-toggle="tooltip"><i class="fa fa-dashboard"></i></a> <a class="btn btn-default btn-sm" href="/admin/counter-data/counter-list?CounterDataSearch%5Bflat_id%5D=212&amp;CounterDataSearch%5Bservice_id%5D=6" title="Открыть историю показаний для счетчика" data-toggle="tooltip"><i class="fa fa-eye"></i></a></div></td></tr>
-                  <tr data-href="/admin/counter-data/counter-list?CounterDataSearch%5Bflat_id%5D=186&amp;CounterDataSearch%5Bservice_id%5D=6" data-key=""><td>Дом 56</td><td>Секция 2</td><td>145</td><td>отопление&amp;</td><td style="background-color: #DFD5; font-weight: normal">45.0</td><td style="background-color: #DFD5; font-weight: normal">m²</td><td><div class="btn-group pull-right"><a class="btn btn-default btn-sm" href="/admin/counter-data/create?flat_id=186&amp;service_id=6" title="Снять новое показание счетчика" target="_blank" data-toggle="tooltip"><i class="fa fa-dashboard"></i></a> <a class="btn btn-default btn-sm" href="/admin/counter-data/counter-list?CounterDataSearch%5Bflat_id%5D=186&amp;CounterDataSearch%5Bservice_id%5D=6" title="Открыть историю показаний для счетчика" data-toggle="tooltip"><i class="fa fa-eye"></i></a></div></td></tr>
-                  <tr data-href="/admin/counter-data/counter-list?CounterDataSearch%5Bflat_id%5D=256&amp;CounterDataSearch%5Bservice_id%5D=2" data-key=""><td>ЖК "Адмирал" Дом №11</td><td><span class="not-set">(не задано)</span></td><td>1111111111</td><td></td><td style="background-color: #DFD5; font-weight: normal">999999999.9</td><td style="background-color: #DFD5; font-weight: normal">кв.м.к</td><td><div class="btn-group pull-right"><a class="btn btn-default btn-sm" href="/admin/counter-data/create?flat_id=256&amp;service_id=2" title="Снять новое показание счетчика" target="_blank" data-toggle="tooltip"><i class="fa fa-dashboard"></i></a> <a class="btn btn-default btn-sm" href="/admin/counter-data/counter-list?CounterDataSearch%5Bflat_id%5D=256&amp;CounterDataSearch%5Bservice_id%5D=2" title="Открыть историю показаний для счетчика" data-toggle="tooltip"><i class="fa fa-eye"></i></a></div></td></tr>
-                  <tr data-href="/admin/counter-data/counter-list?CounterDataSearch%5Bflat_id%5D=149&amp;CounterDataSearch%5Bservice_id%5D=6" data-key=""><td>ЖК "Морская Симфония"</td><td>Секция 3</td><td>111111112</td><td>отопление&amp;</td><td style="background-color: #DFD5; font-weight: normal">435.0</td><td style="background-color: #DFD5; font-weight: normal">m²</td><td><div class="btn-group pull-right"><a class="btn btn-default btn-sm" href="/admin/counter-data/create?flat_id=149&amp;service_id=6" title="Снять новое показание счетчика" target="_blank" data-toggle="tooltip"><i class="fa fa-dashboard"></i></a> <a class="btn btn-default btn-sm" href="/admin/counter-data/counter-list?CounterDataSearch%5Bflat_id%5D=149&amp;CounterDataSearch%5Bservice_id%5D=6" title="Открыть историю показаний для счетчика" data-toggle="tooltip"><i class="fa fa-eye"></i></a></div></td></tr>
+                  <tr th:each="row : ${meter_data_rows}" style="cursor: pointer;" class="meter_data_row">
+                      <input type="hidden" class="row_ids" th:value="${row.apartment.id}">
+                      <input type="hidden" class="row_ids" th:value="${row.service.id}">
+                      <td><a th:href="@{/admin/meters/data?flat_id={flat_id}&service_id={service_id}(flat_id=${row.apartment.id}, service_id=${row.service.id})}" th:text="${row.apartment.building.name}"></a></td>
+                      <td th:text="${row.apartment.section}"></td>
+                      <td th:text="${row.apartment.number}"></td>
+                      <td th:text="${row.service.name}"></td>
+                      <td th:text="${row.currentReadings}"></td>
+                      <td th:text="${row.service.unit.name}"></td>
+                      <td>
+                          <div class="btn-group pull-right">
+                              <a class="btn btn-default btn-sm" th:href="@{/admin/meters/create-add?flat_id={flat_id}&service_id={service_id}(flat_id=${row.apartment.id}, service_id=${row.service.id})}" title="Снять новое показание счетчика" target="_blank" data-toggle="tooltip"><i class="fa fa-dashboard"></i></a>
+                              <a class="btn btn-default btn-sm" th:href="@{/admin/meters/data?flat_id={flat_id}&service_id={service_id}(flat_id=${row.apartment.id}, service_id=${row.service.id})}" title="Открыть историю показаний для счетчика" data-toggle="tooltip"><i class="fa fa-eye"></i></a>
+                          </div>
+                      </td>
+                  </tr>
                   </tbody>
                 </table>
               </div>
@@ -171,6 +182,24 @@
 <!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
+
+<script>
+
+    let rows = document.getElementsByClassName("meter_data_row");
+    for(let i = 0; i < rows.length; i++) {
+        let flat_id = rows[i].getElementsByClassName('row_ids')[0].value;
+        let service_id = rows[i].getElementsByClassName('row_ids')[1].value;
+        console.log(flat_id);
+        console.log(service_id);
+        let row_children = rows[i].children;
+        for(let j = 0; j < row_children.length - 1; j++) {
+            row_children[j].addEventListener('click', function(){
+                window.location.href = '/admin/meters/data?flat_id='+flat_id+'&service_id='+service_id;
+            });
+        }
+    }
+</script>
+
 
 <!-- PAGE PLUGINS -->
 <!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->
