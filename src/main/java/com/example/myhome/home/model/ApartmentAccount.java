@@ -16,14 +16,11 @@ public class ApartmentAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //может начинаться с нулей - 04122200356 , через String.format надо будет как-то учитывать
-    private Long number;
-
     private Boolean isActive;
 
     @ToString.Exclude
     @OneToOne
     private Apartment apartment;
 
-    private Long balance;
+    private Double balance = 0.0;
 }

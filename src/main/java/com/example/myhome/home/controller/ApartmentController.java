@@ -2,6 +2,7 @@ package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Building;
+import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.services.ApartmentService;
 import com.example.myhome.home.services.BuildingService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -69,4 +70,11 @@ public class ApartmentController {
         apartmentService.deleteById(id);
         return "redirect:/apartments/";
     }
+
+    @GetMapping("/get-owner")
+    public @ResponseBody Owner getOwner(@RequestParam long flat_id) {
+        return apartmentService.findById(flat_id).getOwner();
+    }
+
+
 }

@@ -1,0 +1,86 @@
+package com.example.myhome.home.controller;
+
+import com.example.myhome.home.model.ApartmentAccount;
+import com.example.myhome.home.repos.AccountRepository;
+import com.example.myhome.home.repos.ApartmentRepository;
+import com.example.myhome.home.repos.BuildingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+
+@Controller
+@RequestMapping("/admin/accounts")
+public class AccountController {
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private ApartmentRepository apartmentRepository;
+
+    @Autowired
+    private BuildingRepository buildingRepository;
+
+    // показать все счета
+    @GetMapping
+    public String showAccountsPage(Model model) {
+        model.addAttribute("accounts", accountRepository.findAll());
+        return "accounts";
+    }
+
+    // показать профиль лицевого счёта
+    @GetMapping("/{id}")
+    public String showAccountInfoPage(@PathVariable long id, Model model) {
+        model.addAttribute("account", accountRepository.findById(id).orElseThrow());
+        return "account_profile";
+    }
+
+    // открытие страницы создания лицевого счета
+    @GetMapping("/create")
+    public String showCreateAccountPage(Model model) {
+        Optional<ApartmentAccount> accWithBiggestID = accountRepository.findFirstByOrderByIdDesc();
+        long id;
+        if(accWithBiggestID.isEmpty()) id = 1L;
+        else id = accWithBiggestID.get().getId()+1;
+        model.addAttribute("account", new ApartmentAccount());
+        model.addAttribute("id", id);
+        model.addAttribute("buildings", buildingRepository.findAll());
+        return "account_card";
+    }
+
+    // создание лицевого счета
+    @PostMapping("/create")
+    public String createAccount(@ModelAttribute ApartmentAccount account) {
+        accountRepository.save(account);
+        return "redirect:/admin/accounts";
+    }
+
+    @GetMapping("/update/{id}")
+    public String showUpdateAccountPage(@PathVariable long id, Model model) {
+        model.addAttribute("account", accountRepository.findById(id).orElseThrow());
+        model.addAttribute("id", id);
+        model.addAttribute("buildings", buildingRepository.findAll());
+        return "account_card";
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateAccount(@PathVariable long id, @ModelAttribute ApartmentAccount account) {
+        accountRepository.save(account);
+        return "redirect:/admin/accounts";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteAccount(@PathVariable long id) {
+        accountRepository.deleteById(id);
+        return "redirect:/admin/accounts";
+    }
+
+    @GetMapping("/get-flat-account")
+    public @ResponseBody String getAccountNumberFromFlat(@RequestParam long flat_id) {
+        return String.format("%010d", accountRepository.findByApartmentId(flat_id).orElseThrow().getId());
+    }
+
+}

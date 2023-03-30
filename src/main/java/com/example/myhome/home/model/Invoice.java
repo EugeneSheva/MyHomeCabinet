@@ -18,15 +18,16 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //может начинаться с нулей - 04122200356 , через String.format надо будет как-то учитывать
-    private Long number;
-
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 
     @ManyToOne
     @JoinColumn(name = "apartment_id")
     private Apartment apartment;
+
+    @ManyToOne
+    @JoinColumn(name="tariff_id")
+    private Tariff tariff;
 
     private Boolean completed;
 

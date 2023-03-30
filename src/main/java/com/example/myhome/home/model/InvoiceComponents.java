@@ -6,24 +6,25 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "receipt_of_payment_components")
+@Table(name = "invoice_components")
 public class InvoiceComponents {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "tariff_id")
-    private Tariff tariff;
+    @JoinColumn(name = "service_id")
+    private Service service;
 
-    //насчет one to one хз
-    @OneToOne
-    @JoinColumn(name = "meter_data_id")
-    private MeterData meterData;
+    private double unit_price;
+    private double unit_amount;
 
     @ManyToOne
-    @JoinColumn(name = "receipt_of_payment_id")
+    @JoinColumn(name = "invoice_id")
     private Invoice invoice;
+
+    public double getTotalPrice() {return this.unit_price*this.unit_amount;}
 
 
 }
