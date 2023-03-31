@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class Apartment {
     private Double square;
 
     //В примере за каждой квартирой ставится только один лицевой счет
-    @OneToOne
+    @OneToOne(mappedBy = "apartment")
     private ApartmentAccount account;
 
     @ManyToOne

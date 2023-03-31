@@ -1,3 +1,12 @@
+.dropdown-links {
+    margin:0;
+    padding:5px;
+}
+
+.dropdown-items {
+    background-color: rgba(128,128,128,0.04);
+}
+
 .row {
     margin-bottom: 20px;
 }
@@ -152,7 +161,19 @@
 }
 
 .label-success {
-    background-color: lime;
+    background-color: green;
+    color: white;
+    font-weight: bold;
+}
+
+.label-danger {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+}
+
+.label-warning {
+    background-color: orange;
     color: white;
     font-weight: bold;
 }

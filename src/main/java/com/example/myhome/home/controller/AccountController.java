@@ -1,9 +1,11 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.ApartmentAccount;
 import com.example.myhome.home.repos.AccountRepository;
 import com.example.myhome.home.repos.ApartmentRepository;
 import com.example.myhome.home.repos.BuildingRepository;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +15,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/accounts")
+@Log
 public class AccountController {
 
     @Autowired
@@ -54,7 +57,18 @@ public class AccountController {
     // создание лицевого счета
     @PostMapping("/create")
     public String createAccount(@ModelAttribute ApartmentAccount account) {
+
+        // взаимные ссылки не устанавливаются - Account получает apartment_id
+        // как главный объект в отношении OneToOne, а вот Apartment account_id не получает ,
+        // если не делать выкрутасы, как указано ниже
+
+//        ApartmentAccount savedAccount = accountRepository.save(account);
+//        Apartment apartment = apartmentRepository.findById(savedAccount.getApartment().getId()).orElseThrow();
+//        apartment.setAccount(savedAccount);
+//        apartmentRepository.save(apartment);
+
         accountRepository.save(account);
+
         return "redirect:/admin/accounts";
     }
 
@@ -68,7 +82,18 @@ public class AccountController {
 
     @PostMapping("/update/{id}")
     public String updateAccount(@PathVariable long id, @ModelAttribute ApartmentAccount account) {
+//        log.info("OLD APARTMENT ID " + account.getApartment().getId());
+//        Apartment old_apartment = apartmentRepository.findById(account.getApartment().getId()).orElseThrow();
+//        old_apartment.setAccount(null);
+//        apartmentRepository.save(old_apartment);
+//
+//        ApartmentAccount savedAccount = accountRepository.save(account);
+//        Apartment apartment = apartmentRepository.findById(savedAccount.getApartment().getId()).orElseThrow();
+//        apartment.setAccount(savedAccount);
+//        apartmentRepository.save(apartment);
+
         accountRepository.save(account);
+
         return "redirect:/admin/accounts";
     }
 

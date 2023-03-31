@@ -47,21 +47,9 @@ public class SettingsController {
 //        return "settings_services";
 //    }
 
-    @GetMapping("/admin/services")
-    public String showServicesPage(Model model){
-        ServiceForm serviceForm = new ServiceForm();
-        serviceForm.setServiceList(serviceRepository.findAll());
-        serviceForm.setUnitList(unitRepository.findAll());
-        model.addAttribute("serviceForm", serviceForm);
-        model.addAttribute("units", unitRepository.findAll());
-        return "settings_services2";
-    }
 
-    @GetMapping("/admin/tariffs")
-    public String showTariffsPage(Model model) {
-        model.addAttribute("tariffs", tariffRepository.findAll());
-        return "settings_tariffs";
-    }
+
+
 
 
 
@@ -133,72 +121,7 @@ public class SettingsController {
 //        return "redirect:/admin/services";
 //    }
 
-    @PostMapping("/admin/services")
-    public String updateServices(@ModelAttribute ServiceForm serviceForm,
-                                 @RequestParam String[] new_service_names,
-                                 @RequestParam String[] new_service_unit_names,
-                                 @RequestParam(required = false) boolean[] new_service_show_in_meters,
-                                 @RequestParam(required = false) String[] new_unit_names,
-                                 RedirectAttributes redirectAttributes) {
-        List<Service> serviceList = serviceForm.getServiceList();
-        List<Unit> unitList = serviceForm.getUnitList().stream().filter((unit) -> unit.getId() != null).collect(Collectors.toList());
 
-        log.info(unitList.toString());
-
-        if(new_unit_names != null) {
-
-            log.info(Arrays.toString(new_unit_names));
-
-            for (int i = 0; i < new_unit_names.length-1; i++) {
-                log.info("creating new unit");
-                Unit unit = new Unit();
-                unit.setName(new_unit_names[i]);
-                unitList.add(unit);
-            }
-        }
-
-        log.info(unitList.toString());
-
-        unitRepository.saveAll(unitList);
-        unitList.forEach(System.out::println);
-
-        for (int i = 0; i < new_service_names.length-1; i++) {
-            Service service = new Service();
-            service.setName(new_service_names[i]);
-            service.setShow_in_meters(new_service_show_in_meters[i]);
-            service.setUnit(unitRepository.findByName(new_service_unit_names[i]).orElseGet(Unit::new));
-            serviceList.add(service);
-        }
-
-        serviceRepository.saveAll(serviceList);
-        serviceList.forEach(System.out::println);
-
-        return "redirect:/admin/services";
-    }
-
-    @GetMapping("/admin/services/delete/{id}")
-    public String deleteService(@PathVariable long id, RedirectAttributes redirectAttributes) {
-        try {
-            serviceRepository.deleteById(id);
-            return "redirect:/admin/services";
-        } catch (Exception e) {
-            e.printStackTrace();
-            redirectAttributes.addFlashAttribute("fail", "Нельзя удалить услугу, она уже где-то используется");
-            return "redirect:/admin/services";
-        }
-    }
-
-    @GetMapping("/admin/services/delete-unit/{id}")
-    public String deleteServiceUnit(@PathVariable long id, RedirectAttributes redirectAttributes) {
-        try {
-            unitRepository.deleteById(id);
-            return "redirect:/admin/services";
-        } catch (Exception e) {
-            e.printStackTrace();
-            redirectAttributes.addFlashAttribute("fail", "Нельзя удалить единицу");
-            return "redirect:/admin/services";
-        }
-    }
 
     @PostMapping("/admin/income-expense/create")
     public String createTransaction(@RequestParam String name, @RequestParam String type) {
@@ -228,90 +151,7 @@ public class SettingsController {
         return "redirect:/admin/income-expense";
     }
 
-    @GetMapping("/admin/tariffs/create")
-    public String showCreateTariffCard(Model model){
-        model.addAttribute("tariff", new Tariff());
-        model.addAttribute("services", serviceRepository.findAll());
-        model.addAttribute("units", unitRepository.findAll());
-        return "tariff_card";
-    }
 
-    @PostMapping("/admin/tariffs/create")
-    public String createTariff(@RequestParam String name,
-                               @RequestParam String description,
-                               @RequestParam String[] service_names,
-                               @RequestParam String[] prices) {
-        Tariff tariff = new Tariff();
-        tariff.setName(name);
-        tariff.setDescription(description);
-        tariff.setDate(LocalDateTime.now());
-        tariff.setTariffComponents(new HashMap<>());
-
-        for (int i = 0; i < service_names.length; i++) {
-            log.info("cycle");
-            if(service_names[i].isEmpty() || prices[i].isEmpty()) continue;
-            log.info(service_names[i]);
-            log.info(prices[i]);
-            tariff.getTariffComponents().put(serviceRepository.findByName(service_names[i]).orElseThrow(),
-                    Double.parseDouble(prices[i]));
-            log.info(tariff.getTariffComponents().toString());
-        }
-
-        log.info(tariff.toString());
-
-        tariffRepository.save(tariff);
-
-        return "redirect:/admin/tariffs";
-    }
-
-    @GetMapping("/admin/tariffs/update/{id}")
-    public String showUpdateTariffPage(@PathVariable long id, Model model) {
-        Tariff tariff = tariffRepository.findById(id).orElseGet(Tariff::new);
-        model.addAttribute("tariff", tariff);
-        model.addAttribute("components", tariff.getTariffComponents().entrySet());
-        model.addAttribute("services", serviceRepository.findAll());
-        model.addAttribute("units", unitRepository.findAll());
-        return "tariff_card";
-    }
-
-    @PostMapping("/admin/tariffs/update/{id}")
-    public String updateTariff(@PathVariable long id,
-                               @RequestParam String name,
-                               @RequestParam String description,
-                               @RequestParam(defaultValue = "0", required = false) String[] service_names,
-                               @RequestParam(defaultValue = "0", required = false) String[] prices) {
-        Tariff tariff = new Tariff();
-        tariff.setId(id);
-        tariff.setName(name);
-        tariff.setDescription(description);
-        tariff.setDate(LocalDateTime.now());
-        tariff.setTariffComponents(new HashMap<>());
-
-        log.info(Arrays.toString(service_names));
-        log.info(Arrays.toString(prices));
-
-        for (int i = 0; i < service_names.length; i++) {
-            log.info("cycle");
-            if(service_names[i].isEmpty() || prices[i].isEmpty()) continue;
-            log.info(service_names[i]);
-            log.info(prices[i]);
-            tariff.getTariffComponents().put(serviceRepository.findByName(service_names[i]).orElseThrow(),
-                    Double.parseDouble(prices[i]));
-            log.info(tariff.getTariffComponents().toString());
-        }
-
-        log.info(tariff.toString());
-
-        tariffRepository.save(tariff);
-
-        return "redirect:/admin/tariffs";
-    }
-
-    @GetMapping("/admin/tariffs/delete/{id}")
-    public String deleteTariff(@PathVariable long id) {
-        tariffRepository.deleteById(id);
-        return "redirect:/admin/tariffs";
-    }
 
     @PostMapping("/admin/payment-details")
     public String updatePaymentDetails(@ModelAttribute PaymentDetails details, RedirectAttributes redirectAttributes) {

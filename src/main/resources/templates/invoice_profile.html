@@ -46,12 +46,10 @@
 
         <div class="row">
           <div class="col-md-3">
-            <div class="input-group-addon">
-              №
-            </div>
+            <span style="display:inline;">№ </span>
             <input type="hidden" disabled id="id">
-            <h3 style="width: 90%; caret-color:transparent;" class="form-control"
-                th:text="${T(java.lang.String).format('%010d',invoice.id)}"></h3>
+            <input style="width: 90%; display:inline; caret-color:transparent;" disabled class="form-control"
+                th:value="${T(java.lang.String).format('%010d',invoice.id)}">
           </div>
           <div class="col-md-3">
             <span style="display:inline;">от </span>
@@ -85,17 +83,21 @@
                       <tr>
                         <td style="font-weight:bold">Проведена</td>
                         <td>
-                          <small class="label label-success" th:if="${invoices.completed}">Проведена</small>
-                          <small class="label label-danger" th:if="${!invoices.completed}">Не проведена</small>
+                          <small class="label label-success" th:if="${invoice.completed}">Проведена</small>
+                          <small class="label label-danger" th:if="${!invoice.completed}">Не проведена</small>
                         </td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Статус</td>
                         <td>
-                          <small class="label label-success" th:text="${invoices.status.getName()}"></small>
+                          <small th:class="'label ' +
+                            ${invoice.status == T(com.example.myhome.home.model.InvoiceStatus).PAID ? 'label-success' :
+                            (invoice.status == T(com.example.myhome.home.model.InvoiceStatus).UNPAID) ? 'label-danger' : 'label-warning'}"
+                                 th:text="${invoice.status.getName()}"></small>
                         </td>
                       </tr>
                       <tr>
+                        <td style="font-weight:bold">Период</td>
                         <td th:text="${invoice.dateFrom} + ' - ' + ${invoice.dateTo}"></td>
                       </tr>
                       <tr>
@@ -105,7 +107,8 @@
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Лицевой счёт</td>
-                        <td ><a th:href="@{/accounts/{id}(id=${invoice.apartment.account.id})}"
+                        <td ><a th:if="${invoice.apartment.account != null}"
+                                th:href="@{/admin/accounts/{id}(id=${invoice.apartment.account.id})}"
                                 th:text="${T(java.lang.String).format('%010d', invoice.apartment.account.id)}"></a>
                         </td>
                       </tr>
@@ -123,7 +126,7 @@
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Квартира</td>
-                        <td><a th:href="@{/apartments/{id}(id=${invoice.apartment.id})}" th:text="${account.apartment.number}"></a></td>
+                        <td><a th:href="@{/apartments/{id}(id=${invoice.apartment.id})}" th:text="${invoice.apartment.number}"></a></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Тариф</td>
@@ -132,34 +135,38 @@
                       </tbody>
                     </table>
 
+
+                  </div>
+
+                  <div class="col-xs-12 col-lg-12">
                     <table class="table table-bordered table-striped table-view">
                       <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Услуга</th>
-                          <th>Ед.изм</th>
-                          <th>Цена за ед., грн</th>
-                          <th>Количество потребления(расход)</th>
-                          <th>Стоимость, грн.</th>
-                        </tr>
+                      <tr>
+                        <th>#</th>
+                        <th>Услуга</th>
+                        <th>Ед.изм</th>
+                        <th>Цена за ед., грн</th>
+                        <th>Количество потребления(расход)</th>
+                        <th>Стоимость, грн.</th>
+                      </tr>
                       </thead>
                       <tbody>
-                        <tr th:each="component, iter : ${invoice.components}">
-                          <td th:text="${iter.index+1}"></td>
-                          <td th:text="${component.service.name}"></td>
-                          <td th:text="${component.service.unit}"></td>
-                          <td th:text="${component.unit_price}"></td>
-                          <td th:text="${component.unit_amount}"></td>
-                          <td th:text="${component.getTotalPrice()}"></td>
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td><span style="font-weight: bold" th:text="'Итого: ' + ${total_price}"></span></td>
-                        </tr>
+                      <tr th:each="component, iter : ${invoice.components}">
+                        <td th:text="${iter.index+1}"></td>
+                        <td th:text="${component.service.name}"></td>
+                        <td th:text="${component.service.unit.name}"></td>
+                        <td th:text="${component.unit_price}"></td>
+                        <td th:text="${component.unit_amount}"></td>
+                        <td th:text="${component.getTotalPrice()}"></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><span style="font-weight: bold" th:text="'Итого: ' + ${total_price}"></span></td>
+                      </tr>
                       </tbody>
                     </table>
                   </div>

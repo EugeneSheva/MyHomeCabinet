@@ -84,12 +84,12 @@
             </div>
             <div class="col-xs-12 col-lg-3">
                 <div class="btn-group pull-right margin-bottom">
-                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn btn-success dropdown-toggle" style="width:230px" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Выберите действие <span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu">
-                        <li><a th:href="@{/admin/accounts/create}">Добавить лицевой счет</a></li>
-                        <li><a href="${/admin/accounts/export}">Выгрузить в Excel</a></li>
+                    <ul class="dropdown-menu" style="width:230px;">
+                        <li><a th:href="@{/admin/accounts/create}" style="padding-inline:15px;">Добавить лицевой счет</a></li>
+                        <li onclick="downloadExcelTable()"><a>Выгрузить в Excel</a></li>
                     </ul>
                 </div>
             </div>
@@ -108,7 +108,7 @@
                 </div>
               </div>
               <div class="box-body table-responsive">
-                <table class="table table-bordered table-hover table-striped linkedRow">
+                <table id="table_to_excel" class="table table-bordered table-hover table-striped linkedRow">
                   <thead>
                       <tr>
                         <th>№</th>
@@ -187,7 +187,6 @@
                   </thead>
                   <tbody>
                     <tr style="cursor: pointer;" class="account_row" th:each="account : ${accounts}">
-                        <input type="hidden" th:value="${account.id}">
                         <td th:text="${T(java.lang.String).format('%010d',account.id)}"></td>
                         <td>
                             <small class="label label-success" th:if="${account.isActive}">Активен</small>
@@ -206,6 +205,7 @@
                                    th:onclick="if(confirm('Удалить лицевой счёт?')) window.location.href=this.dataset.url"><i class="fa fa-trash"></i></a>
                             </div>
                         </td>
+                        <input type="hidden" th:value="${account.id}">
                     </tr>
                   </tbody>
                 </table>
@@ -236,17 +236,31 @@
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
 
+<script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+
 <script>
 
     let rows = document.getElementsByClassName("account_row");
     for(let i = 0; i < rows.length; i++) {
         let row_children = rows[i].children;
-        let account_id = row_children[0].value;
+        let account_id = row_children[row_children.length-1].value;
         for(let j = 1; j < row_children.length - 1; j++) {
             row_children[j].addEventListener('click', function(){
                 window.location.href = '/admin/accounts/'+account_id;
             });
         }
+    }
+
+    function downloadExcelTable() {
+        const date = new Date();
+
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+
+        let table = document.getElementById("table_to_excel");
+        let excel_file = XLSX.utils.table_to_book(table);
+        XLSX.writeFile(excel_file, "Лицевые счета " + `${day}-${month}-${year}` + ".xlsx");
     }
 </script>
 

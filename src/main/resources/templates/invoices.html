@@ -84,12 +84,12 @@
             </div>
             <div class="col-xs-12 col-lg-3">
                 <div class="btn-group pull-right margin-bottom">
-                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn btn-success dropdown-toggle" style="width: 230px;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         Выберите действие <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a th:href="@{/admin/invoices/create}">Создать новую квитанцию</a></li>
-                        <li><a>Удалить</a></li>
+                        <li><a th:href="@{/admin/invoices/create}" style="padding-inline:15px;">Создать новую квитанцию</a></li>
+                        <li onclick="deleteChosen()"><a>Удалить</a></li>
                     </ul>
                 </div>
             </div>
@@ -111,7 +111,7 @@
                 <table class="table table-bordered table-hover table-striped linkedRow">
                   <thead>
                       <tr>
-                        <th><input type="checkbox" name="" id=""></th>
+                        <th><input type="checkbox" name="" id="check_all"></th>
                           <th>№ квитанции</th>
                           <th>Статус</th>
                           <th>Дата</th>
@@ -190,20 +190,28 @@
                   <tbody>
                     <tr style="cursor: pointer;" class="invoice_row" th:each="invoice : ${invoices}">
                         <input type="hidden" th:value="${invoice.id}">
+                        <td><input type="checkbox" name="" id=""></td>
                         <td th:text="${T(java.lang.String).format('%010d',invoice.id)}"></td>
-                        <td th:text="${invoice.status.getName()}"></td>
+                        <td>
+                            <small th:class="'label ' +
+                            ${invoice.status == T(com.example.myhome.home.model.InvoiceStatus).PAID ? 'label-success' :
+                            (invoice.status == T(com.example.myhome.home.model.InvoiceStatus).UNPAID) ? 'label-danger' : 'label-warning'}"
+                                   th:text="${invoice.status.getName()}">
+                            </small>
+                        </td>
                         <td th:text="${invoice.date}"></td>
-                        <td th:text="${#temporals.format(date, 'mmmm yyyy')}"></td>
+                        <td th:text="${#temporals.format(invoice.date, 'MMM yyyy')}"></td>
                         <td th:text="${invoice.apartment.number} + ', ' + ${invoice.apartment.building.name}"></td>
                         <td th:text="${invoice.apartment.owner.getFullName()}"></td>
                         <td><span th:text="${invoice.completed} ? 'Проведена' : 'Не проведена'"></span></td>
-                        <td></td>
+                        <td><span th:text="${invoice.total_price}"
+                                  th:style="${invoice.total_price > 0 ? 'color:green' : (invoice_total_price < 0) ? 'color:red' : 'color:black'}"></span></td>
                         <td>
                             <div class="btn-group pull-right">
                                 <a class="btn btn-default btn-sm" th:href="@{/admin/invoices/update/{id}(id=${invoice.id})}"><i class="fa fa-pencil"></i></a>
                                 <a class="btn btn-default btn-sm"
                                    th:attr="data-url='/admin/invoices/delete/'+${invoice.id}"
-                                   th:onclick="if(confirm('Удалить лицевой счёт?')) window.location.href=this.dataset.url"><i class="fa fa-trash"></i></a>
+                                   th:onclick="if(confirm('Удалить квитанцию?')) window.location.href=this.dataset.url"><i class="fa fa-trash"></i></a>
                             </div>
                         </td>
                     </tr>
@@ -242,10 +250,40 @@
     for(let i = 0; i < rows.length; i++) {
         let row_children = rows[i].children;
         let invoice_id = row_children[0].value;
-        for(let j = 1; j < row_children.length - 1; j++) {
+        for(let j = 2; j < row_children.length - 1; j++) {
             row_children[j].addEventListener('click', function(){
-                window.location.href = '/admin/invoices/'+account_id;
+                window.location.href = '/admin/invoices/'+invoice_id;
             });
+        }
+    }
+
+    document.getElementById("check_all").addEventListener('click', function(){
+        console.log(this.checked);
+        if(this.checked == true) {
+            console.log('true block');
+            for(const checkbox of document.querySelectorAll("input[type=checkbox]")) {
+                checkbox.checked = true;
+            }
+        } else if(this.checked == false) {
+            console.log('false block');
+            for(const checkbox of document.querySelectorAll("input[type=checkbox]")) {
+                checkbox.checked = false;
+            }
+        }
+
+    });
+
+    function deleteChosen(){
+        if(confirm('Удалить выбранные квитанции?')) {
+            for(const row of document.querySelectorAll(".invoice_row")) {
+                console.log(row.querySelector("input[type=checkbox]"));
+                if(row.querySelector("input[type=checkbox]").checked == true) {
+                    let invoice_id = row.children[0].value;
+                    console.log(invoice_id);
+                    $.get('/admin/invoices/delete-invoice', {id:invoice_id}, function(data){console.log(data); row.remove();}).fail(function(){alert('Ошибка в удалении квитанций')});
+                }
+            }
+            location.reload();
         }
     }
 </script>
