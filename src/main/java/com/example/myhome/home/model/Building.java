@@ -18,23 +18,12 @@ public class Building {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
-    @JsonIgnore
-//    @OneToMany(mappedBy = "building")
-//    private List<BuildingSection> sections  = new ArrayList<>();
-
     @ElementCollection
-    private List<String> sections = new ArrayList<>();
-
+    private List<String>sections  = new ArrayList<>();
     private String address;
-
-    @JsonIgnore
-//    @OneToMany(mappedBy = "building")
-//    private List<BuildingFloor> floors = new ArrayList<>();
     @ElementCollection
-    private List<String> floors = new ArrayList<>();
+    private List<String>floors = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "building")
     List<Apartment> apartments;
 
@@ -66,6 +55,7 @@ public class Building {
         return "Building{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", sections=" + sections +
                 ", address='" + address + '\'' +
                 '}';
     }

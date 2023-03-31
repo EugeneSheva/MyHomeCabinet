@@ -1,15 +1,20 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.Apartment;
+import com.example.myhome.home.model.Building;
 import com.example.myhome.home.model.Owner;
-import com.example.myhome.home.services.OwnerService;
+import com.example.myhome.home.service.BuildingService;
+import com.example.myhome.home.service.OwnerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 
@@ -50,10 +55,24 @@ public class OwnerController {
     }
 
     @PostMapping("/save")
-    public String saveCoffee(@ModelAttribute("owner") Owner owner) throws IOException {
+    public String saveCoffee(@ModelAttribute("owner") Owner owner, @RequestParam("img1") MultipartFile file) throws IOException {
+        owner.setProfile_picture(ownerService.saveOwnerImage(owner.getId(), file));
         ownerService.save(owner);
         return "redirect:/owners/";
     }
+
+    @GetMapping("/delete/{id}")
+    public String dellete(@PathVariable("id") Long id) {
+        Owner owner = ownerService.findById(id);
+        try {
+            Files.deleteIfExists(Path.of(uploadPath + owner.getProfile_picture()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        ownerService.deleteById(id);
+        return "redirect:/owners/";
+    }
+}
 
 
     //Получить квартиры какого-то владельца

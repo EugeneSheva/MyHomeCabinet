@@ -15,13 +15,14 @@
 
 
   <!-- navbar header/sidebar -->
+  <div th:insert="~{main-template :: loading}"></div>
   <nav th:insert="~{main-template :: header}"></nav>
   <aside th:insert="~{main-template :: sidebar}"></aside>
   <!-- /.navbar header/sidebar -->
 
   <!--content-header -->
   <div class="content-wrapper">
-    <div class="content-header">
+      <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
@@ -70,12 +71,11 @@
               <tr th:each="apartment : ${apartments}">
                 <td ><a style="display: block; color: black;" th:text="${apartment.number}" th:href="@{{id}(id=${apartment.id})}"></a></td>
                 <td ><a style="display: block; color: black;" th:text="${apartment.building.name}" th:href="@{{id}(id=${apartment.id})}" ></a></td>
-                <!--                th:text="${apartment.building.name}" th:href="@{{id}(id=${apartment.id})}"-->
+<!--                th:text="${apartment.building.name}" th:href="@{{id}(id=${apartment.id})}"-->
                 <td ><a style="display: block; color: black;" th:text="${apartment.section}" th:href="@{{id}(id=${apartment.id})}"></a></td>
                 <td ><a style="display: block; color: black;" th:text="${apartment.floor}" th:href="@{{id}(id=${apartment.id})}"></a></td>
-                <td ><a style="display: block; color: black;"  th:href="@{{id}(id=${apartment.id})}"></a></td>
-                <!--                th:text="${apartment.owner.first_name}+' '+${apartment.owner.last_name}+-->
-                <!--                ' '+${apartment.owner.fathers_name}"-->
+                <td ><a style="display: block; color: black;" th:text="${apartment.owner.first_name}+' '+${apartment.owner.last_name}+
+                ' '+${apartment.owner.fathers_name}" th:href="@{{id}(id=${apartment.id})}"></a></td>
                 <td ><a style="display: block; color: black;" th:text="${apartment.balance}" th:href="@{{id}(id=${apartment.id})}"></a></td>
                 <td><div class="btn-group" role="group" aria-label="Basic outlined button group">
                   <a th:href="@{edit/{id}(id=${apartment.id})}" class="btn btn-secondary btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>

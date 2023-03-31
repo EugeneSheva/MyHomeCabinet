@@ -1,10 +1,7 @@
 package com.example.myhome.home.model;
 
 import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.List;
 
@@ -24,21 +21,6 @@ public class Apartment {
 
     private String section;
     private String floor;
-
-//    @JsonIgnore
-//    @ManyToOne
-//    @JoinTable(name="building_section_apartments",
-//            joinColumns = @JoinColumn(name="apartment_id"),
-//            inverseJoinColumns = @JoinColumn(name="building_section_id"))
-//    private BuildingSection section;
-//
-//    @JsonIgnore
-//    @ManyToOne
-//    @JoinTable(name="building_floor_apartments",
-//            joinColumns = @JoinColumn(name="apartment_id"),
-//            inverseJoinColumns = @JoinColumn(name="building_floor_id"))
-//    private BuildingFloor floor;
-
     private Long number;
 
     private Double balance;

@@ -29,7 +29,11 @@ public class Owner {
     private Long id;
 
     //ФИО
-    private String first_name, last_name, fathers_name;
+    private String first_name;
+
+    private String last_name;
+
+    private String fathers_name;
 
     private String phone_number;
 

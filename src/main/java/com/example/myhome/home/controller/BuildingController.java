@@ -1,7 +1,7 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.Building;
-import com.example.myhome.home.services.BuildingService;
+import com.example.myhome.home.service.BuildingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -58,8 +58,8 @@ public class BuildingController {
         Building building = buildingService.saveBuildindImages(id, file1, file2, file3, file4, file5);
         building.setName(name);
         building.setAddress(address);
-        //building.setFloors(floors);
-        //building.setSections(sections);
+        building.setFloors(floors);
+        building.setSections(sections);
 
         buildingService.save(building);
         return "redirect:/buildings/";
