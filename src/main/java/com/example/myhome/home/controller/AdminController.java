@@ -2,6 +2,7 @@ package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.repository.AdminRepository;
+import com.example.myhome.home.service.AdminService;
 import com.example.myhome.util.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,17 +17,17 @@ import java.util.stream.Collectors;
 public class AdminController {
 
     @Autowired
-    private AdminRepository adminRepository;
+    private AdminService adminService;
 
     @GetMapping
     public String showAdminsPage(Model model) {
-        model.addAttribute("admins", adminRepository.findAll());
+        model.addAttribute("admins", adminService.findAll());
         return "admin_panel/system_settings/settings_users";
     }
 
     @GetMapping("/{id}")
     public String showAdminProfile(@PathVariable long id, Model model) {
-        model.addAttribute("admin", adminRepository.findById(id).orElseGet(Admin::new));
+        model.addAttribute("admin", adminService.findAdminById(id));
         return "admin_panel/system_settings/admin_profile";
     }
 
@@ -38,26 +39,26 @@ public class AdminController {
 
     @GetMapping("/update/{id}")
     public String showUpdateAdminPage(@PathVariable long id, Model model) {
-        model.addAttribute("admin", adminRepository.findById(id).orElseGet(Admin::new));
+        model.addAttribute("admin", adminService.findAdminById(id));
         return "admin_panel/system_settings/admin_card";
     }
 
     @PostMapping("/create")
     public String createAdmin(@ModelAttribute Admin admin) {
-        adminRepository.save(admin);
+        adminService.saveAdmin(admin);
         return "redirect:/admin/admins";
     }
 
     @PostMapping("/update/{id}")
     public String updateAdmin(@PathVariable long id, @ModelAttribute Admin admin) {
         admin.setId(id);
-        adminRepository.save(admin);
+        adminService.saveAdmin(admin);
         return "redirect:/admin/admins";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteAdmin(@PathVariable long id) {
-        adminRepository.deleteById(id);
+        adminService.deleteAdminById(id);
         return "redirect:/admin/admins";
     }
 
@@ -70,10 +71,10 @@ public class AdminController {
     public @ResponseBody List<Admin> getMastersByType(@RequestParam String type) {
         System.out.println(UserRole.ANY.name());
         if(type.equalsIgnoreCase(UserRole.ANY.name()))
-            return adminRepository.findAll().stream()
+            return adminService.findAll().stream()
                     .filter(admin -> admin.getRole() != UserRole.ADMIN && admin.getRole() != UserRole.DIRECTOR
                     && admin.getRole() != UserRole.MANAGER).collect(Collectors.toList());
-        else return adminRepository.getAdminsByRole(UserRole.valueOf(type.toUpperCase()));
+        else return adminService.getAdminsByRole(UserRole.valueOf(type.toUpperCase()));
     }
 
 }

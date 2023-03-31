@@ -31,7 +31,7 @@ public class MessageController {
     private final ApartmentService apartmentService;
     private final OwnerService ownerService;
 
-    @GetMapping("/")
+    @GetMapping
     public String getMessages(Model model) {
         List<Message> messagesList = messageService.findAll();
         model.addAttribute("messages", messagesList);
@@ -162,7 +162,7 @@ public class MessageController {
             apartmentDTOList = apartmentService.findDtoApartmentsByBuildingAndSectionAndFloorWithDebt(buildingId, section, floor);
         }
 
-            System.out.println("getApartments fin");
+        System.out.println("getApartments fin");
         System.out.println(apartmentDTOList);
         return apartmentDTOList;
     }

@@ -5,6 +5,8 @@ import com.example.myhome.home.model.ApartmentAccount;
 import com.example.myhome.home.repository.AccountRepository;
 import com.example.myhome.home.repository.ApartmentRepository;
 import com.example.myhome.home.repository.BuildingRepository;
+import com.example.myhome.home.service.AccountService;
+import com.example.myhome.home.service.BuildingService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,38 +21,33 @@ import java.util.Optional;
 public class AccountController {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountService accountService;
 
     @Autowired
-    private ApartmentRepository apartmentRepository;
-
-    @Autowired
-    private BuildingRepository buildingRepository;
+    private BuildingService buildingService;
 
     // показать все счета
     @GetMapping
     public String showAccountsPage(Model model) {
-        model.addAttribute("accounts", accountRepository.findAll());
+        model.addAttribute("accounts", accountService.findAll());
         return "admin_panel/accounts/accounts";
     }
 
     // показать профиль лицевого счёта
     @GetMapping("/{id}")
     public String showAccountInfoPage(@PathVariable long id, Model model) {
-        model.addAttribute("account", accountRepository.findById(id).orElseThrow());
+        model.addAttribute("account", accountService.getAccountById(id));
         return "admin_panel/accounts/account_profile";
     }
 
     // открытие страницы создания лицевого счета
     @GetMapping("/create")
     public String showCreateAccountPage(Model model) {
-        Optional<ApartmentAccount> accWithBiggestID = accountRepository.findFirstByOrderByIdDesc();
-        long id;
-        if(accWithBiggestID.isEmpty()) id = 1L;
-        else id = accWithBiggestID.get().getId()+1;
+        ApartmentAccount accWithBiggestID = accountService.getAccountWithBiggestId();
+        long id = accWithBiggestID.getId()+1;
         model.addAttribute("account", new ApartmentAccount());
         model.addAttribute("id", id);
-        model.addAttribute("buildings", buildingRepository.findAll());
+        model.addAttribute("buildings", buildingService.findAll());
         return "admin_panel/accounts/account_card";
     }
 
@@ -67,16 +64,16 @@ public class AccountController {
 //        apartment.setAccount(savedAccount);
 //        apartmentRepository.save(apartment);
 
-        accountRepository.save(account);
+        accountService.save(account);
 
         return "redirect:/admin/accounts";
     }
 
     @GetMapping("/update/{id}")
     public String showUpdateAccountPage(@PathVariable long id, Model model) {
-        model.addAttribute("account", accountRepository.findById(id).orElseThrow());
+        model.addAttribute("account", accountService.getAccountById(id));
         model.addAttribute("id", id);
-        model.addAttribute("buildings", buildingRepository.findAll());
+        model.addAttribute("buildings", buildingService.findAll());
         return "admin_panel/accounts/account_card";
     }
 
@@ -92,20 +89,20 @@ public class AccountController {
 //        apartment.setAccount(savedAccount);
 //        apartmentRepository.save(apartment);
 
-        accountRepository.save(account);
+        accountService.save(account);
 
         return "redirect:/admin/accounts";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteAccount(@PathVariable long id) {
-        accountRepository.deleteById(id);
+        accountService.deleteAccountById(id);
         return "redirect:/admin/accounts";
     }
 
     @GetMapping("/get-flat-account")
     public @ResponseBody String getAccountNumberFromFlat(@RequestParam long flat_id) {
-        return String.format("%010d", accountRepository.findByApartmentId(flat_id).orElseThrow().getId());
+        return String.format("%010d", accountService.getAccountNumberFromFlat(flat_id).getId());
     }
 
 }
