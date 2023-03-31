@@ -217,6 +217,14 @@ textarea {
     border: 0.5px solid silver;
 }
 
+.template {
+    margin-block: 12px;
+}
+
+.template p {
+    margin-bottom: 5px;
+}
+
 
 
 

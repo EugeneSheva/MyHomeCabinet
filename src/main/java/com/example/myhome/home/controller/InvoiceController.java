@@ -132,4 +132,16 @@ public class InvoiceController {
         invoiceRepository.deleteById(id);
         return "Удалил квитанцию с ID " + id;
     }
+
+    @GetMapping("/print/{id}")
+    public String getPrintPage(@PathVariable long id, Model model) {
+        Invoice invoice = invoiceRepository.findById(id).orElseThrow();
+        model.addAttribute("invoice", invoice);
+        return "invoice_print";
+    }
+
+    @GetMapping("/template")
+    public String getTemplateSettingPage(){
+        return "invoice_template_settings";
+    }
 }

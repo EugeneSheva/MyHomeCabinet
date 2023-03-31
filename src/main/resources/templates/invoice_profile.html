@@ -64,8 +64,8 @@
               <div class="box-header with-border" style="padding-top: 15px; padding-bottom: 15px;">
                 <h3 class="box-title" style="margin: 0; padding: 0">Просмотр квитанции</h3>
                 <div class="box-tools">
-                  <a href="" class="btn btn-default btn-sm">
-                    <i class="fa fa-dollar visible-xs" aria-hidden="true"></i><span class="hidden-xs"> Печать </span>
+                  <a th:href="@{/admin/invoices/print/{id}(id=${invoice.id})}" class="btn btn-default btn-sm">
+                    <span class="hidden-xs"> Печать </span>
                   </a>
                   <a href="" class="btn btn-default btn-sm">
                     <i class="fa fa-files visible-xs" aria-hidden="true"></i><span class="hidden-xs"> Отправить на e-mail </span>

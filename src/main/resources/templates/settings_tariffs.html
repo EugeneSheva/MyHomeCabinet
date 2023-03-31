@@ -110,7 +110,7 @@
     for(let i = 0; i < tariff_rows.length; i++) {
       console.log(tariff_rows[i]);
       tariff_rows[i].addEventListener('click', () => {
-        window.location.href = '/admin/tariffs/update/' + document.getElementById("input-" + i).value;
+        window.location.href = '/admin/tariffs/' + document.getElementById("input-" + i).value;
       });
     }
   });

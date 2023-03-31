@@ -39,6 +39,12 @@ public class TariffController {
         return "settings_tariffs";
     }
 
+    @GetMapping("/{id}")
+    public String showTariffInfoPage(@PathVariable long id, Model model) {
+        model.addAttribute("tariff", tariffRepository.findById(id).orElseThrow());
+        return "tariff_profile";
+    }
+
     @GetMapping("/create")
     public String showCreateTariffCard(Model model){
         model.addAttribute("tariff", new Tariff());
