@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "repair_requests")
-public class RepairRequests {
+public class RepairRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,14 +32,14 @@ public class RepairRequests {
     private String phone_number;
 
     @ManyToOne
-    @JoinColumn(name = "master_id")
+    @JoinColumn(name = "admin_id")
     private Admin master;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime request_date;
 
     @Enumerated(EnumType.STRING)
-    private RepairStatus repairStatus;
+    private RepairStatus status;
 
 
 }

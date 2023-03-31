@@ -3,18 +3,18 @@
     <img class="animation__wobble" th:src="@{/images/logo.png}" alt="AdminLTELogo" height="60" width="60">
   </div>
   <!-- Navbar -->
-  <nav th:fragment="header" class="main-header navbar navbar-expand navbar-white navbar-light">
+  <nav th:fragment="header" class="main-header navbar navbar-expand navbar-white navbar-light align-items-center">
     <!-- Left navbar links -->
-    <ul class="navbar-nav">
+    <ul class="navbar-nav align-items-center">
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="index3.html" class="nav-link">Home</a>
+        <a href="#" class="nav-link">Панель администратора</a>
       </li>
     </ul>
     <!-- Right navbar links -->
-    <aside class="navbar-nav ml-auto" >
+    <aside class="navbar-nav ml-auto align-items-center" >
       <li class="dropdown notifications-menu" >
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
           <i class="fa fa-user-plus" aria-hidden="true" style="color:grey;"></i>
@@ -45,37 +45,24 @@
       <!-- user panel  -->
       <li class="dropdown user user-menu">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-          <img src="#" class="user-image" alt="User Image">
-          <span class="hidden-xs" style="color:grey;">Alexander Pierce</span>
+          <img th:src="@{/images/placeholder.jpg}" class="user-image" alt="User Image">
+          <span class="hidden-xs" style="color:grey;">Denis Perevertov</span>
         </a>
         <ul class="dropdown-menu">
-
-          <li class="user-header">
-            <img src="#" class="img-circle" alt="User Image">
-            <p>
-              Alexander Pierce - Web Developer
-              <small>Member since Nov. 2012</small>
+          <li class="user-header"
+              style="background-color: rgba(255,0,0,0.4); display:flex; flex-direction:column;
+              justify-content:center;align-items:center;">
+            <img th:src="@{/images/placeholder.jpg}" class="img-circle" alt="User Image">
+            <p style="margin: 0">
+              <b>Denis Perevertov</b>
             </p>
           </li>
-          <li class="user-body">
-            <div class="row">
-              <div class="col-xs-4 text-center">
-                <a href="#">Followers</a>
-              </div>
-              <div class="col-xs-4 text-center">
-                <a href="#">Sales</a>
-              </div>
-              <div class="col-xs-4 text-center">
-                <a href="#">Friends</a>
-              </div>
-            </div>
-          </li>
           <li class="user-footer">
-            <div class="pull-left">
-              <a href="#" class="btn btn-default btn-flat">Profile</a>
+            <div class="pull-left" style="float: left;">
+              <a href="#" class="btn btn-warning">Профиль</a>
             </div>
             <div class="pull-right">
-              <a href="#" class="btn btn-default btn-flat">Sign out</a>
+              <a href="#" class="btn btn-danger">Выйти</a>
             </div>
           </li>
         </ul>
@@ -86,49 +73,35 @@
 
 
   <!-- Main Sidebar Container -->
-  <aside th:fragment="sidebar" class="main-sidebar sidebar-light-primary elevation-4">
+  <aside th:fragment="sidebar"
+         class="main-sidebar sidebar-light-primary elevation-4"
+         style="color: #444444; font-weight: 600; box-shadow: none;" >
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
-      <img th:src="@{/images/namelogo.png}" alt="МойДом24"
-           class="brand-image elevation-8"
-           style="opacity: .8">
+    <a th:href="@{/}" class="brand-link" style="margin-bottom: 20px;">
+      <img th:src="@{/images/namelogo.png}" alt="AdminLTE Logo"
+           class="img"
+           style="opacity: .8; width:70%; display: block; margin:auto;">
       <span class="brand-text font-weight-light"></span>
     </a>
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar Menu -->
-      <nav class="mt-2">
+      <nav style="margin-top: 30px;">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="pages/kanban.html" class="nav-link">
-              <i class="fa-solid fa-chart-line"></i>
-              <p>
-                Статистика
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="pages/kanban.html" class="nav-link">
-              <i class="fa fa-usd" aria-hidden="true"></i>
-              <p>
-                Касса
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="pages/kanban.html" class="nav-link">
+            <a th:href="@{/admin/invoices}" class="nav-link">
               <i class="fa fa-files-o" aria-hidden="true"></i>
-              <p>
+              <p class="pl-1">
                 Квитанции на оплату
               </p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/kanban.html" class="nav-link">
-              <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
-              <p>
+            <a th:href="@{/admin/accounts}" class="nav-link">
+              <i class="fa fa-credit-card" aria-hidden="true"></i>
+              <p class="pl-1">
                 Лицевые счета
               </p>
             </a>
@@ -136,7 +109,7 @@
           <li class="nav-item">
             <a th:href="@{/apartments/}" class="nav-link">
               <i class="fa fa-key" aria-hidden="true"></i>
-              <p>
+              <p class="pl-1">
                 Квартиры
               </p>
             </a>
@@ -144,7 +117,7 @@
           <li class="nav-item">
             <a th:href="@{/owners/}" class="nav-link">
               <i class="fa fa-users" aria-hidden="true"></i>
-              <p>
+              <p class="pl-1">
                 Владельцы квартир
               </p>
             </a>
@@ -152,71 +125,65 @@
           <li class="nav-item">
             <a th:href="@{/buildings/}" class="nav-link">
               <i class="fa fa-building" aria-hidden="true"></i>
-              <p>
+              <p class="pl-1">
                 Дома
               </p>
             </a>
           </li>
           <li class="nav-item">
-            <a th:href="@{/messages/}" class="nav-link">
+            <a th:href="@{/admin/messages}" class="nav-link">
               <i class="fa fa-envelope-o" aria-hidden="true"></i>
-              <p>
-                Сообщения
+              <p class="pl-1">
+                 Сообщения
               </p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/kanban.html" class="nav-link">
+            <a th:href="@{/admin/requests}" class="nav-link">
               <i class="fa fa-wrench" aria-hidden="true"></i>
-              <p>
-                Заявки вызова мастера
+              <p class="pl-1">
+                 Заявки вызова мастера
               </p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/kanban.html" class="nav-link">
+            <a th:href="@{/admin/meters}" class="nav-link">
               <i class="fa fa-tachometer" aria-hidden="true"></i>
-              <p>
-                Показания счетчиков
+              <p class="pl-1">
+                 Показания счетчиков
               </p>
             </a>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="fa fa-desktop" aria-hidden="true"></i>
-              <p>
-                Управление Сайтом
+              <p class="pl-1">
+                  Управление Сайтом
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/mailbox/mailbox.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Главная страница</p>
+            <ul class="nav nav-treeview" style="font-weight: 400">
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/admin/website/home}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle fa-sm nav-icon"></i>
+                  <p> Главная страница</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/compose.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/admin/website/about}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle fa-sm nav-icon"></i>
                   <p>О нас</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/read-mail.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/admin/website/services}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle fa-sm nav-icon"></i>
                   <p>Услуги</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/read-mail.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Тарифы</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/read-mail.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/admin/website/contacts}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle fa-sm nav-icon"></i>
                   <p>Контакты</p>
                 </a>
               </li>
@@ -225,39 +192,45 @@
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="fa fa-cogs" aria-hidden="true"></i>
-              <p>
+              <p class="pl-1">
                 Настройка системы
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/mailbox/mailbox.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+            <ul class="nav nav-treeview" style="font-weight: 400">
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/admin/services}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle nav-icon"></i>
                   <p>Услуги</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/compose.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+              <li class="nav-item dropdown-items"  >
+                <a th:href="@{/admin/tariffs}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;"  class="far fa-circle nav-icon"></i>
                   <p>Тарифы</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/read-mail.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/admin/admins}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle nav-icon"></i>
                   <p>Пользователи</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/read-mail.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/admin/roles}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle nav-icon"></i>
+                  <p>Роли</p>
+                </a>
+              </li>
+              <li class="nav-item dropdown-items">
+                <a th:href="@{/admin/payment-details}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle nav-icon"></i>
                   <p>Платежные реквизиты</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/read-mail.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+              <li class="nav-item dropdown-items">
+                <a th:href="@{/admin/income-expense}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle nav-icon"></i>
                   <p>Статьи платежей</p>
                 </a>
               </li>

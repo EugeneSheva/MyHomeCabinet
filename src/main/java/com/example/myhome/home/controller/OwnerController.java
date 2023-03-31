@@ -72,4 +72,10 @@ public class OwnerController {
         ownerService.deleteById(id);
         return "redirect:/owners/";
     }
+
+    //Получить квартиры какого-то владельца
+    @GetMapping("/get-apartments/{id}")
+    public @ResponseBody List<Apartment> getOwnerApartments(@PathVariable long id) {
+        return ownerService.findById(id).getApartments();
+    }
 }

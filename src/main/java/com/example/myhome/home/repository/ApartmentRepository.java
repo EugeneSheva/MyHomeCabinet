@@ -4,6 +4,7 @@ import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.ApartmentDTO;
 import com.example.myhome.home.model.BuildingDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
@@ -24,7 +25,7 @@ public interface ApartmentRepository extends JpaRepository<Apartment, Long> {
     List<Apartment>findApartmentsByBuildingIdAndSectionContainingIgnoreCaseAndFloorContainingIgnoreCase(Long id, String section, String floor);
     List<Apartment>findApartmentsByBuildingIdAndSectionContainingIgnoreCaseAndFloorContainingIgnoreCaseAndBalanceBefore(Long id, String section, String floor, Double balance);
 
-
+    Long getNumberById(long flat_id);
 
 }
 

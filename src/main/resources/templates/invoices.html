@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>МойДом24</title>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
+  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
+<!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
+
+<!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">-->
+</head>
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+
+  <nav th:insert="~{main-template :: header}"></nav>
+  <aside th:insert="~{main-template :: sidebar}"></aside>
+
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Квитанции на оплату</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>  Главная</a></li>
+              <li class="breadcrumb-item active">Квитанции на оплату</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="page_content">
+        <div class="row">
+            <div class="col-xs-12 col-lg-9">
+                <div class="row">
+                    <div class="col-xs-12 col-md-4">
+                        <div class="small-box bg-green overflow-hidden">
+                            <div class="inner">
+                                <h3>-3 811 220.06 грн</h3>
+                                <p>Состояние кассы</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-dollar"></i>
+                            </div>
+                            <!--<span class="small-box-footer">&nbsp;</span>-->
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-4">
+                        <div class="small-box bg-blue overflow-hidden">
+                            <div class="inner">
+                                <h3>346 259.62 грн</h3>
+                                <p>Баланс по счетам</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-dollar"></i>
+                            </div>
+                            <!--<span class="small-box-footer">&nbsp;</span>-->
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-4">
+                        <div class="small-box bg-red overflow-hidden">
+                            <div class="inner">
+                                <h3>568 914.00 грн</h3>
+                                <p>Задолженность по счетам</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-dollar"></i>
+                            </div>
+                            <!--<span class="small-box-footer">&nbsp;</span>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-lg-3">
+                <div class="btn-group pull-right margin-bottom">
+                    <button type="button" class="btn btn-success dropdown-toggle" style="width: 230px;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Выберите действие <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/admin/invoices/create}" style="padding-inline:15px;">Создать новую квитанцию</a></li>
+                        <li onclick="deleteChosen()"><a>Удалить</a></li>
+                    </ul>
+                </div>
+            </div>
+    </div>
+
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box" style="padding:0;">
+              <div class="box-header with-border" style="padding-block:15px;">
+                <h3 class="box-title"></h3>
+                <div class="box-tools">
+                  <a href="" class="btn btn-default btn-sm">
+                    <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="box-body table-responsive">
+                <table class="table table-bordered table-hover table-striped linkedRow">
+                  <thead>
+                      <tr>
+                        <th><input type="checkbox" name="" id="check_all"></th>
+                          <th>№ квитанции</th>
+                          <th>Статус</th>
+                          <th>Дата</th>
+                          <th>Месяц</th>
+                          <th>Квартира</th>
+                          <th>Владелец</th>
+                          <th>Проведена</th>
+                          <th>Сумма(грн)</th>
+                          <th></th>
+                      </tr>
+                  <tr id="w0-filters" class="filters">
+<!--                    <td>-->
+<!--                      <select id="counterdatasearch-searchhouse" class="form-control select2-hidden-accessible" name="CounterDataSearch[searchHouse]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_0d896465" style="display:none" tabindex="-1" aria-hidden="true">-->
+<!--                        <option value=""></option>-->
+<!--                        <option value="1">ЖК "Башня Чкалов"</option>-->
+<!--                        <option value="2">ЖК "Морская Симфония"</option>-->
+<!--                        <option value="3">ЖК "Дом Каркашадзе"</option>-->
+<!--                        <option value="4">ЖК "Королевские сады"</option>-->
+<!--                        <option value="6">ЖК "Балковский"</option>-->
+<!--                      </select>-->
+<!--                      <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
+<!--                                    <span class="selection">-->
+<!--                                        <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-counterdatasearch-searchhouse-container">-->
+<!--                                            <span class="select2-selection__rendered" id="select2-counterdatasearch-searchhouse-container">-->
+<!--                                                <span class="select2-selection__placeholder"></span>-->
+<!--                                            </span>-->
+<!--                                            <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
+<!--                                        </span>-->
+<!--                                    </span>-->
+<!--                                    <span class="dropdown-wrapper" aria-hidden="true"></span>-->
+<!--                                </span>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                      <select id="counterdatasearch-searchsection" class="form-control select2-hidden-accessible" name="CounterDataSearch[searchSection]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_00d9e7b8" style="display:none" tabindex="-1" aria-hidden="true">-->
+<!--                        <option value="">Выберите дом</option>-->
+<!--                      </select>-->
+<!--                      <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
+<!--                                    <span class="selection">-->
+<!--                                        <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-counterdatasearch-searchsection-container">-->
+<!--                                            <span class="select2-selection__rendered" id="select2-counterdatasearch-searchsection-container">-->
+<!--                                                <span class="select2-selection__placeholder">Выберите дом</span>-->
+<!--                                            </span>-->
+<!--                                            <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
+<!--                                        </span>-->
+<!--                                    </span>-->
+<!--                                    <span class="dropdown-wrapper" aria-hidden="true"></span>-->
+<!--                                </span>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                      <input type="text" class="form-control" name="CounterDataSearch[searchFlat]">-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                      <select id="counterdatasearch-service_id" class="form-control select2-hidden-accessible" name="CounterDataSearch[service_id]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_0d896465" style="display:none" tabindex="-1" aria-hidden="true">-->
+<!--                        <option value="39">Водоснабжение</option>-->
+<!--                        <option value="40">Газоснабжение</option>-->
+<!--                        <option value="41">Транспортировка газа</option>-->
+<!--                        <option value="65">111111111111111111111111</option>-->
+<!--                      </select>-->
+<!--                      <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
+<!--                                    <span class="selection">-->
+<!--                                        <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-counterdatasearch-service_id-container">-->
+<!--                                            <span class="select2-selection__rendered" id="select2-counterdatasearch-service_id-container">-->
+<!--                                                <span class="select2-selection__placeholder"></span>-->
+<!--                                            </span>-->
+<!--                                            <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
+<!--                                        </span>-->
+<!--                                    </span>-->
+<!--                                    <span class="dropdown-wrapper" aria-hidden="true"></span>-->
+<!--                                </span>-->
+<!--                    </td>-->
+<!--                    <td>&nbsp;</td>-->
+<!--                    <td>&nbsp;</td>-->
+<!--                    <td>&nbsp;</td>-->
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="cursor: pointer;" class="invoice_row" th:each="invoice : ${invoices}">
+                        <input type="hidden" th:value="${invoice.id}">
+                        <td><input type="checkbox" name="" id=""></td>
+                        <td th:text="${T(java.lang.String).format('%010d',invoice.id)}"></td>
+                        <td>
+                            <small th:class="'label ' +
+                            ${invoice.status == T(com.example.myhome.home.model.InvoiceStatus).PAID ? 'label-success' :
+                            (invoice.status == T(com.example.myhome.home.model.InvoiceStatus).UNPAID) ? 'label-danger' : 'label-warning'}"
+                                   th:text="${invoice.status.getName()}">
+                            </small>
+                        </td>
+                        <td th:text="${invoice.date}"></td>
+                        <td th:text="${#temporals.format(invoice.date, 'MMM yyyy')}"></td>
+                        <td th:text="${invoice.apartment.number} + ', ' + ${invoice.apartment.building.name}"></td>
+                        <td th:text="${invoice.apartment.owner.getFullName()}"></td>
+                        <td><span th:text="${invoice.completed} ? 'Проведена' : 'Не проведена'"></span></td>
+                        <td><span th:text="${invoice.total_price}"
+                                  th:style="${invoice.total_price > 0 ? 'color:green' : (invoice_total_price < 0) ? 'color:red' : 'color:black'}"></span></td>
+                        <td>
+                            <div class="btn-group pull-right">
+                                <a class="btn btn-default btn-sm" th:href="@{/admin/invoices/update/{id}(id=${invoice.id})}"><i class="fa fa-pencil"></i></a>
+                                <a class="btn btn-default btn-sm"
+                                   th:attr="data-url='/admin/invoices/delete/'+${invoice.id}"
+                                   th:onclick="if(confirm('Удалить квитанцию?')) window.location.href=this.dataset.url"><i class="fa fa-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="box-footer clearfix"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Main Footer -->
+  <footer th:insert="~{main-template :: footer}"></footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+<!-- Icons -->
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- overlayScrollbars -->
+<!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+
+<script>
+
+    let rows = document.getElementsByClassName("invoice_row");
+    for(let i = 0; i < rows.length; i++) {
+        let row_children = rows[i].children;
+        let invoice_id = row_children[0].value;
+        for(let j = 2; j < row_children.length - 1; j++) {
+            row_children[j].addEventListener('click', function(){
+                window.location.href = '/admin/invoices/'+invoice_id;
+            });
+        }
+    }
+
+    document.getElementById("check_all").addEventListener('click', function(){
+        console.log(this.checked);
+        if(this.checked == true) {
+            console.log('true block');
+            for(const checkbox of document.querySelectorAll("input[type=checkbox]")) {
+                checkbox.checked = true;
+            }
+        } else if(this.checked == false) {
+            console.log('false block');
+            for(const checkbox of document.querySelectorAll("input[type=checkbox]")) {
+                checkbox.checked = false;
+            }
+        }
+
+    });
+
+    function deleteChosen(){
+        if(confirm('Удалить выбранные квитанции?')) {
+            for(const row of document.querySelectorAll(".invoice_row")) {
+                console.log(row.querySelector("input[type=checkbox]"));
+                if(row.querySelector("input[type=checkbox]").checked == true) {
+                    let invoice_id = row.children[0].value;
+                    console.log(invoice_id);
+                    $.get('/admin/invoices/delete-invoice', {id:invoice_id}, function(data){console.log(data); row.remove();}).fail(function(){alert('Ошибка в удалении квитанций')});
+                }
+            }
+            location.reload();
+        }
+    }
+</script>
+
+
+<!-- PAGE PLUGINS -->
+<!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->
+<!--<script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>-->
+<!--<script src="plugins/raphael/raphael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/jquery.mapael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/maps/usa_states.min.js"></script>-->
+<!--&lt;!&ndash; ChartJS &ndash;&gt;-->
+<!--<script src="plugins/chart.js/Chart.min.js"></script>-->
+
+<!--&lt;!&ndash; AdminLTE for demo purposes &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/demo.js}"></script>-->
+<!--&lt;!&ndash; AdminLTE dashboard demo (This is only for demo purposes) &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/pages/dashboard2.js}"></script>-->
+</body>
+</html>
