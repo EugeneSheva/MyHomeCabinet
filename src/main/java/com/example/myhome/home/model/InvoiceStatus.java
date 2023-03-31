@@ -1,5 +1,17 @@
 package com.example.myhome.home.model;
 
 public enum InvoiceStatus {
-    PAID, PARTIALLY_PAID, UNPAID
+    PAID("Оплачена"),
+    PARTIALLY_PAID("Частично оплачена"),
+    UNPAID("Неоплачена");
+
+    private final String name;
+
+    InvoiceStatus(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

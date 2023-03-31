@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>МойДом24</title>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
+  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+  <!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
+  <!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
+
+  <!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">-->
+</head>
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+
+  <nav th:insert="~{main-template :: header}"></nav>
+  <aside th:insert="~{main-template :: sidebar}"></aside>
+
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Новое показание</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/meters}">Счётчики</a></li>
+              <li class="breadcrumb-item active">Новое показание</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="page_content">
+      <form method="post" th:object="${meter}" th:action="${meter.id == null} ? @{/admin/meters/create} : @{/admin/meters/create-add}">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="input-group-addon">
+                №
+              </div>
+              <input type="hidden" disabled id="id" th:field="*{id}">
+              <input disabled style="width: 90%;" type="text" id="counterdata-uid" class="form-control"
+                     th:value="${T(java.lang.String).format('%010d',id)}" aria-required="true">
+            </div>
+            <div class="col-md-3">
+              <span>от</span>
+              <div class="input-group">
+                <span class="input-group-addon kv-date-calendar" title="Выбрать дату">
+                  <i class="glyphicon glyphicon-calendar"></i>
+                </span>
+                <input type="hidden" th:value="${now}">
+                <input style="width: 90%;" type="date" id="date" class="form-control" th:field="*{date}" th:value="${now}">
+              </div>
+            </div>
+            <div class="col-md-6"></div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="box">
+                <div class="box-body">
+
+                    <div class="row">
+                      <div class="col-xs-12 col-md-6">
+                        <input type="hidden" id="apartment_exists" th:value="*{apartment != null} ? 1 : 0">
+                        <h4><b>Дом</b></h4>
+                        <select class="selects"
+                                th:field="*{apartment.building}"
+                                id="house_select">
+                          <option value="0">Выберите...</option>
+                          <option th:each="building : ${buildings}"
+                                  th:value="${building.id}"
+                                  th:text="${building.name}"></option>
+                        </select>
+                        <h4 class="mt-4"><b>Секция</b></h4>
+                        <select class="selects" th:field="*{apartment.section}" disabled id="section_select">
+                          <option value="0">Сначала выберите дом</option>
+
+                        </select>
+                        <h4 class="mt-4"><b>Квартира</b></h4>
+                        <input type="hidden" id="section_name" th:if="${meter.apartment != null}" th:value="${meter.apartment.section}">
+                        <select class="selects" disabled th:field="*{apartment}" id="apartment_select">
+                          <option value="0">Сначала выберите секцию</option>
+                        </select>
+                        <h4 class="mt-4"><b>Счётчик</b></h4>
+                        <select class="selects" th:field="*{service}">
+                          <option value="0">Выберите услугу...</option>
+                          <option th:each="s_service : ${services}" th:value="${s_service.id}" th:text="${s_service.name}"></option>
+                        </select>
+                      </div>
+                      <div class="col-xs-12 col-md-6">
+                        <h4><b>Статус</b></h4>
+                        <select class="selects" id="status" th:field="*{status}">
+                          <option th:each="status : ${T(com.example.myhome.home.model.MeterPaymentStatus).values()}"
+                                  th:value="${status}" th:text="${status.getName()}"></option>
+                        </select>
+                        <h4 class="mt-4"><b>Показания счётчика</b></h4>
+                        <input type="text" th:field="*{currentReadings}" style="width: 100%;">
+                      </div>
+                    </div>
+                    <div class="row mt-3">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <a th:href="@{/admin/meters}" class="btn btn-default">Отменить</a>
+                          <button type="submit" class="btn btn-success">Сохранить</button>
+                          <button type="button" id="new_meter_btn" class="btn btn-warning">Сохранить и добавить новые показания</button>
+                        </div>
+                      </div>
+                    </div>
+
+                </div>
+                <div class="box-footer clearfix"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </section>
+
+  </div>
+
+  <!-- Main Footer -->
+  <footer th:insert="~{main-template :: footer}"></footer>
+</div>
+<!-- ./wrapper -->
+
+<style>
+  .selects {
+    width: 100%;
+    color: gray;
+    padding-block: 3px;
+  }
+</style>
+
+<!-- REQUIRED SCRIPTS -->
+<!-- Icons -->
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- overlayScrollbars -->
+<!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+
+<script th:inline="javascript">
+  $(document).ready(function(){
+
+    let meter_section = [[${meter.apartment.section}]];
+    let meter_apartment_number = [[${meter.apartment.number}]];
+    let meter_apartment_number_id = [[${meter.apartment.id}]]
+    let meter_service_id = [[${meter.service.id}]]
+
+    console.log(meter_section);
+    console.log(meter_apartment_number);
+
+    if(document.getElementById("apartment_exists").value === '1') {
+
+      let house_select = document.getElementById("house_select");
+      let section_select = document.getElementById("section_select");
+      let apartment_select = document.getElementById("apartment_select");
+
+      let section_name = document.getElementById("section_name");
+
+      section_select.disabled = false;
+      apartment_select.disabled = false;
+
+      section_select.innerHTML = '';
+      apartment_select.innerHTML = '';
+
+      $.get('/admin/buildings/get-sections/'+house_select.value, function(data){
+
+            console.log(data);
+
+            for(let i = 0; i < data.length; i++) {
+              option = document.createElement("option");
+              option.value = data[i];
+              option.text = data[i];
+              section_select.appendChild(option);
+              section_select.value = data[0];
+            }
+
+            section_select.value = meter_section;
+            console.log(section_select.value);
+      });
+
+      console.log("house id " + house_select.value);
+      console.log("section name " + section_name.value);
+
+      $.get('/admin/buildings/get-section-apartments/'+house_select.value, {section_name:section_name.value}, function(data){
+
+            console.log(data);
+
+            for(let i = 0; i < data.length; i++) {
+              option = document.createElement("option");
+              option.value = data[i].id;
+              option.text = 'кв. ' + data[i].number;
+              apartment_select.appendChild(option);
+            }
+
+            console.log('кв. ' + meter_apartment_number);
+            apartment_select.value=meter_apartment_number_id;
+            console.log(apartment_select.value);
+
+      });
+
+      //надо подгрузить в селекты все опции
+    }
+
+    $("#house_select").change(function(){
+        console.log(this);
+        console.log(this.value);
+
+        let section_select = document.getElementById("section_select");
+        section_select.innerHTML = '';
+
+        let apartment_select = document.getElementById("apartment_select");
+        apartment_select.innerHTML = '';
+
+        if(this.value === '0') {
+
+          console.log("IF");
+
+          section_select.disabled = true;
+          let o = document.createElement("option");
+          o.value = 0;
+          o.text = 'Сначала выберите дом';
+          o.selected = true;
+
+          section_select.appendChild(o);
+
+          apartment_select.disabled = true;
+          o = document.createElement("option");
+          o.value = 0;
+          o.text = 'Сначала выберите секцию';
+          o.selected = true;
+
+          apartment_select.appendChild(o);
+        } else {
+
+          console.log("ELSE");
+
+          section_select.disabled = false;
+          apartment_select.disabled = true;
+
+          let option = document.createElement("option");
+          option.value = 0;
+          option.text = 'Выберите...';
+          option.selected = true;
+
+          section_select.appendChild(option);
+
+          option = document.createElement("option");
+          option.value = 0;
+          option.text = 'Сначала выберите секцию';
+          option.selected = true;
+
+          apartment_select.appendChild(option);
+
+          $.get('/admin/buildings/get-sections/'+this.value, function(data){
+
+            console.log(data);
+
+            for(let i = 0; i < data.length; i++) {
+              option = document.createElement("option");
+              option.value = data[i];
+              option.text = data[i];
+              section_select.appendChild(option);
+            }
+          });
+        };
+    });
+
+    $("#section_select").change(function(){
+        console.log(this);
+        console.log(this.value);
+
+        let house_select = document.getElementById("house_select");
+        console.log(house_select.value);
+
+        let apartment_select = document.getElementById("apartment_select");
+        apartment_select.innerHTML = '';
+        apartment_select.disabled = false;
+
+        let option = document.createElement("option");
+        option.value = 0;
+        option.text = 'Выберите...';
+        option.selected = true;
+
+        apartment_select.appendChild(option);
+
+        $.get('/admin/buildings/get-section-apartments/'+house_select.value, {section_name:this.value}, function(data){
+
+          console.log(data);
+
+          for(let i = 0; i < data.length; i++) {
+            let option = document.createElement("option");
+            option.value = data[i].id;
+            option.text = 'кв. ' + data[i].number;
+            apartment_select.appendChild(option);
+          }
+
+        });
+    });
+
+    document.getElementById("new_meter_btn").addEventListener('click', function(){
+      let date = document.getElementById("date").value;
+      let apart_id = document.getElementById("apartment_select").value;
+      let serv_id = document.getElementById("service").value;
+      let stat = document.getElementById("status").value;
+      let readings = document.getElementById("currentReadings").value
+
+      let meter = {
+        'apartment_id': apart_id,
+        'readings':readings,
+        'stat':stat,
+        'service_id': serv_id,
+        'date':date
+      }
+
+      console.log(meter);
+
+      $.ajax({
+        type:"POST",
+        url:'http://localhost:8980/admin/meters/save-meter',
+        data: {
+          'apartment_id': apart_id,
+          'readings':readings,
+          'stat':stat,
+          'service_id': serv_id,
+          'date':date
+        },
+        success:function(){
+          alert("Сохранил заебись");
+          window.location.href='/admin/meters/create-add?flat_id='+apart_id+'&service_id='+serv_id;
+        },
+      });
+    });
+
+  })
+</script>
+
+<!-- PAGE PLUGINS -->
+<!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->
+<!--<script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>-->
+<!--<script src="plugins/raphael/raphael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/jquery.mapael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/maps/usa_states.min.js"></script>-->
+<!--&lt;!&ndash; ChartJS &ndash;&gt;-->
+<!--<script src="plugins/chart.js/Chart.min.js"></script>-->
+
+<!--&lt;!&ndash; AdminLTE for demo purposes &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/demo.js}"></script>-->
+<!--&lt;!&ndash; AdminLTE dashboard demo (This is only for demo purposes) &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/pages/dashboard2.js}"></script>-->
+</body>
+</html>

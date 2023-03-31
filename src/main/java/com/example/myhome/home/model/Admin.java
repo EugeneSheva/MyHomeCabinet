@@ -1,6 +1,9 @@
 package com.example.myhome.home.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 
 import com.example.myhome.util.UserRole;
 import lombok.Data;
@@ -24,11 +27,12 @@ public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private Long phone_number;
+
+    private String first_name, last_name;
+    private String phone_number;
     private String email;
     private String password;
-    private boolean active;
+    private boolean active = true;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfRegistry;
@@ -54,7 +58,7 @@ public class Admin {
     public String toString() {
         return "Admin{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name='" + first_name+ " " + last_name + '\'' +
                 ", phone_number=" + phone_number +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
@@ -62,6 +66,10 @@ public class Admin {
                 ", dateOfRegistry=" + dateOfRegistry +
                 ", role=" + role +
                 "}\n";
+    }
+
+    public String getFullName() {
+        return this.first_name + ' ' + this.last_name;
     }
 }
 

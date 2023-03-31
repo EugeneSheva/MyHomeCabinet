@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>МойДом24</title>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
+  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+  <!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
+  <!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
+
+  <!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">-->
+</head>
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+
+  <nav th:insert="~{main-template :: header}"></nav>
+  <aside th:insert="~{main-template :: sidebar}"></aside>
+
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0"
+                th:text="${account != null} ? 'Квитанция №' + ${invoice.id}  : 'Новая квитанция'"></h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/invoices}">Квитанции</a></li>
+              <li class="breadcrumb-item active" th:text="${invoice.id != null} ? 'Квитанция №' + ${invoice.id} : 'Новая квитанция'"></li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="page_content">
+      <form method="post" th:object="${invoice}">
+        <input type="hidden" id="apartment_exists" th:value="*{apartment != null} ? 1 : 0">
+        <input type="hidden" th:field="*{id}">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-3">
+              <span style="display:inline;">№ </span>
+              <input style="width: 90%; display:inline;"
+                     th:value="${T(java.lang.String).format('%010d',id)}"
+                     disabled
+                     class="form-control">
+            </div>
+            <div class="col-md-3">
+              <span style="display:inline;">от </span>
+              <input style="width: 90%; display:inline;" type="date"
+                     th:if="${invoice.id != null}"
+                     th:field="*{date}"
+                     class="form-control">
+              <input style="width: 90%; display:inline;" type="date" name="date"
+                     th:if="${invoice.id == null}"
+                     th:value="${current_date}"
+                     class="form-control">
+            </div>
+            <div class="col-md-6"></div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="box" style="padding:15px;">
+                <div class="box-body">
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h4 style="font-weight: bold">Дом</h4>
+                      <select id="house_select" th:field="*{apartment.building}" class="selects mb-3">
+                        <option value="0">Выберите...</option>
+                        <option th:each="building : ${buildings}"
+                                th:value="${building.id}"
+                                th:text="${building.name}"></option>
+                      </select>
+                      <h4 style="font-weight: bold">Секция</h4>
+                      <select id="section_select" th:if="*{apartment.building != null}" th:field="*{apartment.section}" class="selects mb-3">
+                        <option th:each="section : *{apartment.building.getSections()}"
+                                th:value="${section}"
+                                th:text="${section}"></option>
+                      </select>
+                      <select id="section_select" th:if="*{apartment.building == null}" disabled th:field="*{apartment.section}" class="selects mb-3">
+                        <option value="0">Сначала выберите дом</option>
+                      </select>
+                      <h4 style="font-weight: bold">Квартира</h4>
+                      <select id="apartment_select" th:if="*{apartment.building != null}" th:field="*{apartment}" class="selects mb-3">
+                        <option th:each="flat : *{apartment.building.getApartments()}"
+                                th:value="${flat.id}"
+                                th:text="'кв. ' + ${flat.number}"></option>
+                      </select>
+                      <select id="apartment_select" th:if="*{apartment.building == null}" disabled th:field="*{apartment}" class="selects mb-3">
+                        <option value="0">Сначала выберите секцию</option>
+                      </select>
+
+                      <h4 style="font-weight: bold">Лицевой счёт</h4>
+                      <input type="text" id="account" disabled style="width: 100%;" class="mb-3" th:field="*{apartment.account}">
+
+                      <p id="owner_name">
+                        <b>Владелец: </b>
+                        <span th:if="*{apartment.owner != null}">
+                          <a th:href="@{/owners/{id}(id=*{apartment.owner.id})}" th:text="*{apartment.owner.getFullName()}"></a>
+                        </span>
+                      </p>
+                      <p id="owner_phone">
+                        <b>Телефон: </b>
+                        <span th:if="*{apartment.owner != null}">
+                          <a th:href="'tel:' + *{apartment.owner.phone_number}" th:text="*{apartment.owner.phone_number}"></a>
+                        </span>
+                      </p>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="checkbox" class="mb-5 mt-3" style="caret-color:transparent;" th:field="*{completed}"> <b>Проведена</b>
+                      <br>
+                      <h4 style="font-weight: bold">Статус</h4>
+                      <select th:field="*{status}" class="selects mb-3">
+                        <option value="0">Выберите...</option>
+                        <option th:each="stat : ${T(com.example.myhome.home.model.InvoiceStatus).values()}"
+                                th:value="${stat}"
+                                th:text="${stat.getName()}"></option>
+                      </select>
+                      <h4 style="font-weight: bold">Тариф</h4>
+                      <select th:field="*{tariff}" class="selects mb-3">
+                        <option value="0">Выберите...</option>
+                        <option th:each="t : ${tariffs}"
+                                th:value="${t.id}"
+                                th:text="${t.name}"></option>
+                      </select>
+                      <div class="row">
+                        <div class="col-sm-6">
+                          <h4 style="font-weight: bold">Период с</h4>
+                          <input type="date" style="width: 90%" th:field="*{dateFrom}">
+                        </div>
+                        <div class="col-sm-6">
+                          <h4 style="font-weight: bold">Период по</h4>
+                          <input type="date" style="width: 90%" th:field="*{dateTo}">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <input type="hidden" th:field="*{total_price}">
+                    <table class="table table-bordered table-striped table-view">
+                      <thead>
+                        <tr>
+                          <th>Услуга</th>
+                          <th>Ед.изм</th>
+                          <th>Цена за ед., грн</th>
+                          <th>Количество потребления(расход)</th>
+                          <th>Стоимость, грн.</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody id="components_body">
+                        <tr id="component_row_template" style="display:none;">
+                          <td>
+                            <select class="selects services" onchange="setUnit(this)" name="services">
+                              <option value="0">Выберите...</option>
+                              <option th:each="service : ${services}"
+                                      th:value="${service.id}"
+                                      th:text="${service.name}"></option>
+                            </select>
+                          </td>
+                          <td>
+                            <input style="width:100%;" class="unit" disabled type="text">
+                          </td>
+                          <td>
+                            <input style="width:100%;" class="unit_prices" onchange="count(this)" name="unit_prices" value="0" type="number" step="0.1">
+                          </td>
+                          <td>
+                            <input style="width:100%;" class="unit_amounts" onchange="count(this)" name="unit_amounts" value="0" type="number" step="0.1">
+                          </td>
+                          <td>
+                            <input style="width:100%;" class="total_price" value="0" type="text" disabled>
+                          </td>
+                          <td>
+                            <button type="button"
+                                    onclick="if(confirm('Удалить?')) {this.parentElement.parentElement.remove(); countTotalPrice()}"
+                                    class="btn btn-default btn-sm form-row-remove-btn"
+                                    title="Удалить услугу"><i class="fa fa-trash"></i></button>
+                          </td>
+                        </tr>
+                        <tr th:each="component, iter : ${invoice.components}">
+                            <td th:text="${component.service.name}"></td>
+                            <td th:text="${component.service.unit.name}"></td>
+                            <td th:text="${component.unit_price}"></td>
+                            <td th:text="${component.unit_amount}"></td>
+                            <td th:if="${component != null}" th:text="${component.getTotalPrice()}"></td>
+                            <td th:if="${component == null}" th:text="0.0"></td>
+                          </tr>
+                        <tr id="button_row">
+                          <td colspan="4">
+                            <button type="button" id="add_service_btn" class="btn btn-default btn-hover-change form-row-add-invoiceservice-btn">
+                              Добавить услугу
+                            </button>
+                            <button type="button" id="set_services_from_tariff_btn" class="btn btn-default set-tariff-services">
+                              Установить все услуги согласно тарифу
+                            </button>
+                            <button type="button" class="btn btn-default add-counters">
+                              Добавить показания счетчиков
+                            </button>
+                          </td>
+                          <td><span style="font-weight: bold" id="total_price" th:text="'Итого: ' + ${invoice.total_price}"></span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+
+                  <div class="row justify-content-end">
+                    <div class="col-xs-12">
+                      <div class="form-group">
+                        <a th:href="@{/admin/invoices}" class="btn btn-default">Отменить</a>
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="box-footer clearfix"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="box">
+                <div class="box-header with-border" style="padding-block:15px;">
+                  <h3 class="box-title">Показания счётчиков</h3>
+                  <div class="box-tools"></div>
+                </div>
+                <div class="box-body table-responsive">
+                  <table class="table table-bordered table-hover table-striped linkedRow">
+                    <thead>
+                    <tr>
+                      <th style="width: 125px; min-width: 125px">№</th>
+                      <th>Статус</th>
+                      <th style="width: 125px; min-width: 125px">
+                          Дата
+                      </th>
+                      <th style="width: 125px; min-width: 125px">
+                          Месяц
+                      </th>
+                      <th style="min-width: 200px">Дом</th>
+                      <th style="min-width: 160px">Секция</th>
+                      <th style="width: 110px; min-width: 110px">№ квартиры</th>
+                      <th>Счетчик</th>
+                      <th style="width: 90px; min-width: 90px">Показания</th>
+                      <th style="width: 90px; min-width: 90px">Ед. изм.</th>
+                    </tr>
+                    <tr id="w0-filters" class="filters">
+                      <!--                    <td>-->
+                      <!--                      <select id="counterdatasearch-searchhouse" class="form-control select2-hidden-accessible" name="CounterDataSearch[searchHouse]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_0d896465" style="display:none" tabindex="-1" aria-hidden="true">-->
+                      <!--                        <option value=""></option>-->
+                      <!--                        <option value="1">ЖК "Башня Чкалов"</option>-->
+                      <!--                        <option value="2">ЖК "Морская Симфония"</option>-->
+                      <!--                        <option value="3">ЖК "Дом Каркашадзе"</option>-->
+                      <!--                        <option value="4">ЖК "Королевские сады"</option>-->
+                      <!--                        <option value="6">ЖК "Балковский"</option>-->
+                      <!--                      </select>-->
+                      <!--                      <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
+                      <!--                                    <span class="selection">-->
+                      <!--                                        <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-counterdatasearch-searchhouse-container">-->
+                      <!--                                            <span class="select2-selection__rendered" id="select2-counterdatasearch-searchhouse-container">-->
+                      <!--                                                <span class="select2-selection__placeholder"></span>-->
+                      <!--                                            </span>-->
+                      <!--                                            <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
+                      <!--                                        </span>-->
+                      <!--                                    </span>-->
+                      <!--                                    <span class="dropdown-wrapper" aria-hidden="true"></span>-->
+                      <!--                                </span>-->
+                      <!--                    </td>-->
+                      <!--                    <td>-->
+                      <!--                      <select id="counterdatasearch-searchsection" class="form-control select2-hidden-accessible" name="CounterDataSearch[searchSection]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_00d9e7b8" style="display:none" tabindex="-1" aria-hidden="true">-->
+                      <!--                        <option value="">Выберите дом</option>-->
+                      <!--                      </select>-->
+                      <!--                      <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
+                      <!--                                    <span class="selection">-->
+                      <!--                                        <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-counterdatasearch-searchsection-container">-->
+                      <!--                                            <span class="select2-selection__rendered" id="select2-counterdatasearch-searchsection-container">-->
+                      <!--                                                <span class="select2-selection__placeholder">Выберите дом</span>-->
+                      <!--                                            </span>-->
+                      <!--                                            <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
+                      <!--                                        </span>-->
+                      <!--                                    </span>-->
+                      <!--                                    <span class="dropdown-wrapper" aria-hidden="true"></span>-->
+                      <!--                                </span>-->
+                      <!--                    </td>-->
+                      <!--                    <td>-->
+                      <!--                      <input type="text" class="form-control" name="CounterDataSearch[searchFlat]">-->
+                      <!--                    </td>-->
+                      <!--                    <td>-->
+                      <!--                      <select id="counterdatasearch-service_id" class="form-control select2-hidden-accessible" name="CounterDataSearch[service_id]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_0d896465" style="display:none" tabindex="-1" aria-hidden="true">-->
+                      <!--                        <option value="39">Водоснабжение</option>-->
+                      <!--                        <option value="40">Газоснабжение</option>-->
+                      <!--                        <option value="41">Транспортировка газа</option>-->
+                      <!--                        <option value="65">111111111111111111111111</option>-->
+                      <!--                      </select>-->
+                      <!--                      <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
+                      <!--                                    <span class="selection">-->
+                      <!--                                        <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-counterdatasearch-service_id-container">-->
+                      <!--                                            <span class="select2-selection__rendered" id="select2-counterdatasearch-service_id-container">-->
+                      <!--                                                <span class="select2-selection__placeholder"></span>-->
+                      <!--                                            </span>-->
+                      <!--                                            <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
+                      <!--                                        </span>-->
+                      <!--                                    </span>-->
+                      <!--                                    <span class="dropdown-wrapper" aria-hidden="true"></span>-->
+                      <!--                                </span>-->
+                      <!--                    </td>-->
+                      <!--                    <td>&nbsp;</td>-->
+                      <!--                    <td>&nbsp;</td>-->
+                      <!--                    <td>&nbsp;</td>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="meter_data_row" th:each="row : ${invoice.apartment.getMeterDataList() == null} ? ${meters} : *{apartment.getMeterDataList()}">
+                      <input type="hidden" id="row_id" th:value="${row.id}">
+                      <td th:text="${T(java.lang.String).format('%010d', row.id)}"></td>
+                      <td th:text="${row.status.getName()}"></td>
+                      <td th:text="${row.date}"></td>
+                      <td th:text="${#temporals.format(row.date, 'MMM yyyy')}"></td>
+                      <td th:text="${row.apartment.building.name}"></td>
+                      <td th:text="${row.apartment.section}"></td>
+                      <td th:text="${row.apartment.number}"></td>
+                      <td th:text="${row.service.name}"></td>
+                      <td style="background-color: #DFD5; font-weight: normal" th:text="${row.currentReadings}">32.0</td>
+                      <td style="background-color: #DFD5; font-weight: normal" th:text="${row.service.unit.name}">m²</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="box-footer clearfix"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </section>
+
+  </div>
+
+  <!-- Main Footer -->
+  <footer th:insert="~{main-template :: footer}"></footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+<!-- Icons -->
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- overlayScrollbars -->
+<!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+
+<script th:src="@{/dist/js/house_load.js}"></script>
+
+<script th:inline="javascript">
+    let add_service_btn = document.getElementById('add_service_btn');
+    let component_row_template = document.getElementById('component_row_template');
+    let components_body = document.getElementById("components_body");
+    let button_row = document.getElementById("button_row");
+    add_service_btn.addEventListener('click',function(){
+        let new_row = component_row_template.cloneNode(true);
+        new_row.id = '';
+        new_row.style.display = 'table-row'
+
+
+        components_body.insertBefore(new_row, button_row);
+    });
+
+    let set_services_from_tariff_btn = document.getElementById('set_services_from_tariff_btn');
+    set_services_from_tariff_btn.addEventListener('click', function(){
+
+        let rows = components_body.querySelectorAll("tr");
+        console.log(rows);
+        for(let i = 1; i < rows.length-1; i++) {
+          rows[i].remove();
+        }
+
+        let tariff_id = $("#tariff").val();
+
+        $.get('/admin/tariffs/get-components', {tariff_id:tariff_id}, function(data){
+            alert('получил услуги из тарифа');
+            console.log(data);
+            console.log(typeof data);
+
+            let map = new Map(Object.entries(data));
+
+            console.log(map);
+
+            let total_price = 0.0;
+
+            for (const [key, value] of map.entries()) {
+              let service = JSON.parse(key);
+              console.log(service);
+              console.log(value);
+
+              let new_row = component_row_template.cloneNode(true);
+              new_row.id = '';
+              new_row.style.display = 'table-row';
+
+              new_row.getElementsByClassName("services")[0].value = service.id;
+              new_row.getElementsByClassName("unit")[0].value = service.unit.name;
+              new_row.getElementsByClassName("unit_prices")[0].value = value;
+              new_row.getElementsByClassName("unit_amounts")[0].value = 1;
+              new_row.getElementsByClassName("total_price")[0].value = value;
+
+              total_price += value;
+
+              document.getElementById("total_price").innerText = 'Итого: ' + total_price;
+
+              components_body.insertBefore(new_row, button_row);
+            }
+        });
+    });
+
+    function countTotalPrice(){
+      let total_price = 0;
+      console.log(total_price);
+      for(let i = 1; i < document.getElementsByClassName("total_price").length; i++){
+        let total_price_element = document.getElementsByClassName("total_price")[i];
+        console.log(total_price_element);
+        console.log(total_price_element.value);
+        if(total_price_element.value == NaN) continue;
+        console.log(parseFloat(total_price_element.value));
+        total_price += parseFloat(total_price_element.value);
+      }
+      document.getElementById("total_price").innerText = 'Итого: ' + total_price;
+    };
+
+    function count(element) {
+       console.log(element);
+       let unit_price = element.parentElement.parentElement.querySelector(".unit_prices").value;
+       let unit_amount = element.parentElement.parentElement.querySelector(".unit_amounts").value;
+       let total_price = unit_price*unit_amount;
+
+
+       console.log(unit_price);
+       console.log(unit_amount);
+       console.log(total_price);
+
+       element.parentElement.parentElement.querySelector(".total_price").value = total_price;
+
+       countTotalPrice();
+    }
+
+    function setUnit(select) {
+        console.log(select.value);
+        let service_id = $(select).val();
+        console.log(service_id);
+        let unit = $(select).closest('tr').find('.unit');
+        console.log(unit);
+
+        $.get('/admin/services/get-unit', {id:service_id}, function(data){
+            $(unit).val(data.name);
+        });
+    }
+
+    $(".services").change(function(){
+
+    });
+
+</script>
+
+<!-- PAGE PLUGINS -->
+<!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->
+<!--<script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>-->
+<!--<script src="plugins/raphael/raphael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/jquery.mapael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/maps/usa_states.min.js"></script>-->
+<!--&lt;!&ndash; ChartJS &ndash;&gt;-->
+<!--<script src="plugins/chart.js/Chart.min.js"></script>-->
+
+<!--&lt;!&ndash; AdminLTE for demo purposes &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/demo.js}"></script>-->
+<!--&lt;!&ndash; AdminLTE dashboard demo (This is only for demo purposes) &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/pages/dashboard2.js}"></script>-->
+</body>
+</html>

@@ -3,13 +3,14 @@ package com.example.myhome.home.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Iterator;
 
 // --- УСЛУГИ ---
 
 @Data
 @Entity
 @Table(name = "services")
-public class Service {
+public class Service implements Iterable<Service> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +24,17 @@ public class Service {
     @JoinColumn(name = "unit_ID")
     private Unit unit;
 
+    public Service() {
+    }
+
+    public Service(String name, boolean show_in_meters, Unit unit) {
+        this.name = name;
+        this.show_in_meters = show_in_meters;
+        this.unit = unit;
+    }
+
+    @Override
+    public Iterator<Service> iterator() {
+        return null;
+    }
 }

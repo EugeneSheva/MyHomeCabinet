@@ -25,14 +25,15 @@ public class MeterData {
 
     private double currentReadings;
 
+    @Enumerated(EnumType.STRING)
+    private MeterPaymentStatus status;
+
     @ManyToOne
     @JoinColumn(name = "service_id")
     private Service service;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate date;
-
-
+    private LocalDate date = LocalDate.now();
 
 
 }

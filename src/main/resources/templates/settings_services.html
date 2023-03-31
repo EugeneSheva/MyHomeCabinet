@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>МойДом24</title>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
+  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/login.css}">
+<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
+<!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
+
+<!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">-->
+</head>
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+
+  <nav th:insert="~{main-template :: header}"></nav>
+  <aside th:insert="~{main-template :: sidebar}"></aside>
+
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Редактирование услуг</h1>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="page_content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box">
+              <div class="box-body">
+                <form method="post" th:object="${service}" enctype="multipart/form-data">
+
+                  <div class="row">
+                    <div class="col-xs-12 col-lg-7">
+                      <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                          <li class="active" id="service_tab" style="padding: 15px;"><a href="#tab_service" data-toggle="tab" aria-expanded="true">Услуги</a></li>
+                          <li class="" id="service_unit_tab" style="padding: 15px;"><a href="#tab_serviceunit" data-toggle="tab" aria-expanded="false">Единицы измерения</a></li>
+                        </ul>
+                        <div class="tab-content">
+
+                          <div class="tab-pane clearfix active" id="tab_service">
+
+                            <span th:if="${fail}" th:text="${fail}" style="margin-block: 15px; color: red; font-size: 18px; font-weight: bold;" class="mt-5 mb-5"></span>
+
+                            <div id="service_rows">
+
+                              <div th:each="service : ${services}" class="row s form-service">
+                                <div class="col-xs-12 col-sm-7">
+                                  <div class="form-group">
+                                    <label for="service-0-name">Услуга</label>
+                                    <input type="text" class="form-control" name="service_names" th:value="${service.name}">
+                                  </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-5">
+                                  <div class="form-group">
+                                    <label for="service-0-service_unit_id">Ед. изм.</label>
+                                    <div class="input-group">
+                                      <p th:text="${service.unit.getName()}" style="display:none;"></p>
+                                      <select th:field="*{unit}" class="form-control" name="service_unit_names" value="undefined">
+                                        <option value="undefined">Выберите...</option>
+                                        <option th:each="unit : ${units}" th:if="${unit.id != 0}" th:value="${unit.name}" th:text="${unit.name}"></option>
+                                      </select>
+                                      <span class="input-group-btn">
+                                        <button type="button"
+                                                class="btn btn-default form-row-remove-btn"
+                                                onclick="this.parentElement.parentElement.parentElement.parentElement.parentElement.remove()"
+                                                no-delete-msg="Эта услуга используется в квитанциях. Удаление невозможно.">
+                                          <i class="fa fa-trash"></i>
+                                        </button>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12">
+                                  <label><input type="checkbox" name="show_in_meters" th:checked="${service.show_in_meters}"> Показывать в счетчиках</label>        <div style="margin-bottom: 16px;"></div>
+                                </div>
+                              </div>
+                              <div id="service_template" style="display:none;" class="row form-service">
+                                <div class="col-xs-12 col-sm-7">
+                                  <div class="form-group">
+                                    <label for="service-0-name">Услуга</label>
+                                    <input type="text" id="service-0-name" class="form-control" name="service_names">
+                                  </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-5">
+                                  <div class="form-group">
+                                    <label>Ед. изм.</label>
+                                    <div class="input-group">
+                                      <select class="form-control" name="service_unit_names" value="undefined">
+                                        <option value="undefined">Выберите...</option>
+                                        <option th:each="unit : ${units}" th:value="${unit.name}" th:text="${unit.name}"></option>
+                                      </select>
+                                      <span class="input-group-btn">
+                                        <button type="button"
+                                                class="btn btn-default form-row-remove-btn"
+                                                onclick="this.parentElement.parentElement.parentElement.parentElement.parentElement.remove()"
+                                                no-delete-msg="Эта услуга используется в квитанциях. Удаление невозможно.">
+                                          <i class="fa fa-trash"></i>
+                                        </button>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12">
+                                  <label><input type="checkbox" id="service-0-is_counter" name="show_in_meters" value="1" checked=""> Показывать в счетчиках</label>
+                                  <div style="margin-bottom: 16px;"></div>
+                                </div>
+                              </div>
+
+                            </div>
+                            <button type="button" id="add_service_button" class="btn btn-default btn-hover-change pull-left form-row-add-service-btn">Добавить</button>
+                          </div>
+
+                          <div class="tab-pane clearfix" id="tab_serviceunit">
+
+                            <span th:if="${fail}" th:text="${fail}" style="margin-block: 15px; color: red; font-size: 18px; font-weight: bold;" class="mt-5 mb-5"></span>
+
+                            <div id="service_unit_rows">
+
+                              <div th:each="unit : ${units}" th:if="${unit.id != 0}" class="row form-serviceunit">
+                                <div class="col-xs-12">
+                                  <div class="form-group">
+                                    <label for="serviceunit-0-name">Ед. изм.</label>
+                                    <div class="input-group">
+                                      <input type="hidden" name="service_unit_ids" th:value="${unit.id}">
+                                      <input type="text" id="serviceunit-0-name" class="form-control" name="units" th:value="${unit.name}">
+                                      <span class="input-group-btn">
+                                        <button type="button"
+                                                class="btn btn-default form-row-remove-btn"
+                                                onclick="this.parentElement.parentElement.parentElement.parentElement.parentElement.remove()"
+                                                no-delete-msg="Эта ед.изм. используется в услуге. Удаление невозможно."><i class="fa fa-trash"></i></button>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div id="service_unit_template" style="display:none;" class="row form-serviceunit">
+                                <div class="col-xs-12">
+                                  <label for="serviceunit-0-name">Ед. изм.</label>
+                                  <div class="input-group">
+                                    <input type="text" class="form-control" name="units">
+                                    <span class="input-group-btn">
+                                      <button type="button"
+                                              class="btn btn-default form-row-remove-btn"
+                                              onclick="this.parentElement.parentElement.parentElement.parentElement.remove()"
+                                              no-delete-msg="Эта ед.изм. используется в услуге. Удаление невозможно."><i class="fa fa-trash"></i></button>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+
+                            <button type="button" id="add_service_unit_button" class="btn btn-default btn-hover-change pull-left form-row-add-serviceunit-btn">Добавить</button>
+
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group submit-buttons">
+                      <a href="admin/website/home" class="btn btn-default">Отменить</a>
+                      <button type="submit" class="btn btn-success">Сохранить</button>
+                    </div>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</div>
+
+  <!-- Main Footer -->
+  <footer th:insert="~{main-template :: footer}"></footer>
+</div>
+<!-- ./wrapper -->
+
+<style>
+  li.active {
+    border-top: 2px solid blue;
+    background-color: rgba(128,128,128,0.05);
+  }
+</style>
+
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dist/js/adminlte.js}"></script>
+
+<script>
+
+    document.getElementById("service_tab").addEventListener('click', () => {
+      document.getElementById("service_tab").classList.add('active');
+      document.getElementById("service_unit_tab").classList.remove('active');
+    });
+
+    document.getElementById("service_unit_tab").addEventListener('click', () => {
+      document.getElementById("service_tab").classList.remove('active');
+      document.getElementById("service_unit_tab").classList.add('active');
+    });
+
+    let add_service_btn = document.getElementById("add_service_button");
+    let service_template = document.getElementById("service_template");
+    add_service_btn.addEventListener('click', function() {
+
+        console.log(this);
+        console.log(service_template);
+
+        let new_slot = service_template.cloneNode(true);
+        new_slot.style = '';
+
+        console.log(new_slot);
+
+        document.getElementById("service_rows").insertBefore(new_slot, service_template);
+    } );
+
+    let add_service_unit_button = document.getElementById("add_service_unit_button");
+    let service_unit_template = document.getElementById("service_unit_template");
+    add_service_unit_button.addEventListener('click', function() {
+        console.log(this);
+        console.log(service_unit_template);
+
+        let new_slot = service_unit_template.cloneNode(true);
+        new_slot.style = '';
+
+        console.log(new_slot);
+
+        document.getElementById("service_unit_rows").insertBefore(new_slot, service_unit_template);
+    } );
+</script>
+
+<!-- REQUIRED SCRIPTS -->
+<!-- Icons -->
+<!-- jQuery -->
+<!-- Bootstrap -->
+<!-- overlayScrollbars -->
+<!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
+<!-- AdminLTE App -->
+
+<!-- PAGE PLUGINS -->
+<!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->
+<!--<script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>-->
+<!--<script src="plugins/raphael/raphael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/jquery.mapael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/maps/usa_states.min.js"></script>-->
+<!--&lt;!&ndash; ChartJS &ndash;&gt;-->
+<!--<script src="plugins/chart.js/Chart.min.js"></script>-->
+
+<!--&lt;!&ndash; AdminLTE for demo purposes &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/demo.js}"></script>-->
+<!--&lt;!&ndash; AdminLTE dashboard demo (This is only for demo purposes) &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/pages/dashboard2.js}"></script>-->
+</body>
+</html>

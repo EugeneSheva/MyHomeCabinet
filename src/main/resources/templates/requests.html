@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>МойДом24</title>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
+  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
+<!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
+
+<!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">-->
+</head>
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+
+  <nav th:insert="~{main-template :: header}"></nav>
+  <aside th:insert="~{main-template :: sidebar}"></aside>
+
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Заявки вызова мастера</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i>  Главная</a></li>
+                            <li class="breadcrumb-item active">Заявки вызова мастера</li>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="page_content">
+            <div class="row mr-2" style="justify-content: flex-end">
+                <div class="col-xs-12">
+                    <div class="pull-right margin-bottom">
+                        <a class="btn btn-success" th:href="@{/admin/requests/create}">Добавить заявку</a>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box" style="padding:0;">
+                            <div class="box-header with-border" style="padding-block: 15px;">
+                                <h3 class="box-title"></h3>
+                                <div class="box-tools">
+                                    <a href="/admin/user-admin/index" class="btn btn-default btn-sm">
+                                        <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="box-body table-responsive">
+                                <table class="table table-bordered table-hover table-striped linkedRow">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 100px; min-width: 100px">
+                                            № заявки
+                                        </th>
+                                        <th style="width: 135px; min-width: 135px">
+                                            Удобное время
+                                        </th>
+                                        <th style="min-width: 125px">
+                                            Тип мастера
+                                        </th>
+                                        <th style="min-width: 350px">Описание</th>
+                                        <th>Квартира</th>
+                                        <th style="min-width: 200px">Владелец</th>
+                                        <th>Телефон</th>
+                                        <th style="min-width: 125px">Мастер</th>
+                                        <th style="width: 135px; min-width: 135px">Статус</th>
+                                        <th style="width: 80px; min-width: 80px">&nbsp;</th>
+                                    </tr>
+                                    <tr id="w0-filters" class="filters">
+<!--                                        <td>-->
+<!--                                            <input type="text" class="form-control" name="MasterRequestSearch[id]">-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <input type="text" id="masterrequestsearch-searchdaterequestrange" class="form-control" name="MasterRequestSearch[searchDateRequestRange]" data-krajee-daterangepicker="daterangepicker_c8dff207">-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <select id="masterrequestsearch-type" class="form-control select2-hidden-accessible" name="MasterRequestSearch[type]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_0d896465" style="display:none" tabindex="-1" aria-hidden="true">-->
+<!--                                                <option value=""></option>-->
+<!--                                                <option value="1">Сантехник</option>-->
+<!--                                                <option value="2">Электрик</option>-->
+<!--                                                <option value="3">Слесарь</option>-->
+<!--                                                <option value="20">Любой специалист</option>-->
+<!--                                            </select>-->
+<!--                                            <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
+<!--                          <span class="selection">-->
+<!--                            <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-masterrequestsearch-type-container">-->
+<!--                              <span class="select2-selection__rendered" id="select2-masterrequestsearch-type-container">-->
+<!--                                <span class="select2-selection__placeholder"></span>-->
+<!--                              </span>-->
+<!--                              <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
+<!--                            </span>-->
+<!--                          </span>-->
+<!--                          <span class="dropdown-wrapper" aria-hidden="true"></span>-->
+<!--                        </span>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <input type="text" class="form-control" name="MasterRequestSearch[description]">-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <input type="text" class="form-control" name="MasterRequestSearch[searchFlat]">-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <select id="masterrequestsearch-searchuserid" class="form-control select2-hidden-accessible" name="MasterRequestSearch[searchUserId]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_ea5d4d6f" style="display:none" tabindex="-1" aria-hidden="true">-->
+<!--                                                <option value=""></option>-->
+<!--                                                <option value="2">Иванов 122 Иван 22 Сидорович 22</option>-->
+<!--                                            </select>-->
+<!--                                            <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
+<!--                          <span class="selection">-->
+<!--                            <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-masterrequestsearch-searchuserid-container">-->
+<!--                              <span class="select2-selection__rendered" id="select2-masterrequestsearch-searchuserid-container">-->
+<!--                                <span class="select2-selection__placeholder"></span>-->
+<!--                              </span>-->
+<!--                              <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
+<!--                            </span>-->
+<!--                          </span>-->
+<!--                          <span class="dropdown-wrapper" aria-hidden="true"></span>-->
+<!--                        </span>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <input type="text" class="form-control" name="MasterRequestSearch[searchPhone]">-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <select id="masterrequestsearch-user_admin_id" class="form-control select2-hidden-accessible" name="MasterRequestSearch[user_admin_id]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_0d896465" style="display:none" tabindex="-1" aria-hidden="true">-->
+<!--                                                <option value=""></option>-->
+<!--                                                <option value="2">Сантехник - Виктория Виктория</option>-->
+<!--                                                <option value="3">Сантехник - Александр Пушкин</option>-->
+
+<!--                                            </select>-->
+<!--                                            <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
+<!--                          <span class="selection">-->
+<!--                            <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-masterrequestsearch-user_admin_id-container">-->
+<!--                              <span class="select2-selection__rendered" id="select2-masterrequestsearch-user_admin_id-container">-->
+<!--                                <span class="select2-selection__placeholder"></span>-->
+<!--                              </span>-->
+<!--                              <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
+<!--                            </span>-->
+<!--                          </span>-->
+<!--                          <span class="dropdown-wrapper" aria-hidden="true"></span>-->
+<!--                        </span>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <select id="masterrequestsearch-status" class="form-control select2-hidden-accessible" name="MasterRequestSearch[status]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_0d896465" style="display:none" tabindex="-1" aria-hidden="true">-->
+<!--                                                <option value=""></option>-->
+<!--                                                <option value="1">Новое</option>-->
+<!--                                                <option value="5">В работе</option>-->
+<!--                                                <option value="10">Выполнено</option>-->
+<!--                                            </select>-->
+<!--                                            <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
+<!--                          <span class="selection">-->
+<!--                            <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-masterrequestsearch-status-container">-->
+<!--                              <span class="select2-selection__rendered" id="select2-masterrequestsearch-status-container">-->
+<!--                                <span class="select2-selection__placeholder"></span>-->
+<!--                              </span>-->
+<!--                              <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
+<!--                            </span>-->
+<!--                          </span>-->
+<!--                          <span class="dropdown-wrapper" aria-hidden="true"></span>-->
+<!--                        </span>-->
+<!--                                        </td>-->
+<!--                                        <td>&nbsp;</td>-->
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="cursor: pointer;" class="request" th:each="request : ${requests}">
+                                            <td th:text="${request.id}"></td>
+                                            <td th:text="${request.best_time}"></td>
+                                            <td th:text="${request.master_type.getName()}"></td>
+                                            <td th:text="${request.description}"></td>
+                                            <td><a th:href="@{/apartments/{id}(id=${request.apartment.id})}" th:text="'кв. ' + ${request.apartment.number} + ', ' + ${request.apartment.building.name}"></a></td>
+                                            <td><a th:href="@{/owners/{id}(id=${request.apartment.owner.id})}" th:text="${request.apartment.owner.getFullName()}"></a></td>
+                                            <td th:text="${request.apartment.owner.phone_number}"></td>
+                                            <td><a th:href="@{/admin/admins/{id}(id=${request.master.id})}" th:text="${request.master.getFullName()}"></a></td>
+                                            <td><small class="label label-success" th:text="${request.status.getName()}"></small></td>
+                                            <td>
+                                                <div class="btn-group pull-right">
+                                                    <a class="btn btn-default btn-sm" th:href="@{/admin/requests/update/{id}(id=${request.id})}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                                                    <a class="btn btn-default btn-sm" th:href="@{/admin/requests/delete/{id}(id=${request.id})}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="box-footer clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+  <!-- Main Footer -->
+  <footer th:insert="~{main-template :: footer}"></footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+<!-- Icons -->
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- overlayScrollbars -->
+<!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+
+<script>
+    let request_rows = document.getElementsByClassName("request");
+    for(let i = 0; i < request_rows.length; i++) {
+        let request_row_cells = request_rows[i].children;
+        let request_id = request_rows[i].children[0].innerText;
+        console.log(request_rows[i].children[0]);
+        console.log(request_id);
+        for(let j = 0; j < request_row_cells.length-1; j++) {
+            request_row_cells[j].addEventListener('click', function(){
+                window.location.href = '/admin/requests/info/' + request_id;
+            });
+        }
+    }
+</script>
+
+<!-- PAGE PLUGINS -->
+<!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->
+<!--<script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>-->
+<!--<script src="plugins/raphael/raphael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/jquery.mapael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/maps/usa_states.min.js"></script>-->
+<!--&lt;!&ndash; ChartJS &ndash;&gt;-->
+<!--<script src="plugins/chart.js/Chart.min.js"></script>-->
+
+<!--&lt;!&ndash; AdminLTE for demo purposes &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/demo.js}"></script>-->
+<!--&lt;!&ndash; AdminLTE dashboard demo (This is only for demo purposes) &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/pages/dashboard2.js}"></script>-->
+</body>
+</html>

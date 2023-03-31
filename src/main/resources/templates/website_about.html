@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>МойДом24</title>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
+  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
+<!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
+
+<!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">-->
+</head>
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+
+  <nav th:insert="~{main-template :: header}"></nav>
+  <aside th:insert="~{main-template :: sidebar}"></aside>
+
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Редактирование страницы</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i>  Главная</a></li>
+              <li class="breadcrumb-item active">Редактирование страницы</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="page_content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box">
+              <div class="box-header with-border">
+                <h3 class="box-title">Редактирование страницы "О нас"</h3>
+              </div>
+              <div class="box-body">
+                <form method="post" th:object="${page}" enctype="multipart/form-data">
+                  <h3 class="page-header">Информация</h3>
+                  <div class="row">
+                    <div class="col-md-8">
+                      <div class="form-group">
+
+                        <label for="websitehomeform-hometitle" class="control-label">Заголовок</label>
+                        <input type="text" class="form-control" th:field="*{title}" id="websitehomeform-hometitle">
+
+                      </div>
+                      <div class="form-group field-websitehomeform-homedescription">
+                        <label class="control-label" for="websitehomeform-homedescription">Краткий текст</label>
+                        <ul class="wysihtml5-toolbar"><li class="dropdown">
+                          <a class="btn btn-default dropdown-toggle btn-none" data-toggle="dropdown">
+
+                            <span class="fa fa-font"></span>
+
+                            <span class="current-font">Обычный текст</span>
+                            <b class="caret"></b>
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="p" tabindex="-1" href="javascript:;" unselectable="on">Обычный текст</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 1</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 2</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 3</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 4</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 5</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 6</a></li>
+                          </ul>
+                        </li>
+                          <li>
+                            <div class="btn-group">
+                              <a class="btn btn-none btn-default" id="bold-button" data-wysihtml5-command="bold" title="CTRL+B" tabindex="-1" href="javascript:;" unselectable="on">Полужирный</a>
+                              <a class="btn btn-none btn-default" id="italic-button" data-wysihtml5-command="italic" title="CTRL+I" tabindex="-1" href="javascript:;" unselectable="on">Курсив</a>
+                              <a class="btn btn-none btn-default" id="underline-button" data-wysihtml5-command="underline" title="CTRL+U" tabindex="-1" href="javascript:;" unselectable="on">Подчёркнутый</a>
+
+                            </div>
+                          </li>
+                          <li>
+                            <div class="btn-group">
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="insertUnorderedList" title="Маркированный список" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-list-ul"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="insertOrderedList" title="Нумерованный список" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-list-ol"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="Outdent" title="Уменьшить отступ" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-outdent"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="Indent" title="Увеличить отступ" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-indent"></span>
+
+                              </a>
+                            </div>
+                          </li>
+                        </ul>
+                        <textarea th:field="*{description}" id="websitemain-description"></textarea>
+                        <div class="help-block"></div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <h4>Фото директора</h4>
+                      <img th:src="${page.director_photo != null && !page.director_photo.isEmpty()} ?
+                                   @{/images/{url}(url=${page.director_photo})} :
+                                   @{/images/placeholder.jpg}" alt="">
+                      <div class="form-group mb-30">
+                        <label for="websitehomeslide-1-imagefile" class="control-label">Рекомендуемый размер: (1920х800)</label>
+                        <input type="hidden" name="WebsiteHomeSlide[1][imageFile]" id="">
+                        <input type="file" name="page_director_photo" id="director_photo" accept="image/*">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12" style="width: 100%">
+                      <h3 class="page-header">Фотогалерея</h3>
+                    </div>
+                    <div style="width: 100%;" th:each="photo, iter : ${photos}" class="col-xs-4 col-sm-3 text-center">
+                      <img style="width: 100%;" th:src="@{/images/{url}(url=${photo})}" alt="" class="margin-bottom-15 img-thumbnail">
+                      <div class="form-group margin-bottom-15">
+                        <a class="delete-about-button"
+                           th:attr="data-url='/admin/website/delete-about-image/'+${iter.index}"
+                           style="cursor: pointer;"><i class="fa fa-trash text-red" aria-hidden="true"></i></a>
+                      </div>
+                    </div>
+                    <div class="col-xs-12" style="width: 100%">
+
+                      <label for="websitehomeslide-1-imagefile" class="control-label">Рекомендуемый размер: (1200x1200)</label>
+                      <br>
+                      <input type="file" name="page_photos" id="photos" accept="image/*" multiple>
+
+                    </div>
+                  </div>
+
+                  <h3 class="page-header">Дополнительная информация</h3>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+
+                        <label for="websitehomeform-hometitle" class="control-label">Заголовок</label>
+                        <input type="text" class="form-control" th:field="*{add_title}" id="websitehomeform-homeaddtitle">
+
+                      </div>
+                      <div class="form-group field-websitehomeform-homedescription">
+                        <label class="control-label" for="websitehomeform-homedescription">Краткий текст</label>
+                        <ul class="wysihtml5-toolbar"><li class="dropdown">
+                          <a class="btn btn-default dropdown-toggle btn-none" data-toggle="dropdown">
+
+                            <span class="fa fa-font"></span>
+
+                            <span class="current-font">Обычный текст</span>
+                            <b class="caret"></b>
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="p" tabindex="-1" href="javascript:;" unselectable="on">Обычный текст</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 1</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 2</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 3</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 4</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 5</a></li>
+                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 6</a></li>
+                          </ul>
+                        </li>
+                          <li>
+                            <div class="btn-group">
+                              <a class="btn btn-none btn-default" id="bold-button" data-wysihtml5-command="bold" title="CTRL+B" tabindex="-1" href="javascript:;" unselectable="on">Полужирный</a>
+                              <a class="btn btn-none btn-default" id="italic-button" data-wysihtml5-command="italic" title="CTRL+I" tabindex="-1" href="javascript:;" unselectable="on">Курсив</a>
+                              <a class="btn btn-none btn-default" id="underline-button" data-wysihtml5-command="underline" title="CTRL+U" tabindex="-1" href="javascript:;" unselectable="on">Подчёркнутый</a>
+
+                            </div>
+                          </li>
+                          <li>
+                            <div class="btn-group">
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="insertUnorderedList" title="Маркированный список" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-list-ul"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="insertOrderedList" title="Нумерованный список" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-list-ol"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="Outdent" title="Уменьшить отступ" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-outdent"></span>
+
+                              </a>
+                              <a class="btn btn-none btn-default" data-wysihtml5-command="Indent" title="Увеличить отступ" tabindex="-1" href="javascript:;" unselectable="on">
+
+                                <span class="fa fa-indent"></span>
+
+                              </a>
+                            </div>
+                          </li>
+                        </ul>
+                        <textarea style="width: 100%" rows="4" th:field="*{add_description}" id="websitemain-adddescription"></textarea>
+                        <div class="help-block"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-xs-12" style="width: 100%">
+                      <h3 class="page-header">Дополнительная фотогалерея</h3>
+                    </div>
+                    <div style="width: 100%;" th:each="photo, iter : ${add_photos}" class="col-xs-4 col-sm-3 text-center">
+                      <img style="width: 100%;" th:src="@{/images/{url}(url=${photo})}" alt="" class="margin-bottom-15 img-thumbnail">
+                      <div class="form-group margin-bottom-15">
+                        <a class="delete-about-button"
+                           th:attr="data-url='/admin/website/delete-about-add-image/'+${iter.index}"
+                           style="cursor: pointer;"><i class="fa fa-trash text-red" aria-hidden="true"></i></a>
+                      </div>
+                    </div>
+                    <div class="col-xs-12" style="width: 100%">
+
+                      <label for="" class="control-label">Рекомендуемый размер: (1200x1200)</label>
+                      <br>
+                      <input type="hidden" name="WebsiteHomeSlide[1][imageFile]" id="">
+                      <input type="file" name="page_add_photos" id="add_photos" multiple accept="image/*">
+
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-xs-12" style="width: 100%">
+                      <h3 class="page-header">Документы</h3>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                      <div id="documents">
+                        <div id="document_template" style="display:none" class="form-websitedocument">
+                          <div class="form-group">
+                            <a onclick="this.parentElement.parentElement.remove()"
+                               style="cursor: pointer;"
+                               class="pull-right text-red" data-confirm="Удалить?"><i class="fa fa-trash"></i></a>
+                            <img style="width: 30px; height: 40px;  margin-right: 10px;"
+                                 class="fa fa-3x pull-left"
+                                 th:src="@{/images/placeholder.jpg}"
+                                 alt="">
+                            <label> PDF, JPG (макс. размер 20 Mb)</label>
+                            <input type="file" name="document_files">
+                          </div>
+
+                          <div class="form-group">
+                            <label>Название документа</label>
+                            <input type="text" class="form-control" placeholder="Введите название" name="document_names">
+                          </div>
+                        </div>
+                        <div th:each="document : ${documents}" class="form-websitedocument">
+                          <div class="form-group">
+                            <a onclick="if(confirm('Удалить?')) window.location.href=this.dataset.url"
+                               style="cursor:pointer;"
+                               th:attr="data-url='/admin/website/delete-document/'+${document.id}"
+                               class="pull-right text-red" data-confirm="Удалить?"><i class="fa fa-trash"></i></a>
+                            <img style="width: 30px; height: 40px; margin-right: 10px;"
+                                 class="fa fa-3x pull-left"
+                                 th:src="${document.file != null} ?
+                                 @{/images/documents/{url}(url=${document.file})} :
+                                 @{/images/placeholder.jpg}"
+                                 alt="">
+                            <label> PDF, JPG (макс. размер 20 Mb)</label>
+                            <input type="file" name="document_files" accept="application/pdf, image/jpeg">
+                          </div>
+
+                          <div class="form-group">
+                            <label>Название документа</label>
+                            <input type="text" class="form-control" th:value="${document.name}" name="document_names">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="btn-group">
+                        <button type="button" id="add_document_button" class="btn btn-success margin-bottom-15 form-row-add-websitedocument-btn">
+                          Добавить документ
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <h3 class="page-header">Настройки SEO</h3>
+                      <div class="form-group field-websitehomeform-homemetatitle">
+
+                        <label class="control-label" for="websitehomeform-homemetatitle">Title</label>
+                        <input th:field="*{seo_title}" type="text" id="websitehomeform-homemetatitle" class="form-control">
+
+                      </div>
+                      <div class="form-group field-websitehomeform-homemetadescription">
+
+                        <label class="control-label" for="websitehomeform-homemetadescription">Description</label>
+                        <textarea th:field="*{seo_description}" id="websitehomeform-homemetadescription" class="form-control" name="WebsiteHomeForm[homeMetaDescription]" rows="6"></textarea>
+
+                      </div>
+                      <div class="form-group field-websitehomeform-homemetakeywords">
+
+                        <label class="control-label" for="websitehomeform-homemetakeywords">Keywords</label>
+                        <textarea th:field="*{seo_keywords}" id="websitehomeform-homemetakeywords" class="form-control" name="WebsiteHomeForm[homeMetaKeywords]" rows="6"></textarea>
+
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group submit-buttons">
+                      <a href="admin/website/home" class="btn btn-default">Отменить</a>
+                      <button type="submit" class="btn btn-success">Сохранить</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Main Footer -->
+  <footer th:insert="~{main-template :: footer}"></footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+<!-- Icons -->
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- overlayScrollbars -->
+<!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+
+<script>
+
+  $(document).ready(function() {
+
+    let delete_buttons = document.querySelectorAll('.delete-about-button');
+    for(let i = 0; i < delete_buttons.length; i++) {
+      delete_buttons[i].addEventListener('click', () => {
+        if(confirm('Удалить?')) window.location.href = delete_buttons[i].dataset.url;
+      });
+    }
+
+
+    $('#director_photo').change(function() {
+      console.log(this);
+      let photo = this.files[0];
+      let image = this.parentElement.previousElementSibling;
+      let imagePath = URL.createObjectURL(photo);
+
+      image.src = imagePath;
+    });
+
+    $('#photos, #add_photos').change(function() {
+      console.log(this);
+      let input_div = this.parentElement;
+
+      for(let i = 0; i < this.files.length; i++) {
+        let photo = this.files[i];
+        let photoImgPath = URL.createObjectURL(photo);
+        let new_image_div = document.createElement('div');
+        new_image_div.classList.add('col-xs-4','col-sm-3','text-center');
+        new_image_div.innerHTML = '<img style="width:100%" src="' + photoImgPath + '" alt="" class="margin-bottom-15 img-thumbnail">';
+        input_div.parentElement.insertBefore(new_image_div,input_div);
+      }
+    });
+
+    document.getElementById("add_document_button").addEventListener('click', () => {
+      let document_container = document.getElementById("documents");
+      let document_template = document.getElementById("document_template");
+      let new_slot = document_template.cloneNode(true);
+      new_slot.id = '';
+      new_slot.style = '';
+
+      document_container.appendChild(new_slot);
+    });
+
+
+
+  })
+</script>
+
+<!-- PAGE PLUGINS -->
+<!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->
+<!--<script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>-->
+<!--<script src="plugins/raphael/raphael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/jquery.mapael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/maps/usa_states.min.js"></script>-->
+<!--&lt;!&ndash; ChartJS &ndash;&gt;-->
+<!--<script src="plugins/chart.js/Chart.min.js"></script>-->
+
+<!--&lt;!&ndash; AdminLTE for demo purposes &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/demo.js}"></script>-->
+<!--&lt;!&ndash; AdminLTE dashboard demo (This is only for demo purposes) &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/pages/dashboard2.js}"></script>-->
+</body>
+</html>
