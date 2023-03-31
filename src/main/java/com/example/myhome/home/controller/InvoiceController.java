@@ -2,7 +2,7 @@ package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.Invoice;
 import com.example.myhome.home.model.InvoiceComponents;
-import com.example.myhome.home.repos.*;
+import com.example.myhome.home.repository.*;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -2,9 +2,9 @@ package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.model.RepairRequest;
-import com.example.myhome.home.repos.AdminRepository;
-import com.example.myhome.home.repos.OwnerRepository;
-import com.example.myhome.home.repos.RepairRequestRepository;
+import com.example.myhome.home.repository.AdminRepository;
+import com.example.myhome.home.repository.OwnerRepository;
+import com.example.myhome.home.repository.RepairRequestRepository;
 import com.example.myhome.util.UserRole;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;

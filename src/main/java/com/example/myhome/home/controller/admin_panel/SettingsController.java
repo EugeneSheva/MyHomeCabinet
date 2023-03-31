@@ -1,7 +1,7 @@
 package com.example.myhome.home.controller.admin_panel;
 
 import com.example.myhome.home.model.*;
-import com.example.myhome.home.repos.*;
+import com.example.myhome.home.repository.*;
 import com.example.myhome.util.UserRole;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;

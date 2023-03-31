@@ -3,7 +3,7 @@ package com.example.myhome.home.controller;
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.MeterData;
 import com.example.myhome.home.model.MeterPaymentStatus;
-import com.example.myhome.home.repos.*;
+import com.example.myhome.home.repository.*;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

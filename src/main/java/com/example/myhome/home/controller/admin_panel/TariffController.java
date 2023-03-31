@@ -2,9 +2,9 @@ package com.example.myhome.home.controller.admin_panel;
 
 import com.example.myhome.home.model.Service;
 import com.example.myhome.home.model.Tariff;
-import com.example.myhome.home.repos.ServiceRepository;
-import com.example.myhome.home.repos.TariffRepository;
-import com.example.myhome.home.repos.UnitRepository;
+import com.example.myhome.home.repository.ServiceRepository;
+import com.example.myhome.home.repository.TariffRepository;
+import com.example.myhome.home.repository.UnitRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.java.Log;

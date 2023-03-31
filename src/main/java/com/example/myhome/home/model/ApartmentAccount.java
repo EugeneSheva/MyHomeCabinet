@@ -17,6 +17,8 @@ public class ApartmentAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long number;
+
     private Boolean isActive;
 
     @ToString.Exclude

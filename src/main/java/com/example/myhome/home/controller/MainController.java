@@ -1,8 +1,8 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.pages.AboutPage;
-import com.example.myhome.home.repos.DocumentRepository;
-import com.example.myhome.home.repos.PageRepository;
+import com.example.myhome.home.repository.DocumentRepository;
+import com.example.myhome.home.repository.PageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -1,7 +1,7 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.Admin;
-import com.example.myhome.home.repos.AdminRepository;
+import com.example.myhome.home.repository.AdminRepository;
 import com.example.myhome.util.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

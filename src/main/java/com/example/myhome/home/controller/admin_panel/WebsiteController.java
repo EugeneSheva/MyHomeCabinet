@@ -1,8 +1,8 @@
 package com.example.myhome.home.controller.admin_panel;
 
 import com.example.myhome.home.model.pages.*;
-import com.example.myhome.home.repos.DocumentRepository;
-import com.example.myhome.home.repos.PageRepository;
+import com.example.myhome.home.repository.DocumentRepository;
+import com.example.myhome.home.repository.PageRepository;
 import com.example.myhome.util.FileUploadUtil;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;

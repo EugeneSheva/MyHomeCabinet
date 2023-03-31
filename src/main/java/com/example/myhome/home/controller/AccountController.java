@@ -2,9 +2,9 @@ package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.ApartmentAccount;
-import com.example.myhome.home.repos.AccountRepository;
-import com.example.myhome.home.repos.ApartmentRepository;
-import com.example.myhome.home.repos.BuildingRepository;
+import com.example.myhome.home.repository.AccountRepository;
+import com.example.myhome.home.repository.ApartmentRepository;
+import com.example.myhome.home.repository.BuildingRepository;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
