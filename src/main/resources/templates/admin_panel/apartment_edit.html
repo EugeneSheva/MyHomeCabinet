@@ -12,11 +12,19 @@
     <!--    navigation card bootstrap-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- add & del input field in navigation card bootstrap-->
+     add & del input field in navigation card bootstrap
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
 
 
+
+
+
+
+
+    <!-- Select2 -->
+    <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
@@ -70,7 +78,7 @@
                                 <input type="number" id="square" class="form-control"  name="square"
                                        th:field="*{square}" placeholder="">
 
-                                <label for="building" th:field="*{building}" class="form-label" >Дом</label>
+                                <label for="building"  class="form-label" >Дом</label>
                                 <select class="form-select" id="building" name="building" th:onchange="selectBuilding()">
                                     <option selected="" disabled="" value="">Choose...</option>
                                     <option  th:each="building, item : ${buildings}"
@@ -78,28 +86,54 @@
                                     th:value="${buildings[__${item.index}__].id}" th:id="${item.count}"></option>
                                 </select>
 
-                                <label for="section" th:field="*{section}"  class="form-label" >Секция</label>
-                                <select class="form-select" id="section" name="section">
+                                <label for="section"   class="form-label" >Секция</label>
+                                <select class="form-select"  id="section" name="section">
                                     <option selected="" disabled="" value="">Choose...</option>
 
                                 </select>
 
-                                <label for="floor" th:field="*{floor}" class="form-label" >Этаж</label>
-                                <select class="form-select" id="floor" name="floor">
+                                <label for="floor"  class="form-label" >Этаж</label>
+                                <select class="form-select"   id="floor" name="floor">
                                     <option selected="" disabled="" value="">Choose...</option>
-                                    <option>1</option>
                                 </select>
 
-                                <label for="owner" class="form-label" >Владелец</label>
-                                <select class="form-select" id="owner" name="owner">
-                                    <option selected="" disabled="" value="">Choose...</option>
-                                    <option>1</option>
-                                </select>
+                                <div class="form-group">
+                                    <label>Владелец</label>
+                                    <select class="form-control select2bs4" name="owner" style="width: 100%;">
+                                        <option selected="" disabled="" value="">Choose...</option>
+                                        <option  th:each="owner, item : ${owners}"
+                                                 th:text="${owners[__${item.index}__].first_name}+ ' '+${owners[__${item.index}__].last_name}+' '+${owners[__${item.index}__].fathers_name}"
+                                                 th:value="${owners[__${item.index}__].id}" th:id="${item.count}"></option>
+                                    </select>
+                                </div>
+
+<!--                                <div class="form-group">-->
+<!--                                    <label for="owner" class="form-label" >Владелец</label>-->
+<!--                                    <select class="form-control select2 select2-hidden-accessible"  id="owner" name="owner" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">-->
+<!--                                        <option selected="" disabled="" value="">Choose...</option>-->
+<!--                                        <option  th:each="owner, item : ${owners}"-->
+<!--                                                 th:text="${owners[__${item.index}__].first_name}+ ' '+${owners[__${item.index}__].last_name}+' '+${owners[__${item.index}__].fathers_name}"-->
+<!--                                                 th:value="${owners[__${item.index}__].id}" th:id="${item.count}"></option>-->
+<!--                                    </select><span class="select2 select2-container select2-container&#45;&#45;default select2-container&#45;&#45;focus" dir="ltr" data-select2-id="2" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-ewqa-container"><span class="select2-selection__rendered" id="select2-ewqa-container" role="textbox" aria-readonly="true" title="Alabama">Alabama</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>-->
+<!--                                </div>-->
+
+
+<!--                                <div class="form-group">-->
+<!--                                    <label>Minimal</label>-->
+<!--                                    <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">-->
+<!--                                        <option selected="selected" data-select2-id="3">Alabama</option>-->
+<!--                                        <option  th:each="owner, item : ${owners}"-->
+<!--                                                 th:text="${owners[__${item.index}__].first_name}+ ' '+${owners[__${item.index}__].last_name}+' '+${owners[__${item.index}__].fathers_name}"-->
+<!--                                                 th:value="${owners[__${item.index}__].id}" th:id="${item.count}"></option>-->
+
+<!--                                    </select><span class="select2 select2-container select2-container&#45;&#45;default select2-container&#45;&#45;below" dir="ltr" data-select2-id="2" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-ewqa-container"><span class="select2-selection__rendered" id="select2-ewqa-container" role="textbox" aria-readonly="true" title="Alabama">Alabama</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>-->
+<!--                                </div>-->
+
 
                                 <label for="tariff" class="form-label" >Тариф</label>
                                 <select class="form-select" id="tariff" name="tariff">
                                     <option selected="" disabled="" value="">Choose...</option>
-                                    <option>1</option>
+
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -155,15 +189,32 @@
         }
     }
 </script>
-<!-- REQUIRED SCRIPTS -->
 <!-- Icons -->
 <script th:src="@{https://kit.fontawesome.com/41663a8b50.js}" crossorigin="anonymous"></script>
 <!-- jQuery -->
-<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <!-- Bootstrap -->
 <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
 
+
+
+<!-- Select2 -->
+<script src="../../plugins/select2/js/select2.full.min.js"></script>
+
+<script>
+    $(function () {
+        //Initialize Select2 Elements
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
+
+    })
+
+</script>
 </body>
 </html>

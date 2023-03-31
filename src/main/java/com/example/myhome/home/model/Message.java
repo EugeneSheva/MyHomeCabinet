@@ -27,10 +27,10 @@ public class Message {
     @ManyToMany
     @JoinTable(
             name = "messages_users",
-            joinColumns = @JoinColumn(name = "owner_id"),
-            inverseJoinColumns = @JoinColumn(name = "message_id"))
+            joinColumns = @JoinColumn(name = "message_id"),
+            inverseJoinColumns = @JoinColumn(name = "owner_id"))
     private List<Owner> receivers;
-
+    private String receiversName;
     //Тема сообщения
     private String subject;
 

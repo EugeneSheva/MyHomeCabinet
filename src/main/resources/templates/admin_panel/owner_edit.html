@@ -103,12 +103,16 @@
                                     <input type="text" id="email" class="form-control" name="email"
                                            th:field="*{email}" placeholder="">
 
-<!--                                    <label for="added_at"></label>-->
-<!--                                    <input type="hidden" id="added_at" class="form-control" th:field="*{added_at}"-->
-<!--                                           placeholder="">-->
-<!--                                    <script>-->
-<!--                                        document.getElementById('added_at').value = new Date().toISOString().substring(0, 10);-->
-<!--                                    </script>-->
+                                    <label for="added_at"></label>
+                                    <input type="hidden" id="added_at" class="form-control" th:field="*{added_at}"
+                                           placeholder="">
+                                    <script>
+                                        var today = new Date();
+                                        var dateTime = today.getFullYear()+'-'+(today.getMonth()+1).toString().padStart(2, "0")+'-'+
+                                            today.getDate().toString().padStart(2, "0")+' '+today.getHours().toString().padStart(2, "0")+':'+
+                                            today.getMinutes().toString().padStart(2, "0");
+                                        document.getElementById("added_at").value = dateTime;
+                                    </script>
 
                                 </div>
                             </div>

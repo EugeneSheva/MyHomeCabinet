@@ -74,9 +74,8 @@
 <!--                th:text="${apartment.building.name}" th:href="@{{id}(id=${apartment.id})}"-->
                 <td ><a style="display: block; color: black;" th:text="${apartment.section}" th:href="@{{id}(id=${apartment.id})}"></a></td>
                 <td ><a style="display: block; color: black;" th:text="${apartment.floor}" th:href="@{{id}(id=${apartment.id})}"></a></td>
-                <td ><a style="display: block; color: black;"  th:href="@{{id}(id=${apartment.id})}"></a></td>
-<!--                th:text="${apartment.owner.first_name}+' '+${apartment.owner.last_name}+-->
-<!--                ' '+${apartment.owner.fathers_name}"-->
+                <td ><a style="display: block; color: black;" th:text="${apartment.owner.first_name}+' '+${apartment.owner.last_name}+
+                ' '+${apartment.owner.fathers_name}" th:href="@{{id}(id=${apartment.id})}"></a></td>
                 <td ><a style="display: block; color: black;" th:text="${apartment.balance}" th:href="@{{id}(id=${apartment.id})}"></a></td>
                 <td><div class="btn-group" role="group" aria-label="Basic outlined button group">
                   <a th:href="@{edit/{id}(id=${apartment.id})}" class="btn btn-secondary btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>

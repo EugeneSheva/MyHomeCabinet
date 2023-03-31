@@ -2,6 +2,7 @@ package com.example.myhome.home.service;
 
 import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Building;
+import com.example.myhome.home.model.BuildingDTO;
 import com.example.myhome.home.repository.BuildingRepository;
 import com.example.myhome.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,7 +31,12 @@ public class BuildingService {
     public Building findById (Long id) { return buildingRepository.findById(id).orElseThrow(() -> new NotFoundException());}
 
     public List<Building> findAll() { return buildingRepository.findAll(); }
-
+    public List<BuildingDTO> findAllDTO() {
+        List<BuildingDTO>buildingDTOList= new ArrayList<>();
+        for (Building building : buildingRepository.findAll()) {
+            buildingDTOList.add(new BuildingDTO(building.getId(),building.getName(), building.getSections(), building.getAddress(), building.getFloors()));
+        }
+        return buildingDTOList; }
     public Building save(Building building) { return buildingRepository.save(building); }
 
     public void deleteById(Long id) { buildingRepository.deleteById(id); }
