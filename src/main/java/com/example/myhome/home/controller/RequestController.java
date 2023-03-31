@@ -36,7 +36,7 @@ public class RequestController {
     @GetMapping
     public String showRequestsPage(Model model) {
         model.addAttribute("requests", repairRequestRepository.findAll());
-        return "requests";
+        return "admin_panel/requests/requests";
     }
 
     @GetMapping("/create")
@@ -53,7 +53,7 @@ public class RequestController {
                 .sorted(Comparator.comparing(o -> o.getRole().getName()))
                 .collect(Collectors.toList())
         );
-        return "request_card";
+        return "admin_panel/requests/request_card";
     }
 
     @GetMapping("/update/{id}")
@@ -71,7 +71,7 @@ public class RequestController {
                 .sorted(Comparator.comparing(o -> o.getRole().getName()))
                 .collect(Collectors.toList())
         );
-        return "request_card";
+        return "admin_panel/requests/request_card";
     }
 
     @GetMapping("/info/{id}")
@@ -80,7 +80,7 @@ public class RequestController {
         model.addAttribute("request", request);
         model.addAttribute("request_date", request.getRequest_date().toLocalDate());
         model.addAttribute("request_time", request.getRequest_date().toLocalTime());
-        return "request_profile";
+        return "admin_panel/requests/request_profile";
     }
 
     @PostMapping("/create")

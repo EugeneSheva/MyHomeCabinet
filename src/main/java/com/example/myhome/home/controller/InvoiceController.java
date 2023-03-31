@@ -40,7 +40,7 @@ public class InvoiceController {
     @GetMapping
     public String showInvoicePage(Model model) {
         model.addAttribute("invoices", invoiceRepository.findAll());
-        return "invoices";
+        return "admin_panel/invoices/invoices";
     }
 
     @GetMapping("/{id}")
@@ -53,7 +53,7 @@ public class InvoiceController {
                 .orElse(0.0);
         model.addAttribute("invoice", invoice);
         model.addAttribute("total_price", total_price);
-        return "invoice_profile";
+        return "admin_panel/invoices/invoice_profile";
     }
 
     @GetMapping("/create")
@@ -65,7 +65,7 @@ public class InvoiceController {
         model.addAttribute("tariffs", tariffRepository.findAll());
         model.addAttribute("meters", meterDataRepository.findAll());
         model.addAttribute("services", serviceRepository.findAll());
-        return "invoice_card";
+        return "admin_panel/invoices/invoice_card";
     }
 
     @GetMapping("/update/{id}")
@@ -78,7 +78,7 @@ public class InvoiceController {
         model.addAttribute("tariffs", tariffRepository.findAll());
         model.addAttribute("meters", meterDataRepository.findAll());
         model.addAttribute("services", serviceRepository.findAll());
-        return "invoice_card";
+        return "admin_panel/invoices/invoice_card";
     }
 
     @PostMapping("/create")
@@ -137,11 +137,11 @@ public class InvoiceController {
     public String getPrintPage(@PathVariable long id, Model model) {
         Invoice invoice = invoiceRepository.findById(id).orElseThrow();
         model.addAttribute("invoice", invoice);
-        return "invoice_print";
+        return "admin_panel/invoices/invoice_print";
     }
 
     @GetMapping("/template")
     public String getTemplateSettingPage(){
-        return "invoice_template_settings";
+        return "admin_panel/invoices/invoice_template_settings";
     }
 }

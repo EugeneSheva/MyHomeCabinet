@@ -40,19 +40,6 @@ public class SettingsController {
     @Autowired
     private AdminRepository adminRepository;
 
-//    @GetMapping("/admin/services")
-//    public String showServicesPage(@ModelAttribute Service service, Model model) {
-//        model.addAttribute("services", serviceRepository.findAll());
-//        model.addAttribute("units", unitRepository.findAll());
-//        return "settings_services";
-//    }
-
-
-
-
-
-
-
     @GetMapping("/admin/payment-details")
     public String showPaymentDetailsPage(Model model) {
         model.addAttribute("details", paymentDetailsRepository.findById(1L).orElseGet(PaymentDetails::new));
@@ -71,71 +58,10 @@ public class SettingsController {
         return "transaction_card";
     }
 
-    // ==========================
-
-//    @PostMapping("/admin/services")
-//    public String editServices(@RequestParam String[] units,
-//                               @RequestParam String[] service_names,
-//                               @RequestParam String[] service_unit_names,
-//                               @RequestParam String[] service_unit_ids,
-//                               @RequestParam boolean[] show_in_meters, RedirectAttributes redirectAttributes) {
-//        try {
-//            for(int i = 0; i < service_unit_ids.length; i++) unitRepository.deleteById(Long.parseLong(service_unit_ids[0]));
-//
-//            for(int i = 0; i < units.length-1; i++) {
-//
-//                    if(units[i].isEmpty() || units[i].equals("")) continue;
-//                    Unit u = new Unit();
-//                    u.setName(units[i]);
-//                    unitRepository.save(u);
-//
-//            }
-//
-//
-//        } catch (Exception e) {
-//            redirectAttributes.addFlashAttribute("fail", "Что-то уже используется в расчётах");
-//            e.printStackTrace();
-//            return "redirect:/admin/services#tab_serviceunit";
-//        }
-//
-//        log.info(Arrays.toString(service_names));
-//        log.info(Arrays.toString(service_unit_names));
-//        log.info(Arrays.toString(show_in_meters));
-//        log.info(String.valueOf(service_names.length));
-//        log.info(String.valueOf(service_unit_names.length));
-//        log.info(String.valueOf(show_in_meters.length));
-//
-//        // удаляются все услуги из БД , потом добавляются заново - не совсем удобно
-//
-//        serviceRepository.deleteAll();
-//
-//        for (int i = 0; i < service_names.length-1; i++) {
-//            if(service_names[i].isEmpty() || service_names[i].equals("")) continue;
-//
-//            Service service =
-//                    new Service(service_names[i],
-//                            show_in_meters[i],
-//                            unitRepository.findByName(service_unit_names[i]).orElseThrow());
-//            serviceRepository.save(service);
-//        }
-//        return "redirect:/admin/services";
-//    }
-
-
-
     @PostMapping("/admin/income-expense/create")
-    public String createTransaction(@RequestParam String name, @RequestParam String type) {
-        if(!incomeExpenseRepository.existsByName(name))
-            incomeExpenseRepository.save(new IncomeExpenseItems(name, IncomeExpenseType.valueOf(type)));
-        return "redirect:/admin/income-expense";
-    }
-
-    @PostMapping("/admin/income-expense/update/{id}")
-    public String updateTransaction(@PathVariable long id, @RequestParam String name, @RequestParam String type) {
-        IncomeExpenseItems transaction = incomeExpenseRepository.findById(id).orElseThrow();
-        transaction.setName(name);
-        transaction.setIncomeExpenseType(IncomeExpenseType.valueOf(type));
-        incomeExpenseRepository.save(transaction);
+    public String createTransaction(@ModelAttribute IncomeExpenseItems item) {
+        if(!incomeExpenseRepository.existsByName(item.getName()))
+            incomeExpenseRepository.save(new IncomeExpenseItems(item.getName(), item.getIncomeExpenseType()));
         return "redirect:/admin/income-expense";
     }
 
@@ -145,13 +71,17 @@ public class SettingsController {
         return "transaction_card";
     }
 
+    @PostMapping("/admin/income-expense/update/{id}")
+    public String updateTransaction(@ModelAttribute IncomeExpenseItems item) {
+        incomeExpenseRepository.save(item);
+        return "redirect:/admin/income-expense";
+    }
+
     @GetMapping("/admin/income-expense/delete/{id}")
     public String deleteTransaction(@PathVariable long id) {
         incomeExpenseRepository.deleteById(id);
         return "redirect:/admin/income-expense";
     }
-
-
 
     @PostMapping("/admin/payment-details")
     public String updatePaymentDetails(@ModelAttribute PaymentDetails details, RedirectAttributes redirectAttributes) {
@@ -161,10 +91,6 @@ public class SettingsController {
         redirectAttributes.addFlashAttribute("success_message", "Сохранено!");
         return "redirect:/admin/payment-details";
     }
-
-    // АДМИНЫ - ДОБАВИТЬ ВАЛИДАЦИЮ
-
-
 
     @GetMapping("/admin/roles")
     public String showRolesPage(Model model) {

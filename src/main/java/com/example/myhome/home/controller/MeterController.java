@@ -41,7 +41,7 @@ public class MeterController {
         log.info(meterDataList.toString());
         model.addAttribute("meter_data_rows", meterDataList);
         model.addAttribute("now", LocalDate.now());
-        return "meters";
+        return "admin_panel/meters/meters";
     }
 
     //Получить показания из какого-то одного счетчика
@@ -54,7 +54,7 @@ public class MeterController {
         model.addAttribute("meter_data_rows", meterDataList);
         model.addAttribute("flat_id", flat_id);
         model.addAttribute("service_id", service_id);
-        return "meter_flat_data";
+        return "admin_panel/meters/meter_flat_data";
     }
 
     //Создать абсолютно новое показание
@@ -71,7 +71,7 @@ public class MeterController {
         model.addAttribute("services", serviceRepository.findAll());
         model.addAttribute("buildings", buildingRepository.findAll());
         model.addAttribute("now", LocalDate.now());
-        return "meter_card";
+        return "admin_panel/meters/meter_card";
     }
 
     //Создать новое показание для существующего счетчика
@@ -90,7 +90,7 @@ public class MeterController {
         model.addAttribute("services", serviceRepository.findAll());
         model.addAttribute("buildings", buildingRepository.findAll());
         model.addAttribute("now", LocalDate.now());
-        return "meter_card";
+        return "admin_panel/meters/meter_card";
     }
 
     @PostMapping("/create-add")
@@ -147,7 +147,7 @@ public class MeterController {
         model.addAttribute("services", serviceRepository.findAll());
         model.addAttribute("buildings", buildingRepository.findAll());
         model.addAttribute("now", LocalDate.now());
-        return "meter_card";
+        return "admin_panel/meters/meter_card";
     }
 
     @GetMapping("/update/{id}")
@@ -156,7 +156,7 @@ public class MeterController {
         model.addAttribute("services", serviceRepository.findAll());
         model.addAttribute("buildings", buildingRepository.findAll());
         model.addAttribute("now", LocalDate.now());
-        return "meter_card";
+        return "admin_panel/meters/meter_card";
     }
 
     @PostMapping("/update/{id}")
@@ -180,7 +180,7 @@ public class MeterController {
         MeterData meter = meterDataRepository.findById(id).orElseThrow();
         log.info(meter.toString());
         model.addAttribute("meter", meter);
-        return "meter_profile";
+        return "admin_panel/meters/meter_profile";
     }
 
 

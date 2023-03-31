@@ -35,14 +35,14 @@ public class MessageController {
     public String getMessages(Model model) {
         List<Message> messagesList = messageService.findAll();
         model.addAttribute("messages", messagesList);
-        return "admin_panel/messages";
+        return "admin_panel/messages/messages";
     }
 
     @GetMapping("/{id}")
     public String getMessage(@PathVariable("id") Long id, Model model) {
         Message message = messageService.findById(id);
         model.addAttribute("message", message);
-        return "admin_panel/message";
+        return "admin_panel/messages/message";
     }
 
     @GetMapping("/new")
@@ -51,7 +51,7 @@ public class MessageController {
         model.addAttribute("message", message);
         List<BuildingDTO> buildingList = buildingService.findAllDTO();
         model.addAttribute("buildings", buildingList);
-        return "admin_panel/message_edit";
+        return "admin_panel/messages/message_edit";
     }
 
     @PostMapping("/save")

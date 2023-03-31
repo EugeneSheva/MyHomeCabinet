@@ -24,6 +24,7 @@ public class Building {
     @ElementCollection
     private List<String>floors = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "building")
     List<Apartment> apartments;
 

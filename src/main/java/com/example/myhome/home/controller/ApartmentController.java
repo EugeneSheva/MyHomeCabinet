@@ -31,14 +31,14 @@ public class ApartmentController {
     public String getApartment(Model model) {
         List<Apartment> apartmentList = apartmentService.findAll();
         model.addAttribute("apartments", apartmentList);
-        return "admin_panel/apartments";
+        return "admin_panel/apartments/apartments";
     }
 
     @GetMapping("/{id}")
     public String getApartment(@PathVariable("id") Long id, Model model) {
         Apartment apartment = apartmentService.findById(id);
         model.addAttribute("apartment", apartment);
-        return "admin_panel/apartment";
+        return "admin_panel/apartments/apartment";
     }
 
     @GetMapping("/new")
@@ -49,7 +49,7 @@ public class ApartmentController {
         model.addAttribute("apartment", apartment);
         List<BuildingDTO> buildingList = buildingService.findAllDTO();
         model.addAttribute("buildings", buildingList);
-        return "admin_panel/apartment_edit";
+        return "admin_panel/apartments/apartment_edit";
     }
     @GetMapping("edit/{id}")
     public String editApartment(@PathVariable("id") Long id, Model model) {
@@ -59,7 +59,7 @@ public class ApartmentController {
         model.addAttribute("apartment", apartment);
         List<BuildingDTO> buildingList = buildingService.findAllDTO();
         model.addAttribute("buildings", buildingList);
-        return "admin_panel/apartment_edit";
+        return "admin_panel/apartments/apartment_edit";
     }
 
     @PostMapping("/save")

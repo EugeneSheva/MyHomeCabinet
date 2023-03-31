@@ -31,14 +31,14 @@ public class AccountController {
     @GetMapping
     public String showAccountsPage(Model model) {
         model.addAttribute("accounts", accountRepository.findAll());
-        return "accounts";
+        return "admin_panel/accounts/accounts";
     }
 
     // показать профиль лицевого счёта
     @GetMapping("/{id}")
     public String showAccountInfoPage(@PathVariable long id, Model model) {
         model.addAttribute("account", accountRepository.findById(id).orElseThrow());
-        return "account_profile";
+        return "admin_panel/accounts/account_profile";
     }
 
     // открытие страницы создания лицевого счета
@@ -51,7 +51,7 @@ public class AccountController {
         model.addAttribute("account", new ApartmentAccount());
         model.addAttribute("id", id);
         model.addAttribute("buildings", buildingRepository.findAll());
-        return "account_card";
+        return "admin_panel/accounts/account_card";
     }
 
     // создание лицевого счета
@@ -77,7 +77,7 @@ public class AccountController {
         model.addAttribute("account", accountRepository.findById(id).orElseThrow());
         model.addAttribute("id", id);
         model.addAttribute("buildings", buildingRepository.findAll());
-        return "account_card";
+        return "admin_panel/accounts/account_card";
     }
 
     @PostMapping("/update/{id}")

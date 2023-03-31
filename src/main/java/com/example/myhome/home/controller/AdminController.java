@@ -21,25 +21,25 @@ public class AdminController {
     @GetMapping
     public String showAdminsPage(Model model) {
         model.addAttribute("admins", adminRepository.findAll());
-        return "settings_users";
+        return "admin_panel/system_settings/settings_users";
     }
 
     @GetMapping("/{id}")
     public String showAdminProfile(@PathVariable long id, Model model) {
         model.addAttribute("admin", adminRepository.findById(id).orElseGet(Admin::new));
-        return "admin_profile";
+        return "admin_panel/system_settings/admin_profile";
     }
 
     @GetMapping("/create")
     public String showCreateAdminPage(Model model) {
         model.addAttribute("admin", new Admin());
-        return "admin_card";
+        return "admin_panel/system_settings/admin_card";
     }
 
     @GetMapping("/update/{id}")
     public String showUpdateAdminPage(@PathVariable long id, Model model) {
         model.addAttribute("admin", adminRepository.findById(id).orElseGet(Admin::new));
-        return "admin_card";
+        return "admin_panel/system_settings/admin_card";
     }
 
     @PostMapping("/create")
