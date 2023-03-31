@@ -107,6 +107,7 @@
                       <select class="selects" id="apartment_select" th:if="*{apartment.building == null}" disabled th:field="*{apartment}">
                         <option value="0">Выберите...</option>
                       </select>
+                      <h4 th:if="${fail}" th:text="${fail}" style="font-weight: bold; color: red;"></h4>
                     </div>
                   </div>
                   <div class="row">
@@ -216,7 +217,7 @@
 
           apartment_select.appendChild(option);
 
-          $.get('/admin/buildings/get-sections/'+this.value, function(data){
+          $.get('/buildings/get-sections/'+this.value, function(data){
 
             console.log(data);
 
@@ -248,7 +249,7 @@
 
         apartment_select.appendChild(option);
 
-        $.get('/admin/buildings/get-section-apartments/'+house_select.value, {section_name:this.value}, function(data){
+        $.get('/buildings/get-section-apartments/'+house_select.value, {section_name:this.value}, function(data){
 
           console.log(data);
 

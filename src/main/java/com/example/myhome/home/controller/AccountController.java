@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
@@ -53,7 +54,8 @@ public class AccountController {
 
     // создание лицевого счета
     @PostMapping("/create")
-    public String createAccount(@ModelAttribute ApartmentAccount account) {
+    public String createAccount(@ModelAttribute ApartmentAccount account,
+                                RedirectAttributes redirectAttributes) {
 
         // взаимные ссылки не устанавливаются - Account получает apartment_id
         // как главный объект в отношении OneToOne, а вот Apartment account_id не получает ,
@@ -64,9 +66,15 @@ public class AccountController {
 //        apartment.setAccount(savedAccount);
 //        apartmentRepository.save(apartment);
 
-        accountService.save(account);
+        if(accountService.apartmentHasAccount(account.getApartment().getId())) {
+            redirectAttributes.addFlashAttribute("fail", "К этой квартире уже привязан лицевой счёт!");
+            return "redirect:/admin/accounts/create";
+        } else {
+            accountService.save(account);
+            return "redirect:/admin/accounts";
+        }
 
-        return "redirect:/admin/accounts";
+
     }
 
     @GetMapping("/update/{id}")

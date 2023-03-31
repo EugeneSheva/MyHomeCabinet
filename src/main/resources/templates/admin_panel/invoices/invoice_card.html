@@ -44,7 +44,7 @@
     <!-- Main content -->
     <section class="page_content">
       <form method="post" th:object="${invoice}">
-        <input type="hidden" id="apartment_exists" th:value="*{apartment != null} ? 1 : 0">
+        <input type="hidden" id="apartment_exists" th:value="${flat != null} ? 1 : 0">
         <input type="hidden" th:field="*{id}">
         <div class="container-fluid">
           <div class="row">

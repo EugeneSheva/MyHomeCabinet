@@ -70,11 +70,11 @@
               <tbody>
               <tr th:each="apartment : ${apartments}">
                 <td ><a style="display: block; color: black;" th:text="${apartment.number}" th:href="@{{id}(id=${apartment.id})}"></a></td>
-                <td ><a style="display: block; color: black;" th:text="${apartment.building.name}" th:href="@{{id}(id=${apartment.id})}" ></a></td>
+                <td ><a style="display: block; color: black;" th:if="${apartment.building != null}" th:text="${apartment.building.name}" th:href="@{{id}(id=${apartment.id})}" ></a></td>
 <!--                th:text="${apartment.building.name}" th:href="@{{id}(id=${apartment.id})}"-->
                 <td ><a style="display: block; color: black;" th:text="${apartment.section}" th:href="@{{id}(id=${apartment.id})}"></a></td>
                 <td ><a style="display: block; color: black;" th:text="${apartment.floor}" th:href="@{{id}(id=${apartment.id})}"></a></td>
-                <td ><a style="display: block; color: black;" th:text="${apartment.owner.first_name}+' '+${apartment.owner.last_name}+
+                <td ><a style="display: block; color: black;" th:if="${apartment.owner != null}" th:text="${apartment.owner.first_name}+' '+${apartment.owner.last_name}+
                 ' '+${apartment.owner.fathers_name}" th:href="@{{id}(id=${apartment.id})}"></a></td>
                 <td ><a style="display: block; color: black;" th:text="${apartment.balance}" th:href="@{{id}(id=${apartment.id})}"></a></td>
                 <td><div class="btn-group" role="group" aria-label="Basic outlined button group">

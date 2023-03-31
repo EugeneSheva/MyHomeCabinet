@@ -1,5 +1,6 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Invoice;
 import com.example.myhome.home.model.InvoiceComponents;
 import com.example.myhome.home.repository.*;
@@ -24,6 +25,9 @@ public class InvoiceController {
     private InvoiceService invoiceService;
 
     @Autowired
+    private ApartmentService apartmentService;
+
+    @Autowired
     private BuildingService buildingService;
 
     @Autowired
@@ -41,6 +45,13 @@ public class InvoiceController {
         return "admin_panel/invoices/invoices";
     }
 
+    @GetMapping("/search")
+    public String showSearch(@RequestParam long flat_id, Model model) {
+        Apartment apartment = apartmentService.findById(flat_id);
+        model.addAttribute("invoices", apartment.getInvoiceList());
+        return "admin_panel/invoices/invoices";
+    }
+
     @GetMapping("/{id}")
     public String showInvoiceInfo(@PathVariable long id, Model model) {
         Invoice invoice = invoiceService.findInvoiceById(id);
@@ -55,7 +66,11 @@ public class InvoiceController {
     }
 
     @GetMapping("/create")
-    public String showCreateInvoicePage(Model model) {
+    public String showCreateInvoicePage(@RequestParam(required = false) Long flat_id, Model model) {
+        model.addAttribute("flat",
+                (flat_id != null) ? apartmentService.findById(flat_id) : null
+        );
+
         model.addAttribute("invoice", new Invoice());
         model.addAttribute("id", invoiceService.getMaxInvoiceId()+1L);
         model.addAttribute("current_date", LocalDate.now());
@@ -68,7 +83,11 @@ public class InvoiceController {
 
     @GetMapping("/update/{id}")
     public String showUpdateInvoicePage(@PathVariable long id, Model model) {
+
         Invoice invoice = invoiceService.findInvoiceById(id);
+
+        model.addAttribute("flat", invoice.getApartment());
+
         model.addAttribute("invoice", invoice);
         model.addAttribute("id", invoice.getId());
         model.addAttribute("current_date", LocalDate.now());

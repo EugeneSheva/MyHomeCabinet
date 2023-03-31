@@ -16,7 +16,10 @@ public class MeterDataService {
 
     public List<MeterData> findAllMeters() {return meterDataRepository.findAll();}
     public List<MeterData> findAllMetersById(List<Long> ids) {return meterDataRepository.findAllById(ids);}
-    public List<MeterData> findSingleMeterData(long apartment_id, long service_id) {return meterDataRepository.findSingleMeterData(apartment_id, service_id);}
+    public List<MeterData> findSingleMeterData(Long apartment_id, Long service_id) {
+        if(service_id != null) return meterDataRepository.findSingleMeterData(apartment_id, service_id);
+        else return meterDataRepository.findByApartmentId(apartment_id);
+    }
 
     public Optional<MeterData> findFirstByOrderByIdDesc() {return meterDataRepository.findFirstByOrderByIdDesc();}
 

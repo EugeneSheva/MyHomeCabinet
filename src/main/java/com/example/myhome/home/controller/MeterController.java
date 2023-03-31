@@ -50,7 +50,7 @@ public class MeterController {
 
     //Получить показания из какого-то одного счетчика
     @GetMapping("/data")
-    public String showSingleMeterData(@RequestParam long flat_id, @RequestParam long service_id, Model model) {
+    public String showSingleMeterData(@RequestParam Long flat_id, @RequestParam(required = false) Long service_id, Model model) {
         List<MeterData> meterDataList = meterDataService.findSingleMeterData(flat_id, service_id);
         log.info(meterDataList.toString());
         long apartment_number = apartmentService.findById(flat_id).getNumber();

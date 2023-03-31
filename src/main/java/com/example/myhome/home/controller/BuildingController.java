@@ -83,19 +83,19 @@ public class BuildingController {
         return "redirect:/buildings/";
     }
 
-    @GetMapping("/buildings/get-sections/{id}")
+    @GetMapping("/get-sections/{id}")
     public @ResponseBody List<String> getBuildingSections(@PathVariable long id) {
         return buildingService.findById(id).getSections();
     }
 
-    @GetMapping("/buildings/get-section-apartments")
+    @GetMapping("/get-section-apartments")
     public @ResponseBody List<Apartment> getBuildingSectionApartments(@RequestParam long id, @RequestParam String section_name) {
 
         List<Apartment> apartments = buildingService.findById(id).getApartments();
         return apartments.stream().filter((apartment) -> apartment.getSection().equals(section_name)).collect(Collectors.toList());
 
     }
-    @GetMapping("/buildings/get-section-apartments/{id}")
+    @GetMapping("/get-section-apartments/{id}")
     public @ResponseBody List<Apartment> getBuildingSectionApartmentsFromQuery(@PathVariable long id, @RequestParam String section_name) {
         return buildingService.getSectionApartments(id, section_name);
     }
