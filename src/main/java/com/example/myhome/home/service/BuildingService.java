@@ -4,17 +4,15 @@ import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Building;
 import com.example.myhome.home.model.BuildingDTO;
-import com.example.myhome.home.repository.BuildingRepository;
+import com.example.myhome.home.repos.BuildingRepository;
 import com.example.myhome.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;

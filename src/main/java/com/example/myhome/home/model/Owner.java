@@ -6,6 +6,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,17 +29,22 @@ public class Owner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //ФИО
+    @NotEmpty(message = "Заполните поле.")
+    @Size(min = 6, message = "Минимум 2 символа.")
     private String first_name;
-
+    @NotEmpty(message = "Заполните поле.")
+    @Size(min = 6, message = "Минимум 2 символа.")
     private String last_name;
 
     private String fathers_name;
-
+    @Size(min = 10, max = 10, message = "Поле должно содержать 10 цифр. Пример: 0630636363.")
     private String phone_number;
-
-    private String email, password;
-
+    @Email
+    @NotEmpty
+    private String email;
+    private String password;
+    @Past (message = "Поле должно содержать прошедшую дату.")
+    @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthdate;
 

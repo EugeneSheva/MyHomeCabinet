@@ -17,6 +17,7 @@ public class Building {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     @ElementCollection
     private List<String>sections  = new ArrayList<>();

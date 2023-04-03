@@ -24,4 +24,9 @@ public class IncomeExpenseItems {
         this.name = name;
         this.incomeExpenseType = incomeExpenseType;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

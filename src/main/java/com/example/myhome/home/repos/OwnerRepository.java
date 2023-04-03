@@ -1,4 +1,4 @@
-package com.example.myhome.home.repository;
+package com.example.myhome.home.repos;
 
 import com.example.myhome.home.model.Building;
 import com.example.myhome.home.model.BuildingDTO;
