@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
-
 public interface ApartmentRepository extends JpaRepository<Apartment, Long> {
 
     List<Apartment>findApartmentsByBuildingIdAndSection(Long id, String section);

@@ -2,7 +2,7 @@ package com.example.myhome.home.service;
 
 import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Message;
-import com.example.myhome.home.repos.MessageRepository;
+import com.example.myhome.home.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

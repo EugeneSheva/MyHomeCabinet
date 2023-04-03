@@ -3,7 +3,7 @@ package com.example.myhome.home.service;
 import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.ApartmentDTO;
-import com.example.myhome.home.repos.ApartmentRepository;
+import com.example.myhome.home.repository.ApartmentRepository;
 import com.example.myhome.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

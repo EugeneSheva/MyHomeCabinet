@@ -1,14 +1,11 @@
 package com.example.myhome.home.controller;
-
 import com.example.myhome.home.model.*;
-import com.example.myhome.home.repos.AccountRepository;
-import com.example.myhome.home.repos.IncomeExpenseRepository;
+import com.example.myhome.home.repository.IncomeExpenseRepository;
 import com.example.myhome.home.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -96,7 +93,7 @@ public class CashBoxController {
             cashbox.setApartmentAccount(apartmentAccountService.findById(accountId));
         }
         cashbox.setIncomeExpenseItems(incomeExpenseItemService.findById(incomeExpenseItemId));
-        cashbox.setManager(adminService.findById(adminId));
+        cashbox.setManager(adminService.findAdminById(adminId));
         cashBoxService.save(cashbox);
         return "redirect:/cashbox/";
     }

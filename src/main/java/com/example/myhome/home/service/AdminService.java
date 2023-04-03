@@ -3,22 +3,15 @@ package com.example.myhome.home.service;
 import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.model.AdminDTO;
-import com.example.myhome.home.model.Owner;
-import com.example.myhome.home.model.OwnerDTO;
-import com.example.myhome.home.repos.AdminRepository;
-import com.example.myhome.home.repos.OwnerRepository;
-import com.example.myhome.util.FileUploadUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import com.example.myhome.home.repository.AdminRepository;
+
+import com.example.myhome.util.UserRole;
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +22,7 @@ public class AdminService {
 ;
 
 
-    public Admin findById (Long id) { return adminRepository.findById(id).orElseThrow(() -> new NotFoundException());}
+    public Admin findAdminById (Long id) { return adminRepository.findById(id).orElseThrow(() -> new NotFoundException());}
 
     public List<Admin> findAll() { return adminRepository.findAll(); }
 
@@ -41,10 +34,11 @@ public class AdminService {
         return adminDTOList;
     }
 
-    public Admin save(Admin admin) { return adminRepository.save(admin); }
+    public Admin saveAdmin(Admin admin) { return adminRepository.save(admin); }
 
-    public void deleteById(Long id) { adminRepository.deleteById(id); }
+    public void deleteAdminById(Long id) { adminRepository.deleteById(id); }
 
+    public List<Admin> getAdminsByRole(UserRole role) { return adminRepository.getAdminsByRole(role);}
 
 
 

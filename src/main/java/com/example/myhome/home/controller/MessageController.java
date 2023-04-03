@@ -1,7 +1,7 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.*;
-import com.example.myhome.home.repos.ApartmentRepository;
+import com.example.myhome.home.repository.ApartmentRepository;
 import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.MessageService;
