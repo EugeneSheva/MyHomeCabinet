@@ -1,4 +1,4 @@
-package com.example.myhome.home.repos;
+package com.example.myhome.home.repository;
 
 import com.example.myhome.home.model.IncomeExpenseItems;
 import com.example.myhome.home.model.IncomeExpenseType;

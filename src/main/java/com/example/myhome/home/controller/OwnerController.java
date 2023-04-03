@@ -35,27 +35,27 @@ public class OwnerController {
     public String getOwners(Model model) {
         List<Owner> ownerList = ownerService.findAll();
         model.addAttribute("owners", ownerList);
-        return "admin_panel/owners";
+        return "admin_panel/owners/owners";
     }
 
     @GetMapping("/{id}")
     public String getOwner(@PathVariable("id") Long id, Model model) {
         Owner owner = ownerService.findById(id);
         model.addAttribute("owner", owner);
-        return "admin_panel/owner";
+        return "admin_panel/owners/owner";
     }
 
     @GetMapping("/new")
     public String createOwner(Model model) {
         Owner owner = new Owner();
         model.addAttribute("owner", owner);
-        return "admin_panel/owner_edit";
+        return "admin_panel/owners/owner_edit";
     }
     @GetMapping("edit/{id}")
     public String editeOwner(@PathVariable("id") Long id, Model model) {
         Owner owner = ownerService.findById(id);
         model.addAttribute("owner", owner);
-        return "admin_panel/owner_edit";
+        return "admin_panel/owners/owner_edit";
     }
 
     @PostMapping("/save")
@@ -79,5 +79,11 @@ public class OwnerController {
         }
         ownerService.deleteById(id);
         return "redirect:/owners/";
+    }
+
+    //Получить квартиры какого-то владельца
+    @GetMapping("/get-apartments/{id}")
+    public @ResponseBody List<Apartment> getOwnerApartments(@PathVariable long id) {
+        return ownerService.findById(id).getApartments();
     }
 }

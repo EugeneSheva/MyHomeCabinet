@@ -1,4 +1,4 @@
-package com.example.myhome.home.repos;
+package com.example.myhome.home.repository;
 
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.util.UserRole;

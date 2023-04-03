@@ -179,7 +179,7 @@
 
 <script>
   function deleteService(button) {
-    let service_row = button.closest(".service-row");
+    let service_row = $(button).closest(".service-row");
     console.log(service_row);
     if(confirm('Удалить?')) {
       service_row.remove();

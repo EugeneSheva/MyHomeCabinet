@@ -3,6 +3,7 @@ package com.example.myhome.home.model.pages;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Data
@@ -11,6 +12,7 @@ import java.util.List;
 public class AboutPage extends Page {
 
     //Информация
+    @NotBlank
     private String title, description;
     private String director_photo;
 
@@ -18,6 +20,7 @@ public class AboutPage extends Page {
     private String photos = "";
 
     //Дополнительная информация
+    @NotBlank
     private String add_title, add_description;
 
     //Дополнительная фотогалерея
@@ -33,7 +36,9 @@ public class AboutPage extends Page {
     public static class Document {
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         private long id;
+        @NotBlank
         private String name;
+        @NotBlank
         private String file;
 
         @ManyToOne

@@ -1,6 +1,8 @@
 package com.example.myhome.home.model;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ public class Building {
     @ElementCollection
     private List<String>floors = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "building")
     List<Apartment> apartments;
 
@@ -38,6 +41,17 @@ public class Building {
             inverseJoinColumns = @JoinColumn(name="admin_id"))
     List<Admin> admins;
 
+    public Building() {
+    }
+
+    public Building(Long id, String name, String address, List<String> sections, List<String> floors) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.sections = sections;
+        this.floors = floors;
+    }
+
     @Override
     public String toString() {
         return "Building{" +
@@ -45,7 +59,7 @@ public class Building {
                 ", name='" + name + '\'' +
                 ", sections=" + sections +
                 ", address='" + address + '\'' +
-                ", floors=" + floors +
                 '}';
     }
 }
+

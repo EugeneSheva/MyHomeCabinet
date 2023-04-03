@@ -1,5 +1,6 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Building;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.validator.BuildingValidator;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -35,27 +37,27 @@ public class BuildingController {
     public String getBuildigs(Model model) {
         List<Building> buildingList = buildingService.findAll();
         model.addAttribute("buildings", buildingList);
-        return "admin_panel/buildings";
+        return "admin_panel/buildings/buildings";
     }
 
     @GetMapping("/{id}")
     public String getBuildig(@PathVariable("id") Long id, Model model) {
         Building building = buildingService.findById(id);
         model.addAttribute("building", building);
-        return "admin_panel/building";
+        return "admin_panel/buildings/building";
     }
 
     @GetMapping("/new")
     public String createBuildig(Model model) {
         Building building = new Building();
         model.addAttribute("building", building);
-        return "admin_panel/building_edit";
+        return "admin_panel/buildings/building_edit";
     }
     @GetMapping("edit/{id}")
     public String editBuildig(@PathVariable("id") Long id, Model model) {
         Building building = buildingService.findById(id);
         model.addAttribute("building", building);
-        return "admin_panel/building_edit";
+        return "admin_panel/buildings/building_edit";
     }
 
     @PostMapping("/save")
@@ -98,5 +100,22 @@ public class BuildingController {
         }
         buildingService.deleteById(id);
         return "redirect:/buildings/";
+    }
+
+    @GetMapping("/get-sections/{id}")
+    public @ResponseBody List<String> getBuildingSections(@PathVariable long id) {
+        return buildingService.findById(id).getSections();
+    }
+
+    @GetMapping("/get-section-apartments")
+    public @ResponseBody List<Apartment> getBuildingSectionApartments(@RequestParam long id, @RequestParam String section_name) {
+
+        List<Apartment> apartments = buildingService.findById(id).getApartments();
+        return apartments.stream().filter((apartment) -> apartment.getSection().equals(section_name)).collect(Collectors.toList());
+
+    }
+    @GetMapping("/get-section-apartments/{id}")
+    public @ResponseBody List<Apartment> getBuildingSectionApartmentsFromQuery(@PathVariable long id, @RequestParam String section_name) {
+        return buildingService.getSectionApartments(id, section_name);
     }
 }

@@ -3,6 +3,7 @@ package com.example.myhome.home.model.pages;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Data

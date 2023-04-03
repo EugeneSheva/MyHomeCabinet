@@ -50,7 +50,7 @@ $(document).ready(function(){
 
           apartment_select.appendChild(option);
 
-          $.get('/admin/buildings/get-sections/'+this.value, function(data){
+          $.get('/buildings/get-sections/'+this.value, function(data){
 
             console.log(data);
 
@@ -82,7 +82,7 @@ $(document).ready(function(){
 
         apartment_select.appendChild(option);
 
-        $.get('/admin/buildings/get-section-apartments/'+house_select.value, {section_name:this.value}, function(data){
+        $.get('/buildings/get-section-apartments/'+house_select.value, {section_name:this.value}, function(data){
 
           console.log(data);
 

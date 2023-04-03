@@ -28,9 +28,14 @@ public class Admin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     private String first_name, last_name;
+    @NotBlank
     private String phone_number;
+    @NotBlank
+    @Email
     private String email;
+    @NotBlank
     private String password;
     private boolean active = true;
 

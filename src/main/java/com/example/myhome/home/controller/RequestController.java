@@ -1,9 +1,12 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.RepairRequest;
-import com.example.myhome.home.repos.AdminRepository;
-import com.example.myhome.home.repos.OwnerRepository;
-import com.example.myhome.home.repos.RepairRequestRepository;
+import com.example.myhome.home.repository.AdminRepository;
+import com.example.myhome.home.repository.OwnerRepository;
+import com.example.myhome.home.repository.RepairRequestRepository;
+import com.example.myhome.home.service.AdminService;
+import com.example.myhome.home.service.OwnerService;
+import com.example.myhome.home.service.RepairRequestService;
 import com.example.myhome.util.UserRole;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,18 +26,18 @@ import java.util.stream.Collectors;
 public class RequestController {
 
     @Autowired
-    private RepairRequestRepository repairRequestRepository;
+    private RepairRequestService repairRequestService;
 
     @Autowired
-    private OwnerRepository ownerRepository;
+    private OwnerService ownerService;
 
     @Autowired
-    private AdminRepository adminRepository;
+    private AdminService adminService;
 
     @GetMapping
     public String showRequestsPage(Model model) {
-        model.addAttribute("requests", repairRequestRepository.findAll());
-        return "requests";
+        model.addAttribute("requests", repairRequestService.findAllRequests());
+        return "admin_panel/requests/requests";
     }
 
     @GetMapping("/create")
@@ -43,42 +46,42 @@ public class RequestController {
         model.addAttribute("request", new RepairRequest());
         model.addAttribute("date", LocalDate.now());
         model.addAttribute("time", LocalTime.now());
-        model.addAttribute("owners", ownerRepository.findAll());
-        model.addAttribute("masters", adminRepository.findAll().stream()
+        model.addAttribute("owners", ownerService.findAll());
+        model.addAttribute("masters", adminService.findAll().stream()
                 .filter(master -> master.getRole() != UserRole.ADMIN &&
                         master.getRole() != UserRole.MANAGER &&
                         master.getRole() != UserRole.DIRECTOR)
                 .sorted(Comparator.comparing(o -> o.getRole().getName()))
                 .collect(Collectors.toList())
         );
-        return "request_card";
+        return "admin_panel/requests/request_card";
     }
 
     @GetMapping("/update/{id}")
     public String showUpdateRequestPage(@PathVariable long id, Model model) {
-        RepairRequest request = repairRequestRepository.findById(id).orElseThrow();
+        RepairRequest request = repairRequestService.findRequestById(id);
         log.info(request.toString());
         model.addAttribute("request", request);
         model.addAttribute("date", request.getRequest_date().toLocalDate());
         model.addAttribute("time", request.getRequest_date().toLocalTime());
-        model.addAttribute("owners", ownerRepository.findAll());
-        model.addAttribute("masters", adminRepository.findAll().stream()
+        model.addAttribute("owners", ownerService.findAll());
+        model.addAttribute("masters", adminService.findAll().stream()
                 .filter(master -> master.getRole() != UserRole.ADMIN &&
                         master.getRole() != UserRole.MANAGER &&
                         master.getRole() != UserRole.DIRECTOR)
                 .sorted(Comparator.comparing(o -> o.getRole().getName()))
                 .collect(Collectors.toList())
         );
-        return "request_card";
+        return "admin_panel/requests/request_card";
     }
 
     @GetMapping("/info/{id}")
     public String getRequestInfoPage(@PathVariable long id, Model model) {
-        RepairRequest request = repairRequestRepository.findById(id).orElseThrow();
+        RepairRequest request = repairRequestService.findRequestById(id);
         model.addAttribute("request", request);
         model.addAttribute("request_date", request.getRequest_date().toLocalDate());
         model.addAttribute("request_time", request.getRequest_date().toLocalTime());
-        return "request_profile";
+        return "admin_panel/requests/request_profile";
     }
 
     @PostMapping("/create")
@@ -86,22 +89,22 @@ public class RequestController {
                                 @RequestParam String date,
                                 @RequestParam String time) {
         request.setRequest_date(LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(time)));
-        repairRequestRepository.save(request);
+        repairRequestService.saveRequest(request);
         return "redirect:/admin/requests";
     }
 
     @PostMapping("/update/{id}")
     public String updateRequest(@PathVariable long id,
                                 @ModelAttribute RepairRequest request) {
-        RepairRequest originalRequest = repairRequestRepository.findById(id).orElseThrow();
+        RepairRequest originalRequest = repairRequestService.findRequestById(id);
         request.setRequest_date(originalRequest.getRequest_date());
-        repairRequestRepository.save(request);
+        repairRequestService.saveRequest(request);
         return "redirect:/admin/requests";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteRequest(@PathVariable long id) {
-        repairRequestRepository.deleteById(id);
+        repairRequestService.deleteRequestById(id);
         return "redirect:/admin/requests";
     }
 

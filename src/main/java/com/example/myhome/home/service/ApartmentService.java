@@ -3,7 +3,7 @@ package com.example.myhome.home.service;
 import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.ApartmentDTO;
-import com.example.myhome.home.repos.ApartmentRepository;
+import com.example.myhome.home.repository.ApartmentRepository;
 import com.example.myhome.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +21,7 @@ public class ApartmentService {
     private final ApartmentRepository apartmentRepository;
     private final FileUploadUtil fileUploadUtil;
 
-    public Apartment findById (Long id) { return apartmentRepository.findById(id).orElseThrow(() -> new NotFoundException());}
+    public Apartment findById (Long id) { return (id == null) ? null : apartmentRepository.findById(id).orElseThrow(NotFoundException::new);}
 
     public Apartment save(Apartment apartment) { return apartmentRepository.save(apartment); }
 

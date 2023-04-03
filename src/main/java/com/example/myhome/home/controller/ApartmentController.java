@@ -1,24 +1,17 @@
 package com.example.myhome.home.controller;
 
-import com.example.myhome.home.model.Apartment;
-import com.example.myhome.home.model.Building;
-import com.example.myhome.home.model.BuildingDTO;
-import com.example.myhome.home.model.OwnerDTO;
+import com.example.myhome.home.model.*;
 import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.OwnerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 
@@ -38,14 +31,14 @@ public class ApartmentController {
     public String getApartment(Model model) {
         List<Apartment> apartmentList = apartmentService.findAll();
         model.addAttribute("apartments", apartmentList);
-        return "admin_panel/apartments";
+        return "admin_panel/apartments/apartments";
     }
 
     @GetMapping("/{id}")
     public String getApartment(@PathVariable("id") Long id, Model model) {
         Apartment apartment = apartmentService.findById(id);
         model.addAttribute("apartment", apartment);
-        return "admin_panel/apartment";
+        return "admin_panel/apartments/apartment";
     }
 
     @GetMapping("/new")
@@ -56,7 +49,7 @@ public class ApartmentController {
         model.addAttribute("apartment", apartment);
         List<BuildingDTO> buildingList = buildingService.findAllDTO();
         model.addAttribute("buildings", buildingList);
-        return "admin_panel/apartment_edit";
+        return "admin_panel/apartments/apartment_edit";
     }
     @GetMapping("edit/{id}")
     public String editApartment(@PathVariable("id") Long id, Model model) {
@@ -66,7 +59,7 @@ public class ApartmentController {
         model.addAttribute("apartment", apartment);
         List<BuildingDTO> buildingList = buildingService.findAllDTO();
         model.addAttribute("buildings", buildingList);
-        return "admin_panel/apartment_edit";
+        return "admin_panel/apartments/apartment_edit";
     }
 
     @PostMapping("/save")
@@ -81,4 +74,11 @@ public class ApartmentController {
         apartmentService.deleteById(id);
         return "redirect:/apartments/";
     }
+
+    @GetMapping("/get-owner")
+    public @ResponseBody Owner getOwner(@RequestParam long flat_id) {
+        return apartmentService.findById(flat_id).getOwner();
+    }
+
+
 }

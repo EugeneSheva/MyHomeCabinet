@@ -1,4 +1,4 @@
-package com.example.myhome.home.repos;
+package com.example.myhome.home.repository;
 
 import com.example.myhome.home.model.Service;
 import org.springframework.data.jpa.repository.JpaRepository;
