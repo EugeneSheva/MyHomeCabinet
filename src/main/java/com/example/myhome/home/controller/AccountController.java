@@ -1,6 +1,5 @@
 package com.example.myhome.home.controller;
 
-import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.ApartmentAccount;
 import com.example.myhome.home.repos.AccountRepository;
 import com.example.myhome.home.repos.ApartmentRepository;

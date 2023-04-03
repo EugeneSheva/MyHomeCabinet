@@ -18,7 +18,7 @@ public class ApartmentAccount {
     private Long id;
 
     private Boolean isActive;
-
+    private Long number;
     @ToString.Exclude
     @JsonIgnore
     @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

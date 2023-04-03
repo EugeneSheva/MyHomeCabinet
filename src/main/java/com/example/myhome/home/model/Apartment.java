@@ -44,7 +44,7 @@ public class Apartment {
     private List<MeterData> meterDataList;
 
     @OneToMany(mappedBy = "apartment")
-    private List<RepairRequests> repairRequestsList;
+    private List<RepairRequest> repairRequestsList;
 
     //Квитанции
     @OneToMany(mappedBy = "apartment")

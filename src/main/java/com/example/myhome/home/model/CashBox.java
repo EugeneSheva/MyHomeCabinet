@@ -23,9 +23,16 @@ public class CashBox {
     private IncomeExpenseType incomeExpenseType;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
-    private Admin owner;
+    @JoinColumn(name = "income_expense_items_id")
+    private IncomeExpenseItems incomeExpenseItems;
 
+    @ManyToOne
+    @JoinColumn(name = "apartment_account_id")
+    private ApartmentAccount apartmentAccount;
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
+    private Boolean completed;
     @ManyToOne
     @JoinColumn(name = "manager_id")
     private Admin manager;
@@ -34,6 +41,9 @@ public class CashBox {
 
     private Double amount;
 
+    public String getIncExpItemName() {
+        return this.incomeExpenseItems.getName();
+    }
 
 
 }

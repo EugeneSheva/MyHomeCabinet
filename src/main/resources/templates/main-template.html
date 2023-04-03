@@ -110,7 +110,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/kanban.html" class="nav-link">
+            <a th:href="@{/cashbox/}"class="nav-link">
               <i class="fa fa-usd" aria-hidden="true"></i>
               <p>
                 Касса
@@ -118,17 +118,17 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/kanban.html" class="nav-link">
+            <a th:href="@{/admin/invoices}" class="nav-link">
               <i class="fa fa-files-o" aria-hidden="true"></i>
-              <p>
+              <p class="pl-1">
                 Квитанции на оплату
               </p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/kanban.html" class="nav-link">
-              <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
-              <p>
+            <a th:href="@{/admin/accounts}" class="nav-link">
+              <i class="fa fa-credit-card" aria-hidden="true"></i>
+              <p class="pl-1">
                 Лицевые счета
               </p>
             </a>
@@ -166,17 +166,17 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/kanban.html" class="nav-link">
+            <a th:href="@{/admin/requests}" class="nav-link">
               <i class="fa fa-wrench" aria-hidden="true"></i>
-              <p>
+              <p class="pl-1">
                 Заявки вызова мастера
               </p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="pages/kanban.html" class="nav-link">
+            <a th:href="@{/admin/meters}" class="nav-link">
               <i class="fa fa-tachometer" aria-hidden="true"></i>
-              <p>
+              <p class="pl-1">
                 Показания счетчиков
               </p>
             </a>
@@ -184,39 +184,33 @@
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="fa fa-desktop" aria-hidden="true"></i>
-              <p>
+              <p class="pl-1">
                 Управление Сайтом
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/mailbox/mailbox.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Главная страница</p>
+            <ul class="nav nav-treeview" style="font-weight: 400">
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/admin/website/home}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle fa-sm nav-icon"></i>
+                  <p> Главная страница</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/compose.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/admin/website/about}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle fa-sm nav-icon"></i>
                   <p>О нас</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/read-mail.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/admin/website/services}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle fa-sm nav-icon"></i>
                   <p>Услуги</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/read-mail.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Тарифы</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/read-mail.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/admin/website/contacts}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle fa-sm nav-icon"></i>
                   <p>Контакты</p>
                 </a>
               </li>
@@ -225,39 +219,45 @@
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="fa fa-cogs" aria-hidden="true"></i>
-              <p>
+              <p class="pl-1">
                 Настройка системы
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/mailbox/mailbox.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+            <ul class="nav nav-treeview" style="font-weight: 400">
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/admin/services}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle nav-icon"></i>
                   <p>Услуги</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/compose.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+              <li class="nav-item dropdown-items"  >
+                <a th:href="@{/admin/tariffs}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;"  class="far fa-circle nav-icon"></i>
                   <p>Тарифы</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/read-mail.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/admin/admins}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle nav-icon"></i>
                   <p>Пользователи</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/read-mail.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/admin/roles}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle nav-icon"></i>
+                  <p>Роли</p>
+                </a>
+              </li>
+              <li class="nav-item dropdown-items">
+                <a th:href="@{/admin/payment-details}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle nav-icon"></i>
                   <p>Платежные реквизиты</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/read-mail.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+              <li class="nav-item dropdown-items">
+                <a th:href="@{/admin/income-expense}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 12px;" class="far fa-circle nav-icon"></i>
                   <p>Статьи платежей</p>
                 </a>
               </li>

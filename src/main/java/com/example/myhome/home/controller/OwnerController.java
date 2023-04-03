@@ -6,12 +6,15 @@ import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.OwnerService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,6 +24,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/owners")
+@Log
 public class OwnerController {
 
     @Value("${upload.path}")
@@ -55,9 +59,13 @@ public class OwnerController {
     }
 
     @PostMapping("/save")
-    public String saveCoffee(@ModelAttribute("owner") Owner owner, @RequestParam("img1") MultipartFile file) throws IOException {
-        owner.setProfile_picture(ownerService.saveOwnerImage(owner.getId(), file));
-        ownerService.save(owner);
+    public String saveCoffee(@Valid @ModelAttribute("owner") Owner owner, BindingResult bindingResult, @RequestParam("img1") MultipartFile file) throws IOException {
+        if (bindingResult.hasErrors()) {
+            return "admin_panel/owner_edit";
+        } else {
+            owner.setProfile_picture(ownerService.saveOwnerImage(owner.getId(), file));
+            ownerService.save(owner);
+        }
         return "redirect:/owners/";
     }
 

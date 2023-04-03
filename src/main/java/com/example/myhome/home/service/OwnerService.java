@@ -1,11 +1,9 @@
 package com.example.myhome.home.service;
 
 import com.example.myhome.home.exception.NotFoundException;
-import com.example.myhome.home.model.Building;
 import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.model.OwnerDTO;
-import com.example.myhome.home.repository.BuildingRepository;
-import com.example.myhome.home.repository.OwnerRepository;
+import com.example.myhome.home.repos.OwnerRepository;
 import com.example.myhome.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

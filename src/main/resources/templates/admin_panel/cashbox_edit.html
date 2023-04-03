@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>МойДом24</title>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+    <!--    navigation card bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    add & del input field in navigation card bootstrap
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <!-- Select2 -->
+    <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+</head>
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+
+    <nav th:insert="~{main-template :: header}"></nav>
+    <aside th:insert="~{main-template :: sidebar}"></aside>
+
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                                    <h1 class="m-0" th:text="${cashBoxItem.id == null} ? (${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')} ? 'Новая приходная ведомость'  : 'Новая расходная ведомость'  ):
+                                        (${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')} ? 'Приходная ведомость'  : 'Расходная ведомость')"></h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/cashbox/}">Касса</a></li>
+                                          <li class="breadcrumb-item active" th:text="${cashBoxItem.id == null} ? (${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')} ?
+                                           'Новая приходная ведомость'  : 'Новая расходная ведомость'  ): 'Редактирование'"></li>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="page_content">
+            <form method="post" th:action="@{/cashbox/save}" th:object="${cashBoxItem}">
+                <input type="hidden" id="apartment_exists" th:field="*{id}">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <span style="display:inline;">№ </span>
+                            <input style="width: 90%; display:inline;"
+                                   th:field="*{number}"
+                                   disabled
+                                   class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <span style="display:inline;">от </span>
+                            <input id="date" style="width: 90%; display:inline;" type="date" th:field="*{date}"
+                                   class="form-control">
+                            <script th:if="${cashBoxItem.id == null}">
+                                document.getElementById('date').value = new Date().toISOString().substring(0, 10);
+                            </script>
+                        </div>
+                        <div class="col-md-6"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box" style="padding:15px;">
+                                <div class="box-body">
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="id"></label>
+                                            <input type="hidden" id="id" class="form-control" th:field="*{id}" name="id">
+                                            <label for="incomeExpenseType"></label>
+                                            <input type="hidden" id="incomeExpenseType" class="form-control" th:field="*{incomeExpenseType}" name="incomeExpenseType">
+
+                                            <!--                      <div class="form-group">-->
+                                            <div th:if="${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')}">
+                                                <label style="margin-top:30px ">Владелец квартиры</label>
+                                                <select class="form-control select2bs4" name="owner" style="width: 100%;">
+                                                    <option selected="" disabled="" value="">Choose...</option>
+                                                    <option th:each="owner, item : ${owners}"
+                                                            th:text="${owners[__${item.index}__].first_name}+ ' '+${owners[__${item.index}__].last_name}+' '+${owners[__${item.index}__].fathers_name}"
+                                                            th:value="${owners[__${item.index}__].id}"
+                                                            ></option>
+                                                </select>
+                                            </div>
+                                            <div th:if="${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')}">
+                                                <label>Лицевой счет</label>
+                                                <select class="form-control select2bs4" name="account" style="width: 100%;">
+                                                    <option selected="" disabled="" value="">Choose...</option>
+                                                    <option th:each="account, item : ${accounts}"
+                                                            th:text="${accounts[__${item.index}__].number}"
+                                                            th:value="${accounts[__${item.index}__].id}"
+                                                            ></option>
+                                                </select>
+                                            </div>
+                                            <div th:if="${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')}">
+                                                <label for="incomeExpenseItem" class="form-label">Статья</label>
+                                                <select class="form-select" id="incomeExpenseItem"
+                                                        name="incomeExpenseItem">
+                                                    <option selected="" disabled="" value="">Выберите...</option>
+                                                    <option th:each="item : ${incomeItemsList}"
+                                                            th:text="${item.name}"
+                                                            th:value="${item.id}"></option>
+                                                </select>
+                                            </div>
+                                            <div th:if="${#strings.contains(cashBoxItem.incomeExpenseType,'EXPENSE')}">
+                                                <label for="incomeExpenseItem" class="form-label">Статья</label>
+                                                <select class="form-select" id="incomeExpenseItem"
+                                                        name="incomeExpenseItem">
+                                                    <option selected="" disabled="" value="">Выберите...</option>
+                                                    <option th:each="item : ${expenseItemsList}"
+                                                            th:text="${item.name}"
+                                                            th:value="${item.id}"></option>
+                                                </select>
+                                            </div>
+                                            <label>Сумма</label>
+                                            <input type="number" id="amount" class="form-control" th:field="*{amount}">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="checkbox" class="form-check-input" id="formCheckDefault" style="margin-left: 0px"
+                                                   th:field="*{completed}">
+                                            <label class="form-check-label" for="formCheckDefault" style="margin-left: 20px"><b>Проведен</b></label>
+                                            <br>
+                                            <label for="admin" class="form-label" style="margin-top:6px ">Менеджер</label>
+                                            <select class="form-select" id="admin" name="admin">
+                                                <option selected="" disabled="" value="">Выберите...</option>
+                                                <option th:each="admin, item : ${admins}"
+                                                        th:text="${admins[__${item.index}__].role}+' - '+${admins[__${item.index}__].first_name}+' '+${admins[__${item.index}__].last_name}"
+                                                        th:value="${admins[__${item.index}__].id}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-success float-right" style="margin-left: 5px">Сохранить</button>
+                                        <a th:href="@{/cashbox/}" class="btn btn-secondary float-right" style="margin-left: 5px">Отменить</a>
+                                    </div>
+                                    <br>
+                                    <label for="description">Коментарий</label>
+                                    <textarea class="form-control" th:field="*{description}" id="description"  rows="5"></textarea ><br>
+                                </div>
+                                <div class="box-footer clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </div>
+
+    <!-- Main Footer -->
+    <footer th:insert="~{main-template :: footer}"></footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+<!-- Icons -->
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<!-- Select2 -->
+<script src="../../plugins/select2/js/select2.full.min.js"></script>
+
+<script>
+    $(function () {
+        //Initialize Select2 Elements
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
+
+    })
+
+</script>
+<!-- overlayScrollbars -->
+<!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
+<!-- AdminLTE App -->
+<!--<script th:src="@{/dist/js/adminlte.js}"></script>-->
+
+<!--<script th:src="@{/dist/js/house_load.js}"></script>-->
+
+<!--<script th:inline="javascript">-->
+<!--    let add_service_btn = document.getElementById('add_service_btn');-->
+<!--    let component_row_template = document.getElementById('component_row_template');-->
+<!--    let components_body = document.getElementById("components_body");-->
+<!--    let button_row = document.getElementById("button_row");-->
+<!--    add_service_btn.addEventListener('click',function(){-->
+<!--        let new_row = component_row_template.cloneNode(true);-->
+<!--        new_row.id = '';-->
+<!--        new_row.style.display = 'table-row'-->
+
+
+<!--        components_body.insertBefore(new_row, button_row);-->
+<!--    });-->
+
+<!--    let set_services_from_tariff_btn = document.getElementById('set_services_from_tariff_btn');-->
+<!--    set_services_from_tariff_btn.addEventListener('click', function(){-->
+
+<!--        let rows = components_body.querySelectorAll("tr");-->
+<!--        console.log(rows);-->
+<!--        for(let i = 1; i < rows.length-1; i++) {-->
+<!--          rows[i].remove();-->
+<!--        }-->
+
+<!--        let tariff_id = $("#tariff").val();-->
+
+<!--        $.get('/admin/tariffs/get-components', {tariff_id:tariff_id}, function(data){-->
+<!--            alert('получил услуги из тарифа');-->
+<!--            console.log(data);-->
+<!--            console.log(typeof data);-->
+
+<!--            let map = new Map(Object.entries(data));-->
+
+<!--            console.log(map);-->
+
+<!--            let total_price = 0.0;-->
+
+<!--            for (const [key, value] of map.entries()) {-->
+<!--              let service = JSON.parse(key);-->
+<!--              console.log(service);-->
+<!--              console.log(value);-->
+
+<!--              let new_row = component_row_template.cloneNode(true);-->
+<!--              new_row.id = '';-->
+<!--              new_row.style.display = 'table-row';-->
+
+<!--              new_row.getElementsByClassName("services")[0].value = service.id;-->
+<!--              new_row.getElementsByClassName("unit")[0].value = service.unit.name;-->
+<!--              new_row.getElementsByClassName("unit_prices")[0].value = value;-->
+<!--              new_row.getElementsByClassName("unit_amounts")[0].value = 1;-->
+<!--              new_row.getElementsByClassName("total_price")[0].value = value;-->
+
+<!--              total_price += value;-->
+
+<!--              document.getElementById("total_price").innerText = 'Итого: ' + total_price;-->
+
+<!--              components_body.insertBefore(new_row, button_row);-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+
+<!--    function countTotalPrice(){-->
+<!--      let total_price = 0;-->
+<!--      console.log(total_price);-->
+<!--      for(let i = 1; i < document.getElementsByClassName("total_price").length; i++){-->
+<!--        let total_price_element = document.getElementsByClassName("total_price")[i];-->
+<!--        console.log(total_price_element);-->
+<!--        console.log(total_price_element.value);-->
+<!--        if(total_price_element.value == NaN) continue;-->
+<!--        console.log(parseFloat(total_price_element.value));-->
+<!--        total_price += parseFloat(total_price_element.value);-->
+<!--      }-->
+<!--      document.getElementById("total_price").innerText = 'Итого: ' + total_price;-->
+<!--    };-->
+
+<!--    function count(element) {-->
+<!--       console.log(element);-->
+<!--       let unit_price = element.parentElement.parentElement.querySelector(".unit_prices").value;-->
+<!--       let unit_amount = element.parentElement.parentElement.querySelector(".unit_amounts").value;-->
+<!--       let total_price = unit_price*unit_amount;-->
+
+
+<!--       console.log(unit_price);-->
+<!--       console.log(unit_amount);-->
+<!--       console.log(total_price);-->
+
+<!--       element.parentElement.parentElement.querySelector(".total_price").value = total_price;-->
+
+<!--       countTotalPrice();-->
+<!--    }-->
+
+<!--    function setUnit(select) {-->
+<!--        console.log(select.value);-->
+<!--        let service_id = $(select).val();-->
+<!--        console.log(service_id);-->
+<!--        let unit = $(select).closest('tr').find('.unit');-->
+<!--        console.log(unit);-->
+
+<!--        $.get('/admin/services/get-unit', {id:service_id}, function(data){-->
+<!--            $(unit).val(data.name);-->
+<!--        });-->
+<!--    }-->
+
+<!--    $(".services").change(function(){-->
+
+<!--    });-->
+
+<!--</script>-->
+
+<!-- PAGE PLUGINS -->
+<!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->
+<!--<script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>-->
+<!--<script src="plugins/raphael/raphael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/jquery.mapael.min.js"></script>-->
+<!--<script src="plugins/jquery-mapael/maps/usa_states.min.js"></script>-->
+<!--&lt;!&ndash; ChartJS &ndash;&gt;-->
+<!--<script src="plugins/chart.js/Chart.min.js"></script>-->
+
+<!--&lt;!&ndash; AdminLTE for demo purposes &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/demo.js}"></script>-->
+<!--&lt;!&ndash; AdminLTE dashboard demo (This is only for demo purposes) &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/pages/dashboard2.js}"></script>-->
+</body>
+</html>

@@ -71,25 +71,30 @@
                                     <label for="first_name">Фамилия</label>
                                     <input type="text" id="first_name" class="form-control" name="first_name"
                                            th:field="*{first_name}" placeholder="">
+                                    <div style="color: #d80450" th:if="${#fields.hasErrors('first_name')}" th:errors="*{first_name}"></div>
 
                                     <label for="last_name">Имя</label>
                                     <input type="text" id="last_name" class="form-control" name="last_name"
                                            th:field="*{last_name}" placeholder="">
+                                    <div style="color: #d80450" th:if="${#fields.hasErrors('last_name')}" th:errors="*{last_name}"></div>
 
                                     <label for="fathers_name">Отчесво</label>
                                     <input type="text" id="fathers_name" class="form-control" name="fathers_name"
                                            th:field="*{fathers_name}" placeholder="">
 
+
                                     <div class="md-form md-outline input-with-post-icon datepicker" style="padding: 0; margin-bottom: 25px">
                                         <label for="birthdate">Дата рождения</label>
                                         <input placeholder="Select date" th:field="*{birthdate}" type="date" id="birthdate" name="birthdate" class="form-control">
                                     </div>
+                                    <div style="color: #d80450" th:if="${#fields.hasErrors('birthdate')}" th:errors="*{birthdate}"></div>
 
                                     <h4>Контактные даные</h4>
 
                                     <label for="phone_number">Телефон</label>
                                     <input type="number" id="phone_number" class="form-control" name="phone_number"
                                            th:field="*{phone_number}" placeholder="">
+                                    <div style="color: #d80450" th:if="${#fields.hasErrors('phone_number')}" th:errors="*{phone_number}"></div>
 
                                     <label for="viber">Viber</label>
                                     <input type="number" id="viber" class="form-control" name="viber"
@@ -102,6 +107,7 @@
                                     <label for="email">Email</label>
                                     <input type="text" id="email" class="form-control" name="email"
                                            th:field="*{email}" placeholder="">
+                                    <div style="color: #d80450" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
 
                                     <label for="added_at"></label>
                                     <input type="hidden" id="added_at" class="form-control" th:field="*{added_at}"
@@ -140,6 +146,7 @@
                                     <label for="new_pass">Пароль</label>
                                     <input type="text" id="new_pass" class="form-control" name="new_pass"
                                            placeholder="">
+
 
                                     <label for="new_re_pass">Повторите пароль</label>
                                     <input type="text" id="new_re_pass" class="form-control" name="new_re_pass"

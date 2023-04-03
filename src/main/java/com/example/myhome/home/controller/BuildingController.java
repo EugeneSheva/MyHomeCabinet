@@ -2,13 +2,18 @@ package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.Building;
 import com.example.myhome.home.service.BuildingService;
+import com.example.myhome.home.validator.BuildingValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,9 +25,12 @@ import java.util.List;
 @RequestMapping("/buildings")
 public class BuildingController {
 
+
     @Value("${upload.path}")
     private String uploadPath;
     private final BuildingService buildingService;
+
+    private BuildingValidator buildingValidator;
     @GetMapping("/")
     public String getBuildigs(Model model) {
         List<Building> buildingList = buildingService.findAll();
@@ -51,18 +59,29 @@ public class BuildingController {
     }
 
     @PostMapping("/save")
-    public String saveCoffee(@RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam("name") String name, @RequestParam("address") String address,
-                             @RequestParam("sections") List<String> sections, @RequestParam("floors") List<String> floors, @RequestParam("img1") MultipartFile file1,
-                             @RequestParam("img2") MultipartFile file2, @RequestParam("img3") MultipartFile file3, @RequestParam("img4") MultipartFile file4,
-                             @RequestParam("img5") MultipartFile file5) throws IOException {
-        Building building = buildingService.saveBuildindImages(id, file1, file2, file3, file4, file5);
-        building.setName(name);
-        building.setAddress(address);
-        building.setFloors(floors);
-        building.setSections(sections);
+    public String saveBuildig(@ModelAttribute("building") Building build, BindingResult bindingResult, @RequestParam("name") String name, @RequestParam("address") String address,
+                              @RequestParam("sections") List<String> sections, @RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam("floors") List<String> floors, @RequestParam("img1") MultipartFile file1,
+                              @RequestParam("img2") MultipartFile file2, @RequestParam("img3") MultipartFile file3, @RequestParam("img4") MultipartFile file4,
+                              @RequestParam("img5") MultipartFile file5) throws IOException {
 
-        buildingService.save(building);
-        return "redirect:/buildings/";
+        System.out.println(bindingResult.toString());
+        System.out.println(build);
+
+        buildingValidator.validate(build,bindingResult);
+        if (bindingResult.hasErrors()) {
+            System.out.println(bindingResult.toString());
+            System.out.println(bindingResult.getAllErrors());
+            return "admin_panel/building_edit";
+        } else {
+            Building building = buildingService.saveBuildindImages(id, file1, file2, file3, file4, file5);
+            building.setName(name);
+            building.setAddress(address);
+            building.setFloors(floors);
+            building.setSections(sections);
+
+            buildingService.save(building);
+            return "redirect:/buildings/";
+        }
     }
 
     @GetMapping("/delete/{id}")
