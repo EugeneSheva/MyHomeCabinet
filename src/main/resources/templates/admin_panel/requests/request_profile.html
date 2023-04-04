@@ -77,7 +77,7 @@
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Владелец</td>
-                        <td><a th:href="@{/owners/{id}(id=${request.apartment.owner.id})}" th:text="${request.apartment.owner.getFullName()}"></a></td>
+                        <td><a th:href="@{/admin/owners/{id}(id=${request.apartment.owner.id})}" th:text="${request.apartment.owner.getFullName()}"></a></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Телефон</td>
@@ -85,7 +85,7 @@
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Квартира</td>
-                        <td><a th:href="@{/apartments/{id}(id=${request.apartment.id})}" th:text="${request.apartment.number} + ', ' + ${request.apartment.building.name}"></a></td>
+                        <td><a th:href="@{/admin/apartments/{id}(id=${request.apartment.id})}" th:text="${request.apartment.number} + ', ' + ${request.apartment.building.name}"></a></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Тип мастера</td>

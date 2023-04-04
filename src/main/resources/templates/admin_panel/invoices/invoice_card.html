@@ -108,7 +108,7 @@
                       <p id="owner_name">
                         <b>Владелец: </b>
                         <span th:if="*{apartment.owner != null}">
-                          <a th:href="@{/owners/{id}(id=*{apartment.owner.id})}" th:text="*{apartment.owner.getFullName()}"></a>
+                          <a th:href="@{/admin/owners/{id}(id=*{apartment.owner.id})}" th:text="*{apartment.owner.getFullName()}"></a>
                         </span>
                       </p>
                       <p id="owner_phone">

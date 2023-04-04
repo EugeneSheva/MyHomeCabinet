@@ -184,7 +184,7 @@
       section_select.innerHTML = '';
       apartment_select.innerHTML = '';
 
-      $.get('/buildings/get-sections/'+house_select.value, function(data){
+      $.get('/admin/buildings/get-sections/'+house_select.value, function(data){
 
             console.log(data);
 
@@ -203,7 +203,7 @@
       console.log("house id " + house_select.value);
       console.log("section name " + section_name.value);
 
-      $.get('/buildings/get-section-apartments/'+house_select.value, {section_name:section_name.value}, function(data){
+      $.get('/admin/buildings/get-section-apartments/'+house_select.value, {section_name:section_name.value}, function(data){
 
             console.log(data);
 
@@ -273,7 +273,7 @@
 
           apartment_select.appendChild(option);
 
-          $.get('/buildings/get-sections/'+this.value, function(data){
+          $.get('/admin/buildings/get-sections/'+this.value, function(data){
 
             console.log(data);
 
@@ -305,7 +305,7 @@
 
         apartment_select.appendChild(option);
 
-        $.get('/buildings/get-section-apartments/'+house_select.value, {section_name:this.value}, function(data){
+        $.get('/admin/buildings/get-section-apartments/'+house_select.value, {section_name:this.value}, function(data){
 
           console.log(data);
 

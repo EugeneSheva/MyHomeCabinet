@@ -181,8 +181,8 @@
                                             <td th:text="${request.best_time}"></td>
                                             <td th:text="${request.master_type.getName()}"></td>
                                             <td th:text="${request.description}"></td>
-                                            <td><a th:href="@{/apartments/{id}(id=${request.apartment.id})}" th:text="'кв. ' + ${request.apartment.number} + ', ' + ${request.apartment.building.name}"></a></td>
-                                            <td><a th:href="@{/owners/{id}(id=${request.apartment.owner.id})}" th:text="${request.apartment.owner.getFullName()}"></a></td>
+                                            <td><a th:href="@{/admin/apartments/{id}(id=${request.apartment.id})}" th:text="'кв. ' + ${request.apartment.number} + ', ' + ${request.apartment.building.name}"></a></td>
+                                            <td><a th:href="@{/admin/owners/{id}(id=${request.apartment.owner.id})}" th:text="${request.apartment.owner.getFullName()}"></a></td>
                                             <td th:text="${request.apartment.owner.phone_number}"></td>
                                             <td><a th:href="@{/admin/admins/{id}(id=${request.master.id})}" th:text="${request.master.getFullName()}"></a></td>
                                             <td><small class="label label-success" th:text="${request.status.getName()}"></small></td>
