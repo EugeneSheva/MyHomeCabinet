@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/apartments")
+@RequestMapping("/admin/apartments")
 public class ApartmentController {
 
     @Value("${upload.path}")
@@ -66,13 +66,13 @@ public class ApartmentController {
     public String saveCoffee(@ModelAttribute("apartment") Apartment apartment) throws IOException {
 //        Apartment building = buildingService.saveBuildindImages(id, file1, file2, file3, file4, file5);
         apartmentService.save(apartment);
-        return "redirect:/apartments/";
+        return "redirect:/admin/apartments/";
     }
 
     @GetMapping("/delete/{id}")
     public String dellete(@PathVariable("id") Long id) {
         apartmentService.deleteById(id);
-        return "redirect:/apartments/";
+        return "redirect:/admin/apartments/";
     }
 
     @GetMapping("/get-owner")

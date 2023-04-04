@@ -12,7 +12,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/cashbox")
+@RequestMapping("/admin/cashbox")
 public class CashBoxController {
 
     private final CashBoxService cashBoxService;
@@ -26,14 +26,14 @@ public class CashBoxController {
     public String getCashBox(Model model) {
         List<CashBox> cashBoxList = cashBoxService.findAll();
         model.addAttribute("cashBoxList", cashBoxList);
-        return "admin_panel/cashboxes";
+        return "admin_panel/cash_box/cashboxes";
     }
 
     @GetMapping("/{id}")
     public String getCashBox(@PathVariable("id") Long id, Model model) {
         CashBox cashBox = cashBoxService.findById(id);
         model.addAttribute("cashBoxItem", cashBox);
-        return "admin_panel/cashbox";
+        return "admin_panel/cash_box/cashbox";
     }
 
     @GetMapping("/newIncome")
@@ -53,7 +53,7 @@ public class CashBoxController {
         CashBox cashBox = new CashBox();
         cashBox.setIncomeExpenseType(IncomeExpenseType.INCOME);
         model.addAttribute("cashBoxItem", cashBox);
-        return "admin_panel/cashbox_edit";
+        return "admin_panel/cash_box/cashbox_edit";
     }
     @GetMapping("/newExpense")
     public String createCashBoxEx(Model model) {
@@ -72,13 +72,13 @@ public class CashBoxController {
         CashBox cashBox = new CashBox();
         cashBox.setIncomeExpenseType(IncomeExpenseType.EXPENSE);
         model.addAttribute("cashBoxItem", cashBox);
-        return "admin_panel/cashbox_edit";
+        return "admin_panel/cash_box/cashbox_edit";
     }
     @GetMapping("edit/{id}")
     public String editeCashBox(@PathVariable("id") Long id, Model model) {
         CashBox cashBox = cashBoxService.findById(id);
         model.addAttribute("cashBoxItem", cashBox);
-        return "admin_panel/cashbox_edit";
+        return "admin_panel/cash_box/cashbox_edit";
     }
 
     @PostMapping("/save")
@@ -95,12 +95,12 @@ public class CashBoxController {
         cashbox.setIncomeExpenseItems(incomeExpenseItemService.findById(incomeExpenseItemId));
         cashbox.setManager(adminService.findAdminById(adminId));
         cashBoxService.save(cashbox);
-        return "redirect:/cashbox/";
+        return "redirect:/admin/cashbox/";
     }
 //
     @GetMapping("/delete/{id}")
     public String dellete(@PathVariable("id") Long id) {
         cashBoxService.deleteById(id);
-        return "redirect:/cashbox/";
+        return "redirect:/admin/cashbox/";
     }
 }

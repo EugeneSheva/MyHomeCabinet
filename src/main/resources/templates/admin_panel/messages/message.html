@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>МойДом24-Сообщение</title>
+    <title>МойДом24</title>
     <link rel="stylesheet"
           th:href="@{https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback}">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -31,7 +31,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
-                            <li class="breadcrumb-item"><a th:href="@{/messages/}">Сообщения</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/admin/messages/}">Сообщения</a></li>
                             <li class="breadcrumb-item active" th:text="'Сообщение'"></li>
                         </ol>
                     </div>
@@ -56,7 +56,7 @@
 
                     </div>
                     <div class="card-footer">
-                        <a type="button" th:href="@{/messages/delete/{id}(id=${message.id})}" class="btn btn-default"><i class="far fa-trash-alt"></i>Удалить</a>
+                        <a type="button" th:href="@{/admin/messages/delete/{id}(id=${message.id})}" class="btn btn-default"><i class="far fa-trash-alt"></i>Удалить</a>
                     </div>
                 </div>
             </div>
