@@ -7,6 +7,7 @@ import com.example.myhome.home.repository.InvoiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -29,7 +30,12 @@ public class InvoiceService {
     public List<Invoice> saveAllInvoices(List<Invoice> list) {return invoiceRepository.saveAll(list);}
     public List<InvoiceComponents> saveAllInvoicesComponents(List<InvoiceComponents> list) {return invoiceComponentRepository.saveAll(list);}
 
-    public void deleteInvoiceById(long invoice_id) {invoiceRepository.deleteById(invoice_id);}
+    public void deleteInvoiceById(long invoice_id) {
+        Invoice invoice = findInvoiceById(invoice_id);
+        invoiceComponentRepository.deleteAll(invoice.getComponents());
+//        invoice.removeAllChildren();
+        invoiceRepository.delete(invoice);
+    }
 
 
 }

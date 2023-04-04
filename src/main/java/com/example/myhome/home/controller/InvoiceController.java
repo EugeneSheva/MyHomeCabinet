@@ -134,12 +134,22 @@ public class InvoiceController {
 
     @PostMapping("/update/{id}")
     public String updateInvoice(@PathVariable long id, @ModelAttribute Invoice invoice) {
-        invoiceService.saveInvoice(invoice);
+//        log.info(invoice.getComponents().toString());
+//        Invoice savedInvoice = invoiceService.saveInvoice(invoice);
+//        invoice.getComponents().forEach(comp -> comp.setInvoice(savedInvoice));
+//        savedInvoice.getComponents().clear();
+//        savedInvoice.getComponents().addAll(invoice.getComponents());
+//        invoiceService.saveAllInvoicesComponents(invoice.getComponents());
+//        invoiceService.saveInvoice(savedInvoice);
+//        log.info(savedInvoice.getComponents().toString());
+
+        //Update компонентов работает криво
         return "redirect:/admin/invoices";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteInvoice(@PathVariable long id) {
+        String s = "";
         invoiceService.deleteInvoiceById(id);
         return "redirect:/admin/invoices";
     }

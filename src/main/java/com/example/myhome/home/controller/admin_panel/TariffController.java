@@ -5,6 +5,7 @@ import com.example.myhome.home.model.Tariff;
 import com.example.myhome.home.repository.ServiceRepository;
 import com.example.myhome.home.repository.TariffRepository;
 import com.example.myhome.home.repository.UnitRepository;
+import com.example.myhome.home.service.TariffService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.java.Log;
@@ -33,6 +34,9 @@ public class TariffController {
     @Autowired
     private TariffRepository tariffRepository;
 
+    @Autowired
+    private TariffService tariffService;
+
     @GetMapping
     public String showTariffsPage(Model model) {
         model.addAttribute("tariffs", tariffRepository.findAll());
@@ -56,23 +60,13 @@ public class TariffController {
     @PostMapping("/create")
     public String createTariff(@RequestParam String name,
                                @RequestParam String description,
-                               @RequestParam String[] service_names,
-                               @RequestParam String[] prices) {
+                               @RequestParam(required = false) String[] service_names,
+                               @RequestParam(required = false) String[] prices) {
         Tariff tariff = new Tariff();
         tariff.setName(name);
         tariff.setDescription(description);
         tariff.setDate(LocalDateTime.now());
-        tariff.setTariffComponents(new HashMap<>());
-
-        for (int i = 0; i < service_names.length; i++) {
-            log.info("cycle");
-            if(service_names[i].isEmpty() || prices[i].isEmpty()) continue;
-            log.info(service_names[i]);
-            log.info(prices[i]);
-            tariff.getTariffComponents().put(serviceRepository.findByName(service_names[i]).orElseThrow(),
-                    Double.parseDouble(prices[i]));
-            log.info(tariff.getTariffComponents().toString());
-        }
+        tariff.setTariffComponents(tariffService.getComponentsInMap(service_names, prices));
 
         log.info(tariff.toString());
 
@@ -102,20 +96,7 @@ public class TariffController {
         tariff.setName(name);
         tariff.setDescription(description);
         tariff.setDate(LocalDateTime.now());
-        tariff.setTariffComponents(new HashMap<>());
-
-        log.info(Arrays.toString(service_names));
-        log.info(Arrays.toString(prices));
-
-        for (int i = 0; i < service_names.length; i++) {
-            log.info("cycle");
-            if(service_names[i].isEmpty() || prices[i].isEmpty()) continue;
-            log.info(service_names[i]);
-            log.info(prices[i]);
-            tariff.getTariffComponents().put(serviceRepository.findByName(service_names[i]).orElseThrow(),
-                    Double.parseDouble(prices[i]));
-            log.info(tariff.getTariffComponents().toString());
-        }
+        tariff.setTariffComponents(tariffService.getComponentsInMap(service_names, prices));
 
         log.info(tariff.toString());
 

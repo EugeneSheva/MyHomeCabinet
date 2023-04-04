@@ -34,20 +34,25 @@ public class ServiceController {
         serviceForm.setUnitList(unitRepository.findAll());
         model.addAttribute("serviceForm", serviceForm);
         model.addAttribute("units", unitRepository.findAll());
-        return "settings_services2";
+        return "admin_panel/system_settings/settings_services";
     }
 
     @PostMapping
     public String updateServices(@ModelAttribute ServiceForm serviceForm,
                                  @RequestParam String[] new_service_names,
                                  @RequestParam String[] new_service_unit_names,
-                                 @RequestParam(required = false) boolean[] new_service_show_in_meters,
+                                 @RequestParam(required = false) String[] new_service_show_in_meters,
                                  @RequestParam(required = false) String[] new_unit_names,
                                  RedirectAttributes redirectAttributes) {
         List<Service> serviceList = serviceForm.getServiceList();
         List<Unit> unitList = serviceForm.getUnitList().stream().filter((unit) -> unit.getId() != null).collect(Collectors.toList());
 
+        log.info(serviceList.toString());
         log.info(unitList.toString());
+
+        Boolean bool = Boolean.valueOf("0");
+
+        log.info(Arrays.toString(new_service_show_in_meters));
 
         if(new_unit_names != null) {
 
@@ -69,7 +74,7 @@ public class ServiceController {
         for (int i = 0; i < new_service_names.length-1; i++) {
             Service service = new Service();
             service.setName(new_service_names[i]);
-            service.setShow_in_meters(new_service_show_in_meters[i]);
+            //service.setShow_in_meters(new_service_show_in_meters[i]);
             service.setUnit(unitRepository.findByName(new_service_unit_names[i]).orElseGet(Unit::new));
             serviceList.add(service);
         }

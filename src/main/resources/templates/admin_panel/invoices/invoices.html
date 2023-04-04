@@ -283,7 +283,7 @@
                     $.get('/admin/invoices/delete-invoice', {id:invoice_id}, function(data){console.log(data); row.remove();}).fail(function(){alert('Ошибка в удалении квитанций')});
                 }
             }
-            location.reload();
+            window.location.href='/admin/invoices';
         }
     }
 </script>

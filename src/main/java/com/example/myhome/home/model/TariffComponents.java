@@ -13,9 +13,7 @@ public class TariffComponents {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 //
-    @ManyToOne
-    @JoinColumn(name = "service_id")
-    private Service service;
+    private String service_name;
 //
 //    private Long price;
 //    private String currency;
@@ -31,8 +29,8 @@ public class TariffComponents {
     public TariffComponents() {
     }
 
-    public TariffComponents(Service service, double price) {
-        this.service = service;
+    public TariffComponents(String service_name, double price) {
+        this.service_name = service_name;
         this.price = price;
     }
 }

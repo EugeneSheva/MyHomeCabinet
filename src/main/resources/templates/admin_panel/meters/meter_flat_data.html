@@ -154,7 +154,7 @@
                   </thead>
                   <tbody>
                     <tr style="cursor: pointer;" class="meter_data_row" th:each="row : ${meter_data_rows}">
-                      <input type="hidden" id="row_id" th:value="${row.id}">
+                      <input type="hidden" class="row_id" th:value="${row.id}">
                       <td th:text="${T(java.lang.String).format('%010d', row.id)}"></td>
                       <td th:text="${row.status.getName()}"></td>
                       <td th:text="${row.date}"></td>
@@ -214,7 +214,7 @@
 
     let rows = document.getElementsByClassName("meter_data_row");
     for(let i = 0; i < rows.length; i++) {
-        let row_id = document.getElementById("row_id").value;
+        let row_id = document.getElementsByClassName("row_id")[i].value;
         console.log(row_id);
         let row_children = rows[i].children;
         for(let j = 0; j < row_children.length - 1; j++) {

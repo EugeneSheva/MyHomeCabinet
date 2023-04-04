@@ -83,13 +83,14 @@ public class MeterController {
     public String showCreateAdditionalMeterPage(@RequestParam long flat_id, @RequestParam long service_id, Model model) {
         List<MeterData> meterDataList = meterDataService.findSingleMeterData(flat_id, service_id);
         MeterData meter = (meterDataList.isEmpty()) ? new MeterData() : meterDataList.get(meterDataList.size()-1);
+        meter.setId(meter.getId()+1);
         log.info(meter.toString());
-        long newId;
-        Optional<MeterData> meterWithBiggestId = meterDataService.findFirstByOrderByIdDesc();
-        if(meterWithBiggestId.isEmpty()) newId = 1L;
-        else newId = meterWithBiggestId.get().getId()+1;
-        log.info("new id for meter data: " + newId);
-        model.addAttribute("id",newId);
+//        long newId;
+//        Optional<MeterData> meterWithBiggestId = meterDataService.findFirstByOrderByIdDesc();
+//        if(meterWithBiggestId.isEmpty()) newId = 1L;
+//        else newId = meterWithBiggestId.get().getId()+1;
+        log.info("new id for meter data: " + meter.getId());
+        model.addAttribute("id",meter.getId());
         model.addAttribute("meter", meter);
         model.addAttribute("services", serviceService.findAllServices());
         model.addAttribute("buildings", buildingService.findAll());
@@ -107,14 +108,15 @@ public class MeterController {
     }
 
     @PostMapping("/save-meter")
-    public @ResponseBody String saveMeter(@RequestParam String apartment_id,
+    public @ResponseBody String saveMeter(@RequestParam(required = false) Long initial_meter_id,    // <-- если хочешь обновить существующий
+                                          @RequestParam String apartment_id,
                                           @RequestParam String readings,
                                           @RequestParam String stat,
                                           @RequestParam String service_id,
                                           @RequestParam String date) {
         log.info("ALO");
 
-        MeterData newMeter = new MeterData();
+        MeterData newMeter = (initial_meter_id != null) ? meterDataService.findMeterData(initial_meter_id) : new MeterData();
         newMeter.setApartment(apartmentService.findById(Long.parseLong(apartment_id)));
         newMeter.setCurrentReadings(Double.parseDouble(readings));
         newMeter.setStatus(MeterPaymentStatus.valueOf(stat));
@@ -165,9 +167,13 @@ public class MeterController {
 
     @PostMapping("/update/{id}")
     public String updateMeter(@PathVariable long id, @ModelAttribute MeterData meter) {
+        MeterData originalMeter = meterDataService.findMeterData(id);
+        log.info("Original meter: " + originalMeter.toString());
+        originalMeter = meter;
+        log.info("Original meter after update: " + originalMeter.toString());
         MeterData savedMeter = meterDataService.saveMeterData(meter);
         log.info("Saved meter data");
-        System.out.println(savedMeter);
+        log.info("Saved meter: " + savedMeter.toString());
         return "redirect:/admin/meters/data?flat_id="+savedMeter.getApartment().getId()+"&service_id="+savedMeter.getService().getId();
     }
 

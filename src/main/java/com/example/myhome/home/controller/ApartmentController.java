@@ -80,5 +80,10 @@ public class ApartmentController {
         return apartmentService.findById(flat_id).getOwner();
     }
 
+    @GetMapping("/get-meters")
+    public @ResponseBody List<MeterData> getMeters(@RequestParam long flat_id) {
+        return apartmentService.findById(flat_id).getMeterDataList();
+    }
+
 
 }

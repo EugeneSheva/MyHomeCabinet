@@ -130,7 +130,9 @@
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Тариф</td>
-                        <td><a th:href="@{/admin/tariffs/{id}(id=${invoice.tariff.id})}" th:text="${invoice.tariff.name}"></a></td>
+                        <td><a th:if="${invoice.tariff != null}"
+                               th:href="@{/admin/tariffs/{id}(id=${invoice.tariff.id})}"
+                               th:text="${invoice.tariff.name}"></a></td>
                       </tr>
                       </tbody>
                     </table>
@@ -139,7 +141,7 @@
                   </div>
 
                   <div class="col-xs-12 col-lg-12">
-                    <table class="table table-bordered table-striped table-view">
+                    <table th:if="${invoice.components.size() > 0}" class="table table-bordered table-striped table-view">
                       <thead>
                       <tr>
                         <th>#</th>

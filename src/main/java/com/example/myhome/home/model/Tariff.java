@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,7 @@ public class Tariff {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     private String name;
     private String description;
 
@@ -38,4 +40,11 @@ public class Tariff {
 //    private List<TariffComponents> tariffComponentsList;
 
 
+    public Tariff() {
+    }
+
+    public Tariff(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

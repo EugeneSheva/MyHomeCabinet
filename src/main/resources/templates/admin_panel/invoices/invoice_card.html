@@ -123,7 +123,7 @@
                       <br>
                       <h4 style="font-weight: bold">Статус</h4>
                       <select th:field="*{status}" class="selects mb-3">
-                        <option value="0">Выберите...</option>
+                        <option disabled value="0">Выберите...</option>
                         <option th:each="stat : ${T(com.example.myhome.home.model.InvoiceStatus).values()}"
                                 th:value="${stat}"
                                 th:text="${stat.getName()}"></option>
@@ -190,14 +190,42 @@
                                     title="Удалить услугу"><i class="fa fa-trash"></i></button>
                           </td>
                         </tr>
-                        <tr th:each="component, iter : ${invoice.components}">
-                            <td th:text="${component.service.name}"></td>
-                            <td th:text="${component.service.unit.name}"></td>
-                            <td th:text="${component.unit_price}"></td>
-                            <td th:text="${component.unit_amount}"></td>
-                            <td th:if="${component != null}" th:text="${component.getTotalPrice()}"></td>
-                            <td th:if="${component == null}" th:text="0.0"></td>
-                          </tr>
+                        <tr th:each="component, iter : *{components}">
+                          <td>
+                            <select class="selects services" onchange="setUnit(this)" th:field="*{components[__${iter.index}__].service.id}">
+                              <option value="0">Выберите...</option>
+                              <option th:each="service : ${services}"
+                                      th:value="${service.id}"
+                                      th:text="${service.name}"></option>
+                            </select>
+                          </td>
+                          <td>
+                            <input style="width:100%;" class="unit" th:field="*{components[__${iter.index}__].service.unit.name}" disabled type="text">
+                          </td>
+                          <td>
+                            <input style="width:100%;" class="unit_prices" th:field="*{components[__${iter.index}__].unit_price}" onchange="count(this)" type="number" step="0.1">
+                          </td>
+                          <td>
+                            <input style="width:100%;" class="unit_amounts" th:field="*{components[__${iter.index}__].unit_amount}" onchange="count(this)" name="unit_amounts" value="0" type="number" step="0.1">
+                          </td>
+                          <td>
+                            <input style="width:100%;" class="total_price" th:value="*{components[__${iter.index}__].unit_price * components[__${iter.index}__].unit_amount}" type="text" disabled>
+                          </td>
+                          <td>
+                            <button type="button"
+                                    onclick="if(confirm('Удалить?')) {this.parentElement.parentElement.remove(); countTotalPrice()}"
+                                    class="btn btn-default btn-sm form-row-remove-btn"
+                                    title="Удалить услугу"><i class="fa fa-trash"></i></button>
+                          </td>
+                        </tr>
+<!--                        <tr th:each="component, iter : ${invoice.components}">-->
+<!--                            <td th:text="${component.service.name}"></td>-->
+<!--                            <td th:text="${component.service.unit.name}"></td>-->
+<!--                            <td th:text="${component.unit_price}"></td>-->
+<!--                            <td th:text="${component.unit_amount}"></td>-->
+<!--                            <td th:if="${component != null}" th:text="${component.getTotalPrice()}"></td>-->
+<!--                            <td th:if="${component == null}" th:text="0.0"></td>-->
+<!--                          </tr>-->
                         <tr id="button_row">
                           <td colspan="4">
                             <button type="button" id="add_service_btn" class="btn btn-default btn-hover-change form-row-add-invoiceservice-btn">
@@ -210,7 +238,7 @@
                               Добавить показания счетчиков
                             </button>
                           </td>
-                          <td><span style="font-weight: bold" id="total_price" th:text="'Итого: ' + ${invoice.total_price}"></span></td>
+                          <td><span style="font-weight: bold" id="total_price_show" th:text="'Итого: ' + *{total_price}"></span></td>
                         </tr>
                       </tbody>
                     </table>
@@ -239,7 +267,7 @@
                   <div class="box-tools"></div>
                 </div>
                 <div class="box-body table-responsive">
-                  <table class="table table-bordered table-hover table-striped linkedRow">
+                  <table id="meter_table" class="table table-bordered table-hover table-striped linkedRow">
                     <thead>
                     <tr>
                       <th style="width: 125px; min-width: 125px">№</th>
@@ -366,7 +394,7 @@
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
 
-<script th:src="@{/dist/js/house_load.js}"></script>
+<script th:src="@{/dist/js/load_meters.js}"></script>
 
 <script th:inline="javascript">
     let add_service_btn = document.getElementById('add_service_btn');
@@ -421,7 +449,8 @@
 
               total_price += value;
 
-              document.getElementById("total_price").innerText = 'Итого: ' + total_price;
+              document.getElementById("total_price").value = total_price;
+              document.getElementById("total_price_show").innerText = 'Итого: ' + total_price;
 
               components_body.insertBefore(new_row, button_row);
             }
@@ -439,7 +468,8 @@
         console.log(parseFloat(total_price_element.value));
         total_price += parseFloat(total_price_element.value);
       }
-      document.getElementById("total_price").innerText = 'Итого: ' + total_price;
+      document.getElementById("total_price").value = total_price;
+      document.getElementById("total_price_show").innerText = 'Итого: ' + total_price;
     };
 
     function count(element) {

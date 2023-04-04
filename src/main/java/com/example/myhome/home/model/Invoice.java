@@ -5,6 +5,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 // --- КВИТАНЦИИ ---
@@ -40,14 +42,33 @@ public class Invoice {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateTo;
 
-    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "invoice", cascade = {CascadeType.REMOVE})
     private List<InvoiceComponents> components;
 
     private double total_price;
 
+
+
     @PreRemove
     public void clearComponents() {
         this.components = null;
+    }
+
+    public void addComponent(InvoiceComponents component) {
+        component.setInvoice(this);
+        components.add(component);
+    }
+
+    public void removeComponent(InvoiceComponents component) {
+        components.remove(component);
+        component.setInvoice(null);
+    }
+
+    public void removeAllChildren() {
+        for (int i = 0; i < components.size(); i++) {
+            InvoiceComponents child = components.get(i);
+            this.removeComponent(child);
+        }
     }
 
 }

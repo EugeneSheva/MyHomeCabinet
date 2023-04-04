@@ -42,7 +42,8 @@
 
     <!-- Main content -->
     <section class="page_content">
-      <form method="post" th:object="${meter}" th:action="${meter.id == null} ? @{/admin/meters/create} : @{/admin/meters/create-add}">
+<!--      <form method="post" th:object="${meter}" th:action="${meter.id == null} ? @{/admin/meters/create} : @{/admin/meters/create-add}">-->
+      <form method="post" th:object="${meter}">
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-3">
@@ -60,7 +61,8 @@
                   <i class="glyphicon glyphicon-calendar"></i>
                 </span>
                 <input type="hidden" th:value="${now}">
-                <input style="width: 90%;" type="date" id="date" class="form-control" th:field="*{date}" th:value="${now}">
+                <input style="width: 90%;" type="date" id="date" class="form-control" th:field="*{date}" th:if="*{date != null}">
+                <input style="width: 90%;" type="date" id="date" data-bl="1" class="form-control" th:field="*{date}" th:value="${now}" th:if="*{date == null}">
               </div>
             </div>
             <div class="col-md-6"></div>
@@ -161,7 +163,6 @@
     let meter_section = [[${meter.apartment.section}]];
     let meter_apartment_number = [[${meter.apartment.number}]];
     let meter_apartment_number_id = [[${meter.apartment.id}]]
-    let meter_service_id = [[${meter.service.id}]]
 
     console.log(meter_section);
     console.log(meter_apartment_number);
@@ -180,7 +181,7 @@
       section_select.innerHTML = '';
       apartment_select.innerHTML = '';
 
-      $.get('/admin/buildings/get-sections/'+house_select.value, function(data){
+      $.get('/buildings/get-sections/'+house_select.value, function(data){
 
             console.log(data);
 
@@ -199,7 +200,7 @@
       console.log("house id " + house_select.value);
       console.log("section name " + section_name.value);
 
-      $.get('/admin/buildings/get-section-apartments/'+house_select.value, {section_name:section_name.value}, function(data){
+      $.get('/buildings/get-section-apartments/'+house_select.value, {section_name:section_name.value}, function(data){
 
             console.log(data);
 
@@ -269,7 +270,7 @@
 
           apartment_select.appendChild(option);
 
-          $.get('/admin/buildings/get-sections/'+this.value, function(data){
+          $.get('/buildings/get-sections/'+this.value, function(data){
 
             console.log(data);
 
@@ -301,7 +302,7 @@
 
         apartment_select.appendChild(option);
 
-        $.get('/admin/buildings/get-section-apartments/'+house_select.value, {section_name:this.value}, function(data){
+        $.get('/buildings/get-section-apartments/'+house_select.value, {section_name:this.value}, function(data){
 
           console.log(data);
 
@@ -316,13 +317,15 @@
     });
 
     document.getElementById("new_meter_btn").addEventListener('click', function(){
+      let initial_meter_id = document.getElementById("id").value;
       let date = document.getElementById("date").value;
       let apart_id = document.getElementById("apartment_select").value;
       let serv_id = document.getElementById("service").value;
       let stat = document.getElementById("status").value;
-      let readings = document.getElementById("currentReadings").value
+      let readings = document.getElementById("currentReadings").value;
 
       let meter = {
+        'initial_meter_id': initial_meter_id,
         'apartment_id': apart_id,
         'readings':readings,
         'stat':stat,
@@ -334,8 +337,9 @@
 
       $.ajax({
         type:"POST",
-        url:'http://localhost:8980/admin/meters/save-meter',
+        url:'/admin/meters/save-meter',
         data: {
+          'initial_meter_id': initial_meter_id,
           'apartment_id': apart_id,
           'readings':readings,
           'stat':stat,
