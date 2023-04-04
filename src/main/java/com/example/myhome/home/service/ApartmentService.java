@@ -110,5 +110,7 @@ public class ApartmentService {
                     apartment.getFloor(), apartment.getNumber(), apartment.getBalance(), apartment.getAccount().getNumber(), apartment.getOwner().getId()));
         }
         return apartmentDTOList; }
+
+    public Long getQuantity() { return apartmentRepository.countAllBy();}
 //
 }

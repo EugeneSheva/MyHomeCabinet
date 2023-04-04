@@ -48,6 +48,8 @@ public class BuildingService {
 
     public void deleteById(Long id) { buildingRepository.deleteById(id); }
 
+    public Long getQuantity() { return buildingRepository.countAllBy();}
+
     public Building saveBuildindImages(Long id, MultipartFile file1, MultipartFile file2, MultipartFile file3, MultipartFile file4, MultipartFile file5) throws IOException {
         Building newBuilding = new Building();
         Building oldBuilding = new Building();

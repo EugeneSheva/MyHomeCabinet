@@ -1,6 +1,7 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.*;
+
 import com.example.myhome.home.repository.ApartmentRepository;
 import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/messages")
+@RequestMapping("/admin/messages")
 public class MessageController {
 
     private final MessageService messageService;
@@ -117,13 +118,13 @@ public class MessageController {
             }
         message.setReceivers(recivers);
         messageService.save(message);
-        return "redirect:/messages/";
+        return "redirect:/admin/messages/";
     }
 
     @GetMapping("/delete/{id}")
     public String dellete(@PathVariable("id") Long id) {
         messageService.deleteById(id);
-        return "redirect:/messages/";
+        return "redirect:/admin/messages/";
     }
 
     @GetMapping( "/getApartments")

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>МойДом24-Дома</title>
+    <title>МойДом24</title>
     <link rel="stylesheet"
           th:href="@{https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback}">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -37,7 +37,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
-                            <li class="breadcrumb-item"><a th:href="@{/buildings/}">Дома</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/admin/buildings/}">Дома</a></li>
                             <li class="breadcrumb-item active"
                                 th:text="'Дом '+${building.name} + ' редакторование'"></li>
                         </ol>
@@ -51,7 +51,7 @@
         <section class="content">
             <div class="container-fluid">
                 <form class="row g-3 needs-validation" novalidate th:method="POST"
-                      th:action="@{/buildings/save}" th:object="${building}" enctype="multipart/form-data">
+                      th:action="@{/admin/buildings/save}" th:object="${building}" enctype="multipart/form-data">
                     <div class="card" style="padding: 10px">
                         <div class="row">
                             <div class="col-md-4">

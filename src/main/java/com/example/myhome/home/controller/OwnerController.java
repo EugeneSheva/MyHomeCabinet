@@ -1,9 +1,7 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.Apartment;
-import com.example.myhome.home.model.Building;
 import com.example.myhome.home.model.Owner;
-import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.OwnerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -23,7 +21,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/owners")
+@RequestMapping("/admin/owners")
 @Log
 public class OwnerController {
 
@@ -61,12 +59,12 @@ public class OwnerController {
     @PostMapping("/save")
     public String saveCoffee(@Valid @ModelAttribute("owner") Owner owner, BindingResult bindingResult, @RequestParam("img1") MultipartFile file) throws IOException {
         if (bindingResult.hasErrors()) {
-            return "admin_panel/owner_edit";
+            return "admin_panel/owners/owner_edit";
         } else {
             owner.setProfile_picture(ownerService.saveOwnerImage(owner.getId(), file));
             ownerService.save(owner);
         }
-        return "redirect:/owners/";
+        return "redirect:/admin/owners/";
     }
 
     @GetMapping("/delete/{id}")
@@ -78,7 +76,7 @@ public class OwnerController {
             throw new RuntimeException(e);
         }
         ownerService.deleteById(id);
-        return "redirect:/owners/";
+        return "redirect:/admin/owners/";
     }
 
     //Получить квартиры какого-то владельца

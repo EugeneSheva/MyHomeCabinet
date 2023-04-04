@@ -32,7 +32,7 @@ public class AccountService {
     public boolean apartmentHasAccount(long apartment_id) {
         return (apartmentRepository.findById(apartment_id).orElseThrow().getAccount() != null);
     }
-
+    public Long getQuantity() { return accountRepository.countAllBy();}
 
 
 }

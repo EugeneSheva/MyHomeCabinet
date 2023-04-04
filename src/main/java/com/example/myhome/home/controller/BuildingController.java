@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/buildings")
+@RequestMapping("/admin/buildings")
 public class BuildingController {
 
 
@@ -61,20 +61,12 @@ public class BuildingController {
     }
 
     @PostMapping("/save")
-    public String saveBuildig(@ModelAttribute("building") Building build, BindingResult bindingResult, @RequestParam("name") String name, @RequestParam("address") String address,
+    public String saveBuildig(@RequestParam("name") String name, @RequestParam("address") String address,
                               @RequestParam("sections") List<String> sections, @RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam("floors") List<String> floors, @RequestParam("img1") MultipartFile file1,
                               @RequestParam("img2") MultipartFile file2, @RequestParam("img3") MultipartFile file3, @RequestParam("img4") MultipartFile file4,
                               @RequestParam("img5") MultipartFile file5) throws IOException {
 
-        System.out.println(bindingResult.toString());
-        System.out.println(build);
 
-        buildingValidator.validate(build,bindingResult);
-        if (bindingResult.hasErrors()) {
-            System.out.println(bindingResult.toString());
-            System.out.println(bindingResult.getAllErrors());
-            return "admin_panel/building_edit";
-        } else {
             Building building = buildingService.saveBuildindImages(id, file1, file2, file3, file4, file5);
             building.setName(name);
             building.setAddress(address);
@@ -82,8 +74,8 @@ public class BuildingController {
             building.setSections(sections);
 
             buildingService.save(building);
-            return "redirect:/buildings/";
-        }
+            return "redirect:/admin/buildings/";
+
     }
 
     @GetMapping("/delete/{id}")
@@ -99,7 +91,7 @@ public class BuildingController {
             throw new RuntimeException(e);
         }
         buildingService.deleteById(id);
-        return "redirect:/buildings/";
+        return "redirect:/admin/buildings/";
     }
 
     @GetMapping("/get-sections/{id}")
