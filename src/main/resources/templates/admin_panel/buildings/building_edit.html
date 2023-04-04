@@ -62,9 +62,11 @@
 
                                 <label for="name">Название</label>
                                 <input type="text" class="form-control" th:field="*{name}" id="name">
+                                <div style="color: #d80450" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
 
                                 <label for="address">Адрес</label>
                                 <input type="text" class="form-control" th:field="*{address}" id="address">
+                                <div style="color: #d80450" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
 
                                 <label class="control-label"  for="img1">Изображение #1. Размер: (522x350)</label>
                                 <input type="file" th:field="*{img1}" id="img1" name="img1" accept="image/*">

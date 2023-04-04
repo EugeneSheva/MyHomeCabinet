@@ -91,6 +91,22 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
+            <a href="pages/kanban.html" class="nav-link">
+              <i class="fa-solid fa-chart-line"></i>
+              <p>
+                Статистика
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a th:href="@{/cashbox/}"class="nav-link">
+              <i class="fa fa-usd" aria-hidden="true"></i>
+              <p>
+                Касса
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             <a th:href="@{/admin/invoices}" class="nav-link">
               <i class="fa fa-files-o" aria-hidden="true"></i>
               <p class="pl-1">
@@ -109,7 +125,7 @@
           <li class="nav-item">
             <a th:href="@{/apartments/}" class="nav-link">
               <i class="fa fa-key" aria-hidden="true"></i>
-              <p class="pl-1">
+              <p>
                 Квартиры
               </p>
             </a>
@@ -117,7 +133,7 @@
           <li class="nav-item">
             <a th:href="@{/owners/}" class="nav-link">
               <i class="fa fa-users" aria-hidden="true"></i>
-              <p class="pl-1">
+              <p>
                 Владельцы квартир
               </p>
             </a>
@@ -125,16 +141,16 @@
           <li class="nav-item">
             <a th:href="@{/buildings/}" class="nav-link">
               <i class="fa fa-building" aria-hidden="true"></i>
-              <p class="pl-1">
+              <p>
                 Дома
               </p>
             </a>
           </li>
           <li class="nav-item">
-            <a th:href="@{/admin/messages}" class="nav-link">
+            <a th:href="@{/messages/}" class="nav-link">
               <i class="fa fa-envelope-o" aria-hidden="true"></i>
-              <p class="pl-1">
-                 Сообщения
+              <p>
+                Сообщения
               </p>
             </a>
           </li>
@@ -142,7 +158,7 @@
             <a th:href="@{/admin/requests}" class="nav-link">
               <i class="fa fa-wrench" aria-hidden="true"></i>
               <p class="pl-1">
-                 Заявки вызова мастера
+                Заявки вызова мастера
               </p>
             </a>
           </li>
@@ -150,7 +166,7 @@
             <a th:href="@{/admin/meters}" class="nav-link">
               <i class="fa fa-tachometer" aria-hidden="true"></i>
               <p class="pl-1">
-                 Показания счетчиков
+                Показания счетчиков
               </p>
             </a>
           </li>
@@ -158,7 +174,7 @@
             <a href="#" class="nav-link">
               <i class="fa fa-desktop" aria-hidden="true"></i>
               <p class="pl-1">
-                  Управление Сайтом
+                Управление Сайтом
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>

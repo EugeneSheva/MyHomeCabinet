@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>МойДом24</title>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="../../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
+</head>
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+
+    <nav th:insert="~{main-template :: header}"></nav>
+    <aside th:insert="~{main-template :: sidebar}"></aside>
+
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Касса</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
+                            <li class="breadcrumb-item active">Касса</li>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="page_content">
+            <div class="row">
+                <div class="col-xs-12 col-lg-9">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-4">
+                            <div class="small-box bg-green overflow-hidden">
+                                <div class="inner">
+                                    <h3>-3 811 220.06 грн</h3>
+                                    <p>Состояние кассы</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-dollar"></i>
+                                </div>
+                                <!--<span class="small-box-footer">&nbsp;</span>-->
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="small-box bg-blue overflow-hidden">
+                                <div class="inner">
+                                    <h3>346 259.62 грн</h3>
+                                    <p>Баланс по счетам</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-dollar"></i>
+                                </div>
+                                <!--<span class="small-box-footer">&nbsp;</span>-->
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="small-box bg-red overflow-hidden">
+                                <div class="inner">
+                                    <h3>568 914.00 грн</h3>
+                                    <p>Задолженность по счетам</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-dollar"></i>
+                                </div>
+                                <!--<span class="small-box-footer">&nbsp;</span>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-lg-3">
+                    <div class="btn-group pull-right margin-bottom">
+                        <button type="button" class="btn btn-success dropdown-toggle" style="width: 230px;"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            Выберите действие <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a th:href="@{/cashbox/newIncome}" style="padding-inline:15px;">Создать приход</a></li>
+                            <li><a th:href="@{/cashbox/newExpense}" style="padding-inline:15px;">Создать расход</a></li>
+                            <li><div class="dt-buttons btn-group flex-wrap">
+                                <button class="btn btn-secondary buttons-excel buttons-html5" tabindex="0" aria-controls="example1" type="button"><span>Excel</span></button>
+                            </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"></h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-striped" width="100%">
+                        <col style="width:10%">
+                        <col style="width:10%">
+                        <col style="width:10%">
+                        <col style="width:20%">
+                        <col style="width:20%">
+                        <col style="width:15%">
+                        <col style="width:5%">
+                        <col style="width:5%">
+                        <col style="width:5%">
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Дата</th>
+                            <th>Статус</th>
+                            <th>Тип платежа</th>
+                            <th>Владелец</th>
+                            <th>Лицевой счет</th>
+                            <th>Приход/расход</th>
+                            <th>Сумма(грн)</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="cashBox : ${cashBoxList}">
+                            <td><a style="display: block; color: black;" th:text="${cashBox.id}" th:href="@{{id}(id=${cashBox.id})}"></a></td>
+                            <td><a style="display: block; color: black;" th:text="${cashBox.date}" th:href="@{{id}(id=${cashBox.id})}"></a></td>
+                            <td><a style="display: block; color: black;" th:text="${cashBox.completed == true} ? 'Проведен'  : 'Не проведен'"></a></td>
+
+                            <td><a style="display: block; color: black;"  th:text="${cashBox.incomeExpenseItems.getName()}" th:href="@{{id}(id=${cashBox.id})}"></a></td>
+<!--                            th:text="${cashBox.incomeExpenseItems.name}"-->
+                            <td><a style="display: block; color: black;" th:text="${cashBox.owner == null} ? '(Не задано)':( ${cashBox.owner.first_name}+' '+${cashBox.owner.last_name}+
+                            ' '+${cashBox.owner.fathers_name})" th:href="@{{id}(id=${cashBox.id})}"></a></td>
+                            <td><a style="display: block; color: black;" th:text="${cashBox.apartmentAccount == null} ? '(Не задано)':( ${cashBox.apartmentAccount.number})" th:href="@{{id}(id=${cashBox.id})}"></a></td>
+                            <td><a style="display: block; color: black;" th:text="${#strings.contains(cashBox.incomeExpenseType,'INCOME')} ? 'Приход'  : 'Расход'" th:href="@{{id}(id=${cashBox.id})}"></a></td>
+                            <td><a style="display: block; color: black;" th:text="${cashBox.amount}" th:href="@{{id}(id=${cashBox.id})}"></a></td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic outlined button group">
+                                    <a th:href="@{edit/{id}(id=${cashBox.id})}" class="btn btn-secondary btn-sm"><i
+                                            class="fa fa-pencil" aria-hidden="true"></i></i></a>
+                                    <a th:href="@{delete/{id}(id=${cashBox.id})}" class="btn btn-secondary btn-sm"><i
+                                            class="fa fa-trash-o" aria-hidden="true"></i></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+
+
+        </section>
+
+    </div>
+
+    <!-- Main Footer -->
+    <footer th:insert="~{main-template :: footer}"></footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+<!-- Icons -->
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!--&lt;!&ndash; AdminLTE App &ndash;&gt;-->
+<!--<script th:src="@{/dist/js/adminlte.js}"></script>-->
+<!--&lt;!&ndash; AdminLTE App &ndash;&gt;-->
+<!--<script src="../../dist/js/adminlte.min.js"></script>-->
+<!--&lt;!&ndash; AdminLTE for demo purposes &ndash;&gt;-->
+<!--<script src="../../dist/js/demo.js"></script>-->
+<!--&lt;!&ndash; Page specific script &ndash;&gt;-->
+
+
+<!-- DataTables  & Plugins -->
+<script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="../../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="../../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="../../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="../../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="../../plugins/jszip/jszip.min.js"></script>
+<script src="../../plugins/pdfmake/pdfmake.min.js"></script>
+<script src="../../plugins/pdfmake/vfs_fonts.js"></script>
+<script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<!-- AdminLTE App -->
+<script src="../../dist/js/adminlte.min.js"></script>
+
+<script>
+    $(function () {
+        $("#example1").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+</script>
+
+
+</body>
+</html>

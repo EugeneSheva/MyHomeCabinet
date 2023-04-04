@@ -1,26 +1,45 @@
 package com.example.myhome.home.service;
 
+import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Admin;
-import com.example.myhome.home.repository.AdminRepository;
-import com.example.myhome.util.UserRole;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.example.myhome.home.model.AdminDTO;
 
+import com.example.myhome.home.repository.AdminRepository;
+
+import com.example.myhome.util.UserRole;
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.stereotype.Service;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AdminService {
 
-    @Autowired
-    private AdminRepository adminRepository;
 
-    public List<Admin> findAll() {return adminRepository.findAll();}
-    public List<Admin> getAdminsByRole(UserRole role) {return adminRepository.getAdminsByRole(role);}
+    private final AdminRepository adminRepository;
+;
 
-    public Admin findAdminById(long admin_id) {return adminRepository.findById(admin_id).orElseThrow();}
 
-    public Admin saveAdmin(Admin admin) {return adminRepository.save(admin);}
+    public Admin findAdminById (Long id) { return adminRepository.findById(id).orElseThrow(() -> new NotFoundException());}
 
-    public void deleteAdminById(long admin_id) {adminRepository.deleteById(admin_id);}
+    public List<Admin> findAll() { return adminRepository.findAll(); }
+
+    public List<AdminDTO> findAllDTO() {
+        List<AdminDTO>adminDTOList=new ArrayList<>();
+        for (Admin admin : adminRepository.findAll()) {
+            adminDTOList.add(new AdminDTO(admin.getId(),admin.getFirst_name(),admin.getLast_name(),admin.getPhone_number(),admin.getEmail(),admin.isActive(), admin.getRole()));
+        }
+        return adminDTOList;
+    }
+
+    public Admin saveAdmin(Admin admin) { return adminRepository.save(admin); }
+
+    public void deleteAdminById(Long id) { adminRepository.deleteById(id); }
+
+    public List<Admin> getAdminsByRole(UserRole role) { return adminRepository.getAdminsByRole(role);}
+
+
 
 }
