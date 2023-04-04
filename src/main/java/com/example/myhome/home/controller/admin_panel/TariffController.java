@@ -40,13 +40,13 @@ public class TariffController {
     @GetMapping
     public String showTariffsPage(Model model) {
         model.addAttribute("tariffs", tariffRepository.findAll());
-        return "settings_tariffs";
+        return "admin_panel/system_settings/settings_tariffs";
     }
 
     @GetMapping("/{id}")
     public String showTariffInfoPage(@PathVariable long id, Model model) {
         model.addAttribute("tariff", tariffRepository.findById(id).orElseThrow());
-        return "tariff_profile";
+        return "admin_panel/system_settings/tariff_profile";
     }
 
     @GetMapping("/create")
@@ -54,7 +54,7 @@ public class TariffController {
         model.addAttribute("tariff", new Tariff());
         model.addAttribute("services", serviceRepository.findAll());
         model.addAttribute("units", unitRepository.findAll());
-        return "tariff_card";
+        return "admin_panel/system_settings/tariff_card";
     }
 
     @PostMapping("/create")
@@ -82,7 +82,7 @@ public class TariffController {
         model.addAttribute("components", tariff.getTariffComponents().entrySet());
         model.addAttribute("services", serviceRepository.findAll());
         model.addAttribute("units", unitRepository.findAll());
-        return "tariff_card";
+        return "admin_panel/system_settings/tariff_card";
     }
 
     @PostMapping("/update/{id}")

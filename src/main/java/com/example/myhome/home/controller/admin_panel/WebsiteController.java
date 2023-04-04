@@ -38,7 +38,7 @@ public class WebsiteController {
     @GetMapping("/home")
     public String showEditHomePage(Model model) {
         model.addAttribute("page", pageRepository.getMainPage().orElseGet(MainPage::new));
-        return "website_home";
+        return "admin_panel/website_settings/website_home";
     }
 
     @GetMapping("/about")
@@ -54,7 +54,7 @@ public class WebsiteController {
         model.addAttribute("photos", photos);
         model.addAttribute("add_photos", add_photos);
         model.addAttribute("documents", documentRepository.findAll());
-        return "website_about";
+        return "admin_panel/website_settings/website_about";
     }
 
     @GetMapping("/delete-about-image/{index}")
@@ -90,13 +90,13 @@ public class WebsiteController {
     @GetMapping("/services")
     public String showEditServicesPage(Model model) {
         model.addAttribute("page", pageRepository.getServicesPage().orElseGet(ServicesPage::new));
-        return "website_services";
+        return "admin_panel/website_settings/website_services";
     }
 
     @GetMapping("/contacts")
     public String showEditContactsPage(Model model) {
         model.addAttribute("page", pageRepository.getContactsPage().orElseGet(ContactsPage::new));
-        return "website_contacts";
+        return "admin_panel/website_settings/website_contacts";
     }
 
     // =========================

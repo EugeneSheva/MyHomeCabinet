@@ -43,19 +43,19 @@ public class SettingsController {
     @GetMapping("/admin/payment-details")
     public String showPaymentDetailsPage(Model model) {
         model.addAttribute("details", paymentDetailsRepository.findById(1L).orElseGet(PaymentDetails::new));
-        return "settings_payment";
+        return "admin_panel/system_settings/settings_payment";
     }
 
     @GetMapping("/admin/income-expense")
     public String showTransactionsPage(Model model) {
         model.addAttribute("transactions", incomeExpenseRepository.findAll());
-        return "settings_inc_exp";
+        return "admin_panel/system_settings/settings_inc_exp";
     }
 
     @GetMapping("/admin/income-expense/create")
     public String showCreateTransactionPage(Model model) {
         model.addAttribute("transaction", new IncomeExpenseItems());
-        return "transaction_card";
+        return "admin_panel/system_settings/transaction_card";
     }
 
     @PostMapping("/admin/income-expense/create")
@@ -68,7 +68,7 @@ public class SettingsController {
     @GetMapping("/admin/income-expense/update/{id}")
     public String showUpdateTransactionPage(@PathVariable long id, Model model) {
         model.addAttribute("transaction", incomeExpenseRepository.findById(id).orElseThrow());
-        return "transaction_card";
+        return "admin_panel/system_settings/transaction_card";
     }
 
     @PostMapping("/admin/income-expense/update/{id}")
@@ -94,7 +94,7 @@ public class SettingsController {
 
     @GetMapping("/admin/roles")
     public String showRolesPage(Model model) {
-        return "admin_panel/roles";
+        return "admin_panel/system_settings/roles";
     }
 
     @PostMapping("/admin/roles")
