@@ -10,6 +10,7 @@
   <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
   <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
   <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+  <link rel="stylesheet" th:href="@{/summernote/summernote.min.css}">
   <!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
   <!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
 
@@ -152,6 +153,9 @@
 
         </form>
 
+        <div id="summernote"><p>Hello Summernote</p></div>
+
+
 
       </div>
     </section>
@@ -174,6 +178,13 @@
 <!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
+<script th:src="@{/summernote/summernote.min.js}"></script>
+
+<script>
+  $(document).ready(function() {
+      $('#summernote').summernote();
+  });
+</script>
 
 <!-- PAGE PLUGINS -->
 <!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->

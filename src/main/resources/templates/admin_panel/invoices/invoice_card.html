@@ -500,9 +500,71 @@
         });
     }
 
-    $(".services").change(function(){
+<!--    $(document).ready(function(){-->
+<!--        if(document.getElementById("apartment_exists").value === '1') {-->
+<!--          let apartment = [[${flat}]];-->
+<!--          console.log(apartment);-->
+<!--          let house_select = document.getElementById("house_select");-->
+<!--          let section_select = document.getElementById("section_select");-->
+<!--          let apartment_select = document.getElementById("apartment_select");-->
 
-    });
+<!--          section_select.disabled = false;-->
+<!--          apartment_select.disabled = false;-->
+
+<!--          section_select.innerHTML = '';-->
+<!--          apartment_select.innerHTML = '';-->
+
+<!--          house_select.value = apartment.building.id;-->
+
+<!--          // Заполнение списка секций-->
+<!--          $.get('/buildings/get-sections/'+house_select.value, function(data){-->
+
+<!--              for(let i = 0; i < data.length; i++) {-->
+<!--                option = document.createElement("option");-->
+<!--                option.value = data[i];-->
+<!--                option.text = data[i];-->
+<!--                section_select.appendChild(option);-->
+<!--                section_select.value = data[0];-->
+<!--              }-->
+
+<!--              section_select.value = apartment.section;-->
+<!--              let section_name = section_select.value;-->
+<!--              console.log(section_name);-->
+
+<!--              // Заполнение списка квартир-->
+<!--              $.get('/buildings/get-section-apartments/'+house_select.value, {section_name:section_name}, function(data){-->
+
+<!--                console.log(data);-->
+
+<!--                for(let i = 0; i < data.length; i++) {-->
+<!--                  option = document.createElement("option");-->
+<!--                  option.value = data[i].id;-->
+<!--                  option.text = 'кв. ' + data[i].number;-->
+<!--                  apartment_select.appendChild(option);-->
+<!--                }-->
+
+<!--                apartment_select.value = apartment.id;-->
+
+<!--              });-->
+<!--          });-->
+
+<!--          $("#account").val(apartment.account.id.toString().padStart(10, '0'));-->
+
+<!--          let owner_name = document.createElement("a");-->
+<!--          owner_name.href = '/owners/' + apartment.owner.id;-->
+<!--          owner_name.innerText = apartment.owner.fullName;-->
+
+<!--          $("#owner_name").append(owner_name);-->
+
+<!--          let owner_phone = document.createElement("a");-->
+<!--          owner_phone.href = 'tel:' + apartment.owner.phone_number;-->
+<!--          owner_phone.innerText = apartment.owner.phone_number;-->
+
+<!--          $("#owner_phone").append(owner_phone);-->
+
+
+<!--        }-->
+<!--    });-->
 
 </script>
 

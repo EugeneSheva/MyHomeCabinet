@@ -8,6 +8,7 @@ import com.example.myhome.home.model.BuildingDTO;
 import com.example.myhome.home.repository.BuildingRepository;
 import com.example.myhome.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +22,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Log
 public class BuildingService {
     @Value("${upload.path}")
     private String uploadPath;
@@ -40,6 +42,7 @@ public class BuildingService {
     public Building save(Building building) { return buildingRepository.save(building); }
 
     public List<Apartment> getSectionApartments(long building_id, String section_name) {
+        log.info("ID BUILDING: " + building_id + ", SECTION NAME: " + section_name);
         return buildingRepository.getSectionApartments(building_id, section_name);
     }
 
