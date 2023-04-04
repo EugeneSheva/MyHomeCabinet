@@ -43,6 +43,8 @@ public class OwnerService {
 
     public void deleteById(Long id) { ownerRepository.deleteById(id); }
 
+    public Long getQuantity() { return ownerRepository.countAllBy();}
+
     public String saveOwnerImage(Long id, MultipartFile file1) throws IOException {
         String fileName = "";
         Owner oldOwner = new Owner();

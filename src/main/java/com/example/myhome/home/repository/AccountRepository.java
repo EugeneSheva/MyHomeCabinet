@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<ApartmentAccount, Long> {
+    Long countAllBy();
 
     Optional<ApartmentAccount> findFirstByOrderByIdDesc();
 

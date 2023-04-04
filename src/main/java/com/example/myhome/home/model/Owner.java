@@ -30,10 +30,10 @@ public class Owner {
     private Long id;
 
     @NotEmpty(message = "Заполните поле.")
-    @Size(min = 6, message = "Минимум 2 символа.")
+    @Size(min = 2, message = "Минимум 2 символа.")
     private String first_name;
     @NotEmpty(message = "Заполните поле.")
-    @Size(min = 6, message = "Минимум 2 символа.")
+    @Size(min = 2, message = "Минимум 2 символа.")
     private String last_name;
 
     private String fathers_name;

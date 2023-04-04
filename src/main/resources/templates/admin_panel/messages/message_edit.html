@@ -46,7 +46,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
-                            <li class="breadcrumb-item"><a th:href="@{/messages/}">Сообщения</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/admin/messages/}">Сообщения</a></li>
                             <li class="breadcrumb-item active"
                                 th:text="'Новое сообщение'"></li>
                         </ol>
@@ -60,7 +60,7 @@
         <section class="content">
             <div class="container-fluid">
                 <form class="row g-3 needs-validation" novalidate th:method="POST"
-                      th:action="@{/messages/save}" th:object="${message}" enctype="multipart/form-data">
+                      th:action="@{/admin/messages/save}" th:object="${message}" enctype="multipart/form-data">
 
 
                     <div class="card card-primary card-outline" style="border-top-color: #999999">
@@ -185,7 +185,7 @@
 
     function apartmentList() {
         let sizes = $("#sizes");
-        var url = "/messages/getApartments";
+        var url = "/admin/messages/getApartments";
         var select = document.getElementById("apartment");
         var isChecked = document.getElementById("debt").checked;
         $.ajax({
