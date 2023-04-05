@@ -191,6 +191,7 @@
                           </td>
                         </tr>
                         <tr th:each="component, iter : *{components}">
+                          <input type="hidden" th:field="*{components[__${iter.index}__].id}">
                           <td>
                             <select class="selects services" onchange="setUnit(this)" th:field="*{components[__${iter.index}__].service.id}">
                               <option value="0">Выберите...</option>

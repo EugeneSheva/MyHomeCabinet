@@ -42,7 +42,7 @@ public class Invoice {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateTo;
 
-    @OneToMany(mappedBy = "invoice", cascade = {CascadeType.REMOVE})
+    @OneToMany(mappedBy = "invoice", cascade = {CascadeType.ALL})
     private List<InvoiceComponents> components;
 
     private double total_price;

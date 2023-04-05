@@ -204,8 +204,7 @@
                         <td th:text="${invoice.apartment.number} + ', ' + ${invoice.apartment.building.name}"></td>
                         <td th:text="${invoice.apartment.owner.getFullName()}"></td>
                         <td><span th:text="${invoice.completed} ? 'Проведена' : 'Не проведена'"></span></td>
-                        <td><span th:text="${invoice.total_price}"
-                                  th:style="${invoice.total_price > 0 ? 'color:green' : (invoice_total_price < 0) ? 'color:red' : 'color:black'}"></span></td>
+                        <td><span th:text="${invoice.total_price}"></span></td>
                         <td>
                             <div class="btn-group pull-right">
                                 <a class="btn btn-default btn-sm" th:href="@{/admin/invoices/update/{id}(id=${invoice.id})}"><i class="fa fa-pencil"></i></a>

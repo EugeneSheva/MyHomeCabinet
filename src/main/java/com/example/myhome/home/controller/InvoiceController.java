@@ -142,8 +142,10 @@ public class InvoiceController {
 
     @PostMapping("/update/{id}")
     public String updateInvoice(@PathVariable long id, @ModelAttribute Invoice invoice) {
-//        log.info(invoice.getComponents().toString());
-//        Invoice savedInvoice = invoiceService.saveInvoice(invoice);
+        log.info(invoice.toString());
+        invoice.getComponents().forEach(comp -> comp.setInvoice(invoice));
+        Invoice savedInvoice = invoiceService.saveInvoice(invoice);
+        invoiceService.saveAllInvoicesComponents(invoice.getComponents());
 //        invoice.getComponents().forEach(comp -> comp.setInvoice(savedInvoice));
 //        savedInvoice.getComponents().clear();
 //        savedInvoice.getComponents().addAll(invoice.getComponents());
