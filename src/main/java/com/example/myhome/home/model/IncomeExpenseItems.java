@@ -3,6 +3,7 @@ package com.example.myhome.home.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 // --- СТАТЬИ ПРИХОДОВ/РАСХОДОВ ---
 
@@ -17,6 +18,9 @@ public class IncomeExpenseItems {
     @Enumerated(EnumType.STRING)
     private IncomeExpenseType incomeExpenseType;
 
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "incomeExpenseItems")
+    private List<CashBox> transactions;
+
     public IncomeExpenseItems() {
     }
 
@@ -28,5 +32,10 @@ public class IncomeExpenseItems {
     @Override
     public String toString() {
         return name;
+    }
+
+    @PreRemove
+    public void clearTransactions() {
+        transactions.forEach(t -> t.setIncomeExpenseItems(null));
     }
 }

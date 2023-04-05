@@ -140,7 +140,7 @@
                             <td><a style="display: block; color: black;" th:text="${cashBox.date}" th:href="@{{id}(id=${cashBox.id})}"></a></td>
                             <td><a style="display: block; color: black;" th:text="${cashBox.completed == true} ? 'Проведен'  : 'Не проведен'"></a></td>
 
-                            <td><a style="display: block; color: black;"  th:text="${cashBox.incomeExpenseItems.getName()}" th:href="@{{id}(id=${cashBox.id})}"></a></td>
+                            <td><a style="display: block; color: black;"  th:text="${cashBox.incomeExpenseItems != null} ? ${cashBox.incomeExpenseItems.name} : '(Не задано)'" th:href="@{{id}(id=${cashBox.id})}"></a></td>
 <!--                            th:text="${cashBox.incomeExpenseItems.name}"-->
                             <td><a style="display: block; color: black;" th:text="${cashBox.owner == null} ? '(Не задано)':( ${cashBox.owner.first_name}+' '+${cashBox.owner.last_name}+
                             ' '+${cashBox.owner.fathers_name})" th:href="@{{id}(id=${cashBox.id})}"></a></td>
