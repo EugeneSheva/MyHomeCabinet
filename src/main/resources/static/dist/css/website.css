@@ -158,30 +158,28 @@
 .label {
     padding-block: 3px;
     padding-inline: 6px;
+    color: white;
+    font-weight: bold;
 }
 
 .label-success {
     background-color: green;
-    color: white;
-    font-weight: bold;
 }
 
 .label-danger {
     background-color: red;
-    color: white;
-    font-weight: bold;
 }
 
 .label-warning {
     background-color: orange;
-    color: white;
-    font-weight: bold;
+}
+
+.label-primary {
+    background-color: blue;
 }
 
 .label-inactive {
     background-color: gray;
-    color: white;
-    font-weight: bold;
 }
 
 form input, select {

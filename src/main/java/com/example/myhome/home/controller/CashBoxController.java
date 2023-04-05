@@ -4,12 +4,14 @@ import com.example.myhome.home.repository.AccountRepository;
 import com.example.myhome.home.repository.CashBoxRepository;
 import com.example.myhome.home.repository.IncomeExpenseRepository;
 import com.example.myhome.home.service.*;
+import com.example.myhome.util.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -49,6 +51,14 @@ public class CashBoxController {
         model.addAttribute("incomeItemsList", incomeItemsList);        ;
 
         List<AdminDTO>adminDTOList = adminService.findAllDTO();
+
+        // получение только юзеров с ролями "админ", "директор", "бухгалтер", без сантехников и т.д.
+        adminDTOList = adminDTOList.stream()
+                .filter(admin -> admin.getRole() == UserRole.ADMIN ||
+                        admin.getRole() == UserRole.DIRECTOR ||
+                        admin.getRole() == UserRole.MANAGER ||
+                        admin.getRole() == UserRole.ACCOUNTANT)
+                .collect(Collectors.toList());
         model.addAttribute("admins", adminDTOList);
 
         List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();

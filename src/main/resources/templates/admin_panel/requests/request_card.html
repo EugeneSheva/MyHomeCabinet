@@ -10,6 +10,7 @@
   <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
   <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
   <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+  <link rel="stylesheet" th:href="@{/summernote/summernote.min.css}">
   <!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
   <!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
 
@@ -71,6 +72,11 @@
                                 th:text="${owner.getFullName()} + ' (ID: ' + ${owner.id} + ')'"></option>
                       </select>
                     </div>
+                    <div class="col-md-6">
+                      <h5>Удобное время</h5>
+                      <input type="date" name="best_date" th:value="${best_date}" id="">
+                      <input type="time" name="best_time" th:value="${best_time}" id="">
+                    </div>
                   </div>
 
                   <div class="row">
@@ -115,58 +121,7 @@
                   <div class="row mt-2 mb-2">
                     <div class="col-md-12">
                       <h4 style="font-weight:bold">Комментарий</h4>
-                      <div class="form-group field-websitehomeform-homedescription">
-                        <ul class="wysihtml5-toolbar"><li class="dropdown">
-                          <a class="btn btn-default dropdown-toggle btn-none" data-toggle="dropdown">
-
-                            <span class="fa fa-font" aria-hidden="true"></span>
-
-                            <span class="current-font">Обычный текст</span>
-                            <b class="caret"></b>
-                          </a>
-                          <ul class="dropdown-menu">
-                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="p" tabindex="-1" href="javascript:;" unselectable="on">Обычный текст</a></li>
-                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 1</a></li>
-                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 2</a></li>
-                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 3</a></li>
-                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h4" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 4</a></li>
-                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h5" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 5</a></li>
-                            <li><a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h6" tabindex="-1" href="javascript:;" unselectable="on">Заголовок 6</a></li>
-                          </ul>
-                        </li>
-                          <li>
-                            <div class="btn-group">
-                              <a class="btn btn-none btn-default" id="bold-button" data-wysihtml5-command="bold" title="CTRL+B" tabindex="-1" href="javascript:;" unselectable="on">Полужирный</a>
-                              <a class="btn btn-none btn-default" id="italic-button" data-wysihtml5-command="italic" title="CTRL+I" tabindex="-1" href="javascript:;" unselectable="on">Курсив</a>
-                              <a class="btn btn-none btn-default" id="underline-button" data-wysihtml5-command="underline" title="CTRL+U" tabindex="-1" href="javascript:;" unselectable="on">Подчёркнутый</a>
-
-                            </div>
-                          </li>
-                          <li>
-                            <div class="btn-group">
-                              <a class="btn btn-none btn-default" data-wysihtml5-command="insertUnorderedList" title="Маркированный список" tabindex="-1" href="javascript:;" unselectable="on">
-
-                                <span class="fa fa-list-ul" aria-hidden="true"></span>
-
-                              </a>
-                              <a class="btn btn-none btn-default" data-wysihtml5-command="insertOrderedList" title="Нумерованный список" tabindex="-1" href="javascript:;" unselectable="on">
-
-                                <span class="fa fa-list-ol" aria-hidden="true"></span>
-
-                              </a>
-                              <a class="btn btn-none btn-default" data-wysihtml5-command="Outdent" title="Уменьшить отступ" tabindex="-1" href="javascript:;" unselectable="on">
-
-                                <span class="fa fa-outdent" aria-hidden="true"></span>
-
-                              </a>
-                              <a class="btn btn-none btn-default" data-wysihtml5-command="Indent" title="Увеличить отступ" tabindex="-1" href="javascript:;" unselectable="on">
-
-                                <span class="fa fa-indent" aria-hidden="true"></span>
-
-                              </a>
-                            </div>
-                          </li>
-                        </ul>
+                      <div class="form-group">
                         <textarea class="textareas" th:field="*{comment}" placeholder="Описание..." rows="5" style="width:100%"></textarea>
                       </div>
                     </div>
@@ -207,6 +162,7 @@
 <!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
+<script th:src="@{/summernote/summernote.min.js}"></script>
 
 <script>
 
@@ -283,6 +239,8 @@
         }
       })
     });
+
+    $("#comment").summernote({height:150});
   })
 </script>
 

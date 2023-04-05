@@ -63,7 +63,9 @@ public class AdminController {
     }
 
     @GetMapping("/invite/{id}")
-    public void inviteAdmin(@PathVariable long id) {}
+    public @ResponseBody String inviteAdmin(@PathVariable long id) {
+        return "User with ID " + id + " - invited";
+    }
 
     // =========
 

@@ -23,6 +23,10 @@ public class TariffService {
 
     public List<Tariff> findAllTariffs() {return tariffRepository.findAll();}
 
+    public List<Tariff> findAllTariffsSorted(boolean ascending_order) {
+        return (ascending_order) ? tariffRepository.findAllByOrderByNameAsc() : tariffRepository.findAllByOrderByNameDesc();
+    }
+
     public Tariff findTariffById(long tariff_id) {return tariffRepository.findById(tariff_id).orElseThrow();}
 
     public Tariff saveTariff(Tariff tariff) {

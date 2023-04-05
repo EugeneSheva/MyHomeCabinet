@@ -56,9 +56,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-8">
-                    <h2 th:text="${page.title}">Адрес</h2>
+                    <h2 th:utext="${page.title}">Адрес</h2>
                     <hr>
-                    <p th:text="${page.description}">
+                    <p th:utext="${page.description}">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar odio eget blandit maximus. 
                         Quisque accumsan venenatis eros sit amet vulputate. Mauris at ex sed mauris faucibus aliquet ac ac augue. 
                         Nulla finibus, quam ut posuere aliquam, tortor urna ornare nibh, eu dictum erat tortor sit amet leo. 
@@ -69,11 +69,11 @@
                 <div class="col-md-4">
                     <h2>Контакты</h2>
                     <hr>
-                    <p><i class="fas fa-user-circle"></i> <span th:text="${page.name}">AVADA MEDIA</span></p>
-                    <p><i class="fas fa-compass"></i> <span th:text="${page.location}">AVADA MEDIA</span></p>
-                    <p><i class="fas fa-map-marker"></i> <span th:text="${page.address}">AVADA MEDIA</span></p>
-                    <p><i class="fas fa-phone"></i><a th:href="'tel:'+${page.phone}"> <span th:text="${page.phone}">AVADA MEDIA</span></a></p>
-                    <p><i class="fas fa-envelope"></i><a th:href="'mailto:'+${page.email}"> <span th:text="${page.email}">AVADA MEDIA</span></a></p>
+                    <p><i class="fas fa-user-circle"></i> <span th:utext="${page.name}">AVADA MEDIA</span></p>
+                    <p><i class="fas fa-compass"></i> <span th:utext="${page.location}">AVADA MEDIA</span></p>
+                    <p><i class="fas fa-map-marker"></i> <span th:utext="${page.address}">AVADA MEDIA</span></p>
+                    <p><i class="fas fa-phone"></i><a th:href="'tel:'+${page.phone}"> <span th:utext="${page.phone}">AVADA MEDIA</span></a></p>
+                    <p><i class="fas fa-envelope"></i><a th:href="'mailto:'+${page.email}"> <span th:utext="${page.email}">AVADA MEDIA</span></a></p>
                 </div>
             </div>
         </div>

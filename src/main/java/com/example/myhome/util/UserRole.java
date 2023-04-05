@@ -6,6 +6,7 @@ public enum UserRole {
     ANY("Любой специалист"),
     DIRECTOR("Директор"),
     ADMIN("Администратор"),
+    ACCOUNTANT("Бухгалтер"),
     PLUMBER("Сантехник"),
     MANAGER("Управляющий"),
     ELECTRICIAN("Электрик");

@@ -15,9 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Controller
@@ -38,8 +36,22 @@ public class TariffController {
     private TariffService tariffService;
 
     @GetMapping
-    public String showTariffsPage(Model model) {
-        model.addAttribute("tariffs", tariffRepository.findAll());
+    public String showTariffsPage(@RequestParam(required = false) String sort, Model model) {
+        List<Tariff> tariffs = new ArrayList<>();
+        if(sort != null) {
+            if(sort.equalsIgnoreCase("asc")) {
+                tariffs = tariffService.findAllTariffsSorted(true);
+                model.addAttribute("sort", "desc");
+            }
+            else if(sort.equalsIgnoreCase("desc")) {
+                tariffs = tariffService.findAllTariffsSorted(false);
+                model.addAttribute("sort", "asc");
+            }
+        } else {
+            tariffs = tariffService.findAllTariffs();
+            model.addAttribute("sort", "asc");
+        }
+        model.addAttribute("tariffs", tariffs);
         return "admin_panel/system_settings/settings_tariffs";
     }
 

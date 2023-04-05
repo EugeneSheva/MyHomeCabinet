@@ -138,7 +138,7 @@
                       </td>
                       <td>
                         <div class="btn-group pull-right">
-                          <a class="btn btn-default btn-sm" th:href="@{/admin/admins/invite/{id}(id=${admin.id})}" title="Отправить приглашение" data-toggle="tooltip"><i class="fa fa-repeat"></i></a>
+                          <a class="btn btn-default btn-sm invite_button" title="Отправить приглашение" data-toggle="tooltip"><i class="fa fa-repeat"></i></a>
                           <a class="btn btn-default btn-sm" th:href="@{/admin/admins/update/{id}(id=${admin.id})}" title="Редактировать" data-toggle="tooltip"><i class="fa fa-pencil"></i></a>
                           <a th:if="${admin.id > 0}" class="btn btn-default btn-sm" th:href="@{/admin/admins/delete/{id}(id=${admin.id})}" title="Удалить"><i class="fa fa-trash"></i></a>
                           <button th:if="${admin.id == 0}" class="btn btn-default btn-sm disabled"><i class="fa fa-trash"></i></button>
@@ -174,10 +174,17 @@
     console.log(user_rows);
     for(let i = 0; i < user_rows.length; i++) {
       console.log(user_rows[i]);
-      user_rows[i].addEventListener('click', () => {
-        window.location.href = '/admin/admins/' + document.getElementById("input-" + i).value;
-      });
+      let row_children = user_rows[i].children;
+      for(let j = 0; j < row_children.length-1; j++) {
+        row_children[j].addEventListener('click', () => {
+          window.location.href = '/admin/admins/' + document.getElementById("input-" + i).value;
+        });
+      }
     }
+
+    $(".invite_button").click(function(){
+        alert("Приглашение отправлено!");
+    });
   });
 </script>
 

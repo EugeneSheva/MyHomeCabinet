@@ -82,9 +82,9 @@
         <div class="container mb-5">
             <div class="row">
                 <div class="col-md-8">
-                    <h2 th:text="${page.title}">Об управляющей компании</h2>
+                    <h2 th:utext="${page.title}">Об управляющей компании</h2>
                     <hr>
-                    <p th:text="${page.description}">
+                    <p th:utext="${page.description}">
                         Жилой комплекс «NORD» расположен  на берегу Черного моря в живописном районе Одессы. 
                         Оригинальная архитектура комплекса делает его уникальным объектом не только для Одессы, 
                         но и для всей Украины – дом прекрасно вписывается в архитектуру берега и открывает свои жильцам и
@@ -107,11 +107,11 @@
                 <div class="col-md-4">
                     <h2>Контакты</h2>
                     <hr>
-                    <p><i class="fas fa-user-circle"></i> <span th:text="${contacts.name}">AVADA MEDIA</span></p>
-                    <p><i class="fas fa-compass"></i> <span th:text="${contacts.location}">AVADA MEDIA</span></p>
-                    <p><i class="fas fa-map-marker"></i> <span th:text="${contacts.address}">AVADA MEDIA</span></p>
-                    <p><i class="fas fa-phone"></i><a th:href="'tel:'+${contacts.phone}"> <span th:text="${contacts.phone}">AVADA MEDIA</span></a></p>
-                    <p><i class="fas fa-envelope"></i><a th:href="'mailto:'+${contacts.email}"> <span th:text="${contacts.email}">AVADA MEDIA</span></a></p>
+                    <p><i class="fas fa-user-circle"></i> <span th:utext="${contacts.name}">AVADA MEDIA</span></p>
+                    <p><i class="fas fa-compass"></i> <span th:utext="${contacts.location}">AVADA MEDIA</span></p>
+                    <p><i class="fas fa-map-marker"></i> <span th:utext="${contacts.address}">AVADA MEDIA</span></p>
+                    <p><i class="fas fa-phone"></i><a th:href="'tel:'+${contacts.phone}"> <span th:utext="${contacts.phone}">AVADA MEDIA</span></a></p>
+                    <p><i class="fas fa-envelope"></i><a th:href="'mailto:'+${contacts.email}"> <span th:utext="${contacts.email}">AVADA MEDIA</span></a></p>
                 </div>
             </div>
         </div>
@@ -126,8 +126,8 @@
                     <div class="block mb-5">
                         <img class="img-fluid mb-4" th:src="@{/images/pages/{url}(url=${page.block_1_img})}" alt="">
                         <br>
-                        <h3 th:text="${page.block_1_title}">Магазины, банки, школы</h3>
-                        <p th:text="${page.block_1_description}">
+                        <h3 th:utext="${page.block_1_title}">Магазины, банки, школы</h3>
+                        <p th:utext="${page.block_1_description}">
                             Район расположения жилого комплекса  имеет всю необходимую для проживания социальную инфраструктуру
                              – в непосредственной близости находятся лечебно-профилактические учреждения, аптеки, магазины,
                               отделения банков, частные и коммерческие детские сады, школы
@@ -138,8 +138,8 @@
                     <div class="block mb-5">
                         <img class="img-fluid mb-4" th:src="@{/images/pages/{url}(url=${page.block_2_img})}" alt="">
                         <br>
-                        <h3 th:text="${page.block_2_title}">Магазины, банки, школы</h3>
-                        <p th:text="${page.block_2_description}">
+                        <h3 th:utext="${page.block_2_title}">Магазины, банки, школы</h3>
+                        <p th:utext="${page.block_2_description}">
                             Район расположения жилого комплекса  имеет всю необходимую для проживания социальную инфраструктуру
                              – в непосредственной близости находятся лечебно-профилактические учреждения, аптеки, магазины,
                               отделения банков, частные и коммерческие детские сады, школы
@@ -150,8 +150,8 @@
                     <div class="block mb-5">
                         <img class="img-fluid mb-4" th:src="@{/images/pages/{url}(url=${page.block_3_img})}" alt="">
                         <br>
-                        <h3 th:text="${page.block_3_title}">Магазины, банки, школы</h3>
-                        <p th:text="${page.block_3_description}">
+                        <h3 th:utext="${page.block_3_title}">Магазины, банки, школы</h3>
+                        <p th:utext="${page.block_3_description}">
                             Район расположения жилого комплекса  имеет всю необходимую для проживания социальную инфраструктуру
                              – в непосредственной близости находятся лечебно-профилактические учреждения, аптеки, магазины,
                               отделения банков, частные и коммерческие детские сады, школы
@@ -162,8 +162,8 @@
                     <div class="block mb-5">
                         <img class="img-fluid mb-4" th:src="@{/images/pages/{url}(url=${page.block_4_img})}" alt="">
                         <br>
-                        <h3 th:text="${page.block_4_title}">Магазины, банки, школы</h3>
-                        <p th:text="${page.block_4_description}">
+                        <h3 th:utext="${page.block_4_title}">Магазины, банки, школы</h3>
+                        <p th:utext="${page.block_4_description}">
                             Район расположения жилого комплекса  имеет всю необходимую для проживания социальную инфраструктуру
                              – в непосредственной близости находятся лечебно-профилактические учреждения, аптеки, магазины,
                               отделения банков, частные и коммерческие детские сады, школы
@@ -174,8 +174,8 @@
                     <div class="block mb-5">
                         <img class="img-fluid mb-4" th:src="@{/images/pages/{url}(url=${page.block_5_img})}" alt="">
                         <br>
-                        <h3 th:text="${page.block_5_title}">Магазины, банки, школы</h3>
-                        <p th:text="${page.block_5_description}">
+                        <h3 th:utext="${page.block_5_title}">Магазины, банки, школы</h3>
+                        <p th:utext="${page.block_5_description}">
                             Район расположения жилого комплекса  имеет всю необходимую для проживания социальную инфраструктуру
                              – в непосредственной близости находятся лечебно-профилактические учреждения, аптеки, магазины,
                               отделения банков, частные и коммерческие детские сады, школы
@@ -186,8 +186,8 @@
                     <div class="block mb-5">
                         <img class="img-fluid mb-4" th:src="@{/images/pages/{url}(url=${page.block_6_img})}" alt="">
                         <br>
-                        <h3 th:text="${page.block_6_title}">Магазины, банки, школы</h3>
-                        <p th:text="${page.block_6_description}">
+                        <h3 th:utext="${page.block_6_title}">Магазины, банки, школы</h3>
+                        <p th:utext="${page.block_6_description}">
                             Район расположения жилого комплекса  имеет всю необходимую для проживания социальную инфраструктуру
                              – в непосредственной близости находятся лечебно-профилактические учреждения, аптеки, магазины,
                               отделения банков, частные и коммерческие детские сады, школы

@@ -135,7 +135,7 @@
                                             <select class="form-select" id="admin" name="admin">
                                                 <option selected="" disabled="" value="">Выберите...</option>
                                                 <option th:each="admin, item : ${admins}"
-                                                        th:text="${admins[__${item.index}__].role}+' - '+${admins[__${item.index}__].first_name}+' '+${admins[__${item.index}__].last_name}"
+                                                        th:text="${admins[__${item.index}__].role.getName()}+' - '+${admins[__${item.index}__].first_name}+' '+${admins[__${item.index}__].last_name}"
                                                         th:value="${admins[__${item.index}__].id}"></option>
                                             </select>
                                         </div>
