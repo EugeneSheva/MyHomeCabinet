@@ -216,7 +216,7 @@
 
     $("#apartment").prop("disabled", (owner_id != '0') ? false : true);
 
-    $.get('/owners/get-apartments/' + owner_id, function(data){
+    $.get('/admin/owners/get-apartments/' + owner_id, function(data){
       alert("получил квартиры");
       console.log(data);
 
@@ -247,7 +247,7 @@
 
       $("#apartment").prop("disabled", (owner_id != '0') ? false : true);
 
-      $.get('/owners/get-apartment/' + owner_id, function(data){
+      $.get('/admin/owners/get-apartment/' + owner_id, function(data){
         alert("получил квартиры");
         console.log(data);
 

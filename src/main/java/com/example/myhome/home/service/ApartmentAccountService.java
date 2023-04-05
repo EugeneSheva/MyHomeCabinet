@@ -29,6 +29,20 @@ public class ApartmentAccountService {
             apartmentAccountDTOS.add(new ApartmentAccountDTO(apartmentAccount.getId(), apartmentAccount.getIsActive(),apartmentAccount.getNumber(),apartmentAccount.getApartment().getId(),apartmentAccount.getBalance()));
         }
         return apartmentAccountDTOS; }
-    Long getQuantity() { return accountRepository.countAllBy();}
+
+    public Long getQuantity() { return accountRepository.countAllBy();}
+
+    public Double getSumOfAccountBalances() {
+        return accountRepository.findAll().stream()
+                .map(ApartmentAccount::getBalance)
+                .filter(balance -> balance > 0)
+                .reduce(Double::sum).orElse(0.0);
+    }
+    public Double getSumOfAccountDebts() {
+        return accountRepository.findAll().stream()
+                .map(ApartmentAccount::getBalance)
+                .filter(balance -> balance < 0)
+                .reduce(Double::sum).orElse(0.0);
+    }
 
 }

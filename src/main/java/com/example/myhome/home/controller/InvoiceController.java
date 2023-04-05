@@ -25,6 +25,12 @@ public class InvoiceController {
     private InvoiceService invoiceService;
 
     @Autowired
+    private CashBoxService cashBoxService;
+
+    @Autowired
+    private ApartmentAccountService apartmentAccountService;
+
+    @Autowired
     private ApartmentService apartmentService;
 
     @Autowired
@@ -42,6 +48,9 @@ public class InvoiceController {
     @GetMapping
     public String showInvoicePage(Model model) {
         model.addAttribute("invoices", invoiceService.findAllInvoices());
+        model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
+        model.addAttribute("account_balance", apartmentAccountService.getSumOfAccountBalances());
+        model.addAttribute("account_debt", apartmentAccountService.getSumOfAccountDebts());
         return "admin_panel/invoices/invoices";
     }
 
@@ -67,11 +76,10 @@ public class InvoiceController {
 
     @GetMapping("/create")
     public String showCreateInvoicePage(@RequestParam(required = false) Long flat_id, Model model) {
-        model.addAttribute("flat",
-                (flat_id != null) ? apartmentService.findById(flat_id) : null
-        );
+        Invoice invoice = new Invoice();
+        if(flat_id != null) invoice.setApartment(apartmentService.findById(flat_id));
 
-        model.addAttribute("invoice", new Invoice());
+        model.addAttribute("invoice", invoice);
         model.addAttribute("id", invoiceService.getMaxInvoiceId()+1L);
         model.addAttribute("current_date", LocalDate.now());
         model.addAttribute("buildings", buildingService.findAll());

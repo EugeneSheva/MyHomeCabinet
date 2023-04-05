@@ -85,20 +85,20 @@
                                             <!--                      <div class="form-group">-->
                                             <div th:if="${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')}">
                                                 <label style="margin-top:30px ">Владелец квартиры</label>
-                                                <select class="form-control select2bs4" name="owner" style="width: 100%;">
+                                                <select class="form-control select2bs4" name="owner" id="owner_select" style="width: 100%;">
                                                     <option selected="" disabled="" value="">Choose...</option>
                                                     <option th:each="owner, item : ${owners}"
-                                                            th:text="${owners[__${item.index}__].first_name}+ ' '+${owners[__${item.index}__].last_name}+' '+${owners[__${item.index}__].fathers_name}"
+                                                            th:text="${owners[__${item.index}__].getFullName() + '(ID: ' + owners[__${item.index}__].id + ')'}"
                                                             th:value="${owners[__${item.index}__].id}"
                                                             ></option>
                                                 </select>
                                             </div>
                                             <div th:if="${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')}">
                                                 <label>Лицевой счет</label>
-                                                <select class="form-control select2bs4" name="account" style="width: 100%;">
+                                                <select class="form-control select2bs4" name="account" id="account_select" style="width: 100%;">
                                                     <option selected="" disabled="" value="">Choose...</option>
                                                     <option th:each="account, item : ${accounts}"
-                                                            th:text="${accounts[__${item.index}__].number}"
+                                                            th:text="${T(java.lang.String).format('%010d',accounts[__${item.index}__].id)}"
                                                             th:value="${accounts[__${item.index}__].id}"
                                                             ></option>
                                                 </select>
@@ -185,6 +185,26 @@
         })
 
     })
+
+    $(document).ready(function(){
+        $("#owner_select").change(function(){
+            let owner_id = $(this).val();
+            $.get("/admin/owners/get-apartment-accounts", {owner_id:owner_id}, function(data){
+                alert("получил список лицевых счетов пользователя");
+                console.log(data);
+
+                let $account_select = $("#account_select");
+                $account_select.html('');
+
+                for(const account_id of data) {
+                    let option = document.createElement("option");
+                    option.value = account_id;
+                    option.text = account_id.toString().padStart(10,'0');
+                    $account_select.append(option);
+                }
+            })
+        });
+    });
 
 </script>
 <!-- overlayScrollbars -->

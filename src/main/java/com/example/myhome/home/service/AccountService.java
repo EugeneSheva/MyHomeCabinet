@@ -34,5 +34,18 @@ public class AccountService {
     }
     public Long getQuantity() { return accountRepository.countAllBy();}
 
+    public Double getSumOfAccountBalances() {
+        return accountRepository.findAll().stream()
+                .map(ApartmentAccount::getBalance)
+                .filter(balance -> balance > 0)
+                .reduce(Double::sum).orElse(0.0);
+    }
+    public Double getSumOfAccountDebts() {
+        return accountRepository.findAll().stream()
+                .map(ApartmentAccount::getBalance)
+                .filter(balance -> balance < 0)
+                .reduce(Double::sum).orElse(0.0);
+    }
+
 
 }

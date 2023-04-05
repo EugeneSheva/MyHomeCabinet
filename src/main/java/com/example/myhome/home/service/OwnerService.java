@@ -1,8 +1,11 @@
 package com.example.myhome.home.service;
 
 import com.example.myhome.home.exception.NotFoundException;
+import com.example.myhome.home.model.Apartment;
+import com.example.myhome.home.model.ApartmentAccount;
 import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.model.OwnerDTO;
+import com.example.myhome.home.repository.AccountRepository;
 import com.example.myhome.home.repository.OwnerRepository;
 import com.example.myhome.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +28,7 @@ public class OwnerService {
     private String uploadPath;
     private String localPath = "/img/owner/";
     private final OwnerRepository ownerRepository;
+    private final AccountRepository accountRepository;
     private final FileUploadUtil fileUploadUtil;
 
 
@@ -44,6 +49,11 @@ public class OwnerService {
     public void deleteById(Long id) { ownerRepository.deleteById(id); }
 
     public Long getQuantity() { return ownerRepository.countAllBy();}
+
+    public List<Long> getOwnerApartmentAccountsIds(Long id) {
+        Owner owner = ownerRepository.findById(id).orElseThrow(NotFoundException::new);
+        return owner.getApartments().stream().map(Apartment::getAccount).map(ApartmentAccount::getId).collect(Collectors.toList());
+    }
 
     public String saveOwnerImage(Long id, MultipartFile file1) throws IOException {
         String fileName = "";

@@ -84,4 +84,9 @@ public class OwnerController {
     public @ResponseBody List<Apartment> getOwnerApartments(@PathVariable long id) {
         return ownerService.findById(id).getApartments();
     }
+
+    @GetMapping("/get-apartment-accounts")
+    public @ResponseBody List<Long> getOwnerApartmentAccountsIds(@RequestParam long owner_id) {
+        return ownerService.getOwnerApartmentAccountsIds(owner_id);
+    }
 }

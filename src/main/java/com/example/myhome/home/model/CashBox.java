@@ -29,9 +29,11 @@ public class CashBox {
     @ManyToOne
     @JoinColumn(name = "apartment_account_id")
     private ApartmentAccount apartmentAccount;
+
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private Owner owner;
+
     private Boolean completed;
     @ManyToOne
     @JoinColumn(name = "manager_id")
