@@ -41,8 +41,8 @@ public class StatisticsController {
         model.addAttribute("accountsQuant", accountService.getQuantity());
         model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount());
 
-        model.addAttribute("accountBalance", accountRepository.getBalance());
-        model.addAttribute("sumDebt", accountRepository.getDebt());
+        model.addAttribute("accountBalance", accountRepository.getSumOfAccountBalances());
+        model.addAttribute("sumDebt", accountRepository.getSumOfAccountDebts());
 
         return "admin_panel/statistics/statistics";
     }
