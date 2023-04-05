@@ -2,6 +2,7 @@ package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Building;
+import com.example.myhome.home.model.BuildingDTO;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.validator.BuildingValidator;
 import lombok.RequiredArgsConstructor;
@@ -60,27 +61,29 @@ public class BuildingController {
     }
     @GetMapping("edit/{id}")
     public String editBuildig(@PathVariable("id") Long id, Model model) {
-        Building building = buildingService.findById(id);
+        Building building = new Building();
         model.addAttribute("building", building);
         return "admin_panel/buildings/building_edit";
     }
 
     @PostMapping("/save")
-    public String saveBuildig(@RequestParam("name") String name, @RequestParam("address") String address,
+    public String saveBuildig(@ModelAttribute("building") Building build, BindingResult bindingResult, @RequestParam("name") String name, @RequestParam("address") String address,
                               @RequestParam("sections") List<String> sections, @RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam("floors") List<String> floors, @RequestParam("img1") MultipartFile file1,
                               @RequestParam("img2") MultipartFile file2, @RequestParam("img3") MultipartFile file3, @RequestParam("img4") MultipartFile file4,
                               @RequestParam("img5") MultipartFile file5) throws IOException {
+            if (bindingResult.hasErrors()) {
+                System.out.println(bindingResult.toString());;
+                return "admin_panel/buildings/building_edit";
+            } else {
+                Building building = buildingService.saveBuildindImages(id, file1, file2, file3, file4, file5);
+                building.setName(name);
+                building.setAddress(address);
+                building.setFloors(floors);
+                building.setSections(sections);
 
-
-            Building building = buildingService.saveBuildindImages(id, file1, file2, file3, file4, file5);
-            building.setName(name);
-            building.setAddress(address);
-            building.setFloors(floors);
-            building.setSections(sections);
-
-            buildingService.save(building);
-            return "redirect:/admin/buildings/";
-
+                buildingService.save(building);
+                return "redirect:/admin/buildings/";
+            }
     }
 
     @GetMapping("/delete/{id}")
