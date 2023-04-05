@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface CashBoxRepository extends JpaRepository<CashBox, Long> {
-    @Query("SELECT SUM(cb.amount) FROM CashBox cb")
+    @Query("SELECT SUM(cb.amount) FROM CashBox cb WHERE cb.completed=true")
     Long sumAmount();
 }

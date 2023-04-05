@@ -1,5 +1,6 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.model.ApartmentAccount;
 import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.model.RepairStatus;
 import com.example.myhome.home.repository.*;
@@ -28,6 +29,7 @@ public class StatisticsController {
     private final ApartmentService apartmentService;
     private final AccountService accountService;
     private final CashBoxRepository cashBoxRepository;
+    private final AccountRepository accountRepository;
 
     @GetMapping("/")
     public String getOwners(Model model) {
@@ -38,6 +40,10 @@ public class StatisticsController {
         model.addAttribute("apartmentsQuant", apartmentService.getQuantity());
         model.addAttribute("accountsQuant", accountService.getQuantity());
         model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount());
+
+        model.addAttribute("accountBalance", accountRepository.getBalance());
+        model.addAttribute("sumDebt", accountRepository.getDebt());
+
         return "admin_panel/statistics/statistics";
     }
 }

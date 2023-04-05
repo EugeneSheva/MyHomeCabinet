@@ -1,5 +1,7 @@
 package com.example.myhome.home.controller;
 import com.example.myhome.home.model.*;
+import com.example.myhome.home.repository.AccountRepository;
+import com.example.myhome.home.repository.CashBoxRepository;
 import com.example.myhome.home.repository.IncomeExpenseRepository;
 import com.example.myhome.home.service.*;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +23,16 @@ public class CashBoxController {
     private final ApartmentAccountService apartmentAccountService;
     private final IncomeExpenseItemService incomeExpenseItemService;
     private final IncomeExpenseRepository incomeExpenseRepository;
+    private final AccountRepository accountRepository;
+    private final CashBoxRepository cashBoxRepository;
 
     @GetMapping("/")
     public String getCashBox(Model model) {
         List<CashBox> cashBoxList = cashBoxService.findAll();
         model.addAttribute("cashBoxList", cashBoxList);
+        model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount());
+        model.addAttribute("accountBalance", accountRepository.getBalance());
+        model.addAttribute("sumDebt", accountRepository.getDebt());
         return "admin_panel/cash_box/cashboxes";
     }
 
