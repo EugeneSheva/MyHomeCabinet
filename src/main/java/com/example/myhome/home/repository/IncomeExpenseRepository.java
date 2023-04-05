@@ -12,5 +12,8 @@ public interface IncomeExpenseRepository extends JpaRepository<IncomeExpenseItem
     boolean existsByName(String name);
     boolean existsByIncomeExpenseType(String type);
 
+    List<IncomeExpenseItems> findAllByOrderByIncomeExpenseTypeAsc();
+    List<IncomeExpenseItems> findAllByOrderByIncomeExpenseTypeDesc();
+
     List<IncomeExpenseItems>findAllByIncomeExpenseType(IncomeExpenseType incomeExpenseType);
 }

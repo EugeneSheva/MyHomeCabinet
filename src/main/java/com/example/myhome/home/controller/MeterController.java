@@ -3,6 +3,7 @@ package com.example.myhome.home.controller;
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.MeterData;
 import com.example.myhome.home.model.MeterPaymentStatus;
+import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
@@ -39,12 +40,27 @@ public class MeterController {
 
     //Получить все счетчики
     @GetMapping
-    public String showMetersPage(Model model) {
+    public String showMetersPage(Model model,
+                                 @RequestParam(required = false) Long building,
+                                 @RequestParam(required = false) String section,
+                                 @RequestParam(required = false) Long apartment,
+                                 @RequestParam(required = false) Long service) {
+
         List<Long> list = meterDataService.findMeterIds();
-        List<MeterData> meterDataList = meterDataService.findAllMetersById(list);
-        log.info(meterDataList.toString());
+        List<MeterData> meterDataList = meterDataService.filter(meterDataService.findAllMetersById(list), building, section, apartment, service);
+
         model.addAttribute("meter_data_rows", meterDataList);
+        model.addAttribute("buildings", buildingService.findAllDTO());
+        if(building != null) model.addAttribute("sections", buildingService.findById(building).getSections());
+        model.addAttribute("services", serviceService.findAllServices());
         model.addAttribute("now", LocalDate.now());
+
+        FilterForm form = new FilterForm();
+        form.setBuilding_filter(building);
+        form.setService_filter(service);
+        form.setApartment_filter(apartment);
+        form.setSection_filter(section);
+        model.addAttribute("filter_form",form);
         return "admin_panel/meters/meters";
     }
 
@@ -153,6 +169,7 @@ public class MeterController {
         model.addAttribute("services", serviceService.findAllServices());
         model.addAttribute("buildings", buildingService.findAll());
         model.addAttribute("now", LocalDate.now());
+
         return "admin_panel/meters/meter_card";
     }
 

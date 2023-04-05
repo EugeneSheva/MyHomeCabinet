@@ -57,7 +57,7 @@
                   <thead>
                   <tr>
                     <th>Название</th>
-                    <th><a href="/admin/transaction-purpose/index?sort=type" data-sort="type">Приход/расход</a></th>
+                    <th><a th:href="@{'/admin/income-expense?sort='+${type}}">Приход/расход</a></th>
                     <th style="width: 80px; min-width: 80px">&nbsp;</th>
                   </tr>
                   </thead>

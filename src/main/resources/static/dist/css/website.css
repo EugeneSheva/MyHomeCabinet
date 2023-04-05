@@ -223,6 +223,17 @@ textarea {
     margin-bottom: 5px;
 }
 
+#user_table_wrapper .row {
+    padding-inline: 10px;
+    margin-bottom: 0;
+}
+
+#user_table_wrapper .row>div:nth-child(2) {
+    display:flex;
+    justify-content: flex-end;
+}
+
+
 
 
 

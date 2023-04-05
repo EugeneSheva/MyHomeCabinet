@@ -5,6 +5,7 @@ import com.example.myhome.home.model.ServiceForm;
 import com.example.myhome.home.model.Unit;
 import com.example.myhome.home.repository.ServiceRepository;
 import com.example.myhome.home.repository.UnitRepository;
+import com.example.myhome.home.service.ServiceService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,9 @@ public class ServiceController {
     @Autowired
     private UnitRepository unitRepository;
 
+    @Autowired
+    private ServiceService serviceService;
+
     @GetMapping
     public String showServicesPage(Model model){
         ServiceForm serviceForm = new ServiceForm();
@@ -47,40 +51,8 @@ public class ServiceController {
         List<Service> serviceList = serviceForm.getServiceList();
         List<Unit> unitList = serviceForm.getUnitList().stream().filter((unit) -> unit.getId() != null).collect(Collectors.toList());
 
-        log.info(serviceList.toString());
-        log.info(unitList.toString());
-
-        Boolean bool = Boolean.valueOf("0");
-
-        log.info(Arrays.toString(new_service_show_in_meters));
-
-        if(new_unit_names != null) {
-
-            log.info(Arrays.toString(new_unit_names));
-
-            for (int i = 0; i < new_unit_names.length-1; i++) {
-                log.info("creating new unit");
-                Unit unit = new Unit();
-                unit.setName(new_unit_names[i]);
-                unitList.add(unit);
-            }
-        }
-
-        log.info(unitList.toString());
-
-        unitRepository.saveAll(unitList);
-        unitList.forEach(System.out::println);
-
-        for (int i = 0; i < new_service_names.length-1; i++) {
-            Service service = new Service();
-            service.setName(new_service_names[i]);
-            //service.setShow_in_meters(new_service_show_in_meters[i]);
-            service.setUnit(unitRepository.findByName(new_service_unit_names[i]).orElseGet(Unit::new));
-            serviceList.add(service);
-        }
-
-        serviceRepository.saveAll(serviceList);
-        serviceList.forEach(System.out::println);
+        serviceService.addNewUnits(unitList, new_unit_names);
+        serviceService.addNewServices(serviceList, new_service_names, new_service_unit_names, new_service_show_in_meters);
 
         return "redirect:/admin/services";
     }
@@ -92,7 +64,8 @@ public class ServiceController {
             return "redirect:/admin/services";
         } catch (Exception e) {
             e.printStackTrace();
-            redirectAttributes.addFlashAttribute("fail", "Нельзя удалить услугу, она уже где-то используется");
+            String fail_msg = "Нельзя удалить услугу \""+serviceService.getServiceNameById(id)+"\", она уже используется в расчетах!";
+            redirectAttributes.addFlashAttribute("fail", fail_msg);
             return "redirect:/admin/services";
         }
     }
@@ -104,7 +77,8 @@ public class ServiceController {
             return "redirect:/admin/services";
         } catch (Exception e) {
             e.printStackTrace();
-            redirectAttributes.addFlashAttribute("fail", "Нельзя удалить единицу");
+            String fail_msg = "Нельзя удалить единицу \""+serviceService.getUnitNameById(id)+"\", она уже используется в расчетах!";
+            redirectAttributes.addFlashAttribute("fail", fail_msg);
             return "redirect:/admin/services";
         }
     }

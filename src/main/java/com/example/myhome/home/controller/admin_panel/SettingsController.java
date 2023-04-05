@@ -47,8 +47,22 @@ public class SettingsController {
     }
 
     @GetMapping("/admin/income-expense")
-    public String showTransactionsPage(Model model) {
-        model.addAttribute("transactions", incomeExpenseRepository.findAll());
+    public String showTransactionsPage(@RequestParam(required = false) String sort, Model model) {
+        List<IncomeExpenseItems> transactions = new ArrayList<>();
+        if(sort != null) {
+            if(sort.equalsIgnoreCase("exp")) {
+                transactions = incomeExpenseRepository.findAllByOrderByIncomeExpenseTypeAsc();
+                model.addAttribute("type", "inc");
+            }
+            else if(sort.equalsIgnoreCase("inc")) {
+                transactions = incomeExpenseRepository.findAllByOrderByIncomeExpenseTypeDesc();
+                model.addAttribute("type", "exp");
+            }
+        } else {
+            transactions = incomeExpenseRepository.findAll();
+            model.addAttribute("type", "exp");
+        }
+        model.addAttribute("transactions", transactions);
         return "admin_panel/system_settings/settings_inc_exp";
     }
 
