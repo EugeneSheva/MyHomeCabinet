@@ -19,4 +19,12 @@ public interface AccountRepository extends JpaRepository<ApartmentAccount, Long>
 
     @Query("SELECT SUM(aa.balance) FROM ApartmentAccount aa WHERE aa.balance<0")
     Long getDebt();
+
+    @Query("SELECT SUM(a.balance) FROM ApartmentAccount a WHERE a.balance > 0")
+    Double getSumOfAccountBalances();
+
+    @Query("SELECT SUM(a.balance) FROM ApartmentAccount a WHERE a.balance < 0")
+    Double getSumOfAccountDebts();
+
+
 }
