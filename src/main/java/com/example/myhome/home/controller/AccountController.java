@@ -6,6 +6,7 @@ import com.example.myhome.home.repository.ApartmentRepository;
 import com.example.myhome.home.repository.BuildingRepository;
 import com.example.myhome.home.service.AccountService;
 import com.example.myhome.home.service.BuildingService;
+import com.example.myhome.home.service.CashBoxService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,12 +25,18 @@ public class AccountController {
     private AccountService accountService;
 
     @Autowired
+    private CashBoxService cashBoxService;
+
+    @Autowired
     private BuildingService buildingService;
 
     // показать все счета
     @GetMapping
     public String showAccountsPage(Model model) {
         model.addAttribute("accounts", accountService.findAll());
+        model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
+        model.addAttribute("account_balance", accountService.getSumOfAccountBalances());
+        model.addAttribute("account_debt", accountService.getSumOfAccountDebts());
         return "admin_panel/accounts/accounts";
     }
 

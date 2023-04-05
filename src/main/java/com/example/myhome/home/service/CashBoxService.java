@@ -22,6 +22,8 @@ public class CashBoxService {
 
     public void deleteById(Long id) { cashBoxRepository.deleteById(id); }
 
+    public Double calculateBalance() {return cashBoxRepository.sumAmount();}
+
 
 
 

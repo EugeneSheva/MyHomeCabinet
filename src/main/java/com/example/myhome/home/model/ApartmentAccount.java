@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.List;
 
 // --- ЛИЦЕВЫЕ СЧЕТА ---
 
@@ -27,6 +28,11 @@ public class ApartmentAccount {
     @JoinColumn(name="apartment_id")
     private Apartment apartment;
 
+    @ToString.Exclude
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "apartmentAccount")
+    private List<CashBox> transactions;
+
     private Double balance = 0.0;
 
     public ApartmentAccount() {
@@ -41,5 +47,20 @@ public class ApartmentAccount {
     @PreRemove
     public void removeApartmentLink() {
         this.apartment.setAccount(null);
+    }
+
+    public double getBalance() {
+        return
+                this.transactions.stream()
+                .filter(CashBox::getCompleted)
+                .map(CashBox::getAmount)
+                .reduce(Double::sum)
+                .orElse(0.0)
+
+                - this.apartment.getInvoiceList().stream()
+                .filter(Invoice::getCompleted)
+                .map(Invoice::getTotal_price)
+                .reduce(Double::sum)
+                .orElse(0.0);
     }
 }

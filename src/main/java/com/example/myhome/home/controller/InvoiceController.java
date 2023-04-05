@@ -25,6 +25,12 @@ public class InvoiceController {
     private InvoiceService invoiceService;
 
     @Autowired
+    private CashBoxService cashBoxService;
+
+    @Autowired
+    private ApartmentAccountService apartmentAccountService;
+
+    @Autowired
     private ApartmentService apartmentService;
 
     @Autowired
@@ -42,6 +48,9 @@ public class InvoiceController {
     @GetMapping
     public String showInvoicePage(Model model) {
         model.addAttribute("invoices", invoiceService.findAllInvoices());
+        model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
+        model.addAttribute("account_balance", apartmentAccountService.getSumOfAccountBalances());
+        model.addAttribute("account_debt", apartmentAccountService.getSumOfAccountDebts());
         return "admin_panel/invoices/invoices";
     }
 

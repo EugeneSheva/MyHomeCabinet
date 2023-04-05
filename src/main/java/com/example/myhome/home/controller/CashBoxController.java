@@ -3,6 +3,7 @@ import com.example.myhome.home.model.*;
 import com.example.myhome.home.repository.IncomeExpenseRepository;
 import com.example.myhome.home.service.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@Log
 @RequestMapping("/admin/cashbox")
 public class CashBoxController {
 
@@ -26,6 +28,10 @@ public class CashBoxController {
     public String getCashBox(Model model) {
         List<CashBox> cashBoxList = cashBoxService.findAll();
         model.addAttribute("cashBoxList", cashBoxList);
+
+        model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
+        model.addAttribute("account_balance", apartmentAccountService.getSumOfAccountBalances());
+        model.addAttribute("account_debt", apartmentAccountService.getSumOfAccountDebts());
         return "admin_panel/cash_box/cashboxes";
     }
 
@@ -47,7 +53,11 @@ public class CashBoxController {
         List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
         model.addAttribute("owners", ownerDTOList);
 
+        List<ApartmentAccount> accounts = apartmentAccountService.findAll();
+        log.info(accounts.toString());
+
         List<ApartmentAccountDTO> apartmentAccountDTOS = apartmentAccountService.findDtoApartmentAccounts();
+        log.info(apartmentAccountDTOS.toString());
         model.addAttribute("accounts", apartmentAccountDTOS);
 
         CashBox cashBox = new CashBox();
@@ -86,6 +96,8 @@ public class CashBoxController {
                               @RequestParam(name = "admin", defaultValue = "0") Long adminId, @RequestParam(name = "account", defaultValue = "0") Long accountId,
                               @RequestParam(name = "amount", defaultValue = "0D") Double amount, @RequestParam(name = "incomeExpenseItem", defaultValue = "0") Long incomeExpenseItemId) throws IOException {
         System.out.println("incomeExpenseItem "+ incomeExpenseItemId);
+        System.out.println("account id " + accountId);
+        System.out.println("owner id " + ownerId);
         if(cashbox.getIncomeExpenseType()==IncomeExpenseType.EXPENSE) {
             if(amount>0) cashbox.setAmount(amount*(-1));
         } else {
@@ -94,7 +106,8 @@ public class CashBoxController {
         }
         cashbox.setIncomeExpenseItems(incomeExpenseItemService.findById(incomeExpenseItemId));
         cashbox.setManager(adminService.findAdminById(adminId));
-        cashBoxService.save(cashbox);
+
+        CashBox savedCashbox = cashBoxService.save(cashbox);
         return "redirect:/admin/cashbox/";
     }
 //
