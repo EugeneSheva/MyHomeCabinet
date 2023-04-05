@@ -188,32 +188,40 @@
 
 
 
-<script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var months = /*[[${diagramMonths}]]*/ [];
+    var dataInv = /*[[${diagramAllInvoices}]]*/ [];
+    var dataPaidInv = /*[[${diagramPaidInvoices}]]*/ [];
+
+    console.log(months)
+    console.log(dataInv)
+    console.log(dataPaidInv)
     $(function () {
         var areaChartData = {
-            labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels: months,
             datasets: [
                 {
                     label               : 'Задолженность',
-                    backgroundColor     : 'rgba(60,141,188,0.9)',
+                    backgroundColor     : 'rgb(236,0,0)',
                     borderColor         : 'rgba(60,141,188,0.8)',
                     pointRadius          : false,
                     pointColor          : '#3b8bba',
                     pointStrokeColor    : 'rgba(60,141,188,1)',
                     pointHighlightFill  : '#fff',
                     pointHighlightStroke: 'rgba(60,141,188,1)',
-                    data                : [28, 48, 40, 19, 86, 27, 90]
+                    data                : dataInv
                 },
                 {
-                    label               : 'Погашение задолженности',
-                    backgroundColor     : 'rgba(210, 214, 222, 1)',
+                    label               : 'Погашеные задолженности',
+                    backgroundColor     : 'rgb(0,139,2)',
                     borderColor         : 'rgba(210, 214, 222, 1)',
                     pointRadius         : false,
                     pointColor          : 'rgba(210, 214, 222, 1)',
                     pointStrokeColor    : '#c1c7d1',
                     pointHighlightFill  : '#fff',
                     pointHighlightStroke: 'rgba(220,220,220,1)',
-                    data                : [65, 59, 80, 81, 56, 55, 40]
+                    data                : dataPaidInv
                 },
             ]
         }
@@ -238,32 +246,40 @@
         })
     })
 </script>
-<script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var months = /*[[${diagramMonths}]]*/ [];
+    var dataIn = /*[[${diagramIncomeCashBox}]]*/ [];
+    var dataEx = /*[[${diagramExpenceCashBox}]]*/ [];
+
+    console.log(months)
+    console.log(dataIn)
+    console.log(dataEx)
     $(function () {
         var areaChartData = {
-            labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels: months,
             datasets: [
                 {
                     label               : 'Приход',
-                    backgroundColor     : 'rgba(60,141,188,0.9)',
+                    backgroundColor     : 'rgb(0,139,2)',
                     borderColor         : 'rgba(60,141,188,0.8)',
                     pointRadius          : false,
                     pointColor          : '#3b8bba',
                     pointStrokeColor    : 'rgba(60,141,188,1)',
                     pointHighlightFill  : '#fff',
                     pointHighlightStroke: 'rgba(60,141,188,1)',
-                    data                : [28, 48, 40, 19, 86, 27, 90]
+                    data: dataIn
                 },
                 {
                     label               : 'Расход ',
-                    backgroundColor     : 'rgba(210, 214, 222, 1)',
+                    backgroundColor     : 'rgb(236,0,0)',
                     borderColor         : 'rgba(210, 214, 222, 1)',
                     pointRadius         : false,
                     pointColor          : 'rgba(210, 214, 222, 1)',
                     pointStrokeColor    : '#c1c7d1',
                     pointHighlightFill  : '#fff',
                     pointHighlightStroke: 'rgba(220,220,220,1)',
-                    data                : [65, 59, 80, 81, 56, 55, 40]
+                    data: dataEx
                 },
             ]
         }

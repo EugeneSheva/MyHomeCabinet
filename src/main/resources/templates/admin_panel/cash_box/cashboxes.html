@@ -95,9 +95,7 @@
                         <ul class="dropdown-menu">
                             <li><a th:href="@{/admin/cashbox/newIncome}" style="padding-inline:15px;">Создать приход</a></li>
                             <li><a th:href="@{/admin/cashbox/newExpense}" style="padding-inline:15px;">Создать расход</a></li>
-                            <li><div class="dt-buttons btn-group flex-wrap">
-                                <button class="btn btn-secondary buttons-excel buttons-html5" tabindex="0" aria-controls="example1" type="button"><span>Excel</span></button>
-                            </div>
+                            <li onclick="downloadExcelTable()"><a>Выгрузить в Excel</a></li>
                             </li>
                         </ul>
                     </div>
@@ -106,12 +104,12 @@
 
 
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title"></h3>
-                </div>
-                <!-- /.card-header -->
+<!--                <div class="card-header">-->
+<!--                    <h3 class="card-title"></h3>-->
+<!--                </div>-->
+<!--                &lt;!&ndash; /.card-header &ndash;&gt;-->
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped" width="100%">
+                    <table id="table_to_excel" class="table table-bordered table-striped" width="100%">
                         <col style="width:10%">
                         <col style="width:10%">
                         <col style="width:10%">
@@ -181,13 +179,8 @@
 <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
 <!-- Bootstrap -->
 <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
-<!--&lt;!&ndash; AdminLTE App &ndash;&gt;-->
-<!--<script th:src="@{/dist/js/adminlte.js}"></script>-->
-<!--&lt;!&ndash; AdminLTE App &ndash;&gt;-->
-<!--<script src="../../dist/js/adminlte.min.js"></script>-->
-<!--&lt;!&ndash; AdminLTE for demo purposes &ndash;&gt;-->
-<!--<script src="../../dist/js/demo.js"></script>-->
-<!--&lt;!&ndash; Page specific script &ndash;&gt;-->
+
+
 
 
 <!-- DataTables  & Plugins -->
@@ -205,23 +198,22 @@
 <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../../dist/js/adminlte.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
 
 <script>
-    $(function () {
-        $("#example1").DataTable({
-            "responsive": true, "lengthChange": false, "autoWidth": false,
-            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        $('#example2').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-        });
-    });
+    function downloadExcelTable() {
+        console.log(1)
+        const date = new Date();
+
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+
+        let table = document.getElementById("table_to_excel");
+        let excel_file = XLSX.utils.table_to_book(table);
+        XLSX.writeFile(excel_file, "Касса " + `${day}-${month}-${year}` + ".xlsx");
+        console.log(2)
+    }
 </script>
 
 

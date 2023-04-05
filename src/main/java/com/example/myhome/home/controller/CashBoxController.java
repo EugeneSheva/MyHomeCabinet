@@ -31,8 +31,8 @@ public class CashBoxController {
         List<CashBox> cashBoxList = cashBoxService.findAll();
         model.addAttribute("cashBoxList", cashBoxList);
         model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount());
-        model.addAttribute("accountBalance", accountRepository.getBalance());
-        model.addAttribute("sumDebt", accountRepository.getDebt());
+        model.addAttribute("accountBalance", accountRepository.getSumOfAccountBalances());
+        model.addAttribute("sumDebt", accountRepository.getSumOfAccountDebts());
         return "admin_panel/cash_box/cashboxes";
     }
 
