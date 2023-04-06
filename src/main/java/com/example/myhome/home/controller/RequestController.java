@@ -37,6 +37,8 @@ public class RequestController {
     @GetMapping
     public String showRequestsPage(Model model) {
         model.addAttribute("requests", repairRequestService.findAllRequests());
+        model.addAttribute("owners", ownerService.findAllDTO());
+        model.addAttribute("masters", adminService.findAllDTO());
         return "admin_panel/requests/requests";
     }
 

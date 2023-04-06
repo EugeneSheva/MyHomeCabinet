@@ -22,6 +22,10 @@ public class AdminDTO {
     private boolean active = true;
     private UserRole role;
 
+    public String getFullName() {
+        return this.first_name + ' ' + this.last_name;
+    }
+
 
 
 }

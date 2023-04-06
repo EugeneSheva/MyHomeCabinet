@@ -7,6 +7,7 @@ import com.example.myhome.home.repository.BuildingRepository;
 import com.example.myhome.home.service.AccountService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.CashBoxService;
+import com.example.myhome.home.service.OwnerService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,6 +31,8 @@ public class AccountController {
     @Autowired
     private BuildingService buildingService;
 
+    @Autowired private OwnerService ownerService;
+
     // показать все счета
     @GetMapping
     public String showAccountsPage(Model model) {
@@ -37,6 +40,9 @@ public class AccountController {
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
         model.addAttribute("account_balance", accountService.getSumOfAccountBalances());
         model.addAttribute("account_debt", accountService.getSumOfAccountDebts());
+
+        model.addAttribute("owners", ownerService.findAllDTO());
+        model.addAttribute("buildings", buildingService.findAllDTO());
         return "admin_panel/accounts/accounts";
     }
 
@@ -63,15 +69,6 @@ public class AccountController {
     public String createAccount(@ModelAttribute ApartmentAccount account,
                                 RedirectAttributes redirectAttributes) {
 
-        // взаимные ссылки не устанавливаются - Account получает apartment_id
-        // как главный объект в отношении OneToOne, а вот Apartment account_id не получает ,
-        // если не делать выкрутасы, как указано ниже
-
-//        ApartmentAccount savedAccount = accountRepository.save(account);
-//        Apartment apartment = apartmentRepository.findById(savedAccount.getApartment().getId()).orElseThrow();
-//        apartment.setAccount(savedAccount);
-//        apartmentRepository.save(apartment);
-
         if(accountService.apartmentHasAccount(account.getApartment().getId())) {
             redirectAttributes.addFlashAttribute("fail", "К этой квартире уже привязан лицевой счёт!");
             return "redirect:/admin/accounts/create";
@@ -93,15 +90,6 @@ public class AccountController {
 
     @PostMapping("/update/{id}")
     public String updateAccount(@PathVariable long id, @ModelAttribute ApartmentAccount account) {
-//        log.info("OLD APARTMENT ID " + account.getApartment().getId());
-//        Apartment old_apartment = apartmentRepository.findById(account.getApartment().getId()).orElseThrow();
-//        old_apartment.setAccount(null);
-//        apartmentRepository.save(old_apartment);
-//
-//        ApartmentAccount savedAccount = accountRepository.save(account);
-//        Apartment apartment = apartmentRepository.findById(savedAccount.getApartment().getId()).orElseThrow();
-//        apartment.setAccount(savedAccount);
-//        apartmentRepository.save(apartment);
 
         accountService.save(account);
 

@@ -21,4 +21,7 @@ public interface MeterDataRepository extends JpaRepository<MeterData, Long> {
     @Query("SELECT DISTINCT MAX(m.id) FROM MeterData m GROUP BY m.apartment, m.service")
     List<Long> findDistinctGroupByApartmentAndService();
 
+    @Query("SELECT MAX(m.id) FROM MeterData m")
+    Optional<Long> getMaxId();
+
 }

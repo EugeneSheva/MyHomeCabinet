@@ -5,6 +5,7 @@ import com.example.myhome.home.model.Tariff;
 import com.example.myhome.home.repository.ServiceRepository;
 import com.example.myhome.home.repository.TariffRepository;
 import com.example.myhome.home.repository.UnitRepository;
+import com.example.myhome.home.service.ServiceService;
 import com.example.myhome.home.service.TariffService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,17 +24,8 @@ import java.util.stream.Stream;
 @Log
 public class TariffController {
 
-    @Autowired
-    private ServiceRepository serviceRepository;
-
-    @Autowired
-    private UnitRepository unitRepository;
-
-    @Autowired
-    private TariffRepository tariffRepository;
-
-    @Autowired
-    private TariffService tariffService;
+    @Autowired private ServiceService serviceService;
+    @Autowired private TariffService tariffService;
 
     @GetMapping
     public String showTariffsPage(@RequestParam(required = false) String sort, Model model) {
@@ -57,15 +49,15 @@ public class TariffController {
 
     @GetMapping("/{id}")
     public String showTariffInfoPage(@PathVariable long id, Model model) {
-        model.addAttribute("tariff", tariffRepository.findById(id).orElseThrow());
+        model.addAttribute("tariff", tariffService.findTariffById(id));
         return "admin_panel/system_settings/tariff_profile";
     }
 
     @GetMapping("/create")
     public String showCreateTariffCard(Model model){
         model.addAttribute("tariff", new Tariff());
-        model.addAttribute("services", serviceRepository.findAll());
-        model.addAttribute("units", unitRepository.findAll());
+        model.addAttribute("services", serviceService.findAllServices());
+        model.addAttribute("units", serviceService.findAllUnits());
         return "admin_panel/system_settings/tariff_card";
     }
 
@@ -82,18 +74,18 @@ public class TariffController {
 
         log.info(tariff.toString());
 
-        tariffRepository.save(tariff);
+        tariffService.saveTariff(tariff);
 
         return "redirect:/admin/tariffs";
     }
 
     @GetMapping("/update/{id}")
     public String showUpdateTariffPage(@PathVariable long id, Model model) {
-        Tariff tariff = tariffRepository.findById(id).orElseGet(Tariff::new);
+        Tariff tariff = tariffService.findTariffById(id);
         model.addAttribute("tariff", tariff);
         model.addAttribute("components", tariff.getTariffComponents().entrySet());
-        model.addAttribute("services", serviceRepository.findAll());
-        model.addAttribute("units", unitRepository.findAll());
+        model.addAttribute("services", serviceService.findAllServices());
+        model.addAttribute("units", serviceService.findAllUnits());
         return "admin_panel/system_settings/tariff_card";
     }
 
@@ -112,14 +104,14 @@ public class TariffController {
 
         log.info(tariff.toString());
 
-        tariffRepository.save(tariff);
+        tariffService.saveTariff(tariff);
 
         return "redirect:/admin/tariffs";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteTariff(@PathVariable long id) {
-        tariffRepository.deleteById(id);
+        tariffService.deleteTariff(id);
         return "redirect:/admin/tariffs";
     }
 
@@ -127,7 +119,7 @@ public class TariffController {
 
     @GetMapping("/get-components")
     public @ResponseBody Map<String, Double> getTariffComponents(@RequestParam long tariff_id) throws JsonProcessingException {
-        Map<Service, Double> components = tariffRepository.findById(tariff_id).orElseThrow().getTariffComponents();
+        Map<Service, Double> components = tariffService.findTariffById(tariff_id).getTariffComponents();
         Map<String, Double> comp_2 = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
         for(Map.Entry<Service, Double> entry : components.entrySet()) {

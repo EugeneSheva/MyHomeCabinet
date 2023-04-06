@@ -2,6 +2,9 @@ package com.example.myhome.home.controller.admin_panel;
 
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.repository.*;
+import com.example.myhome.home.service.AdminService;
+import com.example.myhome.home.service.ServiceService;
+import com.example.myhome.home.service.TariffService;
 import com.example.myhome.util.UserRole;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,22 +26,11 @@ import java.util.stream.Collectors;
 public class SettingsController {
 
     @Autowired
-    private ServiceRepository serviceRepository;
-
-    @Autowired
-    private UnitRepository unitRepository;
-
-    @Autowired
     private IncomeExpenseRepository incomeExpenseRepository;
-
-    @Autowired
-    private TariffRepository tariffRepository;
 
     @Autowired
     private PaymentDetailsRepository paymentDetailsRepository;
 
-    @Autowired
-    private AdminRepository adminRepository;
 
     @GetMapping("/admin/payment-details")
     public String showPaymentDetailsPage(Model model) {

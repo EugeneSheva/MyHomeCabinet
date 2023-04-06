@@ -23,6 +23,7 @@ public class ServiceService {
     private UnitRepository unitRepository;
 
     public List<Service> findAllServices() {return serviceRepository.findAll();}
+    public List<Unit> findAllUnits() {return unitRepository.findAll();}
 
     public Service findServiceById(long service_id) {return serviceRepository.findById(service_id).orElseThrow();}
     public String getServiceNameById(long service_id) {return serviceRepository.findById(service_id).orElseThrow().getName();}

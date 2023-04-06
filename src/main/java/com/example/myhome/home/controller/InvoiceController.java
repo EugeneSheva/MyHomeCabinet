@@ -113,53 +113,20 @@ public class InvoiceController {
                                 @RequestParam String[] unit_prices,
                                 @RequestParam String[] unit_amounts) {
 
-        invoice.setComponents(new ArrayList<>());
-        log.info(Arrays.toString(services));
-        log.info(Arrays.toString(unit_prices));
-        log.info(Arrays.toString(unit_amounts));
-
-        invoice.setDate(LocalDate.parse(date));
-        Invoice savedInvoice = invoiceService.saveInvoice(invoice);
-
-        List<InvoiceComponents> componentsList = new ArrayList<>();
-
-        for (int i = 1; i < services.length; i++) {
-            InvoiceComponents component = new InvoiceComponents();
-            component.setInvoice(savedInvoice);
-            component.setService(serviceService.findServiceById(Long.parseLong(services[i])));
-            component.setUnit_price(Double.parseDouble(unit_prices[i]));
-            component.setUnit_amount(Double.parseDouble(unit_amounts[i]));
-            componentsList.add(component);
-        }
-        Double total_price = componentsList.stream().map(InvoiceComponents::getTotalPrice).reduce(Double::sum).orElse(0.0);
-        savedInvoice.setTotal_price(total_price);
-
-        invoiceService.saveAllInvoicesComponents(componentsList);
-        invoiceService.saveInvoice(savedInvoice);
-
+        invoiceService.buildAndSaveInvoice(invoice, date, services, unit_prices, unit_amounts);
         return "redirect:/admin/invoices";
     }
 
     @PostMapping("/update/{id}")
     public String updateInvoice(@PathVariable long id, @ModelAttribute Invoice invoice) {
-        log.info(invoice.toString());
         invoice.getComponents().forEach(comp -> comp.setInvoice(invoice));
-        Invoice savedInvoice = invoiceService.saveInvoice(invoice);
+        invoiceService.saveInvoice(invoice);
         invoiceService.saveAllInvoicesComponents(invoice.getComponents());
-//        invoice.getComponents().forEach(comp -> comp.setInvoice(savedInvoice));
-//        savedInvoice.getComponents().clear();
-//        savedInvoice.getComponents().addAll(invoice.getComponents());
-//        invoiceService.saveAllInvoicesComponents(invoice.getComponents());
-//        invoiceService.saveInvoice(savedInvoice);
-//        log.info(savedInvoice.getComponents().toString());
-
-        //Update компонентов работает криво
         return "redirect:/admin/invoices";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteInvoice(@PathVariable long id) {
-        String s = "";
         invoiceService.deleteInvoiceById(id);
         return "redirect:/admin/invoices";
     }

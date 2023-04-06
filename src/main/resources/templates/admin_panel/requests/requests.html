@@ -81,98 +81,55 @@
                                         <th style="width: 135px; min-width: 135px">Статус</th>
                                         <th style="width: 80px; min-width: 80px">&nbsp;</th>
                                     </tr>
-                                    <tr id="w0-filters" class="filters">
-<!--                                        <td>-->
-<!--                                            <input type="text" class="form-control" name="MasterRequestSearch[id]">-->
-<!--                                        </td>-->
-<!--                                        <td>-->
-<!--                                            <input type="text" id="masterrequestsearch-searchdaterequestrange" class="form-control" name="MasterRequestSearch[searchDateRequestRange]" data-krajee-daterangepicker="daterangepicker_c8dff207">-->
-<!--                                        </td>-->
-<!--                                        <td>-->
-<!--                                            <select id="masterrequestsearch-type" class="form-control select2-hidden-accessible" name="MasterRequestSearch[type]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_0d896465" style="display:none" tabindex="-1" aria-hidden="true">-->
-<!--                                                <option value=""></option>-->
-<!--                                                <option value="1">Сантехник</option>-->
-<!--                                                <option value="2">Электрик</option>-->
-<!--                                                <option value="3">Слесарь</option>-->
-<!--                                                <option value="20">Любой специалист</option>-->
-<!--                                            </select>-->
-<!--                                            <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
-<!--                          <span class="selection">-->
-<!--                            <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-masterrequestsearch-type-container">-->
-<!--                              <span class="select2-selection__rendered" id="select2-masterrequestsearch-type-container">-->
-<!--                                <span class="select2-selection__placeholder"></span>-->
-<!--                              </span>-->
-<!--                              <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
-<!--                            </span>-->
-<!--                          </span>-->
-<!--                          <span class="dropdown-wrapper" aria-hidden="true"></span>-->
-<!--                        </span>-->
-<!--                                        </td>-->
-<!--                                        <td>-->
-<!--                                            <input type="text" class="form-control" name="MasterRequestSearch[description]">-->
-<!--                                        </td>-->
-<!--                                        <td>-->
-<!--                                            <input type="text" class="form-control" name="MasterRequestSearch[searchFlat]">-->
-<!--                                        </td>-->
-<!--                                        <td>-->
-<!--                                            <select id="masterrequestsearch-searchuserid" class="form-control select2-hidden-accessible" name="MasterRequestSearch[searchUserId]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_ea5d4d6f" style="display:none" tabindex="-1" aria-hidden="true">-->
-<!--                                                <option value=""></option>-->
-<!--                                                <option value="2">Иванов 122 Иван 22 Сидорович 22</option>-->
-<!--                                            </select>-->
-<!--                                            <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
-<!--                          <span class="selection">-->
-<!--                            <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-masterrequestsearch-searchuserid-container">-->
-<!--                              <span class="select2-selection__rendered" id="select2-masterrequestsearch-searchuserid-container">-->
-<!--                                <span class="select2-selection__placeholder"></span>-->
-<!--                              </span>-->
-<!--                              <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
-<!--                            </span>-->
-<!--                          </span>-->
-<!--                          <span class="dropdown-wrapper" aria-hidden="true"></span>-->
-<!--                        </span>-->
-<!--                                        </td>-->
-<!--                                        <td>-->
-<!--                                            <input type="text" class="form-control" name="MasterRequestSearch[searchPhone]">-->
-<!--                                        </td>-->
-<!--                                        <td>-->
-<!--                                            <select id="masterrequestsearch-user_admin_id" class="form-control select2-hidden-accessible" name="MasterRequestSearch[user_admin_id]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_0d896465" style="display:none" tabindex="-1" aria-hidden="true">-->
-<!--                                                <option value=""></option>-->
-<!--                                                <option value="2">Сантехник - Виктория Виктория</option>-->
-<!--                                                <option value="3">Сантехник - Александр Пушкин</option>-->
-
-<!--                                            </select>-->
-<!--                                            <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
-<!--                          <span class="selection">-->
-<!--                            <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-masterrequestsearch-user_admin_id-container">-->
-<!--                              <span class="select2-selection__rendered" id="select2-masterrequestsearch-user_admin_id-container">-->
-<!--                                <span class="select2-selection__placeholder"></span>-->
-<!--                              </span>-->
-<!--                              <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
-<!--                            </span>-->
-<!--                          </span>-->
-<!--                          <span class="dropdown-wrapper" aria-hidden="true"></span>-->
-<!--                        </span>-->
-<!--                                        </td>-->
-<!--                                        <td>-->
-<!--                                            <select id="masterrequestsearch-status" class="form-control select2-hidden-accessible" name="MasterRequestSearch[status]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_0d896465" style="display:none" tabindex="-1" aria-hidden="true">-->
-<!--                                                <option value=""></option>-->
-<!--                                                <option value="1">Новое</option>-->
-<!--                                                <option value="5">В работе</option>-->
-<!--                                                <option value="10">Выполнено</option>-->
-<!--                                            </select>-->
-<!--                                            <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
-<!--                          <span class="selection">-->
-<!--                            <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-masterrequestsearch-status-container">-->
-<!--                              <span class="select2-selection__rendered" id="select2-masterrequestsearch-status-container">-->
-<!--                                <span class="select2-selection__placeholder"></span>-->
-<!--                              </span>-->
-<!--                              <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
-<!--                            </span>-->
-<!--                          </span>-->
-<!--                          <span class="dropdown-wrapper" aria-hidden="true"></span>-->
-<!--                        </span>-->
-<!--                                        </td>-->
-<!--                                        <td>&nbsp;</td>-->
+                                    <tr>
+                                        <td style="padding: 10px">
+                                            <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" type="text">
+                                        </td>
+                                        <td style="padding: 10px">
+                                            <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" type="date">
+                                        </td>
+                                        <td style="padding: 10px">
+                                            <select style="width: 100%; padding-block: 10px">
+                                                <option value=""></option>
+                                                <option th:each="master_type : ${T(com.example.myhome.home.model.RepairMasterType).values()}"
+                                                        th:value="${master_type}"
+                                                        th:text="${master_type.getName()}"></option>
+                                            </select>
+                                        </td>
+                                        <td style="padding: 10px">
+                                            <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" type="text">
+                                        </td>
+                                        <td style="padding: 10px">
+                                            <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" type="text">
+                                        </td>
+                                        <td style="padding: 10px">
+                                            <select style="width: 100%; padding-block: 10px">
+                                                <option value=""></option>
+                                                <option th:each="owner : ${owners}"
+                                                        th:value="${owner.id}"
+                                                        th:text="${owner.getFullName()}"></option>
+                                            </select>
+                                        </td>
+                                        <td style="padding: 10px">
+                                            <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" type="text">
+                                        </td>
+                                        <td style="padding: 10px">
+                                            <select style="width: 100%; padding-block: 10px">
+                                                <option value=""></option>
+                                                <option th:each="master : ${masters}"
+                                                        th:value="${master.id}"
+                                                        th:text="${master.getFullName()}"></option>
+                                            </select>
+                                        </td>
+                                        <td style="padding: 10px">
+                                            <select style="width: 100%; padding-block: 10px">
+                                                <option value=""></option>
+                                                <option th:each="stat : ${T(com.example.myhome.home.model.RepairStatus).values()}"
+                                                        th:value="${stat}"
+                                                        th:text="${stat.getName()}"></option>
+                                            </select>
+                                        </td>
+                                        <td></td>
                                     </tr>
                                     </thead>
                                     <tbody>

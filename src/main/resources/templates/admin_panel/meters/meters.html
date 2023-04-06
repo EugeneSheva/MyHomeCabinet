@@ -115,8 +115,8 @@
                       <td th:text="${row.apartment.section}"></td>
                       <td th:text="${row.apartment.number}"></td>
                       <td th:text="${row.service.name}"></td>
-                      <td th:text="${row.currentReadings}"></td>
-                      <td th:text="${row.service.unit.name}"></td>
+                      <td th:text="${row.currentReadings}" style="background-color: #DFD5;"></td>
+                      <td th:text="${row.service.unit.name}" style="background-color: #DFD5;"></td>
                       <td>
                           <div class="btn-group pull-right">
                               <a class="btn btn-default btn-sm" th:href="@{/admin/meters/create-add?flat_id={flat_id}&service_id={service_id}(flat_id=${row.apartment.id}, service_id=${row.service.id})}" title="Снять новое показание счетчика" target="_blank" data-toggle="tooltip"><i class="fa fa-dashboard"></i></a>

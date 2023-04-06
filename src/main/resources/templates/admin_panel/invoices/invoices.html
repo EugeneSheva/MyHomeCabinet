@@ -122,70 +122,46 @@
                           <th>Сумма(грн)</th>
                           <th></th>
                       </tr>
-                  <tr id="w0-filters" class="filters">
-<!--                    <td>-->
-<!--                      <select id="counterdatasearch-searchhouse" class="form-control select2-hidden-accessible" name="CounterDataSearch[searchHouse]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_0d896465" style="display:none" tabindex="-1" aria-hidden="true">-->
-<!--                        <option value=""></option>-->
-<!--                        <option value="1">ЖК "Башня Чкалов"</option>-->
-<!--                        <option value="2">ЖК "Морская Симфония"</option>-->
-<!--                        <option value="3">ЖК "Дом Каркашадзе"</option>-->
-<!--                        <option value="4">ЖК "Королевские сады"</option>-->
-<!--                        <option value="6">ЖК "Балковский"</option>-->
-<!--                      </select>-->
-<!--                      <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
-<!--                                    <span class="selection">-->
-<!--                                        <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-counterdatasearch-searchhouse-container">-->
-<!--                                            <span class="select2-selection__rendered" id="select2-counterdatasearch-searchhouse-container">-->
-<!--                                                <span class="select2-selection__placeholder"></span>-->
-<!--                                            </span>-->
-<!--                                            <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
-<!--                                        </span>-->
-<!--                                    </span>-->
-<!--                                    <span class="dropdown-wrapper" aria-hidden="true"></span>-->
-<!--                                </span>-->
-<!--                    </td>-->
-<!--                    <td>-->
-<!--                      <select id="counterdatasearch-searchsection" class="form-control select2-hidden-accessible" name="CounterDataSearch[searchSection]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_00d9e7b8" style="display:none" tabindex="-1" aria-hidden="true">-->
-<!--                        <option value="">Выберите дом</option>-->
-<!--                      </select>-->
-<!--                      <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
-<!--                                    <span class="selection">-->
-<!--                                        <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-counterdatasearch-searchsection-container">-->
-<!--                                            <span class="select2-selection__rendered" id="select2-counterdatasearch-searchsection-container">-->
-<!--                                                <span class="select2-selection__placeholder">Выберите дом</span>-->
-<!--                                            </span>-->
-<!--                                            <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
-<!--                                        </span>-->
-<!--                                    </span>-->
-<!--                                    <span class="dropdown-wrapper" aria-hidden="true"></span>-->
-<!--                                </span>-->
-<!--                    </td>-->
-<!--                    <td>-->
-<!--                      <input type="text" class="form-control" name="CounterDataSearch[searchFlat]">-->
-<!--                    </td>-->
-<!--                    <td>-->
-<!--                      <select id="counterdatasearch-service_id" class="form-control select2-hidden-accessible" name="CounterDataSearch[service_id]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_0d896465" style="display:none" tabindex="-1" aria-hidden="true">-->
-<!--                        <option value="39">Водоснабжение</option>-->
-<!--                        <option value="40">Газоснабжение</option>-->
-<!--                        <option value="41">Транспортировка газа</option>-->
-<!--                        <option value="65">111111111111111111111111</option>-->
-<!--                      </select>-->
-<!--                      <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
-<!--                                    <span class="selection">-->
-<!--                                        <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-counterdatasearch-service_id-container">-->
-<!--                                            <span class="select2-selection__rendered" id="select2-counterdatasearch-service_id-container">-->
-<!--                                                <span class="select2-selection__placeholder"></span>-->
-<!--                                            </span>-->
-<!--                                            <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
-<!--                                        </span>-->
-<!--                                    </span>-->
-<!--                                    <span class="dropdown-wrapper" aria-hidden="true"></span>-->
-<!--                                </span>-->
-<!--                    </td>-->
-<!--                    <td>&nbsp;</td>-->
-<!--                    <td>&nbsp;</td>-->
-<!--                    <td>&nbsp;</td>-->
-                  </tr>
+                      <tr>
+                          <td></td>
+                          <td style="padding:10px">
+                              <input type="text" id="invoice_select" style="width: 100%; padding-block: 9px; border: 0.5px solid silver;">
+                          </td>
+                          <td style="padding:10px">
+                              <select name="" id="" style="width: 100%; padding-block: 10px">
+                                  <option value=""></option>
+                                  <option th:each="status : ${T(com.example.myhome.home.model.InvoiceStatus).values()}"
+                                          th:value="${status}"
+                                          th:text="${status.getName()}"></option>
+                              </select>
+                          </td>
+                          <td style="padding:10px">
+                              <input type="date" name="" id="" style="width: 100%; padding-block: 8px; border: 0.5px solid silver;">
+                          </td>
+                          <td style="padding:10px">
+                              <input type="date" name="" id="" style="width: 100%; padding-block: 8px; border: 0.5px solid silver;">
+                          </td>
+                          <td style="padding:10px">
+                              <input type="text" id="apartment_select" style="width: 100%; padding-block: 9px; border: 0.5px solid silver;">
+                          </td>
+                          <td style="padding:10px">
+                              <select name="" id="owner_select" style="width: 100%; padding-block: 10px">
+                                  <option value=""></option>
+                                  <option th:each="owner : ${owners}"
+                                          th:value="${owner.id}"
+                                          th:text="${owner.getFullName()}"></option>
+                              </select>
+                          </td>
+                          <td style="padding:10px">
+                              <select name="" id="" style="width: 100%; padding-block: 10px">
+                                  <option value=""></option>
+                                  <option value="1">Проведена</option>
+                                  <option value="0">Не проведена</option>
+                              </select>
+                          </td>
+                          <td></td>
+                          <td></td>
+                      </tr>
                   </thead>
                   <tbody>
                     <tr style="cursor: pointer;" class="invoice_row" th:each="invoice : ${invoices}">
