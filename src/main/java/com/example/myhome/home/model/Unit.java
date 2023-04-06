@@ -14,4 +14,16 @@ public class Unit {
     private Long id;
 
     private String name;
+
+    public Unit() {
+    }
+
+    public Unit(String name) {
+        this.name = name;
+    }
+
+    public Unit(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

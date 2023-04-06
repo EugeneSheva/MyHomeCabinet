@@ -1,6 +1,7 @@
 package com.example.myhome.home.service;
 
 
+import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Unit;
 import com.example.myhome.home.repository.ServiceRepository;
 import com.example.myhome.home.repository.UnitRepository;
@@ -25,10 +26,10 @@ public class ServiceService {
     public List<Service> findAllServices() {return serviceRepository.findAll();}
     public List<Unit> findAllUnits() {return unitRepository.findAll();}
 
-    public Service findServiceById(long service_id) {return serviceRepository.findById(service_id).orElseThrow();}
-    public String getServiceNameById(long service_id) {return serviceRepository.findById(service_id).orElseThrow().getName();}
+    public Service findServiceById(long service_id) {return serviceRepository.findById(service_id).orElseThrow(NotFoundException::new);}
+    public String getServiceNameById(long service_id) {return serviceRepository.findById(service_id).orElseThrow(NotFoundException::new).getName();}
 
-    public String getUnitNameById(long unit_id) {return unitRepository.findById(unit_id).orElseThrow().getName();}
+    public String getUnitNameById(long unit_id) {return unitRepository.findById(unit_id).orElseThrow(NotFoundException::new).getName();}
 
     public Service saveService(Service service) {return serviceRepository.save(service);}
 
@@ -63,9 +64,10 @@ public class ServiceService {
         log.info(serviceList.toString());
 
         for (int i = 0; i < new_service_names.length-1; i++) {
+            if(new_service_names[i].equalsIgnoreCase("") || new_service_names[i] == null) continue;
             Service service = new Service();
             service.setName(new_service_names[i]);
-            //service.setShow_in_meters(Boolean.parseBoolean(new_service_show_in_meters[i]));
+            service.setShow_in_meters(true);
             service.setUnit(unitRepository.findByName(new_service_unit_names[i]).orElseGet(Unit::new));
             serviceList.add(service);
         }

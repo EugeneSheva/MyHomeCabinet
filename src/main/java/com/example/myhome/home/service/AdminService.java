@@ -22,7 +22,7 @@ public class AdminService {
 ;
 
 
-    public Admin findAdminById (Long id) { return adminRepository.findById(id).orElseThrow(() -> new NotFoundException());}
+    public Admin findAdminById (Long id) { return adminRepository.findById(id).orElseThrow(NotFoundException::new);}
 
     public List<Admin> findAll() { return adminRepository.findAll(); }
 

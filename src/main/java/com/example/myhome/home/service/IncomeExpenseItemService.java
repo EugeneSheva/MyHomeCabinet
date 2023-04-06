@@ -12,7 +12,7 @@ import java.util.List;
 public class IncomeExpenseItemService {
     private final IncomeExpenseRepository incomeExpenseRepository;
 
-    public IncomeExpenseItems findById (Long id) { return incomeExpenseRepository.findById(id).orElseThrow(() -> new NotFoundException());}
+    public IncomeExpenseItems findById (Long id) { return incomeExpenseRepository.findById(id).orElseThrow(NotFoundException::new);}
     public List<IncomeExpenseItems> findAll() { return incomeExpenseRepository.findAll(); }
     public IncomeExpenseItems save(IncomeExpenseItems incomeExpenseItems) { return incomeExpenseRepository.save(incomeExpenseItems); }
     public void deleteById(Long id) { incomeExpenseRepository.deleteById(id); }

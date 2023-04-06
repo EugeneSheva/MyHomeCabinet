@@ -84,7 +84,7 @@ public class InvoiceController {
         model.addAttribute("current_date", LocalDate.now());
         model.addAttribute("buildings", buildingService.findAll());
         model.addAttribute("tariffs", tariffService.findAllTariffs());
-        model.addAttribute("meters", meterDataService.findAllMeters());
+        model.addAttribute("meters", (flat_id == null) ? meterDataService.findAllMeters() : meterDataService.findSingleMeterData(flat_id, null));
         model.addAttribute("services", serviceService.findAllServices());
         return "admin_panel/invoices/invoice_card";
     }

@@ -1,5 +1,7 @@
 package com.example.myhome;
 
+import com.example.myhome.home.exception.EmptyObjectException;
+import com.example.myhome.home.model.Service;
 import com.example.myhome.home.model.Tariff;
 import com.example.myhome.home.repository.TariffRepository;
 import com.example.myhome.home.service.TariffService;
@@ -11,10 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -30,18 +36,24 @@ public class TariffServiceTests {
 
     @Test
     @Order(1)
-    void check() {
+    void sanityCheck() {
         assertThat(tariffRepository).isNotNull();
         assertThat(tariffService).isNotNull();
     }
 
     @Test
     void canSaveTariff() {
+        Service service = new Service();
+
         Tariff tariff = new Tariff();
+        tariff.setTariffComponents(new HashMap<>());
+        tariff.getTariffComponents().put(service, 0.0);
         tariff.setName("TEST");
 
         Tariff expected = new Tariff();
         expected.setId(1L);
+        expected.setTariffComponents(new HashMap<>());
+        expected.getTariffComponents().put(service, 0.0);
         expected.setName("TEST");
 
         given(tariffRepository.save(tariff)).willReturn(expected);
@@ -52,15 +64,22 @@ public class TariffServiceTests {
         assertThat(tariffService.saveTariff(tariff)).isEqualTo(expected);
     }
 
-//    @Test
-//    void cantSaveTariffWithoutName() {
-//        Tariff tariff = new Tariff();
-//
-//        Tariff expected = new Tariff();
-//        expected.setId(1L);
-//
-//        tariffService.saveTariff(tariff);
-//    }
+    @Test
+    void cantSaveTariffWithoutComponents() {
+        Tariff tariff = new Tariff();
+        tariff.setTariffComponents(new HashMap<>());
+        tariff.setName("TEST");
+
+        given(tariffRepository.save(tariff)).willReturn(tariff);
+
+        Exception exception = assertThrows(EmptyObjectException.class, () -> tariffService.saveTariff(tariff));
+
+        String expectedMessage = "Can't save tariff without components";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
+    }
 
     @Test
     void canLoadTariffs() {
@@ -89,11 +108,17 @@ public class TariffServiceTests {
 
     @Test
     void canSaveAndThenLoadTariff() {
+        Service service = new Service();
+
         Tariff tariff = new Tariff();
+        tariff.setTariffComponents(new HashMap<>());
+        tariff.getTariffComponents().put(service, 0.0);
         tariff.setName("TEST");
 
         Tariff expected = new Tariff();
         expected.setId(1L);
+        expected.setTariffComponents(new HashMap<>());
+        expected.getTariffComponents().put(service, 0.0);
         expected.setName("TEST");
 
         given(tariffRepository.save(tariff)).willReturn(expected);
@@ -102,7 +127,7 @@ public class TariffServiceTests {
         tariffService.saveTariff(tariff);
         verify(tariffRepository).save(tariff);
 
-        assertThat(tariffService.findTariffById(1L)).isEqualTo(new Tariff(1L, "TEST"));
+        assertThat(tariffService.findTariffById(1L)).isEqualTo(expected);
     }
 
     // todo: сделать тесты добавления компонентов в тарифы
