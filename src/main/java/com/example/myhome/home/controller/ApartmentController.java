@@ -4,13 +4,16 @@ import com.example.myhome.home.model.*;
 import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.OwnerService;
+import com.example.myhome.home.validator.ApartmentValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -25,6 +28,7 @@ public class ApartmentController {
     private final ApartmentService apartmentService;
     private final BuildingService buildingService;
     private final OwnerService ownerService;
+    private final ApartmentValidator apartmentValidator;
 
 
     @GetMapping("/")
@@ -63,10 +67,14 @@ public class ApartmentController {
     }
 
     @PostMapping("/save")
-    public String saveCoffee(@ModelAttribute("apartment") Apartment apartment) throws IOException {
-//        Apartment building = buildingService.saveBuildindImages(id, file1, file2, file3, file4, file5);
-        apartmentService.save(apartment);
-        return "redirect:/admin/apartments/";
+    public String saveCoffee(@Valid @ModelAttribute("apartment") Apartment apartment, BindingResult bindingResult) throws IOException {
+        apartmentValidator.validate(apartment, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "admin_panel/apartments/apartment_edit";
+        } else {
+            apartmentService.save(apartment);
+            return "redirect:/admin/apartments/";
+        }
     }
 
     @GetMapping("/delete/{id}")

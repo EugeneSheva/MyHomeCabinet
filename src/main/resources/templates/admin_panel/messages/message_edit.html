@@ -68,10 +68,12 @@
 
                             <div class="form-group">
                                 <input class="form-control" th:field="${message.subject}" placeholder="Тема сообщения:">
+                                <div style="color: #d80450" th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></div>
                             </div>
                             <div class="form-group">
                     <textarea id="compose-textarea" class="form-control" th:field="${message.text}" rows="10" style="height: 450px">
                     </textarea>
+                                <div style="color: #d80450" th:if="${#fields.hasErrors('text')}" th:errors="*{text}"></div>
                             </div>
 <!--                            <div class="form-group">-->
 <!--                                <div class="btn btn-default btn-file">-->

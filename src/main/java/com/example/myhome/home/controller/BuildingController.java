@@ -38,7 +38,7 @@ public class BuildingController {
     private String uploadPath;
     private final BuildingService buildingService;
 
-    private BuildingValidator buildingValidator;
+    private final BuildingValidator buildingValidator;
     @GetMapping("/")
     public String getBuildigs(Model model) {
         List<Building> buildingList = buildingService.findAll();
@@ -67,12 +67,12 @@ public class BuildingController {
     }
 
     @PostMapping("/save")
-    public String saveBuildig(@ModelAttribute("building") Building build, BindingResult bindingResult, @RequestParam("name") String name, @RequestParam("address") String address,
-                              @RequestParam("sections") List<String> sections, @RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam("floors") List<String> floors, @RequestParam("img1") MultipartFile file1,
-                              @RequestParam("img2") MultipartFile file2, @RequestParam("img3") MultipartFile file3, @RequestParam("img4") MultipartFile file4,
-                              @RequestParam("img5") MultipartFile file5) throws IOException {
-            if (bindingResult.hasErrors()) {
-                System.out.println(bindingResult.toString());;
+    public String saveBuildig(@Valid @ModelAttribute("building") Building build, BindingResult bindingResult, @RequestParam("name") String name, @RequestParam("address") String address,
+                              @RequestParam("sections") List<String> sections, @RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam("floors") List<String> floors, @RequestParam("img01") MultipartFile file1,
+                              @RequestParam("img02") MultipartFile file2, @RequestParam("img03") MultipartFile file3, @RequestParam("img04") MultipartFile file4,
+                              @RequestParam("img05") MultipartFile file5) throws IOException {
+        buildingValidator.validate(build, bindingResult);
+        if (bindingResult.hasErrors()) {
                 return "admin_panel/buildings/building_edit";
             } else {
                 Building building = buildingService.saveBuildindImages(id, file1, file2, file3, file4, file5);

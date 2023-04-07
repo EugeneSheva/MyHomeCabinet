@@ -30,15 +30,15 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                                    <h1 class="m-0" th:text="${cashBoxItem.id == null} ? (${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')} ? 'Новая приходная ведомость'  : 'Новая расходная ведомость'  ):
-                                        (${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')} ? 'Приходная ведомость'  : 'Расходная ведомость')"></h1>
+<!--                                    <h1 class="m-0" th:text="(${cashBoxItem.id == null} ? (${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')} ? 'Новая приходная ведомость'  : 'Новая расходная ведомость'  ):-->
+<!--                                        (${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')} ? 'Приходная ведомость'  : 'Расходная ведомость'))"></h1>-->
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
                             <li class="breadcrumb-item"><a th:href="@{/cashbox/}">Касса</a></li>
-                                          <li class="breadcrumb-item active" th:text="${cashBoxItem.id == null} ? (${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')} ?
-                                           'Новая приходная ведомость'  : 'Новая расходная ведомость'  ): 'Редактирование'"></li>
+<!--                                          <li class="breadcrumb-item active" th:text="${cashBoxItem.id == null} ? (${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')} ?-->
+<!--                                           'Новая приходная ведомость'  : 'Новая расходная ведомость'  ): 'Редактирование'"></li>-->
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -92,6 +92,7 @@
                                                             th:value="${owners[__${item.index}__].id}"
                                                             ></option>
                                                 </select>
+                                                <div style="color: #d80450" th:if="${#fields.hasErrors('owner')}" th:errors="*{owner}"></div>
                                             </div>
                                             <div th:if="${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')}">
                                                 <label>Лицевой счет</label>
@@ -102,6 +103,7 @@
                                                             th:value="${accounts[__${item.index}__].id}"
                                                             ></option>
                                                 </select>
+                                                <div style="color: #d80450" th:if="${#fields.hasErrors('apartmentAccount')}" th:errors="*{apartmentAccount}"></div>
                                             </div>
                                             <div th:if="${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')}">
                                                 <label for="incomeExpenseItem" class="form-label">Статья</label>
@@ -112,6 +114,7 @@
                                                             th:text="${item.name}"
                                                             th:value="${item.id}"></option>
                                                 </select>
+                                                <div style="color: #d80450" th:if="${#fields.hasErrors('incomeExpenseItems')}" th:errors="*{incomeExpenseItems}"></div>
                                             </div>
                                             <div th:if="${#strings.contains(cashBoxItem.incomeExpenseType,'EXPENSE')}">
                                                 <label for="incomeExpenseItem" class="form-label">Статья</label>
@@ -122,9 +125,11 @@
                                                             th:text="${item.name}"
                                                             th:value="${item.id}"></option>
                                                 </select>
+                                                <div style="color: #d80450" th:if="${#fields.hasErrors('incomeExpenseItems')}" th:errors="*{incomeExpenseItems}"></div>
                                             </div>
                                             <label>Сумма</label>
                                             <input type="number" id="amount" class="form-control" th:field="*{amount}">
+                                            <div style="color: #d80450" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></div>
                                         </div>
                                         <div class="col-md-6">
                                             <input type="checkbox" class="form-check-input" id="formCheckDefault" style="margin-left: 0px"
@@ -138,6 +143,7 @@
                                                         th:text="${admins[__${item.index}__].role.getName()}+' - '+${admins[__${item.index}__].first_name}+' '+${admins[__${item.index}__].last_name}"
                                                         th:value="${admins[__${item.index}__].id}"></option>
                                             </select>
+                                            <div style="color: #d80450" th:if="${#fields.hasErrors('manager')}" th:errors="*{manager}"></div>
                                         </div>
                                     </div>
                                     <div class="form-group">

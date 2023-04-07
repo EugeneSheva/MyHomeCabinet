@@ -3,6 +3,8 @@ package com.example.myhome.home.controller;
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.service.OwnerService;
+import com.example.myhome.home.validator.BuildingValidator;
+import com.example.myhome.home.validator.OwnerValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +30,7 @@ public class OwnerController {
     @Value("${upload.path}")
     private String uploadPath;
     private final OwnerService ownerService;
+    private final OwnerValidator ownerValidator;
 
     @GetMapping("/")
     public String getOwners(Model model) {
@@ -58,6 +61,7 @@ public class OwnerController {
 
     @PostMapping("/save")
     public String saveCoffee(@Valid @ModelAttribute("owner") Owner owner, BindingResult bindingResult, @RequestParam("img1") MultipartFile file) throws IOException {
+        ownerValidator.validate(owner, bindingResult);
         if (bindingResult.hasErrors()) {
             return "admin_panel/owners/owner_edit";
         } else {
