@@ -22,6 +22,7 @@ public class ApartmentService {
     private final FileUploadUtil fileUploadUtil;
 
     public Apartment findById (Long id) { return (id == null) ? null : apartmentRepository.findById(id).orElseThrow(NotFoundException::new);}
+    public Apartment findByNumber(Long number) {return apartmentRepository.findByNumber(number).orElse(null);}
 
     public Apartment save(Apartment apartment) { return apartmentRepository.save(apartment); }
 

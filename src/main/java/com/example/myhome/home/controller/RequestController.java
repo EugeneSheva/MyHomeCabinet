@@ -12,6 +12,7 @@ import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -62,13 +63,13 @@ public class RequestController {
     @GetMapping("/update/{id}")
     public String showUpdateRequestPage(@PathVariable long id, Model model) {
         RepairRequest request = repairRequestService.findRequestById(id);
-        if(request.getBest_time() == null) request.setBest_time(LocalDateTime.now());
+        if(request.getBest_time_request() == null) request.setBest_time_request(LocalDateTime.now());
         log.info(request.toString());
         model.addAttribute("request", request);
         model.addAttribute("date", request.getRequest_date().toLocalDate());
         model.addAttribute("time", request.getRequest_date().toLocalTime());
-        model.addAttribute("best_date", request.getBest_time().toLocalDate());
-        model.addAttribute("best_time", request.getBest_time().toLocalTime());
+        model.addAttribute("best_date", request.getBest_time_request().toLocalDate());
+        model.addAttribute("best_time", request.getBest_time_request().toLocalTime());
         model.addAttribute("owners", ownerService.findAll());
         model.addAttribute("masters", adminService.findAll().stream()
                 .filter(master -> master.getRole() != UserRole.ADMIN &&
@@ -91,12 +92,14 @@ public class RequestController {
 
     @PostMapping("/create")
     public String createRequest(@ModelAttribute RepairRequest request,
+                                BindingResult bindingResult,
                                 @RequestParam String date,
                                 @RequestParam String time,
                                 @RequestParam(required = false) String best_date,
                                 @RequestParam(required = false) String best_time) {
+        if(bindingResult.hasErrors()) log.info(bindingResult.getAllErrors().toString());
         request.setRequest_date(LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(time)));
-        request.setBest_time(LocalDateTime.of(LocalDate.parse(best_date), LocalTime.parse(best_time)));
+        request.setBest_time_request(LocalDateTime.of(LocalDate.parse(best_date), LocalTime.parse(best_time)));
         repairRequestService.saveRequest(request);
         return "redirect:/admin/requests";
     }
@@ -108,7 +111,7 @@ public class RequestController {
                                 @RequestParam(required = false) String best_time) {
         RepairRequest originalRequest = repairRequestService.findRequestById(id);
         request.setRequest_date(originalRequest.getRequest_date());
-        request.setBest_time(LocalDateTime.of(LocalDate.parse(best_date), LocalTime.parse(best_time)));
+        request.setBest_time_request(LocalDateTime.of(LocalDate.parse(best_date), LocalTime.parse(best_time)));
         repairRequestService.saveRequest(request);
         return "redirect:/admin/requests";
     }

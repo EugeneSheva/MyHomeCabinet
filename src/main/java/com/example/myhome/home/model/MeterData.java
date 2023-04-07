@@ -23,6 +23,12 @@ public class MeterData {
     @JoinColumn(name = "apartment_id")
     private Apartment apartment;
 
+    @ManyToOne
+    @JoinColumn(name = "building_id")
+    private Building building;
+
+    private String section;
+
     private double currentReadings;
 
     @Enumerated(EnumType.STRING)

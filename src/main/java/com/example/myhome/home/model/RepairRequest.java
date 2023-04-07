@@ -18,7 +18,7 @@ public class RepairRequest {
     private Long id;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime best_time;
+    private LocalDateTime best_time_request;
 
     @Enumerated(EnumType.STRING)
     private RepairMasterType master_type;

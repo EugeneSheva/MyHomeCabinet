@@ -26,7 +26,8 @@ public class ServiceService {
     public List<Service> findAllServices() {return serviceRepository.findAll();}
     public List<Unit> findAllUnits() {return unitRepository.findAll();}
 
-    public Service findServiceById(long service_id) {return serviceRepository.findById(service_id).orElseThrow(NotFoundException::new);}
+//    public Service findServiceById(long service_id) {return serviceRepository.findById(service_id).orElseThrow(NotFoundException::new);}
+    public Service findServiceById(long service_id) {return serviceRepository.findById(service_id).orElse(null);}
     public String getServiceNameById(long service_id) {return serviceRepository.findById(service_id).orElseThrow(NotFoundException::new).getName();}
 
     public String getUnitNameById(long unit_id) {return unitRepository.findById(unit_id).orElseThrow(NotFoundException::new).getName();}

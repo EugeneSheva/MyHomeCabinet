@@ -63,4 +63,8 @@ public class ApartmentAccount {
                 .reduce(Double::sum)
                 .orElse(0.0);
     }
+
+    public Long getId() {
+        return id;
+    }
 }

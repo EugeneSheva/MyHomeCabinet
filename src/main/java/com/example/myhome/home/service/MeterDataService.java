@@ -1,10 +1,14 @@
 package com.example.myhome.home.service;
 
+import com.example.myhome.home.model.Apartment;
+import com.example.myhome.home.model.Building;
 import com.example.myhome.home.model.MeterData;
 import com.example.myhome.home.model.MeterPaymentStatus;
 import com.example.myhome.home.repository.MeterDataRepository;
+import com.example.myhome.home.repository.specifications.MeterSpecifications;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -23,12 +27,33 @@ public class MeterDataService {
 
     @Autowired private ApartmentService apartmentService;
     @Autowired private ServiceService serviceService;
+    @Autowired private BuildingService buildingService;
 
     public List<MeterData> findAllMeters() {return meterDataRepository.findAll();}
     public List<MeterData> findAllMetersById(List<Long> ids) {return meterDataRepository.findAllById(ids);}
     public List<MeterData> findSingleMeterData(Long apartment_id, Long service_id) {
         if(service_id != null) return meterDataRepository.findSingleMeterData(apartment_id, service_id);
         else return meterDataRepository.findByApartmentId(apartment_id);
+    }
+
+    public List<MeterData> findAllBySpecification(Long building_id, String section_name, Long apartment_number, Long service_id) {
+        Building building = (building_id != null) ? buildingService.findById(building_id) : null;
+        Apartment apartment = (apartment_number != null) ? apartmentService.findByNumber(apartment_number) : null;
+        com.example.myhome.home.model.Service service = (service_id != null) ? serviceService.findServiceById(service_id) : null;
+
+        log.info("Building: " + building);
+        log.info("Apartment: " + apartment);
+        log.info("Service: " + service);
+        log.info("Section: " + section_name);
+
+        log.info(meterDataRepository.findAll(MeterSpecifications.hasBuilding(building)).toString());
+
+
+
+        return meterDataRepository.findAll(MeterSpecifications.hasBuilding(building)
+                                        .and(MeterSpecifications.hasSection(section_name))
+                                        .and(MeterSpecifications.hasApartment(apartment))
+                                        .and(MeterSpecifications.hasService(service)));
     }
 
     public Long getMaxIdPlusOne() {return meterDataRepository.getMaxId().orElse(0L)+1L;}

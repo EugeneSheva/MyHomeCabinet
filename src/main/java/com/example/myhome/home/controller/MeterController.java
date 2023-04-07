@@ -47,7 +47,12 @@ public class MeterController {
                                  @RequestParam(required = false) Long service) {
 
         List<Long> list = meterDataService.findMeterIds();
-        List<MeterData> meterDataList = meterDataService.filter(meterDataService.findAllMetersById(list), building, section, apartment, service);
+        List<MeterData> meterDataList;
+//        List<MeterData> meterDataList = meterDataService.filter(meterDataService.findAllMetersById(list), building, section, apartment, service);
+        if(building == null && section == null && apartment == null && service == null)
+            meterDataList = meterDataService.findAllMetersById(meterDataService.findMeterIds());
+        else meterDataList = meterDataService.findAllBySpecification(building, section, apartment, service);
+
 
         model.addAttribute("meter_data_rows", meterDataList);
         model.addAttribute("buildings", buildingService.findAllDTO());

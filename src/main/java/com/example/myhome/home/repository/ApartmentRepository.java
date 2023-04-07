@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
 public interface ApartmentRepository extends JpaRepository<Apartment, Long> {
 
     List<Apartment>findApartmentsByBuildingIdAndSection(Long id, String section);
@@ -25,6 +27,8 @@ public interface ApartmentRepository extends JpaRepository<Apartment, Long> {
     List<Apartment>findApartmentsByBuildingIdAndSectionContainingIgnoreCaseAndFloorContainingIgnoreCaseAndBalanceBefore(Long id, String section, String floor, Double balance);
     Long countAllBy();
     Long getNumberById(long flat_id);
+
+    Optional<Apartment> findByNumber(Long number);
 
 }
 
