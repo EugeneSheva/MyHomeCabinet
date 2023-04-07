@@ -1,12 +1,13 @@
 package com.example.myhome.home.service;
 
-import com.example.myhome.home.model.IncomeExpenseType;
-import com.example.myhome.home.model.Invoice;
-import com.example.myhome.home.model.InvoiceComponents;
-import com.example.myhome.home.model.InvoiceStatus;
+import com.example.myhome.home.model.*;
+import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.InvoiceComponentRepository;
 import com.example.myhome.home.repository.InvoiceRepository;
+import com.example.myhome.home.repository.specifications.InvoiceSpecifications;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Log
 public class InvoiceService {
 
     @Autowired
@@ -28,7 +30,30 @@ public class InvoiceService {
     @Autowired
     private ServiceService serviceService;
 
+    @Autowired private ApartmentService apartmentService;
+    @Autowired private OwnerService ownerService;
+
     public List<Invoice> findAllInvoices() {return invoiceRepository.findAll();}
+
+    public List<Invoice> findAllBySpecification(FilterForm filters) {
+        log.info("Filters found!");
+        log.info(filters.toString());
+
+        Long id = filters.getId();
+        InvoiceStatus status = (filters.getStatus() != null) ? InvoiceStatus.valueOf(filters.getStatus()) : null;
+        Apartment apartment = (filters.getApartment() != null) ? apartmentService.findByNumber(filters.getApartment()) : null;
+        Owner owner = (filters.getOwner() != null) ? ownerService.findById(filters.getOwner()) : null;
+        Boolean completed = filters.getCompleted();
+
+        Specification<Invoice> specification =
+                Specification.where(InvoiceSpecifications.hasId(id)
+                        .and(InvoiceSpecifications.hasStatus(status))
+                        .and(InvoiceSpecifications.hasApartment(apartment))
+                        .and(InvoiceSpecifications.hasOwner(owner))
+                        .and(InvoiceSpecifications.isCompleted(completed)));
+
+        return invoiceRepository.findAll(specification);
+    }
 
     public Invoice findInvoiceById(long invoice_id) {return invoiceRepository.findById(invoice_id).orElseThrow();}
 

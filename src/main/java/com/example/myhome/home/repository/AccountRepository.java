@@ -2,12 +2,13 @@ package com.example.myhome.home.repository;
 
 import com.example.myhome.home.model.ApartmentAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-public interface AccountRepository extends JpaRepository<ApartmentAccount, Long> {
+public interface AccountRepository extends JpaRepository<ApartmentAccount, Long>, JpaSpecificationExecutor<ApartmentAccount> {
     Long countAllBy();
 
     Optional<ApartmentAccount> findFirstByOrderByIdDesc();

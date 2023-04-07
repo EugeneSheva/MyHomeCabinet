@@ -46,10 +46,6 @@ public class MeterDataService {
         log.info("Service: " + service);
         log.info("Section: " + section_name);
 
-        log.info(meterDataRepository.findAll(MeterSpecifications.hasBuilding(building)).toString());
-
-
-
         return meterDataRepository.findAll(MeterSpecifications.hasBuilding(building)
                                         .and(MeterSpecifications.hasSection(section_name))
                                         .and(MeterSpecifications.hasApartment(apartment))

@@ -1,6 +1,7 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.ApartmentAccount;
+import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.AccountRepository;
 import com.example.myhome.home.repository.ApartmentRepository;
 import com.example.myhome.home.repository.BuildingRepository;
@@ -15,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -35,14 +37,28 @@ public class AccountController {
 
     // показать все счета
     @GetMapping
-    public String showAccountsPage(Model model) {
-        model.addAttribute("accounts", accountService.findAll());
+    public String showAccountsPage(Model model,
+                                   FilterForm filterForm) throws IllegalAccessException {
+
+        List<ApartmentAccount> accountList;
+
+        if(!filterForm.filtersPresent()) accountList = accountService.findAll();
+        else accountList = accountService.findAllBySpecification(filterForm);
+
+        model.addAttribute("accounts", accountList);
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
         model.addAttribute("account_balance", accountService.getSumOfAccountBalances());
         model.addAttribute("account_debt", accountService.getSumOfAccountDebts());
 
         model.addAttribute("owners", ownerService.findAllDTO());
         model.addAttribute("buildings", buildingService.findAllDTO());
+
+        if(filterForm.getBuilding() != null)
+            model.addAttribute("sections", buildingService.findById(filterForm.getBuilding()).getSections());
+
+        model.addAttribute("filter_form", filterForm);
+
+
         return "admin_panel/accounts/accounts";
     }
 

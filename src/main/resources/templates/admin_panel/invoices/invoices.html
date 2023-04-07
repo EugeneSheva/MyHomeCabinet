@@ -108,13 +108,14 @@
               <div class="box-header with-border" style="padding-block:15px;">
                 <h3 class="box-title"></h3>
                 <div class="box-tools">
-                  <a href="" class="btn btn-default btn-sm">
+                  <a th:href="@{/admin/invoices}" class="btn btn-default btn-sm">
                     <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                   </a>
                 </div>
               </div>
               <div class="box-body table-responsive">
-                <table class="table table-bordered table-hover table-striped linkedRow">
+                  <form action="" method="get" th:object="${filter_form}">
+                    <table class="table table-bordered table-hover table-striped linkedRow">
                   <thead>
                       <tr>
                         <th><input type="checkbox" name="" id="check_all"></th>
@@ -131,10 +132,10 @@
                       <tr>
                           <td></td>
                           <td style="padding:10px">
-                              <input type="text" id="invoice_select" style="width: 100%; padding-block: 9px; border: 0.5px solid silver;">
+                              <input type="text" th:field="*{id}" class="my_filters" style="width: 100%; padding-block: 9px; border: 0.5px solid silver;">
                           </td>
                           <td style="padding:10px">
-                              <select name="" id="" style="width: 100%; padding-block: 10px">
+                              <select th:field="*{status}" class="my_filters" style="width: 100%; padding-block: 10px">
                                   <option value=""></option>
                                   <option th:each="status : ${T(com.example.myhome.home.model.InvoiceStatus).values()}"
                                           th:value="${status}"
@@ -158,10 +159,10 @@
                               </div>
                           </td>
                           <td style="padding:10px">
-                              <input type="text" id="apartment_select" style="width: 100%; padding-block: 9px; border: 0.5px solid silver;">
+                              <input type="text" th:field="*{apartment}" class="my_filters" style="width: 100%; padding-block: 9px; border: 0.5px solid silver;">
                           </td>
                           <td style="padding:10px">
-                              <select name="" id="owner_select" style="width: 100%; padding-block: 10px">
+                              <select th:field="*{owner}" class="my_filters" style="width: 100%; padding-block: 10px">
                                   <option value=""></option>
                                   <option th:each="owner : ${owners}"
                                           th:value="${owner.id}"
@@ -169,10 +170,10 @@
                               </select>
                           </td>
                           <td style="padding:10px">
-                              <select name="" id="" style="width: 100%; padding-block: 10px">
+                              <select th:field="*{completed}" class="my_filters" style="width: 100%; padding-block: 10px">
                                   <option value=""></option>
-                                  <option value="1">Проведена</option>
-                                  <option value="0">Не проведена</option>
+                                  <option value="true">Проведена</option>
+                                  <option value="false">Не проведена</option>
                               </select>
                           </td>
                           <td></td>
@@ -206,8 +207,12 @@
                             </div>
                         </td>
                     </tr>
+                  <tr th:if="${invoices.size() == 0}">
+                      <td colspan="10">Ничего не найдено...</td>
+                  </tr>
                   </tbody>
                 </table>
+                  </form>
               </div>
               <div class="box-footer clearfix"></div>
             </div>
@@ -290,6 +295,54 @@
             locale: 'ru-RU',
             format: 'dd/MM/yyyy'
         }
+    });
+
+    // ФИЛЬТРЫ
+    $(document).ready(function(){
+
+        $(".my_filters").change(function(){
+            let building_id = $("#building").val();
+            let service_id = $("#service").val();
+            let apartment_number = $("#apartment").val();
+            let section_name = $("#section").val();
+
+            let id = $("#id").val();
+            let datetime = $("#datetime").val();
+            let description = $("#description").val();
+            let master_type = $("#master_type").val();
+            let master_id = $("#master").val();
+            let owner_id = $("#owner").val();
+            let phone = $("#phone").val();
+            let status = $("#status").val();
+
+            let active = $("#active").val();
+            let debt = $("#debt").val();
+            let completed = $("#completed").val();
+
+            const link_elements = [];
+
+            if(building_id != null && building_id != 0) link_elements.push('building='+building_id);
+            if(service_id != null && service_id != 0) link_elements.push('service='+service_id);
+            if(apartment_number != null && apartment_number != 0) link_elements.push('apartment='+apartment_number);
+            if(section_name != null && section_name != '') link_elements.push('section='+section_name);
+
+            if(id != null && id != 0) link_elements.push('id='+id);
+            if(datetime != null && datetime != '') link_elements.push('datetime='+datetime);
+            if(description != null && description != '') link_elements.push('description='+description);
+            if(master_type != null && master_type != '') link_elements.push('master_type='+master_type);
+            if(master_id != null && master_id != 0) link_elements.push('master='+master_id);
+            if(owner_id != null && owner_id != 0) link_elements.push('owner='+owner_id);
+            if(phone != null && phone != '') link_elements.push('phone='+phone);
+            if(status != null && status != '') link_elements.push('status='+status);
+
+            if(active != null && active != '') link_elements.push('active='+active);
+            if(debt != null && debt != '') link_elements.push('debt='+debt);
+            if(completed != null && completed != '') link_elements.push('completed='+completed);
+
+            let final_link = (link_elements.length > 0) ? ('?' + link_elements.join('&')) : '';
+
+            window.location.href = '/admin/invoices'+final_link;
+        });
     });
 </script>
 

@@ -3,6 +3,7 @@ package com.example.myhome.home.controller;
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Invoice;
 import com.example.myhome.home.model.InvoiceComponents;
+import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.*;
 import lombok.extern.java.Log;
@@ -45,12 +46,24 @@ public class InvoiceController {
     @Autowired
     private MeterDataService meterDataService;
 
+    @Autowired private OwnerService ownerService;
+
     @GetMapping
-    public String showInvoicePage(Model model) {
-        model.addAttribute("invoices", invoiceService.findAllInvoices());
+    public String showInvoicePage(Model model,
+                                  FilterForm form) throws IllegalAccessException {
+
+        List<Invoice> invoices;
+
+        if(!form.filtersPresent()) invoices = invoiceService.findAllInvoices();
+        else invoices = invoiceService.findAllBySpecification(form);
+
+        model.addAttribute("invoices", invoices);
+        model.addAttribute("owners", ownerService.findAllDTO());
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
         model.addAttribute("account_balance", apartmentAccountService.getSumOfAccountBalances());
         model.addAttribute("account_debt", apartmentAccountService.getSumOfAccountDebts());
+
+        model.addAttribute("filter_form", form);
         return "admin_panel/invoices/invoices";
     }
 

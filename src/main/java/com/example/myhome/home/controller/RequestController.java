@@ -1,6 +1,7 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.RepairRequest;
+import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.AdminRepository;
 import com.example.myhome.home.repository.OwnerRepository;
 import com.example.myhome.home.repository.RepairRequestRepository;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
@@ -36,10 +39,21 @@ public class RequestController {
     private AdminService adminService;
 
     @GetMapping
-    public String showRequestsPage(Model model) {
-        model.addAttribute("requests", repairRequestService.findAllRequests());
+    public String showRequestsPage(Model model,
+                                   FilterForm filterForm) throws IllegalAccessException {
+
+        List<RepairRequest> requestList;
+
+        if(!filterForm.filtersPresent()) requestList = repairRequestService.findAllRequests();
+        else requestList = repairRequestService.findAllBySpecification(filterForm);
+
+        model.addAttribute("requests", requestList);
         model.addAttribute("owners", ownerService.findAllDTO());
         model.addAttribute("masters", adminService.findAllDTO());
+
+        log.info(filterForm.toString());
+
+        model.addAttribute("filter_form", filterForm);
         return "admin_panel/requests/requests";
     }
 

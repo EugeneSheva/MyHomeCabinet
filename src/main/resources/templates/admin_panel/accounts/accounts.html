@@ -102,13 +102,14 @@
               <div class="box-header with-border" style="padding-block:15px;">
                 <h3 class="box-title"></h3>
                 <div class="box-tools">
-                  <a href="" class="btn btn-default btn-sm">
+                  <a th:href="@{/admin/accounts}" class="btn btn-default btn-sm">
                     <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                   </a>
                 </div>
               </div>
               <div class="box-body table-responsive">
-                <table id="table_to_excel" class="table table-bordered table-hover table-striped linkedRow">
+                  <form action="" method="get" th:object="${filter_form}">
+                    <table id="table_to_excel" class="table table-bordered table-hover table-striped linkedRow">
                   <thead>
                       <tr>
                         <th>№</th>
@@ -122,20 +123,20 @@
                       </tr>
                       <tr>
                           <td style="padding: 10px">
-                              <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" type="text">
+                              <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" th:field="*{id}" class="my_filters" type="text">
                           </td>
                           <td style="padding: 10px">
-                              <select style="width: 100%; padding-block: 10px">
+                              <select style="width: 100%; padding-block: 10px" th:field="*{active}" class="my_filters">
                                   <option value=""></option>
-                                  <option value="1">Активен</option>
-                                  <option value="0">Не активен</option>
+                                  <option value="true">Активен</option>
+                                  <option value="false">Не активен</option>
                               </select>
                           </td>
                           <td style="padding: 10px">
-                              <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" type="text">
+                              <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" th:field="*{apartment}" class="my_filters" type="text">
                           </td>
                           <td style="padding: 10px">
-                              <select style="width: 100%; padding-block: 10px" name="building_filter" id="building_filter">
+                              <select style="width: 100%; padding-block: 10px" th:field="*{building}" class="my_filters">
                                   <option value=""></option>
                                   <option th:each="building : ${buildings}"
                                           th:value="${building.id}"
@@ -143,12 +144,19 @@
                               </select>
                           </td>
                           <td style="padding: 10px">
-                              <select disabled style="width: 100%; padding-block: 10px" >
+                              <select disabled th:if="*{building == 0}" th:field="*{section}" style="width: 100%; padding-block: 10px" >
                                   <option value="0" >Выберите дом...</option>
+                              </select>
+
+                              <select th:if="*{building != 0}" class="my_filters" th:field="*{section}" style="width: 100%; padding-block: 10px">
+                                  <option value="" >Выберите дом...</option>
+                                  <option th:each="section : ${sections}"
+                                          th:value="${section}"
+                                          th:text="${section}"></option>
                               </select>
                           </td>
                           <td style="padding: 10px">
-                              <select style="width: 100%; padding-block: 10px">
+                              <select style="width: 100%; padding-block: 10px" th:field="*{owner}" class="my_filters">
                                   <option value=""></option>
                                   <option th:each="owner : ${owners}"
                                           th:value="${owner.id}"
@@ -156,10 +164,10 @@
                               </select>
                           </td>
                           <td style="padding: 10px">
-                              <select style="width: 100%; padding-block: 10px" name="" id="">
+                              <select style="width: 100%; padding-block: 10px" th:field="*{debt}" class="my_filters">
                                   <option value=""></option>
-                                  <option value="1">Есть долг</option>
-                                  <option value="0">Нет долга</option>
+                                  <option value="true">Есть долг</option>
+                                  <option value="false">Нет долга</option>
                               </select>
                           </td>
                           <td></td>
@@ -187,8 +195,12 @@
                         </td>
                         <input type="hidden" th:value="${account.id}">
                     </tr>
+                  <tr th:if="${accounts.size() == 0}">
+                      <td colspan="8">Ничего не найдено...</td>
+                  </tr>
                   </tbody>
                 </table>
+                  </form>
               </div>
               <div class="box-footer clearfix"></div>
             </div>
@@ -242,6 +254,52 @@
         let excel_file = XLSX.utils.table_to_book(table);
         XLSX.writeFile(excel_file, "Лицевые счета " + `${day}-${month}-${year}` + ".xlsx");
     }
+
+    // ФИЛЬТРЫ
+    $(document).ready(function(){
+
+        $(".my_filters").change(function(){
+            let building_id = $("#building").val();
+            let service_id = $("#service").val();
+            let apartment_number = $("#apartment").val();
+            let section_name = $("#section").val();
+
+            let id = $("#id").val();
+            let datetime = $("#datetime").val();
+            let description = $("#description").val();
+            let master_type = $("#master_type").val();
+            let master_id = $("#master").val();
+            let owner_id = $("#owner").val();
+            let phone = $("#phone").val();
+            let status = $("#status").val();
+
+            let active = $("#active").val();
+            let debt = $("#debt").val();
+
+            const link_elements = [];
+
+            if(building_id != null && building_id != 0) link_elements.push('building='+building_id);
+            if(service_id != null && service_id != 0) link_elements.push('service='+service_id);
+            if(apartment_number != null && apartment_number != 0) link_elements.push('apartment='+apartment_number);
+            if(section_name != null && section_name != '') link_elements.push('section='+section_name);
+
+            if(id != null && id != 0) link_elements.push('id='+id);
+            if(datetime != null && datetime != '') link_elements.push('datetime='+datetime);
+            if(description != null && description != '') link_elements.push('description='+description);
+            if(master_type != null && master_type != '') link_elements.push('master_type='+master_type);
+            if(master_id != null && master_id != 0) link_elements.push('master_id='+master_id);
+            if(owner_id != null && owner_id != 0) link_elements.push('owner_id='+owner_id);
+            if(phone != null && phone != '') link_elements.push('phone='+phone);
+            if(status != null && status != '') link_elements.push('status='+status);
+
+            if(active != null && active != '') link_elements.push('active='+active);
+            if(debt != null && debt != '') link_elements.push('debt='+debt);
+
+            let final_link = (link_elements.length > 0) ? ('?' + link_elements.join('&')) : '';
+
+            window.location.href = '/admin/accounts'+final_link;
+        });
+    });
 </script>
 
 

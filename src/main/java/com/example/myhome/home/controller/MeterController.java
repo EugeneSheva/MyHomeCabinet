@@ -49,10 +49,10 @@ public class MeterController {
         List<Long> list = meterDataService.findMeterIds();
         List<MeterData> meterDataList;
 //        List<MeterData> meterDataList = meterDataService.filter(meterDataService.findAllMetersById(list), building, section, apartment, service);
+
         if(building == null && section == null && apartment == null && service == null)
             meterDataList = meterDataService.findAllMetersById(meterDataService.findMeterIds());
         else meterDataList = meterDataService.findAllBySpecification(building, section, apartment, service);
-
 
         model.addAttribute("meter_data_rows", meterDataList);
         model.addAttribute("buildings", buildingService.findAllDTO());
@@ -61,10 +61,10 @@ public class MeterController {
         model.addAttribute("now", LocalDate.now());
 
         FilterForm form = new FilterForm();
-        form.setBuilding_filter(building);
-        form.setService_filter(service);
-        form.setApartment_filter(apartment);
-        form.setSection_filter(section);
+        form.setBuilding(building);
+        form.setService(service);
+        form.setApartment(apartment);
+        form.setSection(section);
         model.addAttribute("filter_form",form);
         return "admin_panel/meters/meters";
     }
