@@ -4,11 +4,15 @@ import com.example.myhome.home.repository.AccountRepository;
 import com.example.myhome.home.repository.CashBoxRepository;
 import com.example.myhome.home.repository.IncomeExpenseRepository;
 import com.example.myhome.home.service.*;
+import com.example.myhome.home.validator.CashBoxtValidator;
 import com.example.myhome.util.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +31,8 @@ public class CashBoxController {
     private final IncomeExpenseRepository incomeExpenseRepository;
     private final AccountRepository accountRepository;
     private final CashBoxRepository cashBoxRepository;
+
+    private final CashBoxtValidator cashBoxtValidator;
 
     @GetMapping("/")
     public String getCashBox(Model model) {
@@ -48,7 +54,7 @@ public class CashBoxController {
     @GetMapping("/newIncome")
     public String createCashBoxIn(Model model) {
         List<IncomeExpenseItems>incomeItemsList=incomeExpenseRepository.findAllByIncomeExpenseType(IncomeExpenseType.INCOME);
-        model.addAttribute("incomeItemsList", incomeItemsList);        ;
+        model.addAttribute("incomeItemsList", incomeItemsList);
 
         List<AdminDTO>adminDTOList = adminService.findAllDTO();
 
@@ -80,12 +86,6 @@ public class CashBoxController {
         List<AdminDTO>adminDTOList = adminService.findAllDTO();
         model.addAttribute("admins", adminDTOList);
 
-        List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
-        model.addAttribute("owners", ownerDTOList);
-
-        List<ApartmentAccountDTO> apartmentAccountDTOS = apartmentAccountService.findDtoApartmentAccounts();
-        model.addAttribute("accounts", apartmentAccountDTOS);
-
         CashBox cashBox = new CashBox();
         cashBox.setIncomeExpenseType(IncomeExpenseType.EXPENSE);
         model.addAttribute("cashBoxItem", cashBox);
@@ -98,21 +98,51 @@ public class CashBoxController {
         return "admin_panel/cash_box/cashbox_edit";
     }
 
+    @GetMapping("copy/{id}")
+    public String copyCashBox(@PathVariable("id") Long id, Model model) {
+        CashBox cashBox = cashBoxService.findById(id);
+        cashBox.setId(null);
+        model.addAttribute("cashBoxItem", cashBox);
+        return "admin_panel/cash_box/cashbox_edit";
+    }
+
     @PostMapping("/save")
-    public String saveCashBox(@ModelAttribute("cashbox") CashBox cashbox, @RequestParam(name = "owner", defaultValue = "0") Long ownerId,
+    public String saveCashBox(@Valid @ModelAttribute("cashBoxItem") CashBox cashbox, BindingResult bindingResult, @RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam(name = "owner", defaultValue = "0") Long ownerId,
                               @RequestParam(name = "admin", defaultValue = "0") Long adminId, @RequestParam(name = "account", defaultValue = "0") Long accountId,
-                              @RequestParam(name = "amount", defaultValue = "0D") Double amount, @RequestParam(name = "incomeExpenseItem", defaultValue = "0") Long incomeExpenseItemId) throws IOException {
-        System.out.println("incomeExpenseItem "+ incomeExpenseItemId);
-        if(cashbox.getIncomeExpenseType()==IncomeExpenseType.EXPENSE) {
-            if(amount>0) cashbox.setAmount(amount*(-1));
+                              @RequestParam(name = "amount", defaultValue = "0D") Double amount, @RequestParam(name = "incomeExpenseItem", defaultValue = "0") Long incomeExpenseItemId, Model model) throws IOException {
+        cashBoxtValidator.validate(cashbox, bindingResult);
+        if (bindingResult.hasErrors()) {
+            if(cashbox.getIncomeExpenseType().equals(IncomeExpenseType.INCOME)){
+                List<IncomeExpenseItems>incomeItemsList=incomeExpenseRepository.findAllByIncomeExpenseType(IncomeExpenseType.INCOME);
+                model.addAttribute("incomeItemsList", incomeItemsList);
+
+                List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
+                model.addAttribute("owners", ownerDTOList);
+
+                List<ApartmentAccountDTO> apartmentAccountDTOS = apartmentAccountService.findDtoApartmentAccounts();
+                model.addAttribute("accounts", apartmentAccountDTOS);
+            } else if (cashbox.getIncomeExpenseType().equals(IncomeExpenseType.EXPENSE)){
+                List<IncomeExpenseItems>expenseItemsList=incomeExpenseRepository.findAllByIncomeExpenseType(IncomeExpenseType.EXPENSE);
+                model.addAttribute("expenseItemsList", expenseItemsList);
+            }
+            List<AdminDTO>adminDTOList = adminService.findAllDTO();
+            model.addAttribute("admins", adminDTOList);
+
+            return "admin_panel/cash_box/cashbox_edit";
         } else {
-            cashbox.setOwner(ownerService.findById(ownerId));
-            cashbox.setApartmentAccount(apartmentAccountService.findById(accountId));
+            if (cashbox.getIncomeExpenseType() == IncomeExpenseType.EXPENSE) {
+                if (amount > 0) cashbox.setAmount(amount * (-1));
+            } else {
+                if (id>0) cashbox.setId(id);
+                cashbox.setOwner(ownerService.findById(ownerId));
+                cashbox.setApartmentAccount(apartmentAccountService.findById(accountId));
+            }
+            if (id>0) cashbox.setId(id);
+            cashbox.setIncomeExpenseItems(incomeExpenseItemService.findById(incomeExpenseItemId));
+            cashbox.setManager(adminService.findAdminById(adminId));
+            cashBoxService.save(cashbox);
+            return "redirect:/admin/cashbox/";
         }
-        cashbox.setIncomeExpenseItems(incomeExpenseItemService.findById(incomeExpenseItemId));
-        cashbox.setManager(adminService.findAdminById(adminId));
-        cashBoxService.save(cashbox);
-        return "redirect:/admin/cashbox/";
     }
 //
     @GetMapping("/delete/{id}")

@@ -22,22 +22,18 @@ public class Owner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "Заполните поле.")
-    @Size(min = 2, message = "Минимум 2 символа.")
+
     private String first_name;
-    @NotEmpty(message = "Заполните поле.")
-    @Size(min = 2, message = "Минимум 2 символа.")
+
     private String last_name;
 
     private String fathers_name;
-    @Size(min = 10, max = 10, message = "Поле должно содержать 10 цифр. Пример: 0630636363.")
+
     private String phone_number;
-    @Email
-    @NotEmpty
+
     private String email;
     private String password;
-    @Past (message = "Поле должно содержать прошедшую дату.")
-    @NotNull
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthdate;
 

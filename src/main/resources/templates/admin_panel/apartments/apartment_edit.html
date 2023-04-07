@@ -73,10 +73,12 @@
                                 <label for="number">Номер квартиры</label>
                                 <input type="number" id="number" class="form-control"  name="number"
                                        th:field="*{number}" placeholder="">
+                                <div style="color: #d80450" th:if="${#fields.hasErrors('number')}" th:errors="*{number}"></div>
 
                                 <label for="square">Площадь (кв.м.)</label>
                                 <input type="number" id="square" class="form-control"  name="square"
                                        th:field="*{square}" placeholder="">
+                                <div style="color: #d80450" th:if="${#fields.hasErrors('square')}" th:errors="*{square}"></div>
 
                                 <label for="building"  class="form-label" >Дом</label>
                                 <select class="form-select" id="building" name="building" th:onchange="selectBuilding()">
@@ -85,17 +87,20 @@
                                     th:text="${buildings[__${item.index}__].name}"
                                     th:value="${buildings[__${item.index}__].id}" th:id="${item.count}"></option>
                                 </select>
+                                <div style="color: #d80450" th:if="${#fields.hasErrors('building')}" th:errors="*{building}"></div>
 
                                 <label for="section"   class="form-label" >Секция</label>
                                 <select class="form-select"  id="section" name="section">
                                     <option selected="" disabled="" value="">Choose...</option>
-
                                 </select>
+                                <div style="color: #d80450" th:if="${#fields.hasErrors('section')}" th:errors="*{section}"></div>
 
                                 <label for="floor"  class="form-label" >Этаж</label>
                                 <select class="form-select"   id="floor" name="floor">
                                     <option selected="" disabled="" value="">Choose...</option>
                                 </select>
+                                <div style="color: #d80450" th:if="${#fields.hasErrors('floor')}" th:errors="*{floor}"></div>
+
 
                                 <div class="form-group">
                                     <label>Владелец</label>
@@ -105,31 +110,8 @@
                                                  th:text="${owners[__${item.index}__].first_name}+ ' '+${owners[__${item.index}__].last_name}+' '+${owners[__${item.index}__].fathers_name}"
                                                  th:value="${owners[__${item.index}__].id}" th:id="${item.count}"></option>
                                     </select>
+                                    <div style="color: #d80450" th:if="${#fields.hasErrors('owner')}" th:errors="*{owner}"></div>
                                 </div>
-
-<!--                                <div class="form-group">-->
-<!--                                    <label for="owner" class="form-label" >Владелец</label>-->
-<!--                                    <select class="form-control select2 select2-hidden-accessible"  id="owner" name="owner" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">-->
-<!--                                        <option selected="" disabled="" value="">Choose...</option>-->
-<!--                                        <option  th:each="owner, item : ${owners}"-->
-<!--                                                 th:text="${owners[__${item.index}__].first_name}+ ' '+${owners[__${item.index}__].last_name}+' '+${owners[__${item.index}__].fathers_name}"-->
-<!--                                                 th:value="${owners[__${item.index}__].id}" th:id="${item.count}"></option>-->
-<!--                                    </select><span class="select2 select2-container select2-container&#45;&#45;default select2-container&#45;&#45;focus" dir="ltr" data-select2-id="2" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-ewqa-container"><span class="select2-selection__rendered" id="select2-ewqa-container" role="textbox" aria-readonly="true" title="Alabama">Alabama</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>-->
-<!--                                </div>-->
-
-
-<!--                                <div class="form-group">-->
-<!--                                    <label>Minimal</label>-->
-<!--                                    <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">-->
-<!--                                        <option selected="selected" data-select2-id="3">Alabama</option>-->
-<!--                                        <option  th:each="owner, item : ${owners}"-->
-<!--                                                 th:text="${owners[__${item.index}__].first_name}+ ' '+${owners[__${item.index}__].last_name}+' '+${owners[__${item.index}__].fathers_name}"-->
-<!--                                                 th:value="${owners[__${item.index}__].id}" th:id="${item.count}"></option>-->
-
-<!--                                    </select><span class="select2 select2-container select2-container&#45;&#45;default select2-container&#45;&#45;below" dir="ltr" data-select2-id="2" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-ewqa-container"><span class="select2-selection__rendered" id="select2-ewqa-container" role="textbox" aria-readonly="true" title="Alabama">Alabama</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>-->
-<!--                                </div>-->
-
-
                                 <label for="tariff" class="form-label" >Тариф</label>
                                 <select class="form-select" id="tariff" name="tariff">
                                     <option selected="" disabled="" value="">Choose...</option>
