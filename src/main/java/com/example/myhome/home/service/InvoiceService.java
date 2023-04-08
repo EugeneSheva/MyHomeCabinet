@@ -4,6 +4,7 @@ import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.InvoiceComponentRepository;
 import com.example.myhome.home.repository.InvoiceRepository;
+import com.example.myhome.home.repository.InvoiceTemplateRepository;
 import com.example.myhome.home.repository.specifications.InvoiceSpecifications;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Log
@@ -26,6 +28,8 @@ public class InvoiceService {
 
     @Autowired
     private InvoiceComponentRepository invoiceComponentRepository;
+
+    @Autowired private InvoiceTemplateRepository invoiceTemplateRepository;
 
     @Autowired
     private ServiceService serviceService;
@@ -55,11 +59,33 @@ public class InvoiceService {
         return invoiceRepository.findAll(specification);
     }
 
+    public List<InvoiceTemplate> findAllTemplates() {return invoiceTemplateRepository.findAll();}
+
+    public Optional<InvoiceTemplate> findDefaultTemplate() {return invoiceTemplateRepository.getDefaultTemplate();}
+
     public Invoice findInvoiceById(long invoice_id) {return invoiceRepository.findById(invoice_id).orElseThrow();}
+
+    public InvoiceTemplate findTemplateById(long template_id) {
+        return invoiceTemplateRepository.findById(template_id).orElseThrow();
+    }
+
+    public void setDefaultTemplate(InvoiceTemplate template) {
+        Optional<InvoiceTemplate> defaultTemplate = invoiceTemplateRepository.getDefaultTemplate();
+        if(defaultTemplate.isPresent()) {
+            defaultTemplate.get().setDefault(false);
+            invoiceTemplateRepository.save(defaultTemplate.get());
+        }
+        template.setDefault(true);
+        invoiceTemplateRepository.save(template);
+    }
 
     public Long getMaxInvoiceId() {return invoiceRepository.getMaxId().orElse(0L);}
 
     public Invoice saveInvoice(Invoice invoice) {return invoiceRepository.save(invoice);}
+
+    public InvoiceTemplate saveTemplate(InvoiceTemplate template) {
+        return invoiceTemplateRepository.save(template);
+    }
 
     public List<Invoice> saveAllInvoices(List<Invoice> list) {return invoiceRepository.saveAll(list);}
     public List<InvoiceComponents> saveAllInvoicesComponents(List<InvoiceComponents> list) {return invoiceComponentRepository.saveAll(list);}
@@ -69,6 +95,10 @@ public class InvoiceService {
         invoiceComponentRepository.deleteAll(invoice.getComponents());
 //        invoice.removeAllChildren();
         invoiceRepository.delete(invoice);
+    }
+
+    public void deleteTemplateById(long template_id) {
+        invoiceTemplateRepository.deleteById(template_id);
     }
 
     public List<Double> getListSumInvoicesByMonth() {

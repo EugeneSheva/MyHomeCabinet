@@ -75,7 +75,7 @@
                                               class="form-control" name="service_unit_names">
 <!--                                        <option value="undefined">Выберите...</option>-->
                                         <option value="0">Выберите...</option>
-                                        <option th:each="unit : ${units}"
+                                        <option th:each="unit : *{unitList}"
                                                 th:if="${unit.id != 0}"
                                                 th:value="${unit.id}"
                                                 th:text="${unit.name}"></option>
@@ -92,6 +92,9 @@
                                     </div>
                                   </div>
                                 </div>
+                                  <div style="padding-left: 7.5px; margin-bottom: 10px; color: red"
+                                       th:if="${#fields.hasErrors('*{serviceList[__${iter.index}__].name}')}"
+                                       th:errors="*{serviceList[__${iter.index}__].name}"></div>
                                 <div class="col-xs-12 col-sm-12">
                                   <input type="checkbox"
                                                 th:field="*{serviceList[__${iter.index}__].show_in_meters}"

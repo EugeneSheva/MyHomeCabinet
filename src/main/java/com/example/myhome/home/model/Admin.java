@@ -28,14 +28,14 @@ public class Admin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Поле не должно быть пустым!")
     private String first_name, last_name;
-    @NotBlank
+    @NotBlank(message = "Укажите номер телефона!")
     private String phone_number;
-    @NotBlank
-    @Email
+    @NotBlank(message = "Укажите почту!")
+    @Email(message = "Неправильный формат электронной почты")
     private String email;
-    @NotBlank
+    @NotBlank(message = "Необходимо написать пароль!")
     private String password;
     private boolean active = true;
 

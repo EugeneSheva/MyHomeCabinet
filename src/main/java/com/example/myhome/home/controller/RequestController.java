@@ -8,8 +8,10 @@ import com.example.myhome.home.repository.RepairRequestRepository;
 import com.example.myhome.home.service.AdminService;
 import com.example.myhome.home.service.OwnerService;
 import com.example.myhome.home.service.RepairRequestService;
+import com.example.myhome.home.validator.RequestValidator;
 import com.example.myhome.util.UserRole;
 import lombok.extern.java.Log;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,6 +40,8 @@ public class RequestController {
     @Autowired
     private AdminService adminService;
 
+    @Autowired private RequestValidator validator;
+
     @GetMapping
     public String showRequestsPage(Model model,
                                    FilterForm filterForm) throws IllegalAccessException {
@@ -60,38 +64,22 @@ public class RequestController {
     @GetMapping("/create")
     public String showCreateRequestPage(Model model) {
 
-        model.addAttribute("request", new RepairRequest());
-        model.addAttribute("date", LocalDate.now());
-        model.addAttribute("time", LocalTime.now());
-        model.addAttribute("owners", ownerService.findAll());
-        model.addAttribute("masters", adminService.findAll().stream()
-                .filter(master -> master.getRole() != UserRole.ADMIN &&
-                        master.getRole() != UserRole.MANAGER &&
-                        master.getRole() != UserRole.DIRECTOR)
-                .sorted(Comparator.comparing(o -> o.getRole().getName()))
-                .collect(Collectors.toList())
-        );
+        model.addAttribute("repairRequest", new RepairRequest());
+
         return "admin_panel/requests/request_card";
     }
 
     @GetMapping("/update/{id}")
     public String showUpdateRequestPage(@PathVariable long id, Model model) {
-        RepairRequest request = repairRequestService.findRequestById(id);
-        if(request.getBest_time_request() == null) request.setBest_time_request(LocalDateTime.now());
-        log.info(request.toString());
-        model.addAttribute("request", request);
-        model.addAttribute("date", request.getRequest_date().toLocalDate());
-        model.addAttribute("time", request.getRequest_date().toLocalTime());
-        model.addAttribute("best_date", request.getBest_time_request().toLocalDate());
-        model.addAttribute("best_time", request.getBest_time_request().toLocalTime());
-        model.addAttribute("owners", ownerService.findAll());
-        model.addAttribute("masters", adminService.findAll().stream()
-                .filter(master -> master.getRole() != UserRole.ADMIN &&
-                        master.getRole() != UserRole.MANAGER &&
-                        master.getRole() != UserRole.DIRECTOR)
-                .sorted(Comparator.comparing(o -> o.getRole().getName()))
-                .collect(Collectors.toList())
-        );
+        RepairRequest repairRequest = repairRequestService.findRequestById(id);
+        if(repairRequest.getBest_time_request() == null) repairRequest.setBest_time_request(LocalDateTime.now());
+        log.info(repairRequest.toString());
+        model.addAttribute("request", repairRequest);
+        model.addAttribute("date", repairRequest.getRequest_date().toLocalDate());
+        model.addAttribute("time", repairRequest.getRequest_date().toLocalTime());
+        model.addAttribute("best_date", repairRequest.getBest_time_request().toLocalDate());
+        model.addAttribute("best_time", repairRequest.getBest_time_request().toLocalTime());
+
         return "admin_panel/requests/request_card";
     }
 
@@ -105,28 +93,38 @@ public class RequestController {
     }
 
     @PostMapping("/create")
-    public String createRequest(@ModelAttribute RepairRequest request,
+    public String createRequest(@ModelAttribute RepairRequest repairRequest,
                                 BindingResult bindingResult,
                                 @RequestParam String date,
                                 @RequestParam String time,
                                 @RequestParam(required = false) String best_date,
                                 @RequestParam(required = false) String best_time) {
-        if(bindingResult.hasErrors()) log.info(bindingResult.getAllErrors().toString());
-        request.setRequest_date(LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(time)));
-        request.setBest_time_request(LocalDateTime.of(LocalDate.parse(best_date), LocalTime.parse(best_time)));
-        repairRequestService.saveRequest(request);
+
+        validator.validate(repairRequest, bindingResult);
+        log.info(bindingResult.getAllErrors().toString());
+        if(bindingResult.hasErrors()) return "admin_panel/requests/request_card";
+
+        repairRequest.setRequest_date(LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(time)));
+        repairRequest.setBest_time_request(LocalDateTime.of(LocalDate.parse(best_date), LocalTime.parse(best_time)));
+        repairRequestService.saveRequest(repairRequest);
         return "redirect:/admin/requests";
     }
 
     @PostMapping("/update/{id}")
     public String updateRequest(@PathVariable long id,
-                                @ModelAttribute RepairRequest request,
+                                @ModelAttribute RepairRequest repairRequest,
+                                BindingResult bindingResult,
                                 @RequestParam(required = false) String best_date,
                                 @RequestParam(required = false) String best_time) {
+
+        validator.validate(repairRequest, bindingResult);
+        log.info(bindingResult.getAllErrors().toString());
+        if(bindingResult.hasErrors()) return "admin_panel/requests/request_card";
+
         RepairRequest originalRequest = repairRequestService.findRequestById(id);
-        request.setRequest_date(originalRequest.getRequest_date());
-        request.setBest_time_request(LocalDateTime.of(LocalDate.parse(best_date), LocalTime.parse(best_time)));
-        repairRequestService.saveRequest(request);
+        repairRequest.setRequest_date(originalRequest.getRequest_date());
+        repairRequest.setBest_time_request(LocalDateTime.of(LocalDate.parse(best_date), LocalTime.parse(best_time)));
+        repairRequestService.saveRequest(repairRequest);
         return "redirect:/admin/requests";
     }
 
@@ -134,6 +132,19 @@ public class RequestController {
     public String deleteRequest(@PathVariable long id) {
         repairRequestService.deleteRequestById(id);
         return "redirect:/admin/requests";
+    }
+
+    @ModelAttribute
+    public void addAttributes(Model model) {
+        model.addAttribute("date", LocalDate.now());
+        model.addAttribute("time", LocalTime.now());
+        model.addAttribute("owners", ownerService.findAll());
+        model.addAttribute("masters", adminService.findAll().stream()
+                .filter(master -> master.getRole() != UserRole.ADMIN &&
+                        master.getRole() != UserRole.MANAGER &&
+                        master.getRole() != UserRole.DIRECTOR)
+                .sorted(Comparator.comparing(o -> o.getRole().getName()))
+                .collect(Collectors.toList()));
     }
 
 

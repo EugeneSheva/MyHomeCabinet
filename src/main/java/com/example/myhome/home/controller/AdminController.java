@@ -7,8 +7,10 @@ import com.example.myhome.util.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,16 +46,22 @@ public class AdminController {
     }
 
     @PostMapping("/create")
-    public String createAdmin(@ModelAttribute Admin admin) {
-        adminService.saveAdmin(admin);
-        return "redirect:/admin/admins";
+    public String createAdmin(@Valid @ModelAttribute Admin admin, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) return "admin_panel/system_settings/admin_card";
+        else {
+            adminService.saveAdmin(admin);
+            return "redirect:/admin/admins";
+        }
     }
 
     @PostMapping("/update/{id}")
-    public String updateAdmin(@PathVariable long id, @ModelAttribute Admin admin) {
+    public String updateAdmin(@PathVariable long id, @Valid @ModelAttribute Admin admin, BindingResult bindingResult) {
         admin.setId(id);
-        adminService.saveAdmin(admin);
-        return "redirect:/admin/admins";
+        if(bindingResult.hasErrors()) return "admin_panel/system_settings/admin_card";
+        else {
+            adminService.saveAdmin(admin);
+            return "redirect:/admin/admins";
+        }
     }
 
     @GetMapping("/delete/{id}")

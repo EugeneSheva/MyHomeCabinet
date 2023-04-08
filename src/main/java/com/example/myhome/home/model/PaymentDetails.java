@@ -3,13 +3,8 @@ package com.example.myhome.home.model;
 import lombok.Data;
 
 import javax.persistence.*;
-
-/*
-
-    Не уверен, что оно вообще нужно , в примере там считай что пустая страничка,
-    если и понадобится в базе данных что-то сохранять - то у платежек мб будет другой вид
-
- */
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 @Data
 @Entity
@@ -18,6 +13,10 @@ public class PaymentDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Название компании не должно быть пустым")
     private String name;
+
+    @NotBlank(message = "Текст не должен быть пустым")
     private String description;
 }

@@ -181,11 +181,6 @@
 <script th:src="@{/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
 
 <script>
-
-  $('#user_table').DataTable({
-      responsive:true
-  });
-
   $(document).ready(function() {
 
     let user_rows = document.getElementsByClassName("user-row");
@@ -208,6 +203,10 @@
          responsive:true
     });
 
+  });
+
+  $('#user_table').DataTable({
+      responsive:true
   });
 </script>
 

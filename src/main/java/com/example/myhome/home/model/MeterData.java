@@ -1,8 +1,14 @@
 package com.example.myhome.home.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.NumberFormat;
 
 
 import java.time.LocalDate;
@@ -29,7 +35,8 @@ public class MeterData {
 
     private String section;
 
-    private double currentReadings;
+    @Digits(integer = 5, fraction = 4)
+    private Double currentReadings = 0.0;
 
     @Enumerated(EnumType.STRING)
     private MeterPaymentStatus status;

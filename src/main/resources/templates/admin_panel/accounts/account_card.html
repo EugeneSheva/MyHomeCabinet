@@ -108,6 +108,7 @@
                         <option value="0">Выберите...</option>
                       </select>
                       <h4 th:if="${fail}" th:text="${fail}" style="font-weight: bold; color: red;"></h4>
+                      <div style="color: #d80450" th:if="${#fields.hasErrors('apartment')}" th:errors="*{apartment}"></div>
                     </div>
                   </div>
                   <div class="row">

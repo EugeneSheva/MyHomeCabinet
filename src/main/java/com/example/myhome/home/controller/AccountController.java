@@ -9,13 +9,16 @@ import com.example.myhome.home.service.AccountService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.CashBoxService;
 import com.example.myhome.home.service.OwnerService;
+import com.example.myhome.home.validator.AccountValidator;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +37,8 @@ public class AccountController {
     private BuildingService buildingService;
 
     @Autowired private OwnerService ownerService;
+
+    @Autowired private AccountValidator validator;
 
     // показать все счета
     @GetMapping
@@ -82,10 +87,15 @@ public class AccountController {
 
     // создание лицевого счета
     @PostMapping("/create")
-    public String createAccount(@ModelAttribute ApartmentAccount account,
+    public String createAccount(@Valid @ModelAttribute ApartmentAccount account,
+                                BindingResult bindingResult,
                                 RedirectAttributes redirectAttributes) {
 
-        if(accountService.apartmentHasAccount(account.getApartment().getId())) {
+        validator.validate(account, bindingResult);
+
+        if(bindingResult.hasErrors()) {
+            return "admin_panel/accounts/account_card";
+        } else if(accountService.apartmentHasAccount(account.getApartment().getId())) {
             redirectAttributes.addFlashAttribute("fail", "К этой квартире уже привязан лицевой счёт!");
             return "redirect:/admin/accounts/create";
         } else {

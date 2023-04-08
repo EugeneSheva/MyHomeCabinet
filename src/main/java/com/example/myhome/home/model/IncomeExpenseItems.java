@@ -3,6 +3,7 @@ package com.example.myhome.home.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 // --- СТАТЬИ ПРИХОДОВ/РАСХОДОВ ---
@@ -14,7 +15,10 @@ public class IncomeExpenseItems {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank
     private String name;
+
     @Enumerated(EnumType.STRING)
     private IncomeExpenseType incomeExpenseType;
 

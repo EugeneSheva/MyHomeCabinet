@@ -10,9 +10,11 @@ import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,12 +44,15 @@ public class ServiceController {
     }
 
     @PostMapping
-    public String updateServices(@ModelAttribute ServiceForm serviceForm,
+    public String updateServices(@Valid @ModelAttribute ServiceForm serviceForm, BindingResult bindingResult,
                                  @RequestParam String[] new_service_names,
                                  @RequestParam String[] new_service_unit_names,
                                  @RequestParam(required = false) String[] new_service_show_in_meters,
                                  @RequestParam(required = false) String[] new_unit_names,
                                  RedirectAttributes redirectAttributes) {
+
+        if(bindingResult.hasErrors()) return "admin_panel/system_settings/settings_services";
+
         List<Service> serviceList = serviceForm.getServiceList();
         List<Unit> unitList = serviceForm.getUnitList().stream().filter((unit) -> unit.getId() != null).collect(Collectors.toList());
 

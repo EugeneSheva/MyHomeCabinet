@@ -3,6 +3,7 @@ package com.example.myhome.home.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Iterator;
 
 // --- УСЛУГИ ---
@@ -15,6 +16,8 @@ public class Service implements Iterable<Service> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Имя услуги не может быть пустым!")
     private String name;
 
     //флажок "показывать в счётчиках"

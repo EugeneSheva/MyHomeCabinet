@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class SettingsController {
     }
 
     @PostMapping("/admin/income-expense/create")
-    public String createTransaction(@ModelAttribute IncomeExpenseItems item) {
+    public String createTransaction(@Valid @ModelAttribute IncomeExpenseItems item) {
         if(!incomeExpenseRepository.existsByName(item.getName()))
             incomeExpenseRepository.save(new IncomeExpenseItems(item.getName(), item.getIncomeExpenseType()));
         return "redirect:/admin/income-expense";
@@ -78,7 +79,7 @@ public class SettingsController {
     }
 
     @PostMapping("/admin/income-expense/update/{id}")
-    public String updateTransaction(@ModelAttribute IncomeExpenseItems item) {
+    public String updateTransaction(@Valid @ModelAttribute IncomeExpenseItems item) {
         incomeExpenseRepository.save(item);
         return "redirect:/admin/income-expense";
     }
@@ -90,7 +91,7 @@ public class SettingsController {
     }
 
     @PostMapping("/admin/payment-details")
-    public String updatePaymentDetails(@ModelAttribute PaymentDetails details, RedirectAttributes redirectAttributes) {
+    public String updatePaymentDetails(@Valid @ModelAttribute PaymentDetails details, RedirectAttributes redirectAttributes) {
         details.setId(1L);
         paymentDetailsRepository.save(details);
 

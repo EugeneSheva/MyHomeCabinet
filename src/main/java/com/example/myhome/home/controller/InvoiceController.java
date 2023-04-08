@@ -3,15 +3,21 @@ package com.example.myhome.home.controller;
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Invoice;
 import com.example.myhome.home.model.InvoiceComponents;
+import com.example.myhome.home.model.InvoiceTemplate;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.*;
+import com.example.myhome.util.FileUploadUtil;
 import lombok.extern.java.Log;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +51,9 @@ public class InvoiceController {
 
     @Autowired
     private MeterDataService meterDataService;
+
+    @Autowired
+    private FileUploadUtil fileUploadUtil;
 
     @Autowired private OwnerService ownerService;
 
@@ -154,11 +163,43 @@ public class InvoiceController {
     public String getPrintPage(@PathVariable long id, Model model) {
         Invoice invoice = invoiceService.findInvoiceById(id);
         model.addAttribute("invoice", invoice);
+        model.addAttribute("default_template", invoiceService.findDefaultTemplate().orElse(null));
+        model.addAttribute("templates", invoiceService.findAllTemplates());
         return "admin_panel/invoices/invoice_print";
     }
 
     @GetMapping("/template")
-    public String getTemplateSettingPage(){
+    public String getTemplateSettingPage(Model model,
+                                         @RequestParam(required = false) Long default_id,
+                                         @RequestParam(required = false) Long delete_id){
+
+        if(default_id != null) {
+            invoiceService.setDefaultTemplate(invoiceService.findTemplateById(default_id));
+            return "redirect:/admin/invoices/template";
+        } else if(delete_id != null) {
+            invoiceService.deleteTemplateById(delete_id);
+            return "redirect:/admin/invoices/template";
+        }
+        model.addAttribute("default_template", invoiceService.findDefaultTemplate().orElse(null));
+        model.addAttribute("templates", invoiceService.findAllTemplates());
         return "admin_panel/invoices/invoice_template_settings";
+    }
+
+    @PostMapping("/template")
+    public String saveTemplate(@RequestParam String name,
+                               @RequestParam MultipartFile file) throws IOException {
+        InvoiceTemplate template = new InvoiceTemplate();
+        template.setName(name);
+        if(file.getSize() > 0) {
+            String file_extension = FilenameUtils.getExtension(file.getOriginalFilename());
+            log.info(file_extension);
+            assert file_extension != null;
+            if(file_extension.equalsIgnoreCase("xls") || file_extension.equalsIgnoreCase("xlsx")) {
+                fileUploadUtil.saveFile("/files/", file.getOriginalFilename(), file);
+                template.setFile(file.getOriginalFilename());
+            }
+        }
+        invoiceService.saveTemplate(template);
+        return "redirect:/admin/invoices/template";
     }
 }

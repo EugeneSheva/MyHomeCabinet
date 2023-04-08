@@ -60,11 +60,14 @@
                 <div class="row mt-2">
                   <div class="col-xs-12 col-lg-12">
                     <ul style="list-style-type: none; padding-left: 5px;">
-                      <li><input type="radio" class="mb-3 mr-2" name="template" id="">33333333</li>
-                      <li><input type="radio" class="mb-3 mr-2" name="template" id="">33333333</li>
-                      <li><input type="radio" class="mb-3 mr-2" name="template" id="">33333333</li>
-                      <li><input type="radio" class="mb-3 mr-2" name="template" id="">33333333</li>
-                      <li><input type="radio" class="mb-3 mr-2" name="template" id="">33333333</li>
+                      <li th:if="${default_template != null}">
+                        <input type="radio" name="template">
+                        <label class="pl-1" th:text="${default_template.name} + ' (по умолчанию)'"></label>
+                      </li>
+                      <li th:each="template : ${templates}" th:if="${!template._default_}">
+                        <input type="radio" name="template">
+                        <label class="pl-1" style="font-weight: normal;" th:text="${template.name}"></label>
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -91,6 +94,18 @@
   <footer th:insert="~{main-template :: footer}"></footer>
 </div>
 <!-- ./wrapper -->
+
+<style>
+label{
+  font-size:20px;
+  vertical-align: middle;
+}
+
+input[type="radio"]{
+  width: 18px;
+  height: 18px;
+}
+</style>
 
 <!-- REQUIRED SCRIPTS -->
 <!-- Icons -->

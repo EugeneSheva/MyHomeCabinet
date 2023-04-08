@@ -9,14 +9,17 @@ import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.MeterDataService;
 import com.example.myhome.home.service.ServiceService;
+import com.example.myhome.home.validator.MeterValidator;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,6 +40,8 @@ public class MeterController {
 
     @Autowired
     private ApartmentService apartmentService;
+
+    @Autowired private MeterValidator validator;
 
     //Получить все счетчики
     @GetMapping
@@ -88,7 +93,7 @@ public class MeterController {
     public String showCreateMeterPage(Model model) {
 
         model.addAttribute("id",meterDataService.getMaxIdPlusOne());
-        model.addAttribute("meter", new MeterData());
+        model.addAttribute("meterData", new MeterData());
         model.addAttribute("services", serviceService.findAllServices());
         model.addAttribute("buildings", buildingService.findAll());
         model.addAttribute("now", LocalDate.now());
@@ -103,7 +108,7 @@ public class MeterController {
         MeterData meter = (meterDataList.isEmpty()) ? new MeterData() : meterDataList.get(meterDataList.size()-1);
         meter.setId(meter.getId()+1);
         model.addAttribute("id",meter.getId());
-        model.addAttribute("meter", meter);
+        model.addAttribute("meterData", meter);
         model.addAttribute("services", serviceService.findAllServices());
         model.addAttribute("buildings", buildingService.findAll());
         model.addAttribute("now", LocalDate.now());
@@ -111,8 +116,8 @@ public class MeterController {
     }
 
     @PostMapping("/create-add")
-    public String alo(@ModelAttribute MeterData meter) {
-        MeterData savedMeter = meterDataService.saveMeterData(meter);
+    public String alo(@Valid @ModelAttribute MeterData meterData) {
+        MeterData savedMeter = meterDataService.saveMeterData(meterData);
         return "redirect:/admin/meters/data?flat_id="+savedMeter.getApartment().getId()+"&service_id="+savedMeter.getService().getId();
     }
 
@@ -130,8 +135,14 @@ public class MeterController {
 
 
     @PostMapping("/create")
-    public String createMeter(@ModelAttribute MeterData meter) {
-        MeterData savedMeter = meterDataService.saveMeterData(meter);
+    public String createMeter(@ModelAttribute MeterData meterData, BindingResult bindingResult, Model model) {
+        validator.validate(meterData, bindingResult);
+        log.info(bindingResult.getAllErrors().toString());
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("id",meterDataService.getMaxIdPlusOne());
+            return "admin_panel/meters/meter_card";
+        }
+        MeterData savedMeter = meterDataService.saveMeterData(meterData);
         return "redirect:/admin/meters/data?flat_id="+savedMeter.getApartment().getId()+"&service_id="+savedMeter.getService().getId();
     }
 
@@ -140,7 +151,7 @@ public class MeterController {
     public String showCreateAdditionalMeterPage(@RequestParam long flat_id, Model model) {
 
         model.addAttribute("id", meterDataService.getMaxIdPlusOne());
-        model.addAttribute("meter", new MeterData());
+        model.addAttribute("meterData", new MeterData());
         model.addAttribute("apartment", apartmentService.findById(flat_id));
         model.addAttribute("services", serviceService.findAllServices());
         model.addAttribute("buildings", buildingService.findAll());
@@ -152,7 +163,7 @@ public class MeterController {
     @GetMapping("/update/{id}")
     public String showUpdateMeterPage(@PathVariable long id, Model model) {
 
-        model.addAttribute("meter", meterDataService.findMeterData(id));
+        model.addAttribute("meterData", meterDataService.findMeterData(id));
         model.addAttribute("services", serviceService.findAllServices());
         model.addAttribute("buildings", buildingService.findAll());
         model.addAttribute("now", LocalDate.now());
@@ -161,8 +172,14 @@ public class MeterController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateMeter(@PathVariable long id, @ModelAttribute MeterData meter) {
-        MeterData savedMeter = meterDataService.saveMeterData(meter);
+    public String updateMeter(@PathVariable long id, @ModelAttribute MeterData meterData, BindingResult bindingResult, Model model) {
+        validator.validate(meterData, bindingResult);
+        log.info(bindingResult.getAllErrors().toString());
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("id",meterDataService.getMaxIdPlusOne());
+            return "admin_panel/meters/meter_card";
+        }
+        MeterData savedMeter = meterDataService.saveMeterData(meterData);
         return "redirect:/admin/meters/data?flat_id="+savedMeter.getApartment().getId()+"&service_id="+savedMeter.getService().getId();
     }
 
@@ -177,6 +194,14 @@ public class MeterController {
     public String showInfo(@PathVariable long id, Model model) {
         model.addAttribute("meter", meterDataService.findMeterData(id));
         return "admin_panel/meters/meter_profile";
+    }
+
+    @ModelAttribute
+    public void addAttributes(Model model) {
+        model.addAttribute("id",meterDataService.getMaxIdPlusOne());
+        model.addAttribute("services", serviceService.findAllServices());
+        model.addAttribute("buildings", buildingService.findAll());
+        model.addAttribute("now", LocalDate.now());
     }
 
 

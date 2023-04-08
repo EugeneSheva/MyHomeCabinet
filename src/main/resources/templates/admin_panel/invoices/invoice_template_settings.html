@@ -54,47 +54,29 @@
               <div class="box-body">
                 <div class="row">
                   <div class="col-xs-12 col-lg-12">
-                    <div class="template">
-                      <p>33333333 </p>
-                      <a href="http://myhouse24.avada-media.ua/upload/InvoiceTemplate/tpl-57.xlsx"><i class="fa fa-download" aria-hidden="true"></i> Скачать шаблон</a>
-                      <a href="/admin/invoice/template?default_id=57" class="text-success">• Назначить шаблоном по умоланию</a>
-                      <a href="/admin/invoice/template?delete_id=57" class="text-danger" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash" aria-hidden="true"></i> Удалить шаблон</a>
+                    <div class="template" th:if="${default_template != null}">
+                      <p><span th:text="${default_template.name}"></span> <b>(по умолчанию)</b></p>
+                      <a th:href="@{/files/{url}(url=${default_template.file})}" download><i class="fa fa-download" aria-hidden="true"></i> Скачать шаблон</a>
+                      <a th:href="@{/admin/invoices/template?default_id={id}(id=${default_template.id})}" class="text-success">• Назначить шаблоном по умоланию</a>
+                      <a th:href="@{/admin/invoices/template?delete_id={id}(id=${default_template.id})}" class="text-danger" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash" aria-hidden="true"></i> Удалить шаблон</a>
                     </div>
-                    <div class="template">
-                      <p>33333333 </p>
-                      <a href="http://myhouse24.avada-media.ua/upload/InvoiceTemplate/tpl-57.xlsx"><i class="fa fa-download" aria-hidden="true"></i> Скачать шаблон</a>
-                      <a href="/admin/invoice/template?default_id=57" class="text-success">• Назначить шаблоном по умоланию</a>
-                      <a href="/admin/invoice/template?delete_id=57" class="text-danger" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash" aria-hidden="true"></i> Удалить шаблон</a>
+                    <div class="template" th:each="template : ${templates}" th:if="${!template._default_}">
+                      <p th:text="${template.name}">33333333 </p>
+                      <a th:href="@{/files/{url}(url=${template.file})}" download><i class="fa fa-download" aria-hidden="true"></i> Скачать шаблон</a>
+                      <a th:href="@{/admin/invoices/template?default_id={id}(id=${template.id})}" class="text-success">• Назначить шаблоном по умоланию</a>
+                      <a th:href="@{/admin/invoices/template?delete_id={id}(id=${template.id})}" class="text-danger" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash" aria-hidden="true"></i> Удалить шаблон</a>
                     </div>
-                    <div class="template">
-                      <p>33333333 </p>
-                      <a href="http://myhouse24.avada-media.ua/upload/InvoiceTemplate/tpl-57.xlsx"><i class="fa fa-download" aria-hidden="true"></i> Скачать шаблон</a>
-                      <a href="/admin/invoice/template?default_id=57" class="text-success">• Назначить шаблоном по умоланию</a>
-                      <a href="/admin/invoice/template?delete_id=57" class="text-danger" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash" aria-hidden="true"></i> Удалить шаблон</a>
-                    </div>
-                    <div class="template">
-                      <p>33333333 </p>
-                      <a href="http://myhouse24.avada-media.ua/upload/InvoiceTemplate/tpl-57.xlsx"><i class="fa fa-download" aria-hidden="true"></i> Скачать шаблон</a>
-                      <a href="/admin/invoice/template?default_id=57" class="text-success">• Назначить шаблоном по умоланию</a>
-                      <a href="/admin/invoice/template?delete_id=57" class="text-danger" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash" aria-hidden="true"></i> Удалить шаблон</a>
-                    </div>
-                    <div class="template">
-                      <p>33333333 </p>
-                      <a href="http://myhouse24.avada-media.ua/upload/InvoiceTemplate/tpl-57.xlsx"><i class="fa fa-download" aria-hidden="true"></i> Скачать шаблон</a>
-                      <a href="/admin/invoice/template?default_id=57" class="text-success">• Назначить шаблоном по умоланию</a>
-                      <a href="/admin/invoice/template?delete_id=57" class="text-danger" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash" aria-hidden="true"></i> Удалить шаблон</a>
-                    </div>
-                    <form id="w0" action="/admin/invoice/template" method="post" enctype="multipart/form-data">
+                    <form method="post" th:object="${template}" enctype="multipart/form-data">
                       <input type="hidden" name="_csrf-backend" value="ZFF2m8XrLRkJsb_BqV9yo_00YGreYPmXdR6oMr7ZrM1WZzHVv9JXUH_U26TOHjObl3YvMqkDo-ASQf5LxqzBtw==">            <div class="row">
                       <div class="col-xs-12 col-sm-6">
                         <div class="form-group field-invoicetemplateform-file">
-                          <label class="control-label" for="invoicetemplateform-file">Загрузить пользовательский шаблон</label>
-                          <input type="hidden" name="InvoiceTemplateForm[file]" value=""><input type="file" id="invoicetemplateform-file" name="InvoiceTemplateForm[file]" required="">
+                          <label class="control-label">Загрузить пользовательский шаблон</label>
+                          <input type="file" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
 
                           <div class="help-block"></div>
                         </div>                    <div class="form-group field-invoicetemplateform-title required">
-                        <label class="control-label" for="invoicetemplateform-title">Название</label>
-                        <input type="text" id="invoicetemplateform-title" class="form-control" name="InvoiceTemplateForm[title]" aria-required="true">
+                        <label class="control-label">Название</label>
+                        <input type="text" name="name" class="form-control">
 
                         <div class="help-block"></div>
                       </div>                </div>
