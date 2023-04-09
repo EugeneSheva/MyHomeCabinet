@@ -16,7 +16,7 @@ public class IncomeExpenseItems {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Необходимо указать название статьи")
     private String name;
 
     @Enumerated(EnumType.STRING)

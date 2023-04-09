@@ -77,27 +77,24 @@ public class AccountController {
     // открытие страницы создания лицевого счета
     @GetMapping("/create")
     public String showCreateAccountPage(Model model) {
-        ApartmentAccount accWithBiggestID = accountService.getAccountWithBiggestId();
-        long id = accWithBiggestID.getId()+1;
-        model.addAttribute("account", new ApartmentAccount());
-        model.addAttribute("id", id);
-        model.addAttribute("buildings", buildingService.findAll());
+        model.addAttribute("apartmentAccount", new ApartmentAccount());
         return "admin_panel/accounts/account_card";
     }
 
     // создание лицевого счета
     @PostMapping("/create")
-    public String createAccount(@Valid @ModelAttribute ApartmentAccount account,
+    public String createAccount(@ModelAttribute ApartmentAccount account,
                                 BindingResult bindingResult,
                                 RedirectAttributes redirectAttributes) {
 
+        log.info(account.toString());
         validator.validate(account, bindingResult);
+        log.info("account apartment id" + account.getApartment().getId());
 
         if(bindingResult.hasErrors()) {
+            log.info("Errors found");
+            log.info(bindingResult.getAllErrors().toString());
             return "admin_panel/accounts/account_card";
-        } else if(accountService.apartmentHasAccount(account.getApartment().getId())) {
-            redirectAttributes.addFlashAttribute("fail", "К этой квартире уже привязан лицевой счёт!");
-            return "redirect:/admin/accounts/create";
         } else {
             accountService.save(account);
             return "redirect:/admin/accounts";
@@ -108,15 +105,19 @@ public class AccountController {
 
     @GetMapping("/update/{id}")
     public String showUpdateAccountPage(@PathVariable long id, Model model) {
-        model.addAttribute("account", accountService.getAccountById(id));
+        model.addAttribute("apartmentAccount", accountService.getAccountById(id));
         model.addAttribute("id", id);
-        model.addAttribute("buildings", buildingService.findAll());
         return "admin_panel/accounts/account_card";
     }
 
     @PostMapping("/update/{id}")
-    public String updateAccount(@PathVariable long id, @ModelAttribute ApartmentAccount account) {
-
+    public String updateAccount(@PathVariable long id, @ModelAttribute ApartmentAccount account, BindingResult bindingResult) {
+        validator.validate(account, bindingResult);
+        if(bindingResult.hasErrors()) {
+            log.info("errors found");
+            log.info(bindingResult.getAllErrors().toString());
+            return "admin_panel/accounts/account_card";
+        }
         accountService.save(account);
 
         return "redirect:/admin/accounts";
@@ -131,6 +132,12 @@ public class AccountController {
     @GetMapping("/get-flat-account")
     public @ResponseBody String getAccountNumberFromFlat(@RequestParam long flat_id) {
         return String.format("%010d", accountService.getAccountNumberFromFlat(flat_id).getId());
+    }
+
+    @ModelAttribute
+    public void addAttributes(Model model) {
+        model.addAttribute("id", accountService.getMaxId());
+        model.addAttribute("buildings", buildingService.findAll());
     }
 
 }

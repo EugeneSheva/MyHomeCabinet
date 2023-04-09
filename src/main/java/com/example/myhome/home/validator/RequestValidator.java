@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.time.LocalDateTime;
+
 @Component
 public class RequestValidator implements Validator {
     @Override
@@ -36,6 +38,9 @@ public class RequestValidator implements Validator {
 
         if(request.getStatus() == null) {
             e.rejectValue(RepairRequest_.STATUS, "status.empty", "Выберите статус!");
+        }
+        if(request.getBest_time_request() != null && request.getBest_time_request().isBefore(LocalDateTime.now())) {
+            e.rejectValue(RepairRequest_.BEST_TIME_REQUEST, "best_time.incorrect", "Время не может быть в прошлом");
         }
     }
 }

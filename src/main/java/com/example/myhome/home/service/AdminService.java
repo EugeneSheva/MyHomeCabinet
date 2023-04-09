@@ -4,11 +4,14 @@ import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.model.AdminDTO;
 
+import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.AdminRepository;
 
+import com.example.myhome.home.repository.specifications.AdminSpecifications;
 import com.example.myhome.util.UserRole;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,23 @@ public class AdminService {
     public Admin findAdminById (Long id) { return adminRepository.findById(id).orElseThrow(NotFoundException::new);}
 
     public List<Admin> findAll() { return adminRepository.findAll(); }
+
+    public List<Admin> findAllBySpecification(FilterForm filters) {
+
+        String name = filters.getName();
+        UserRole role = (filters.getRole() != null) ? UserRole.valueOf(filters.getRole()) : null;
+        String phone = filters.getPhone();
+        String email = filters.getEmail();
+        Boolean active = filters.getActive();
+
+        Specification<Admin> specification = Specification.where(AdminSpecifications.hasNameLike(name)
+                                                            .and(AdminSpecifications.hasRole(role))
+                                                            .and(AdminSpecifications.hasPhoneLike(phone))
+                                                            .and(AdminSpecifications.hasEmailLike(email))
+                                                            .and(AdminSpecifications.isActive(active)));
+
+        return adminRepository.findAll(specification);
+    }
 
     public List<AdminDTO> findAllDTO() {
         List<AdminDTO>adminDTOList=new ArrayList<>();

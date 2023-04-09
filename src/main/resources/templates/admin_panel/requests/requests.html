@@ -11,6 +11,7 @@
   <link rel="stylesheet" th:href="@{/plugins/bootstrap-datepicker/css/datepicker.css}">
   <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
   <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/css/tempus-dominus.min.css" crossorigin="anonymous">
     <!-- Popperjs -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" crossorigin="anonymous"></script>
@@ -57,7 +58,7 @@
                             <div class="box-header with-border" style="padding-block: 15px;">
                                 <h3 class="box-title"></h3>
                                 <div class="box-tools">
-                                    <a href="/admin/user-admin/index" class="btn btn-default btn-sm">
+                                    <a th:href="@{/admin/requests}" class="btn btn-default btn-sm">
                                         <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                                     </a>
                                 </div>
@@ -86,20 +87,20 @@
                                     </tr>
                                     <tr>
                                         <td style="padding: 10px">
-                                            <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" th:field="*{id}" class="my_filters" type="text">
+                                            <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" th:field="*{id}" class="my_filters" data-name="id" type="text">
                                         </td>
                                         <td style="padding: 10px; min-width: 220px;">
 <!--                                            <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" type="date">-->
 <!--                                            <input type="text" id="best_time_datepicker">-->
                                             <div class="input-group" id="datetimepicker1" data-td-target-input="nearest" data-td-target-toggle="nearest">
-                                                <input id="datetime" style="padding-block: 21px" type="text" th:field="*{datetime}" class="form-control my_filters" data-td-target="#datetimepicker1">
+                                                <input id="datetime" style="padding-block: 21px" type="text" data-name="datetime" th:field="*{datetime}" value="2023-01-01" class="form-control datetime_filter" data-td-target="#datetimepicker1">
                                                 <span class="input-group-text" data-td-target="#datetimepicker1" data-td-toggle="datetimepicker">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
                                             </div>
                                         </td>
                                         <td style="padding: 10px">
-                                            <select style="width: 100%; padding-block: 10px" th:field="*{master_type}" class="my_filters">
+                                            <select style="width: 100%; padding-block: 10px" th:field="*{master_type}" data-name="master_type" class="my_filters">
                                                 <option value=""></option>
                                                 <option th:each="master_type : ${T(com.example.myhome.home.model.RepairMasterType).values()}"
                                                         th:value="${master_type}"
@@ -107,13 +108,13 @@
                                             </select>
                                         </td>
                                         <td style="padding: 10px">
-                                            <input th:field="*{description}" style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" class="my_filters" type="text">
+                                            <input th:field="*{description}" data-name="description" style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" class="my_filters" type="text">
                                         </td>
                                         <td style="padding: 10px">
-                                            <input th:field="*{apartment}" style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" class="my_filters" type="text">
+                                            <input th:field="*{apartment}" data-name="apartment" style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" class="my_filters" type="text">
                                         </td>
                                         <td style="padding: 10px">
-                                            <select style="width: 100%; padding-block: 10px" th:field="*{owner}" class="my_filters">
+                                            <select style="width: 100%; padding-block: 10px" th:field="*{owner}" data-name="owner" class="my_filters">
                                                 <option value=""></option>
                                                 <option th:each="owner : ${owners}"
                                                         th:value="${owner.id}"
@@ -121,10 +122,10 @@
                                             </select>
                                         </td>
                                         <td style="padding: 10px">
-                                            <input th:field="*{phone}" class="my_filters" style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" type="text">
+                                            <input th:field="*{phone}" data-name="phone" class="my_filters" style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" type="text">
                                         </td>
                                         <td style="padding: 10px">
-                                            <select th:field="*{master}" class="my_filters" style="width: 100%; padding-block: 10px">
+                                            <select th:field="*{master}" data-name="master" class="my_filters" style="width: 100%; padding-block: 10px">
                                                 <option value=""></option>
                                                 <option th:each="master : ${masters}"
                                                         th:value="${master.id}"
@@ -132,7 +133,7 @@
                                             </select>
                                         </td>
                                         <td style="padding: 10px">
-                                            <select th:field="*{status}" class="my_filters" style="width: 100%; padding-block: 10px">
+                                            <select th:field="*{status}" data-name="status" class="my_filters" style="width: 100%; padding-block: 10px">
                                                 <option value=""></option>
                                                 <option th:each="stat : ${T(com.example.myhome.home.model.RepairStatus).values()}"
                                                         th:value="${stat}"
@@ -147,7 +148,7 @@
                                             <td th:text="${request.id}"></td>
                                             <td th:text="${#temporals.format(request.best_time_request, 'yyyy-MM-dd - HH:mm')}"></td>
                                             <td th:text="${request.master_type.getName()}"></td>
-                                            <td th:text="${request.description}"></td>
+                                            <td style="max-width: 200px; text-overflow: ellipsis; white-space: nowrap; overflow:hidden" th:text="${request.description}"></td>
                                             <td><a th:href="@{/admin/apartments/{id}(id=${request.apartment.id})}" th:text="'кв. ' + ${request.apartment.number} + ', ' + ${request.apartment.building.name}"></a></td>
                                             <td><a th:href="@{/admin/owners/{id}(id=${request.apartment.owner.id})}" th:text="${request.apartment.owner.getFullName()}"></a></td>
                                             <td th:text="${request.apartment.owner.phone_number}"></td>
@@ -196,6 +197,10 @@
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
 <script th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
+<script th:src="@{/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script th:src="@{/dist/js/filter.js}"></script>
 
 <script>
     let request_rows = document.getElementsByClassName("request");
@@ -211,47 +216,18 @@
         }
     }
 
-    const datetimepicker1 = new tempusDominus.TempusDominus(document.getElementById('datetimepicker1'));
+    let config = {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        minDate: "2020-01",
+        maxDate: new Date().fp_incr(1),
+        mode: "range"
+    }
 
-    // ФИЛЬТРЫ
-    $(document).ready(function(){
+    flatpickr("#datetime", config);
 
-        $(".my_filters").change(function(){
-            let building_id = $("#building").val();
-            let service_id = $("#service").val();
-            let apartment_number = $("#apartment").val();
-            let section_name = $("#section").val();
-
-            let id = $("#id").val();
-            let datetime = $("#datetime").val();
-            let description = $("#description").val();
-            let master_type = $("#master_type").val();
-            let master_id = $("#master").val();
-            let owner_id = $("#owner").val();
-            let phone = $("#phone").val();
-            let status = $("#status").val();
-
-            const link_elements = [];
-
-            if(building_id != null && building_id != 0) link_elements.push('building='+building_id);
-            if(service_id != null && service_id != 0) link_elements.push('service='+service_id);
-            if(apartment_number != null && apartment_number != 0) link_elements.push('apartment='+apartment_number);
-            if(section_name != null && section_name != '') link_elements.push('section='+section_name);
-
-            if(id != null && id != 0) link_elements.push('id='+id);
-            if(datetime != null && datetime != '') link_elements.push('datetime='+datetime);
-            if(description != null && description != '') link_elements.push('description='+description);
-            if(master_type != null && master_type != '') link_elements.push('master_type='+master_type);
-            if(master_id != null && master_id != 0) link_elements.push('master_id='+master_id);
-            if(owner_id != null && owner_id != 0) link_elements.push('owner_id='+owner_id);
-            if(phone != null && phone != '') link_elements.push('phone='+phone);
-            if(status != null && status != '') link_elements.push('status='+status);
-
-            let final_link = (link_elements.length > 0) ? ('?' + link_elements.join('&')) : '';
-
-            window.location.href = '/admin/requests'+final_link;
-        });
-    });
+    document.getElementById('datetime').readonly = false;
+    document.getElementById('datetime').disabled = false;
 </script>
 
 <!-- PAGE PLUGINS -->

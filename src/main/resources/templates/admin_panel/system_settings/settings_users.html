@@ -55,75 +55,53 @@
               <div class="box-header with-border" style="padding-block: 10px;">
                 <h3 class="box-title"></h3>
                 <div class="box-tools" style="top: 5px;">
-                  <a href="/admin/user-admin/index" class="btn btn-default btn-sm">
+                  <a th:href="@{/admin/admins}" class="btn btn-default btn-sm">
                     <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                   </a>
                 </div>
               </div>
               <div class="box-body table-responsive">
-                <table class="table table-bordered table-hover table-striped linkedRow" id="user_table">
-                  <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Пользователь</th>
-                    <th>Роль</th>
-                    <th>Телефон</th>
-                    <th>Email (логин)</th>
-                    <th>Статус</th>
-                    <th style="width: 114px; min-width: 114px">&nbsp;</th>
-                  </tr>
-                  <tr id="w0-filters" class="filters">
-<!--                    <td>&nbsp;</td>-->
-<!--                    <td><input type="text" class="form-control" name="UserAdminSearch[searchFullname]"></td>-->
-<!--                    <td>-->
-<!--                      <select id="useradminsearch-role" class="form-control select2-hidden-accessible" name="UserAdminSearch[role]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_0d896465" style="display:none" tabindex="-1" aria-hidden="true">-->
-<!--                        <option value=""></option>-->
-<!--                        <option value="admin">Директор</option>-->
-<!--                        <option value="manager">Управляющий</option>-->
-<!--                        <option value="accountant">Бухгалтер</option>-->
-<!--                        <option value="electrician">Электрик</option>-->
-<!--                        <option value="plumber">Сантехник</option>-->
-<!--                      </select>-->
-<!--                      <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
-<!--                          <span class="selection">-->
-<!--                            <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-useradminsearch-role-container">-->
-<!--                              <span class="select2-selection__rendered" id="select2-useradminsearch-role-container">-->
-<!--                                <span class="select2-selection__placeholder"></span>-->
-<!--                              </span>-->
-<!--                              <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
-<!--                            </span>-->
-<!--                          </span>-->
-<!--                          <span class="dropdown-wrapper" aria-hidden="true"></span>-->
-<!--                        </span>-->
-<!--                    </td>-->
-<!--                    <td>-->
-<!--                      <input type="text" class="form-control" name="UserAdminSearch[phone]">-->
-<!--                    </td>-->
-<!--                    <td>-->
-<!--                      <input type="text" class="form-control" name="UserAdminSearch[email]">-->
-<!--                    </td>-->
-<!--                    <td>-->
-<!--                      <select id="useradminsearch-status" class="form-control select2-hidden-accessible" name="UserAdminSearch[status]" data-s2-options="s2options_7ebc6538" data-krajee-select2="select2_0d896465" style="display:none" tabindex="-1" aria-hidden="true">-->
-<!--                        <option value=""></option>-->
-<!--                        <option value="10">Активен</option>-->
-<!--                        <option value="5">Новый</option>-->
-<!--                        <option value="0">Отключен</option>-->
-<!--                      </select>-->
-<!--                      <span class="select2 select2-container select2-container&#45;&#45;default" dir="ltr" style="width: 100%;">-->
-<!--                          <span class="selection">-->
-<!--                            <span class="select2-selection select2-selection&#45;&#45;single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-useradminsearch-status-container">-->
-<!--                              <span class="select2-selection__rendered" id="select2-useradminsearch-status-container">-->
-<!--                                <span class="select2-selection__placeholder"></span>-->
-<!--                              </span>-->
-<!--                              <span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>-->
-<!--                            </span>-->
-<!--                          </span>-->
-<!--                          <span class="dropdown-wrapper" aria-hidden="true"></span>-->
-<!--                        </span>-->
-<!--                    </td>-->
-<!--                    <td>&nbsp;</td>-->
-                  </tr>
-                  </thead>
+                <form action="" method="get" th:object="${filter_form}">
+                  <table class="table table-bordered table-hover table-striped linkedRow" id="user_table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Пользователь</th>
+                        <th>Роль</th>
+                        <th>Телефон</th>
+                        <th>Email (логин)</th>
+                        <th>Статус</th>
+                        <th style="width: 114px; min-width: 114px">&nbsp;</th>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td style="padding: 10px">
+                          <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" th:field="*{name}" data-name="name" class="my_filters" type="text">
+                        </td>
+                        <td style="padding: 10px">
+                          <select style="width: 100%; padding-block: 10px" th:field="*{role}" data-name="role" class="my_filters">
+                            <option value=""></option>
+                            <option th:each="userRole : ${T(com.example.myhome.util.UserRole).values()}"
+                                    th:value="${userRole}"
+                                    th:text="${userRole.getName()}"></option>
+                          </select>
+                        </td>
+                        <td style="padding: 10px">
+                          <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" th:field="*{phone}" data-name="phone" class="my_filters" type="text">
+                        </td>
+                        <td style="padding: 10px">
+                          <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" th:field="*{email}" data-name="email" class="my_filters" type="text">
+                        </td>
+                        <td style="padding: 10px">
+                          <select style="width: 100%; padding-block: 10px" th:field="*{status}" data-name="active" class="my_filters">
+                            <option value=""></option>
+                            <option value="true">Активен</option>
+                            <option value="false">Неактивен</option>
+                          </select>
+                        </td>
+                        <td></td>
+                      </tr>
+                    </thead>
                   <tbody>
                     <tr th:each="admin, iter : ${admins}" class="user-row" style="cursor: pointer;">
                       <input type="hidden" th:id="'input-' + ${iter.index}" th:value="${admin.id}">
@@ -145,8 +123,12 @@
                         </div>
                       </td>
                     </tr>
+                    <tr th:if="${admins.size() == 0}">
+                      <td colspan="7">Ничего не найдено...</td>
+                    </tr>
                   </tbody>
                 </table>
+                </form>
               </div>
               <div class="box-footer clearfix"></div>
             </div>
@@ -180,6 +162,8 @@
 <script th:src="@{/plugins/datatables-buttons/js/buttons.print.min.js}"></script>
 <script th:src="@{/plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
 
+<script th:src="@{/dist/js/filter.js}"></script>
+
 <script>
   $(document).ready(function() {
 
@@ -199,15 +183,8 @@
         alert("Приглашение отправлено!");
     });
 
-    $('#user_table').DataTable({
-         responsive:true
-    });
-
   });
 
-  $('#user_table').DataTable({
-      responsive:true
-  });
 </script>
 
 <!-- REQUIRED SCRIPTS -->

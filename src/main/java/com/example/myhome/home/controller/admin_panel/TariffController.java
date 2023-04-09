@@ -13,8 +13,10 @@ import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
@@ -62,13 +64,18 @@ public class TariffController {
     }
 
     @PostMapping("/create")
-    public String createTariff(@RequestParam String name,
-                               @RequestParam String description,
+    public String createTariff(@Valid @ModelAttribute Tariff tariff,
+                               BindingResult bindingResult,
                                @RequestParam(required = false) String[] service_names,
                                @RequestParam(required = false) String[] prices) {
-        Tariff tariff = new Tariff();
-        tariff.setName(name);
-        tariff.setDescription(description);
+
+        if(bindingResult.hasErrors()) {
+            log.info("errors found");
+            log.info(bindingResult.getObjectName());
+            log.info(bindingResult.getAllErrors().toString());
+            return "admin_panel/system_settings/tariff_card";
+        }
+
         tariff.setDate(LocalDateTime.now());
         tariff.setTariffComponents(tariffService.getComponentsInMap(service_names, prices));
 
@@ -91,14 +98,19 @@ public class TariffController {
 
     @PostMapping("/update/{id}")
     public String updateTariff(@PathVariable long id,
-                               @RequestParam String name,
-                               @RequestParam String description,
+                               @Valid @ModelAttribute Tariff tariff,
+                               BindingResult bindingResult,
                                @RequestParam(defaultValue = "0", required = false) String[] service_names,
                                @RequestParam(defaultValue = "0", required = false) String[] prices) {
-        Tariff tariff = new Tariff();
+
+        if(bindingResult.hasErrors()) {
+            log.info("errors found");
+            log.info(bindingResult.getObjectName());
+            log.info(bindingResult.getAllErrors().toString());
+            return "admin_panel/system_settings/tariff_card";
+        }
+
         tariff.setId(id);
-        tariff.setName(name);
-        tariff.setDescription(description);
         tariff.setDate(LocalDateTime.now());
         tariff.setTariffComponents(tariffService.getComponentsInMap(service_names, prices));
 

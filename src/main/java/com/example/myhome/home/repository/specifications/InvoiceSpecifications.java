@@ -4,6 +4,7 @@ import com.example.myhome.home.model.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Join;
+import java.time.LocalDate;
 
 public class InvoiceSpecifications {
 
@@ -33,6 +34,11 @@ public class InvoiceSpecifications {
     public static Specification<Invoice> isCompleted(Boolean completed) {
         if(completed == null) return (root, query, criteriaBuilder) -> null;
         return (root, query, cb) -> cb.equal(root.get(Invoice_.COMPLETED), completed);
+    }
+
+    public static Specification<Invoice> datesBetween(LocalDate from, LocalDate to) {
+        if(from == null || to == null) return (root, query, criteriaBuilder) -> null;
+        return (root, query, cb) -> cb.between(root.get(Invoice_.DATE), from, to);
     }
 
 }

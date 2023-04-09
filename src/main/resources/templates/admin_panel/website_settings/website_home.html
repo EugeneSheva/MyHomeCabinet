@@ -53,13 +53,13 @@
                 </div>
               </div>
               <div class="box-body">
-                <form method="post" th:object="${page}" enctype="multipart/form-data">
+                <form method="post" th:object="${mainPage}" enctype="multipart/form-data">
                   <h3 class="page-header">Карусель(слайдер)</h3>
                   <div class="row">
                     <div class="col-md-4">
                       <h4>Слайд 1</h4>
-                      <img th:src="${page.slide1 != null && !page.slide1.isEmpty()} ?
-                                   @{/images/{url}(url=${page.slide1})} :
+                      <img th:src="*{slide1 != null && !slide1.isEmpty()} ?
+                                   @{/images/{url}(url=${mainPage.slide1})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                       <div class="form-group mb-30">
                         <label for="page_slide1" class="control-label">Рекомендуемый размер: (1920х800)</label>
@@ -69,8 +69,8 @@
                     </div>
                     <div class="col-md-4">
                       <h4>Слайд 2</h4>
-                      <img th:src="${page.slide2 != null && !page.slide2.isEmpty()} ?
-                                   @{/images/{url}(url=${page.slide2})} :
+                      <img th:src="${mainPage.slide2 != null && !mainPage.slide2.isEmpty()} ?
+                                   @{/images/{url}(url=${mainPage.slide2})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                       <div class="form-group mb-30">
                         <label for="page_slide2" class="control-label">Рекомендуемый размер: (1920х800)</label>
@@ -80,8 +80,8 @@
                     </div>
                     <div class="col-md-4">
                       <h4>Слайд 3</h4>
-                      <img th:src="${page.slide3 != null && !page.slide3.isEmpty()} ?
-                                   @{/images/{url}(url=${page.slide3})} :
+                      <img th:src="${mainPage.slide3 != null && !mainPage.slide3.isEmpty()} ?
+                                   @{/images/{url}(url=${mainPage.slide3})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                       <div class="form-group mb-30">
                         <label for="page_slide3" class="control-label">Рекомендуемый размер: (1920х800)</label>
@@ -96,10 +96,12 @@
                       <div class="form-group">
                         <label class="control-label">Заголовок</label>
                         <input type="text" class="form-control" th:field="*{title}" placeholder="Об управляющей компании">
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></h4>
                       </div>
                       <div class="form-group">
                         <label class="control-label" for="description">Краткий текст</label>
                         <textarea style="width: 100%;" rows="5" placeholder="Описание..." th:field="*{description}"></textarea>
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></h4>
                       </div>
 
                       <div class="form-group">
@@ -114,8 +116,8 @@
                     <div class="row">
                       <div class="col-md-4">
                         <h4>Блок 1</h4>
-                        <img th:src="${page.block_1_img != null && !page.block_1_img.isEmpty()} ?
-                                   @{/images/{url}(url=${page.block_1_img})} :
+                        <img th:src="${mainPage.block_1_img != null && !mainPage.block_1_img.isEmpty()} ?
+                                   @{/images/{url}(url=${mainPage.block_1_img})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
                           <label for="page_block_1_img" class="control-label">Рекомендуемый размер: (1920х800)</label>
@@ -125,16 +127,18 @@
                         <div class="form-group mb-30">
                           <label for="block_1_title" class="control-label">Заголовок блока</label>
                           <input type="text" class="form-control" placeholder="О управляющей компании" th:field="*{block_1_title}" id="block_1_title">
+                          <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('block_1_title')}" th:errors="*{block_1_title}"></h4>
                         </div>
                         <div class="form-group mb-30">
                           <label class="control-label" for="block_1_description">Краткий текст</label>
                           <textarea style="width: 100%;" rows="3" th:field="*{block_1_description}" id="block_1_description"></textarea>
+                          <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('block_1_description')}" th:errors="*{block_1_description}"></h4>
                         </div>
                       </div>
                       <div class="col-md-4">
                         <h4>Блок 2</h4>
-                        <img th:src="${page.block_2_img != null && !page.block_2_img.isEmpty()} ?
-                                   @{/images/{url}(url=${page.block_2_img})} :
+                        <img th:src="${mainPage.block_2_img != null && !mainPage.block_2_img.isEmpty()} ?
+                                   @{/images/{url}(url=${mainPage.block_2_img})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
                           <label for="page_block_2_img" class="control-label">Рекомендуемый размер: (1920х800)</label>
@@ -144,17 +148,19 @@
                         <div class="form-group mb-30">
                           <label for="block_2_title" class="control-label">Заголовок блока</label>
                           <input type="text" class="form-control" placeholder="О управляющей компании" th:field="*{block_2_title}" id="block_2_title">
+                          <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('block_2_title')}" th:errors="*{block_2_title}"></h4>
                         </div>
                         <div class="form-group mb-30">
                           <label class="control-label" for="block_2_description">Краткий текст</label>
                           <textarea style="width: 100%;" rows="3" th:field="*{block_2_description}" id="block_2_description"></textarea>
+                          <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('block_2_description')}" th:errors="*{block_2_description}"></h4>
                         </div>
 
                       </div>
                       <div class="col-md-4">
                         <h4>Блок 3</h4>
-                        <img th:src="${page.block_3_img != null && !page.block_3_img.isEmpty()} ?
-                                   @{/images/{url}(url=${page.block_3_img})} :
+                        <img th:src="${mainPage.block_3_img != null && !mainPage.block_3_img.isEmpty()} ?
+                                   @{/images/{url}(url=${mainPage.block_3_img})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
                           <label for="page_block_3_img" class="control-label">Рекомендуемый размер: (1920х800)</label>
@@ -164,17 +170,19 @@
                         <div class="form-group mb-30">
                           <label for="block_1_title" class="control-label">Заголовок блока</label>
                           <input type="text" class="form-control" placeholder="О управляющей компании" th:field="*{block_3_title}" id="block_3_title">
+                          <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('block_3_title')}" th:errors="*{block_3_title}"></h4>
                         </div>
                         <div class="form-group mb-30">
                           <label class="control-label" for="block_3_description">Краткий текст</label>
                           <textarea style="width: 100%;" rows="3" th:field="*{block_3_description}" id="block_3_description"></textarea>
+                          <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('block_3_description')}" th:errors="*{block_3_description}"></h4>
                         </div>
 
                       </div>
                       <div class="col-md-4">
                         <h4>Блок 4</h4>
-                        <img th:src="${page.block_4_img != null && !page.block_4_img.isEmpty()} ?
-                                   @{/images/{url}(url=${page.block_4_img})} :
+                        <img th:src="${mainPage.block_4_img != null && !mainPage.block_4_img.isEmpty()} ?
+                                   @{/images/{url}(url=${mainPage.block_4_img})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
                           <label for="page_block_4_img" class="control-label">Рекомендуемый размер: (1920х800)</label>
@@ -184,17 +192,19 @@
                         <div class="form-group mb-30">
                           <label for="block_4_title" class="control-label">Заголовок блока</label>
                           <input type="text" class="form-control" placeholder="О управляющей компании" th:field="*{block_4_title}" id="block_4_title">
+                          <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('block_4_title')}" th:errors="*{block_4_title}"></h4>
                         </div>
                         <div class="form-group mb-30">
                           <label class="control-label" for="block_4_description">Краткий текст</label>
                           <textarea style="width: 100%;" rows="3" th:field="*{block_4_description}" id="block_4_description"></textarea>
+                          <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('block_4_description')}" th:errors="*{block_4_description}"></h4>
                         </div>
 
                       </div>
                       <div class="col-md-4">
                         <h4>Блок 5</h4>
-                        <img th:src="${page.block_5_img != null && !page.block_5_img.isEmpty()} ?
-                                   @{/images/{url}(url=${page.block_5_img})} :
+                        <img th:src="${mainPage.block_5_img != null && !mainPage.block_5_img.isEmpty()} ?
+                                   @{/images/{url}(url=${mainPage.block_5_img})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
                           <label for="page_block_5_img" class="control-label">Рекомендуемый размер: (1920х800)</label>
@@ -204,17 +214,19 @@
                         <div class="form-group mb-30">
                           <label for="block_5_title" class="control-label">Заголовок блока</label>
                           <input type="text" class="form-control" placeholder="О управляющей компании" th:field="*{block_5_title}" id="block_5_title">
+                          <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('block_5_title')}" th:errors="*{block_5_title}"></h4>
                         </div>
                         <div class="form-group field-websitehomeform-homedescription">
                           <label class="control-label" for="block_5_description">Краткий текст</label>
                           <textarea style="width: 100%;" rows="3" th:field="*{block_5_description}" id="block_5_description"></textarea>
+                          <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('block_5_description')}" th:errors="*{block_5_description}"></h4>
                         </div>
 
                       </div>
                       <div class="col-md-4">
                         <h4>Блок 6</h4>
-                        <img th:src="${page.block_6_img != null && !page.block_6_img.isEmpty()} ?
-                                   @{/images/{url}(url=${page.block_6_img})} :
+                        <img th:src="${mainPage.block_6_img != null && !mainPage.block_6_img.isEmpty()} ?
+                                   @{/images/{url}(url=${mainPage.block_6_img})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
                           <label for="page_block_6_img" class="control-label">Рекомендуемый размер: (1920х800)</label>
@@ -224,10 +236,12 @@
                         <div class="form-group mb-30">
                           <label for="block_6_title" class="control-label">Заголовок блока</label>
                           <input type="text" class="form-control" placeholder="О управляющей компании" th:field="*{block_6_title}" id="block_6_title">
+                          <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('block_6_title')}" th:errors="*{block_6_title}"></h4>
                         </div>
                         <div class="form-group field-websitehomeform-homedescription">
                           <label class="control-label" for="block_6_description">Краткий текст</label>
                           <textarea style="width: 100%;" rows="3" th:field="*{block_6_description}" id="block_6_description"></textarea>
+                          <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('block_6_description')}" th:errors="*{block_6_description}"></h4>
                         </div>
 
                       </div>

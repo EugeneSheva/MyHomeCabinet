@@ -7,6 +7,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 // --- ЛИЦЕВЫЕ СЧЕТА ---
@@ -22,20 +23,28 @@ public class ApartmentAccount {
 
     private Long number;
 
-    @NotNull
     private Boolean isActive;
 
     @ToString.Exclude
     @JsonIgnore
     @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name="apartment_id")
-    @NotNull
     private Apartment apartment;
+
+    @ManyToOne
+    @JoinColumn(name="building_id")
+    private Building building;
+
+    @ManyToOne
+    @JoinColumn(name="owner_id")
+    private Owner owner;
+
+    private String section;
 
     @ToString.Exclude
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "apartmentAccount")
-    private List<CashBox> transactions;
+    private List<CashBox> transactions = new ArrayList<>();
 
     private Double balance = 0.0;
 

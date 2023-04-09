@@ -4,6 +4,7 @@ import com.example.myhome.home.model.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Join;
+import java.time.LocalDateTime;
 
 public class RequestSpecifications {
 
@@ -54,6 +55,10 @@ public class RequestSpecifications {
         return (root, query, cb) -> cb.equal(root.get(RepairRequest_.STATUS), status);
     }
 
+    public static Specification<RepairRequest> datesBetween(LocalDateTime from, LocalDateTime to) {
+        if(from == null || to == null) return (root, query, criteriaBuilder) -> null;
+        return (root, query, cb) -> cb.between(root.get(RepairRequest_.BEST_TIME_REQUEST), from, to);
+    }
 
 
 }

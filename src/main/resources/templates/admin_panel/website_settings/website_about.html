@@ -57,10 +57,12 @@
                       <div class="form-group">
                         <label for="websitehomeform-hometitle" class="control-label">Заголовок</label>
                         <input type="text" class="form-control" th:field="*{title}" id="websitehomeform-hometitle">
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></h4>
                       </div>
                       <div class="form-group field-websitehomeform-homedescription">
                         <label class="control-label" for="description">Краткий текст</label>
                         <textarea th:field="*{description}" id="description"></textarea>
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></h4>
                       </div>
                     </div>
                     <div class="col-md-4">
@@ -102,10 +104,12 @@
                       <div class="form-group">
                         <label for="websitehomeform-hometitle" class="control-label">Заголовок</label>
                         <input type="text" class="form-control" th:field="*{add_title}" id="websitehomeform-homeaddtitle">
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('add_title')}" th:errors="*{add_title}"></h4>
                       </div>
                       <div class="form-group">
                         <label class="control-label" for="websitehomeform-homedescription">Краткий текст</label>
                         <textarea style="width: 100%" rows="4" th:field="*{add_description}" id="add_description"></textarea>
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('add_description')}" th:errors="*{add_description}"></h4>
                       </div>
                     </div>
                   </div>

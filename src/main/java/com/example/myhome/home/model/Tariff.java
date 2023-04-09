@@ -21,8 +21,9 @@ public class Tariff {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Необходимо указать название тарифа")
     private String name;
+    @NotBlank(message = "Необходимо указать описание тарифа")
     private String description;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")

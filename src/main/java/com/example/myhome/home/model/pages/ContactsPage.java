@@ -13,15 +13,15 @@ import javax.validation.constraints.NotBlank;
 public class ContactsPage extends Page {
 
     //Контактная информация
-    @NotBlank
+    @NotBlank(message = "Необходимо заполнить поле")
     private String title, description, website_link;
 
     //Контакты
-    @NotBlank
+    @NotBlank(message = "Необходимо заполнить поле")
     private String name, location, address, phone, email;
 
     //Карта
-    @NotBlank
+    @NotBlank(message = "Необходимо заполнить поле")
     private String map_code;
 
 }

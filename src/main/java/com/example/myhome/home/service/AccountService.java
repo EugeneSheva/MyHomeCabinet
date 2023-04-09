@@ -70,6 +70,8 @@ public class AccountService {
     }
     public Long getQuantity() { return accountRepository.countAllBy();}
 
+    public Long getMaxId() {return accountRepository.getMaxId().orElse(null);}
+
     public Double getSumOfAccountBalances() {
         return accountRepository.findAll().stream()
                 .map(ApartmentAccount::getBalance)

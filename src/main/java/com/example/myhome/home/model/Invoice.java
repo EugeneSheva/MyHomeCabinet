@@ -28,6 +28,20 @@ public class Invoice {
     private Apartment apartment;
 
     @ManyToOne
+    @JoinColumn(name = "building_id")
+    private Building building;
+
+    private String section;
+
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private ApartmentAccount account;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
+
+    @ManyToOne
     @JoinColumn(name="tariff_id")
     private Tariff tariff;
 

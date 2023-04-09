@@ -65,6 +65,7 @@ public class RequestController {
     public String showCreateRequestPage(Model model) {
 
         model.addAttribute("repairRequest", new RepairRequest());
+        model.addAttribute("id", repairRequestService.getMaxId()+1);
 
         return "admin_panel/requests/request_card";
     }
@@ -74,7 +75,8 @@ public class RequestController {
         RepairRequest repairRequest = repairRequestService.findRequestById(id);
         if(repairRequest.getBest_time_request() == null) repairRequest.setBest_time_request(LocalDateTime.now());
         log.info(repairRequest.toString());
-        model.addAttribute("request", repairRequest);
+        model.addAttribute("repairRequest", repairRequest);
+        model.addAttribute("id", id);
         model.addAttribute("date", repairRequest.getRequest_date().toLocalDate());
         model.addAttribute("time", repairRequest.getRequest_date().toLocalTime());
         model.addAttribute("best_date", repairRequest.getBest_time_request().toLocalDate());
@@ -95,17 +97,21 @@ public class RequestController {
     @PostMapping("/create")
     public String createRequest(@ModelAttribute RepairRequest repairRequest,
                                 BindingResult bindingResult,
-                                @RequestParam String date,
-                                @RequestParam String time,
+                                @RequestParam(required = false) String date,
+                                @RequestParam(required = false) String time,
                                 @RequestParam(required = false) String best_date,
                                 @RequestParam(required = false) String best_time) {
+
+        if(best_date == null || best_date.isEmpty()) best_date = LocalDate.now().plusDays(2).toString();
+        if(best_time == null || best_time.isEmpty()) best_time = LocalTime.of(12, 0).toString();
+
+        repairRequest.setRequest_date(LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(time)));
+        repairRequest.setBest_time_request(LocalDateTime.of(LocalDate.parse(best_date), LocalTime.parse(best_time)));
 
         validator.validate(repairRequest, bindingResult);
         log.info(bindingResult.getAllErrors().toString());
         if(bindingResult.hasErrors()) return "admin_panel/requests/request_card";
 
-        repairRequest.setRequest_date(LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(time)));
-        repairRequest.setBest_time_request(LocalDateTime.of(LocalDate.parse(best_date), LocalTime.parse(best_time)));
         repairRequestService.saveRequest(repairRequest);
         return "redirect:/admin/requests";
     }
@@ -117,13 +123,17 @@ public class RequestController {
                                 @RequestParam(required = false) String best_date,
                                 @RequestParam(required = false) String best_time) {
 
-        validator.validate(repairRequest, bindingResult);
-        log.info(bindingResult.getAllErrors().toString());
-        if(bindingResult.hasErrors()) return "admin_panel/requests/request_card";
+        if(best_date == null) best_date = LocalDate.now().plusDays(2).toString();
+        if(best_time == null) best_time = LocalTime.of(12, 0).toString();
 
         RepairRequest originalRequest = repairRequestService.findRequestById(id);
         repairRequest.setRequest_date(originalRequest.getRequest_date());
         repairRequest.setBest_time_request(LocalDateTime.of(LocalDate.parse(best_date), LocalTime.parse(best_time)));
+
+        validator.validate(repairRequest, bindingResult);
+        log.info(bindingResult.getAllErrors().toString());
+        if(bindingResult.hasErrors()) return "admin_panel/requests/request_card";
+
         repairRequestService.saveRequest(repairRequest);
         return "redirect:/admin/requests";
     }

@@ -63,6 +63,7 @@
                 <input type="hidden" th:value="${now}">
                 <input style="width: 90%;" type="date" id="date" class="form-control" th:field="*{date}" th:if="*{date != null}">
                 <input style="width: 90%;" type="date" id="date" data-bl="1" class="form-control" th:field="*{date}" th:value="${now}" th:if="*{date == null}">
+                <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></h4>
               </div>
             </div>
             <div class="col-md-6"></div>
@@ -87,19 +88,31 @@
                         </select>
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('building')}" th:errors="*{building}"></h4>
                         <h4 class="mt-4"><b>Секция</b></h4>
-                        <select class="selects" th:field="*{section}" disabled id="section_select">
-                          <option value="0">Сначала выберите дом</option>
+                        <select class="selects" th:field="*{section}" disabled th:if="*{building == null}" id="section_select">
+                          <option value="">Сначала выберите дом</option>
+                        </select>
+                        <select class="selects" th:field="*{section}" th:if="*{building != null}" id="section_select">
+                          <option value="">Выберите...</option>
+                          <option th:each="section : *{building.getSections()}"
+                                  th:value="${section}"
+                                  th:text="${section}"></option>
                         </select>
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('section')}" th:errors="*{section}"></h4>
                         <h4 class="mt-4"><b>Квартира</b></h4>
                         <input type="hidden" id="section_name" th:if="${meterData.apartment != null}" th:value="${meterData.section}">
-                        <select class="selects" disabled th:field="*{apartment}" id="apartment_select">
-                          <option value="0">Сначала выберите секцию</option>
+                        <select class="selects" disabled th:field="*{apartment}" th:if="*{section == null}" id="apartment_select">
+                          <option value="">Сначала выберите секцию</option>
+                        </select>
+                        <select class="selects" th:field="*{apartment}" th:if="*{section != null}" id="apartment_select">
+                          <option value="">Сначала выберите секцию</option>
+                          <option th:each="flat : *{building.getApartments()}"
+                                  th:value="${flat.id}"
+                                  th:text="'кв. ' + ${flat.number}"></option>
                         </select>
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('apartment')}" th:errors="*{apartment}"></h4>
                         <h4 class="mt-4"><b>Счётчик</b></h4>
                         <select class="selects" th:field="*{service}">
-                          <option value="0">Выберите услугу...</option>
+                          <option value="">Выберите услугу...</option>
                           <option th:each="s_service : ${services}"
                                   th:if="${s_service.show_in_meters}"
                                   th:value="${s_service.id}"
@@ -166,6 +179,27 @@
 <script th:src="@{/dist/js/adminlte.js}"></script>
 
 <script th:inline="javascript">
+
+  function utf8_decode (aa) {
+    var bb = '', c = 0;
+    for (var i = 0; i < aa.length; i++) {
+        c = aa.charCodeAt(i);
+        if (c > 127) {
+            if (c > 1024) {
+                if (c == 1025) {
+                    c = 1016;
+                } else if (c == 1105) {
+                    c = 1032;
+                }
+                bb += String.fromCharCode(c - 848);
+            }
+        } else {
+            bb += aa.charAt(i);
+        }
+    }
+    return bb;
+  }
+
   $(document).ready(function(){
 
     let meter_section = [[${meterData.section}]];
@@ -176,58 +210,6 @@
     console.log(meter_section);
     console.log(meter_apartment_number);
 
-    if(document.getElementById("apartment_exists").value === '1') {
-
-      let house_select = document.getElementById("house_select");
-      let section_select = document.getElementById("section_select");
-      let apartment_select = document.getElementById("apartment_select");
-
-      let section_name = document.getElementById("section_name");
-
-      section_select.disabled = false;
-      apartment_select.disabled = false;
-
-      section_select.innerHTML = '';
-      apartment_select.innerHTML = '';
-
-      $.get('/admin/buildings/get-sections/'+house_select.value, function(data){
-
-            console.log(data);
-
-            for(let i = 0; i < data.length; i++) {
-              option = document.createElement("option");
-              option.value = data[i];
-              option.text = data[i];
-              section_select.appendChild(option);
-              section_select.value = data[0];
-            }
-
-            section_select.value = meter_section;
-            console.log(section_select.value);
-      });
-
-      console.log("house id " + house_select.value);
-      console.log("section name " + section_name.value);
-
-      $.get('/admin/buildings/get-section-apartments/'+house_select.value, {section_name:section_name.value}, function(data){
-
-            console.log(data);
-
-            for(let i = 0; i < data.length; i++) {
-              option = document.createElement("option");
-              option.value = data[i].id;
-              option.text = 'кв. ' + data[i].number;
-              apartment_select.appendChild(option);
-            }
-
-            console.log('кв. ' + meter_apartment_number);
-            apartment_select.value=meter_apartment_number_id;
-            console.log(apartment_select.value);
-
-      });
-
-      //надо подгрузить в селекты все опции
-    }
 
     $("#house_select").change(function(){
         console.log(this);
@@ -327,19 +309,23 @@
 
     document.getElementById("new_meter_btn").addEventListener('click', function(){
       let initial_meter_id = document.getElementById("id").value;
+      let building_id = document.getElementById("house_select").value;
+      let section_name = document.getElementById("section_select").value;
       let date = document.getElementById("date").value;
-      let apart_id = document.getElementById("apartment_select").value;
-      let serv_id = document.getElementById("service").value;
+      let apartment_id = document.getElementById("apartment_select").value;
+      let service_id = document.getElementById("service").value;
       let stat = document.getElementById("status").value;
       let readings = document.getElementById("currentReadings").value;
 
       let meter = {
-        'initial_meter_id': initial_meter_id,
-        'apartment_id': apart_id,
-        'readings':readings,
-        'stat':stat,
-        'service_id': serv_id,
-        'date':date
+        'id': initial_meter_id,
+        'apartment': apartment_id,
+        'building': building_id,
+        'section': section_name,
+        'currentReadings': readings,
+        'status': stat,
+        'service': service_id,
+        'date': date
       }
 
       console.log(meter);
@@ -347,18 +333,20 @@
       $.ajax({
         type:"POST",
         url:'/admin/meters/save-meter',
-        data: {
-          'initial_meter_id': initial_meter_id,
-          'apartment_id': apart_id,
-          'readings':readings,
-          'stat':stat,
-          'service_id': serv_id,
-          'date':date
-        },
-        success:function(){
-          alert("Сохранил заебись");
-          window.location.href='/admin/meters/create-add?flat_id='+apart_id+'&service_id='+serv_id;
-        },
+        data: meter,
+        success: function(data){
+          let errors = [];
+          console.log(data.length);
+          for(const msg of data) {
+            console.log(typeof msg);
+            errors.push(msg.toString());
+          }
+          if(data == null) {
+            alert("Сохранил заебись");
+            window.location.href='/admin/meters/create-add?flat_id='+apartment_id+'&service_id='+service_id;
+          }
+          else alert('Сохранение невозможно, найдены ошибки:\n' + errors.join('\n'));
+        }
       });
     });
 

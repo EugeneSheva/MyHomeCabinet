@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +40,20 @@ public class RepairRequestService {
         Owner owner = (filters.getOwner() != null) ? ownerService.findById(filters.getOwner()) : null;
         Admin master = (filters.getMaster() != null) ? adminService.findAdminById(filters.getMaster()) : null;
 
+        String datetime = filters.getDatetime();
+        LocalDateTime from = null, to = null;
+
+        if(datetime != null && !datetime.isEmpty()) {
+            String datetime_from = datetime.split(" to ")[0];
+            from =
+                    LocalDateTime.of(LocalDate.parse(datetime_from.split(" ")[0]),
+                                    LocalTime.parse(datetime_from.split(" ")[1]));
+            String datetime_to = datetime.split(" to ")[1];
+            to =
+                    LocalDateTime.of(LocalDate.parse(datetime_to.split(" ")[0]),
+                                    LocalTime.parse(datetime_to.split(" ")[1]));
+        }
+
         Specification<RepairRequest> specification =
                 Specification.where(RequestSpecifications.hasId(id)
                                 .and(RequestSpecifications.hasMasterType(masterType))
@@ -45,13 +62,16 @@ public class RepairRequestService {
                                 .and(RequestSpecifications.hasOwner(owner))
                                 .and(RequestSpecifications.hasPhoneLike(phone))
                                 .and(RequestSpecifications.hasMaster(master))
-                                .and(RequestSpecifications.hasStatus(status)));
+                                .and(RequestSpecifications.hasStatus(status))
+                                .and(RequestSpecifications.datesBetween(from, to)));
 
         List<RepairRequest> foundItems = repairRequestRepository.findAll(specification);
         log.info("Found items: " + foundItems.toString());
 
         return foundItems;
     }
+
+    public Long getMaxId() {return repairRequestRepository.getMaxId().orElse(0L);}
 
     public RepairRequest findRequestById(long request_id) {return repairRequestRepository.findById(request_id).orElseThrow();}
 

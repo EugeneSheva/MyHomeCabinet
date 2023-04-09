@@ -50,7 +50,7 @@
                 <h3 class="box-title">Редактирование страницы "Контакты"</h3>
               </div>
               <div class="box-body">
-                <form method="post" th:object="${page}" enctype="multipart/form-data">
+                <form method="post" th:object="${contactsPage}" enctype="multipart/form-data">
                   <div class="row">
                     <div class="col-md-8">
                       <h3 class="page-header">Контактная информация</h3>
@@ -59,17 +59,20 @@
 
                         <label for="websitehomeform-hometitle" class="control-label">Заголовок</label>
                         <input type="text" class="form-control" th:field="*{title}">
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></h4>
 
                       </div>
                       <div class="form-group">
                         <label class="control-label" for="description">Краткий текст</label>
                         <textarea th:field="*{description}" id="description"></textarea>
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></h4>
                       </div>
 
                       <div class="form-group">
 
                         <label for="websitehomeform-hometitle" class="control-label">Ссылка на коммерческий сайт</label>
                         <input type="text" class="form-control" th:field="*{website_link}">
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('website_link')}" th:errors="*{website_link}"></h4>
 
                       </div>
                     </div>
@@ -80,30 +83,35 @@
 
                         <label for="websitehomeform-hometitle" class="control-label">ФИО</label>
                         <input type="text" class="form-control" th:field="*{name}">
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></h4>
 
                       </div>
                       <div class="form-group">
 
                         <label for="websitehomeform-hometitle" class="control-label">Локация</label>
                         <input type="text" class="form-control" th:field="*{location}">
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('location')}" th:errors="*{location}"></h4>
 
                       </div>
                       <div class="form-group">
 
                         <label for="websitehomeform-hometitle" class="control-label">Адрес</label>
                         <input type="text" class="form-control" th:field="*{address}" id="websitehomeform-hometitle">
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></h4>
 
                       </div>
                       <div class="form-group">
 
                         <label for="websitehomeform-hometitle" class="control-label">Телефон</label>
                         <input type="text" class="form-control" th:field="*{phone}" id="websitehomeform-hometitle">
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></h4>
 
                       </div>
                       <div class="form-group">
 
                         <label for="websitehomeform-hometitle" class="control-label">E-mail</label>
                         <input type="text" class="form-control" th:field="*{email}" id="websitehomeform-hometitle">
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></h4>
 
                       </div>
                     </div>
@@ -116,6 +124,7 @@
                         <label class="control-label" for="websitehomeform-homemetadescription">Код карты</label>
                         <textarea th:field="*{map_code}" style="width: 100%;" class="form-control" rows="6">
                         </textarea>
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('map_code')}" th:errors="*{map_code}"></h4>
 
                       </div>
                     </div>

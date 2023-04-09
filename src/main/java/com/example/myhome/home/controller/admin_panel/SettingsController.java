@@ -10,6 +10,7 @@ import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -35,7 +36,7 @@ public class SettingsController {
 
     @GetMapping("/admin/payment-details")
     public String showPaymentDetailsPage(Model model) {
-        model.addAttribute("details", paymentDetailsRepository.findById(1L).orElseGet(PaymentDetails::new));
+        model.addAttribute("paymentDetails", paymentDetailsRepository.findById(1L).orElseGet(PaymentDetails::new));
         return "admin_panel/system_settings/settings_payment";
     }
 
@@ -61,12 +62,18 @@ public class SettingsController {
 
     @GetMapping("/admin/income-expense/create")
     public String showCreateTransactionPage(Model model) {
-        model.addAttribute("transaction", new IncomeExpenseItems());
+        model.addAttribute("incomeExpenseItems", new IncomeExpenseItems());
         return "admin_panel/system_settings/transaction_card";
     }
 
     @PostMapping("/admin/income-expense/create")
-    public String createTransaction(@Valid @ModelAttribute IncomeExpenseItems item) {
+    public String createTransaction(@Valid @ModelAttribute IncomeExpenseItems item, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            log.info("errors found");
+            log.info(bindingResult.getObjectName());
+            log.info(bindingResult.getAllErrors().toString());
+            return "admin_panel/system_settings/transaction_card";
+        }
         if(!incomeExpenseRepository.existsByName(item.getName()))
             incomeExpenseRepository.save(new IncomeExpenseItems(item.getName(), item.getIncomeExpenseType()));
         return "redirect:/admin/income-expense";
@@ -74,12 +81,18 @@ public class SettingsController {
 
     @GetMapping("/admin/income-expense/update/{id}")
     public String showUpdateTransactionPage(@PathVariable long id, Model model) {
-        model.addAttribute("transaction", incomeExpenseRepository.findById(id).orElseThrow());
+        model.addAttribute("incomeExpenseItems", incomeExpenseRepository.findById(id).orElseThrow());
         return "admin_panel/system_settings/transaction_card";
     }
 
     @PostMapping("/admin/income-expense/update/{id}")
-    public String updateTransaction(@Valid @ModelAttribute IncomeExpenseItems item) {
+    public String updateTransaction(@Valid @ModelAttribute IncomeExpenseItems item, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            log.info("errors found");
+            log.info(bindingResult.getObjectName());
+            log.info(bindingResult.getAllErrors().toString());
+            return "admin_panel/system_settings/transaction_card";
+        }
         incomeExpenseRepository.save(item);
         return "redirect:/admin/income-expense";
     }
@@ -91,7 +104,15 @@ public class SettingsController {
     }
 
     @PostMapping("/admin/payment-details")
-    public String updatePaymentDetails(@Valid @ModelAttribute PaymentDetails details, RedirectAttributes redirectAttributes) {
+    public String updatePaymentDetails(@Valid @ModelAttribute PaymentDetails details, BindingResult bindingResult,
+                                       RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()) {
+            log.info("errors found");
+            log.info(bindingResult.getObjectName());
+            log.info(bindingResult.getAllErrors().toString());
+            return "admin_panel/system_settings/settings_payment";
+        }
+
         details.setId(1L);
         paymentDetailsRepository.save(details);
 

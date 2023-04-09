@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Log
@@ -49,12 +47,27 @@ public class InvoiceService {
         Owner owner = (filters.getOwner() != null) ? ownerService.findById(filters.getOwner()) : null;
         Boolean completed = filters.getCompleted();
 
+        String month = filters.getMonth();
+        LocalDate m = (month != null && !month.isEmpty()) ? LocalDate.of(Integer.parseInt(month.split("-")[0]),
+                Integer.parseInt(month.split("-")[1]), 1) : null;
+        LocalDate m2 = (m != null) ? m.plusMonths(1).minusDays(1) : null;
+
+        String date = filters.getDate();
+        LocalDate date_from = null;
+        LocalDate date_to = null;
+        if(date != null && !date.isEmpty()) {
+            date_from = LocalDate.parse(date.split(" to ")[0]);
+            date_to = LocalDate.parse(date.split(" to ")[1]);
+        }
+
         Specification<Invoice> specification =
                 Specification.where(InvoiceSpecifications.hasId(id)
                         .and(InvoiceSpecifications.hasStatus(status))
                         .and(InvoiceSpecifications.hasApartment(apartment))
                         .and(InvoiceSpecifications.hasOwner(owner))
-                        .and(InvoiceSpecifications.isCompleted(completed)));
+                        .and(InvoiceSpecifications.isCompleted(completed))
+                        .and(InvoiceSpecifications.datesBetween(date_from, date_to))
+                        .and(InvoiceSpecifications.datesBetween(m, m2)));
 
         return invoiceRepository.findAll(specification);
     }

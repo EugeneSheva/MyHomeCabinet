@@ -22,18 +22,19 @@
   <aside th:insert="~{main-template :: sidebar}"></aside>
 
   <div class="content-wrapper">
+    <form method="post" th:object="${invoice}">
     <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0"
-                th:text="${account != null} ? 'Квитанция №' + ${invoice.id}  : 'Новая квитанция'"></h1>
+                th:text="*{id != null} ? 'Квитанция №' + *{id}  : 'Новая квитанция'"></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
               <li class="breadcrumb-item"><a th:href="@{/admin/invoices}">Квитанции</a></li>
-              <li class="breadcrumb-item active" th:text="${invoice.id != null} ? 'Квитанция №' + ${invoice.id} : 'Новая квитанция'"></li>
+              <li class="breadcrumb-item active" th:text="*{id != null} ? 'Квитанция №' + *{id} : 'Новая квитанция'"></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -43,7 +44,6 @@
 
     <!-- Main content -->
     <section class="page_content">
-      <form method="post" th:object="${invoice}">
         <input type="hidden" id="apartment_exists" th:value="${flat != null} ? 1 : 0">
         <input type="hidden" th:field="*{id}">
         <div class="container-fluid">
@@ -58,11 +58,11 @@
             <div class="col-md-3">
               <span style="display:inline;">от </span>
               <input style="width: 90%; display:inline;" type="date"
-                     th:if="${invoice.id != null}"
+                     th:if="*{id != null}"
                      th:field="*{date}"
                      class="form-control">
               <input style="width: 90%; display:inline;" type="date" name="date"
-                     th:if="${invoice.id == null}"
+                     th:if="*{id == null}"
                      th:value="${current_date}"
                      class="form-control">
             </div>
@@ -77,44 +77,48 @@
                   <div class="row">
                     <div class="col-md-6">
                       <h4 style="font-weight: bold">Дом</h4>
-                      <select id="house_select" th:field="*{apartment.building}" class="selects mb-3">
-                        <option value="0">Выберите...</option>
+                      <select id="house_select" th:field="*{building}" th:style="${#fields.hasErrors('building')} ? 'border: 0.5px solid red'" class="selects mb-3">
+                        <option value="">Выберите...</option>
                         <option th:each="building : ${buildings}"
                                 th:value="${building.id}"
                                 th:text="${building.name}"></option>
                       </select>
+                      <div style="color: #d80450; font-weight: bold; margin-top:-15px; margin-bottom:10px" th:if="${#fields.hasErrors('building')}" th:errors="*{building}"></div>
                       <h4 style="font-weight: bold">Секция</h4>
-                      <select id="section_select" th:if="*{apartment.building != null}" th:field="*{apartment.section}" class="selects mb-3">
-                        <option th:each="section : *{apartment.building.getSections()}"
+                      <select id="section_select" th:if="*{building != null}" th:style="${#fields.hasErrors('section')} ? 'border: 0.5px solid red'" th:field="*{section}" class="selects mb-3">
+                        <option th:each="section : *{building.getSections()}"
                                 th:value="${section}"
                                 th:text="${section}"></option>
                       </select>
-                      <select id="section_select" th:if="*{apartment.building == null}" disabled th:field="*{apartment.section}" class="selects mb-3">
-                        <option value="0">Сначала выберите дом</option>
+                      <select id="section_select" th:if="*{building == null}" disabled th:style="${#fields.hasErrors('section')} ? 'border: 0.5px solid red'" th:field="*{section}" class="selects mb-3">
+                        <option value="">Сначала выберите дом</option>
                       </select>
+                      <div style="color: #d80450; font-weight: bold;" th:if="${#fields.hasErrors('section')}" th:errors="*{section}"></div>
                       <h4 style="font-weight: bold">Квартира</h4>
-                      <select id="apartment_select" th:if="*{apartment.building != null}" th:field="*{apartment}" class="selects mb-3">
-                        <option th:each="flat : *{apartment.building.getApartments()}"
+                      <select id="apartment_select" th:if="*{building != null}" th:style="${#fields.hasErrors('apartment')} ? 'border: 0.5px solid red'" th:field="*{apartment}" class="selects mb-3">
+                        <option th:each="flat : *{building.getApartments()}"
                                 th:value="${flat.id}"
                                 th:text="'кв. ' + ${flat.number}"></option>
                       </select>
-                      <select id="apartment_select" th:if="*{apartment.building == null}" disabled th:field="*{apartment}" class="selects mb-3">
-                        <option value="0">Сначала выберите секцию</option>
+                      <select id="apartment_select" th:if="*{building == null}" disabled th:field="*{apartment}" th:style="${#fields.hasErrors('apartment')} ? 'border: 0.5px solid red'" class="selects mb-3">
+                        <option value="">Сначала выберите секцию</option>
                       </select>
+                      <div style="color: #d80450; font-weight: bold; margin-top:-15px; margin-bottom:10px" th:if="${#fields.hasErrors('apartment')}" th:errors="*{apartment}"></div>
 
                       <h4 style="font-weight: bold">Лицевой счёт</h4>
-                      <input type="text" id="account" disabled style="width: 100%;" class="mb-3" th:field="*{apartment.account}">
+                      <input type="text" id="account" style="width: 100%; caret-color:transparent" class="mb-3" th:field="*{account}" th:styleappend="${#fields.hasErrors('account')} ? 'border: 0.5px solid red'" readonly>
+                      <div style="color: #d80450; font-weight: bold; margin-top:-15px; margin-bottom:10px" th:if="${#fields.hasErrors('account')}" th:errors="*{account}"></div>
 
                       <p id="owner_name">
                         <b>Владелец: </b>
-                        <span th:if="*{apartment.owner != null}">
-                          <a th:href="@{/admin/owners/{id}(id=*{apartment.owner.id})}" th:text="*{apartment.owner.getFullName()}"></a>
+                        <span th:if="*{owner != null}">
+                          <a th:href="@{/admin/owners/{id}(id=*{owner.id})}" th:text="*{owner.getFullName()}"></a>
                         </span>
                       </p>
                       <p id="owner_phone">
                         <b>Телефон: </b>
-                        <span th:if="*{apartment.owner != null}">
-                          <a th:href="'tel:' + *{apartment.owner.phone_number}" th:text="*{apartment.owner.phone_number}"></a>
+                        <span th:if="*{owner != null}">
+                          <a th:href="'tel:' + *{owner.phone_number}" th:text="*{owner.phone_number}"></a>
                         </span>
                       </p>
                     </div>
@@ -122,27 +126,31 @@
                       <input type="checkbox" class="mb-5 mt-3" style="caret-color:transparent;" th:field="*{completed}"> <b>Проведена</b>
                       <br>
                       <h4 style="font-weight: bold">Статус</h4>
-                      <select th:field="*{status}" class="selects mb-3">
-                        <option disabled value="0">Выберите...</option>
+                      <select th:field="*{status}" class="selects mb-3" th:style="${#fields.hasErrors('status')} ? 'border: 0.5px solid red'">
+                        <option disabled value="">Выберите...</option>
                         <option th:each="stat : ${T(com.example.myhome.home.model.InvoiceStatus).values()}"
                                 th:value="${stat}"
                                 th:text="${stat.getName()}"></option>
                       </select>
+                      <div style="color: #d80450; font-weight: bold; margin-top:-15px; margin-bottom:10px" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></div>
                       <h4 style="font-weight: bold">Тариф</h4>
-                      <select th:field="*{tariff}" class="selects mb-3">
-                        <option value="0">Выберите...</option>
+                      <select th:field="*{tariff}" class="selects mb-3" th:style="${#fields.hasErrors('tariff')} ? 'border: 0.5px solid red'">
+                        <option value="">Выберите...</option>
                         <option th:each="t : ${tariffs}"
                                 th:value="${t.id}"
                                 th:text="${t.name}"></option>
                       </select>
+                      <div style="color: #d80450; font-weight: bold; margin-top:-15px; margin-bottom:10px" th:if="${#fields.hasErrors('tariff')}" th:errors="*{tariff}"></div>
                       <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-2">
                           <h4 style="font-weight: bold">Период с</h4>
-                          <input type="date" style="width: 90%" th:field="*{dateFrom}">
+                          <input type="date" style="width: 90%" th:field="*{dateFrom}" th:style="${#fields.hasErrors('dateFrom')} ? 'border: 0.5px solid red'">
+                          <div style="color: #d80450; font-weight: bold; margin-bottom:10px" th:if="${#fields.hasErrors('dateFrom')}" th:errors="*{dateFrom}"></div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-2" style="text-overflow: ">
                           <h4 style="font-weight: bold">Период по</h4>
-                          <input type="date" style="width: 90%" th:field="*{dateTo}">
+                          <input type="date" style="width: 90%" th:field="*{dateTo}" th:style="${#fields.hasErrors('dateTo')} ? 'border: 0.5px solid red'">
+                          <div style="color: #d80450; font-weight: bold; margin-bottom:10px" th:if="${#fields.hasErrors('dateTo')}" th:errors="*{dateTo}"></div>
                         </div>
                       </div>
                     </div>
@@ -150,7 +158,7 @@
 
                   <div class="row">
                     <input type="hidden" th:field="*{total_price}">
-                    <table class="table table-bordered table-striped table-view">
+                    <table class="table table-bordered table-striped table-view" th:onerror="this.style='border:0.5px solid red'">
                       <thead>
                         <tr>
                           <th>Услуга</th>
@@ -165,7 +173,7 @@
                         <tr id="component_row_template" style="display:none;">
                           <td>
                             <select class="selects services" onchange="setUnit(this)" name="services">
-                              <option value="0">Выберите...</option>
+                              <option value="">Выберите...</option>
                               <option th:each="service : ${services}"
                                       th:value="${service.id}"
                                       th:text="${service.name}"></option>
@@ -243,6 +251,7 @@
                         </tr>
                       </tbody>
                     </table>
+                    <div style="color: #d80450; font-weight: bold; margin-top:-15px; margin-bottom:10px" th:if="${#fields.hasErrors('components')}" th:errors="*{components}"></div>
                   </div>
 
 
@@ -352,7 +361,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr class="meter_data_row" th:each="row : ${invoice.apartment.getMeterDataList() == null} ? ${meters} : *{apartment.getMeterDataList()}">
+                    <tr class="meter_data_row" th:each="row : ${meters}">
                       <input type="hidden" id="row_id" th:value="${row.id}">
                       <td th:text="${T(java.lang.String).format('%010d', row.id)}"></td>
                       <td th:text="${row.status.getName()}"></td>
@@ -373,9 +382,8 @@
             </div>
           </div>
         </div>
-      </form>
     </section>
-
+    </form>
   </div>
 
   <!-- Main Footer -->
@@ -423,7 +431,6 @@
         let tariff_id = $("#tariff").val();
 
         $.get('/admin/tariffs/get-components', {tariff_id:tariff_id}, function(data){
-            alert('получил услуги из тарифа');
             console.log(data);
             console.log(typeof data);
 
@@ -501,71 +508,33 @@
         });
     }
 
-<!--    $(document).ready(function(){-->
-<!--        if(document.getElementById("apartment_exists").value === '1') {-->
-<!--          let apartment = [[${flat}]];-->
-<!--          console.log(apartment);-->
-<!--          let house_select = document.getElementById("house_select");-->
-<!--          let section_select = document.getElementById("section_select");-->
-<!--          let apartment_select = document.getElementById("apartment_select");-->
+    $(document).ready(function(){
 
-<!--          section_select.disabled = false;-->
-<!--          apartment_select.disabled = false;-->
+        document.getElementById("account").value = document.getElementById("account").value.toString().padStart(10,'0');
 
-<!--          section_select.innerHTML = '';-->
-<!--          apartment_select.innerHTML = '';-->
+        if($("#apartment_select").val() != null) {
 
-<!--          house_select.value = apartment.building.id;-->
+          let apartment;
+          $.get("/admin/apartments/get-owner", {flat_id:$("#apartment_select").val()}, function(data){
+            owner = data;
+            console.log(data);
+            console.log(owner);
 
-<!--          // Заполнение списка секций-->
-<!--          $.get('/buildings/get-sections/'+house_select.value, function(data){-->
+            let owner_name = document.createElement("a");
+            owner_name.href = '/admin/owners/' + owner.id;
+            owner_name.innerText = owner.fullName;
 
-<!--              for(let i = 0; i < data.length; i++) {-->
-<!--                option = document.createElement("option");-->
-<!--                option.value = data[i];-->
-<!--                option.text = data[i];-->
-<!--                section_select.appendChild(option);-->
-<!--                section_select.value = data[0];-->
-<!--              }-->
+            $("#owner_name").append(owner_name);
 
-<!--              section_select.value = apartment.section;-->
-<!--              let section_name = section_select.value;-->
-<!--              console.log(section_name);-->
+            let owner_phone = document.createElement("a");
+            owner_phone.href = 'tel:' + owner.phone_number;
+            owner_phone.innerText = owner.phone_number;
 
-<!--              // Заполнение списка квартир-->
-<!--              $.get('/buildings/get-section-apartments/'+house_select.value, {section_name:section_name}, function(data){-->
+            $("#owner_phone").append(owner_phone);
+          });
 
-<!--                console.log(data);-->
-
-<!--                for(let i = 0; i < data.length; i++) {-->
-<!--                  option = document.createElement("option");-->
-<!--                  option.value = data[i].id;-->
-<!--                  option.text = 'кв. ' + data[i].number;-->
-<!--                  apartment_select.appendChild(option);-->
-<!--                }-->
-
-<!--                apartment_select.value = apartment.id;-->
-
-<!--              });-->
-<!--          });-->
-
-<!--          $("#account").val(apartment.account.id.toString().padStart(10, '0'));-->
-
-<!--          let owner_name = document.createElement("a");-->
-<!--          owner_name.href = '/owners/' + apartment.owner.id;-->
-<!--          owner_name.innerText = apartment.owner.fullName;-->
-
-<!--          $("#owner_name").append(owner_name);-->
-
-<!--          let owner_phone = document.createElement("a");-->
-<!--          owner_phone.href = 'tel:' + apartment.owner.phone_number;-->
-<!--          owner_phone.innerText = apartment.owner.phone_number;-->
-
-<!--          $("#owner_phone").append(owner_phone);-->
-
-
-<!--        }-->
-<!--    });-->
+        }
+    });
 
 </script>
 

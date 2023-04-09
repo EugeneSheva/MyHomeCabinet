@@ -47,21 +47,21 @@
           <div class="col-md-12">
             <div class="box">
               <div class="box-body">
-                <form method="post" th:object="${details}" enctype="multipart/form-data">
+                <form method="post" th:object="${paymentDetails}" enctype="multipart/form-data">
                   <div class="row">
                     <div class="col-md-12">
                       <div class="form-group field-websitehomeform-homemetatitle">
 
                         <label class="control-label" for="websitehomeform-homemetatitle">Название компании</label>
                         <input type="text" id="websitehomeform-homemetatitle" class="form-control" name="WebsiteHomeForm[homeMetaTitle]" th:field="*{name}">
-
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></h4>
                       </div>
                       <div class="form-group field-websitehomeform-homemetadescription">
 
                         <label class="control-label" for="websitehomeform-homemetadescription">Информация</label>
                         <textarea id="websitehomeform-homemetadescription" class="form-control" name="WebsiteHomeForm[homeMetaDescription]" th:field="*{description}" rows="6">
                         </textarea>
-
+                        <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></h4>
                       </div>
                     </div>
                   </div>

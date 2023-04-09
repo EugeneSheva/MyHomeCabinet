@@ -1,6 +1,7 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.Admin;
+import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.AdminRepository;
 import com.example.myhome.home.service.AdminService;
 import com.example.myhome.util.UserRole;
@@ -22,8 +23,15 @@ public class AdminController {
     private AdminService adminService;
 
     @GetMapping
-    public String showAdminsPage(Model model) {
-        model.addAttribute("admins", adminService.findAll());
+    public String showAdminsPage(Model model,
+                                 FilterForm form) throws IllegalAccessException {
+        List<Admin> adminList;
+        if(!form.filtersPresent()) adminList = adminService.findAll();
+        else adminList = adminService.findAllBySpecification(form);
+
+        model.addAttribute("admins", adminList);
+
+        model.addAttribute("filter_form", form);
         return "admin_panel/system_settings/settings_users";
     }
 

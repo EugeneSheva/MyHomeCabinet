@@ -13,6 +13,8 @@ public class FilterForm {
     private String section;
 
     private Long id;
+    private String date;
+    private String month;
     private String datetime;
     private String description;
 
@@ -27,6 +29,10 @@ public class FilterForm {
     private Boolean active;
     private Boolean debt;
     private Boolean completed;
+
+    private String name;
+    private String role;
+    private String email;
 
     public FilterForm() {
     }

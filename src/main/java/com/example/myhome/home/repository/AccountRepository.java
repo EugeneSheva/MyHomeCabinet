@@ -15,6 +15,8 @@ public interface AccountRepository extends JpaRepository<ApartmentAccount, Long>
 
     Optional<ApartmentAccount> findByApartmentId(long apartment_id);
 
+    @Query("SELECT MAX(a.id) FROM ApartmentAccount a")
+    Optional<Long> getMaxId();
 
     @Query("SELECT SUM(a.balance) FROM ApartmentAccount a")
     Double getSumOfAccountBalances();

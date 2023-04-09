@@ -6,6 +6,7 @@ import com.example.myhome.home.model.MeterData;
 import com.example.myhome.home.model.MeterPaymentStatus;
 import com.example.myhome.home.repository.MeterDataRepository;
 import com.example.myhome.home.repository.specifications.MeterSpecifications;
+import com.example.myhome.home.validator.MeterValidator;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,6 +30,8 @@ public class MeterDataService {
     @Autowired private ApartmentService apartmentService;
     @Autowired private ServiceService serviceService;
     @Autowired private BuildingService buildingService;
+
+    @Autowired private MeterValidator validator;
 
     public List<MeterData> findAllMeters() {return meterDataRepository.findAll();}
     public List<MeterData> findAllMetersById(List<Long> ids) {return meterDataRepository.findAllById(ids);}
@@ -52,6 +56,7 @@ public class MeterDataService {
                                         .and(MeterSpecifications.hasService(service)));
     }
 
+    public Long getMaxId() {return meterDataRepository.getMaxId().orElse(0L);}
     public Long getMaxIdPlusOne() {return meterDataRepository.getMaxId().orElse(0L)+1L;}
 
     public Optional<MeterData> findFirstByOrderByIdDesc() {return meterDataRepository.findFirstByOrderByIdDesc();}
@@ -61,21 +66,30 @@ public class MeterDataService {
     public MeterData findMeterData(long meter_id) {return meterDataRepository.findById(meter_id).orElseThrow();}
 
     public MeterData saveMeterData(MeterData meterData) {return meterDataRepository.save(meterData);}
-    public MeterData saveMeterDataAJAX(Long initial_meter_id,    // <-- если хочешь обновить существующий
+    public MeterData saveMeterDataAJAX(Long id,    // <-- если хочешь обновить существующий
+                                       String building_id,
+                                       String section_name,
                                        String apartment_id,
                                        String readings,
                                        String stat,
                                        String service_id,
                                        String date) {
 
-        MeterData newMeter = (initial_meter_id != null) ? findMeterData(initial_meter_id) : new MeterData();
-        newMeter.setApartment(apartmentService.findById(Long.parseLong(apartment_id)));
-        newMeter.setCurrentReadings(Double.parseDouble(readings));
-        newMeter.setStatus(MeterPaymentStatus.valueOf(stat));
-        newMeter.setService(serviceService.findServiceById(Long.parseLong(service_id)));
-        newMeter.setDate(LocalDate.parse(date));
+        MeterData newMeter = (id == null || id.equals(getMaxIdPlusOne())) ? new MeterData() : findMeterData(id);
+        try {
+            newMeter.setBuilding((building_id != null) ? buildingService.findById(Long.parseLong(building_id)) : null);
+            newMeter.setSection(section_name);
+            newMeter.setApartment((apartment_id != null) ? apartmentService.findById(Long.parseLong(apartment_id)) : null);
+            newMeter.setCurrentReadings((readings != null) ? Double.parseDouble(readings) : null);
+            newMeter.setStatus(MeterPaymentStatus.valueOf(stat));
+            newMeter.setService((service_id != null) ? serviceService.findServiceById(Long.parseLong(service_id)) : null);
+            newMeter.setDate((date != null) ? LocalDate.parse(date) : null);
+        } catch (Exception e) {
+            log.info("Exception while creating meter");
+            log.info(Arrays.toString(e.getStackTrace()));
+        }
 
-        return saveMeterData(newMeter);
+        return newMeter;
     }
 
     public void deleteMeter(long meter_id) {meterDataRepository.deleteById(meter_id);}

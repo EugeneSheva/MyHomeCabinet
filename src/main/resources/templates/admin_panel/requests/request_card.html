@@ -29,13 +29,13 @@
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0"
-                th:text="*{id != null} ? 'Заявка №' + *{id} + ' - редактирование' : 'Новая заявка'"></h1>
+                th:text="${id != null} ? 'Заявка №' + ${id} + ' - редактирование' : 'Новая заявка'"></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
               <li class="breadcrumb-item"><a th:href="@{/admin/requests}">Вызовы мастера</a></li>
-              <li class="breadcrumb-item active" th:text="*{id != null} ? 'Заявка №' + *{id} : 'Новая заявка'"></li>
+              <li class="breadcrumb-item active" th:text="${id != null} ? 'Заявка №' + ${id} : 'Новая заявка'"></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -49,11 +49,11 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-3">
-              <input style="width: 90%;" th:value="${date}" th:disabled="*{id != null}" name="date" id="date" type="date" class="form-control">
+              <input style="width: 90%;" th:value="${date}" th:readonly="${id != null}" name="date" id="date" type="date" class="form-control">
             </div>
             <div class="col-md-3">
               <span style="display:inline;">от </span>
-              <input style="width: 90%; display:inline;" th:disabled="*{id != null}" th:value="${#temporals.format(time, 'HH:mm')}" name="time" id="time" type="time" class="form-control">
+              <input style="width: 90%; display:inline;" th:readonly="${id != null}" th:value="${#temporals.format(time, 'HH:mm')}" name="time" id="time" type="time" class="form-control">
             </div>
             <div class="col-md-6"></div>
           </div>
@@ -78,6 +78,7 @@
                       <h5>Удобное время</h5>
                       <input type="date" name="best_date" th:value="${best_date}" id="">
                       <input type="time" name="best_time" th:value="${best_time}" id="">
+                      <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('best_time_request')}" th:errors="*{best_time_request}"></h4>
                     </div>
                   </div>
 
