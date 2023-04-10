@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>МойДом24</title>
-    <link rel="stylesheet"
-          th:href="@{https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback}">
-    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
-    <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
-    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
-    <!--    navigation card bootstrap-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- add & del input field in navigation card bootstrap-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>МойДом24</title>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
+  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/bootstrap-datepicker/css/datepicker.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/css/tempus-dominus.min.css" crossorigin="anonymous">
+    <!-- Popperjs -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <!-- Tempus Dominus JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/js/tempus-dominus.min.js" crossorigin="anonymous"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/dayjs.min.js" integrity="sha512-hcV6DX35BKgiTiWYrJgPbu3FxS6CsCjKgmrsPRpUPkXWbvPiKxvSVSdhWX0yXcPctOI2FJ4WP6N1zH+17B/sAA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
 
+  <nav th:insert="~{cabinet-template :: header}"></nav>
+  <aside th:insert="~{cabinet-template :: sidebar}"></aside>
 
-    <!-- navbar header/sidebar -->
-    <div th:insert="~{main-template :: loading}"></div>
-    <nav th:insert="~{main-template :: header}"></nav>
-    <aside th:insert="~{main-template :: sidebar}"></aside>
-    <!-- /.navbar header/sidebar -->
-
-    <!--content-header -->
     <div class="content-wrapper">
         <div class="content-header">
             <div class="container-fluid">
@@ -58,7 +58,8 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="col-md-3" style="margin-bottom: 10px">
-                                        <img th:src="@{/images/placeholder.jpg}" alt="user-avatar"
+                                        <img th:src="${owner.profile_picture != null && !owner.profile_picture.isEmpty()} ?
+                                   @{${owner.profile_picture}} :  @{/images/placeholder.jpg}" alt="user-avatar"
                                              class="img-circle img-fluid">
                                     </div>
                                     <div class="col-md-9" style="margin-bottom: 10px">
@@ -123,86 +124,65 @@
                             </div>
                             <div class="col-md-6">
 
-                                    <label for="status" th:field="*{status}"  class="form-label" >Статус</label>
-                                    <select class="form-select" id="status" name="status">
-                                        <option selected=""  value="ACTIVE">Новый</option>
-                                        <option value="NEW">Активен</option>
-                                        <option value="DISABLED">Отключен</option>
-                                    </select>
+                                <label for="status" th:field="*{status}"  class="form-label" >Статус</label>
+                                <select class="form-select" id="status" name="status">
+                                    <option selected=""  value="ACTIVE">Новый</option>
+                                    <option value="NEW">Активен</option>
+                                    <option value="DISABLED">Отключен</option>
+                                </select>
 
-                                    <label for="id">ID</label>
-                                    <input readonly type="text" id="id" class="form-control" name="id"
-                                           th:field="*{id}" placeholder="">
+                                <label for="id">ID</label>
+                                <input readonly type="text" id="id" class="form-control" name="id"
+                                       th:field="*{id}" placeholder="">
 
-                                    <label for="description">О владельце (заметки)</label>
-                                    <textarea class="form-control" th:field="*{description}" id="description"  rows="10"></textarea ><br>
+                                <label for="description">О владельце (заметки)</label>
+                                <textarea class="form-control" th:field="*{description}" id="description"  rows="10"></textarea ><br>
 
-                                    <h4>Изменить пароль</h4>
+                                <h4>Изменить пароль</h4>
 
-                                    <input type="hidden" id="pass" class="form-control" name="pass"
-                                    placeholder="" th:field="*{password}">
+                                <input type="hidden" id="pass" class="form-control" name="pass"
+                                       placeholder="" th:field="*{password}">
 
-                                    <label for="new_pass">Пароль</label>
-                                    <input type="text" id="new_pass" class="form-control" name="new_pass"
-                                           placeholder="">
+                                <label for="new_pass">Пароль</label>
+                                <input type="text" id="new_pass" class="form-control" name="new_pass"
+                                       placeholder="">
 
 
-                                    <label for="new_re_pass">Повторите пароль</label>
-                                    <input type="text" id="new_re_pass" class="form-control" name="new_re_pass"
-                                           placeholder="">
+                                <label for="new_re_pass">Повторите пароль</label>
+                                <input type="text" id="new_re_pass" class="form-control" name="new_re_pass"
+                                       placeholder="">
 
-                                </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-secondary">Сохранить</button>
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Сохранить</button>
                 </form>
             </div>
         </section>
-    </div>
-    <!-- /.Main content -->
-    <!-- Footer -->
-    <footer th:insert="~{main-template :: footer}"></footer>
-    <!-- /.Footer -->
 </div>
 
-<script th:inline="javascript">
+  <footer th:insert="~{cabinet-template :: footer}"></footer>
+</div>
 
-<!--    function selectBuilding() {-->
 
-<!--        var list = /*[[${buildings}]]*/ [];-->
-<!--        var selectedIndex = document.getElementById("building").selectedIndex - 1;-->
-
-<!--        //sections-->
-<!--        var select = document.getElementById("section");-->
-<!--        select.innerHTML = "<option selected=\"\" disabled=\"\" value=\"\">Choose...</option>";-->
-<!--        var options = list[selectedIndex].sections;-->
-<!--        for (let i = 0; i < options.length; i++) {-->
-<!--            const option = document.createElement("option");-->
-<!--            option.value = options[i];-->
-<!--            option.textContent = options[i];-->
-<!--            select.appendChild(option);-->
-<!--        }-->
-<!--        //floors-->
-<!--        var selectF = document.getElementById("floor");-->
-<!--        selectF.innerHTML = "<option selected=\"\" disabled=\"\" value=\"\">Choose...</option>";-->
-<!--        var optionsF = list[selectedIndex].floors;-->
-<!--        for (let i = 0; i < optionsF.length; i++) {-->
-<!--            const optionF = document.createElement("option");-->
-<!--            optionF.value = optionsF[i];-->
-<!--            optionF.textContent = optionsF[i];-->
-<!--            selectF.appendChild(optionF);-->
-<!--        }-->
-<!--    }-->
-</script>
-<!-- REQUIRED SCRIPTS -->
-<!-- Icons -->
-<script th:src="@{https://kit.fontawesome.com/41663a8b50.js}" crossorigin="anonymous"></script>
-<!-- jQuery -->
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
 <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
-<!-- Bootstrap -->
 <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
-<!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
+<script th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script th:src="@{/plugins/bootstrap-timepicker/src/timepicker-bs4.js}"></script>
+
+
+<script>
+    $(document).ready(function(){
+        $("#master_select").select2({width: '100%'});
+        $("#apartment_select").select2({width: '100%'});
+        $("#date_picker").datepicker();
+        $("#time_picker").timepicker();
+    });
+</script>
 
 </body>
 </html>

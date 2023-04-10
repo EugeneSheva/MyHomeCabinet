@@ -24,10 +24,17 @@ public class AdminController {
 
     @GetMapping
     public String showAdminsPage(Model model,
-                                 FilterForm form) throws IllegalAccessException {
+                                 FilterForm form,
+                                 @RequestParam(required = false) Integer page) throws IllegalAccessException {
         List<Admin> adminList;
-        if(!form.filtersPresent()) adminList = adminService.findAll();
-        else adminList = adminService.findAllBySpecification(form);
+        if(!form.filtersPresent()) {
+            if(page == null) adminList = adminService.findAll();
+            else adminList = adminService.findAll(page);
+        }
+        else {
+            if(page == null) adminList = adminService.findAllBySpecification(form);
+            else adminList = adminService.findAllBySpecificationAndPage(form, page);
+        }
 
         model.addAttribute("admins", adminList);
 

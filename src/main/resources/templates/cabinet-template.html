@@ -1,0 +1,223 @@
+
+  <div th:fragment="loading" class="preloader flex-column justify-content-center align-items-center">
+    <img class="animation__wobble" th:src="@{/images/logo.png}" alt="AdminLTELogo" height="60" width="60">
+  </div>
+  <!-- Navbar -->
+  <nav th:fragment="header" class="main-header navbar navbar-expand navbar-white navbar-light align-items-center">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav align-items-center">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="#" class="nav-link">Личный кабинет</a>
+      </li>
+    </ul>
+    <!-- Right navbar links -->
+    <aside class="navbar-nav ml-auto align-items-center" >
+      <li class="dropdown notifications-menu" >
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <i class="fa fa-bell" aria-hidden="true" style="color:grey;"></i>
+        </a>
+        <ul class="dropdown-menu">
+
+          <li class="header">Нет новых сообщений</li>
+          <li class="footer"><a href="">Перейти в раздел сообщений</a></li>
+        </ul>
+      </li>
+      <!-- user panel  -->
+      <li class="dropdown user user-menu">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+          <img th:src="@{/images/placeholder.jpg}" class="user-image" alt="User Image">
+          <span class="hidden-xs" style="color:grey;">Иванов Иван</span>
+        </a>
+        <ul class="dropdown-menu">
+          <li class="user-header"
+              style="background-color: rgba(255,0,0,0.4); display:flex; flex-direction:column;
+              justify-content:center;align-items:center;">
+            <img th:src="@{/images/placeholder.jpg}" class="img-circle" alt="User Image">
+            <p style="margin: 0">
+              <b>Иванов Иван</b>
+            </p>
+          </li>
+          <li class="user-footer">
+            <div class="pull-left" style="float: left;">
+              <a href="@{/cabinet/user/view}" class="btn btn-warning">Профиль</a>
+            </div>
+            <div class="pull-right">
+              <a href="#" class="btn btn-danger">Выйти</a>
+            </div>
+          </li>
+        </ul>
+      </li>
+    </aside>
+  </nav>
+  <!-- /.navbar -->
+
+
+  <!-- Main Sidebar Container -->
+  <aside th:fragment="sidebar"
+         class="main-sidebar sidebar-light-primary"
+         style="color: #444444; font-weight: 600; box-shadow: none;" >
+    <!-- Brand Logo -->
+    <a th:href="@{/}" class="brand-link" style="margin-bottom: 20px; padding: 3px; border-right: 1px solid #dee2e6;">
+      <img th:src="@{/images/namelogo.png}" alt="AdminLTE Logo"
+           class="img"
+           style="opacity: .8; width:75%; display: block; margin:auto;">
+      <span class="brand-text font-weight-light"></span>
+    </a>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar Menu -->
+      <nav style="margin-top: 10px;">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="fa fa-line-chart" aria-hidden="true"></i>
+              <p class="pl-1">
+                Сводка
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview" style="font-weight: 400">
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/cabinet}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 16px;" class="fa fa-building-o fa-sm nav-icon"></i>
+                  <p> ЖК "Башня Чкалов", кв.3425</p>
+                </a>
+              </li>
+              <li class="nav-item dropdown-items">
+                <a th:href="@{/cabinet}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 16px;" class="fa fa-building-o fa-sm nav-icon"></i>
+                  <p> ЖК "Башня Чкалов", кв.3426</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="fa fa-files-o" aria-hidden="true"></i>
+              <p class="pl-1">
+                Квитанции
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview" style="font-weight: normal; font-size: 14px;">
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/cabinet/invoices}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 16px;" class="fa fa-files-o fa-sm nav-icon"></i>
+                  <p>Все квитанции</p>
+                </a>
+              </li>
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/cabinet/invoices}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 16px;" class="fa fa-file-text-o fa-sm nav-icon"></i>
+                  <p>ЖК "Башня Чкалов", кв.3425</p>
+                </a>
+              </li>
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/cabinet/invoices}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 16px;" class="fa fa-file-text-o fa-sm nav-icon"></i>
+                  <p>ЖК "Башня Чкалов", кв.3426</p>
+                </a>
+              </li>
+
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="fa fa-money" aria-hidden="true"></i>
+              <p class="pl-1">
+                Тарифы
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview" style="font-weight: 400">
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/cabinet/tariffs}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 16px;" class="fa fa-file-text-o fa-sm nav-icon"></i>
+                  <p>ЖК "Башня Чкалов", кв.3425</p>
+                </a>
+              </li>
+              <li class="nav-item dropdown-items" >
+                <a th:href="@{/cabinet/tariffs}" class="nav-link dropdown-links" style="margin:0">
+                  <i style="font-size: 16px;" class="fa fa-file-text-o fa-sm nav-icon"></i>
+                  <p>ЖК "Башня Чкалов", кв.3426</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a th:href="@{/cabinet/messages}" class="nav-link">
+              <i class="fa fa-envelope-o" aria-hidden="true"></i>
+              <p class="pl-1">
+                Сообщения
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a th:href="@{/cabinet/requests}" class="nav-link">
+              <i class="fa fa-wrench" aria-hidden="true"></i>
+              <p class="pl-1">
+                Вызов мастера
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a th:href="@{/cabinet/user/view}" class="nav-link">
+              <i class="fa fa-user-circle" aria-hidden="true" style="font-size: 14px"></i>
+              <p class="pl-1">
+                Профиль
+              </p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+
+    <style>
+
+      .nav-link {
+        padding-block: 12px;
+        padding-left: 15px;
+        padding-right: 5px;
+      }
+
+      .nav-treeview .nav-link {
+        padding-block: 5px;
+      }
+
+      .nav-item i {
+        width: 20px;
+        font-size: 16px;
+      }
+
+      .nav-treeview{
+        font-size: 14px;
+      }
+
+      .nav-treeview .nav-link:hover {
+        color: black;
+        background-color: rgba(128,128,128,0.01) !important;
+      }
+
+    </style>
+    <!-- /.sidebar -->
+  </aside>
+
+
+  <!-- Main Footer -->
+  <footer th:fragment="footer" class="main-footer">
+    <strong>Разработано <a href="#">AVADA-MEDIA</a>.</strong>
+    <strong>На базе системы управления <a href="#">"МойДом24"</a>.</strong>
+    <strong>Документация API доступна по <a href="#">ссылке</a>.</strong>
+    <div class="float-right d-none d-sm-inline-block">
+      <b>Version</b> 1.0.0
+    </div>
+  </footer>
+</div>
+<!-- ./wrapper -->
+

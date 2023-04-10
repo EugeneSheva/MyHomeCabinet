@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>МойДом24</title>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
+  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/bootstrap-datepicker/css/datepicker.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/css/tempus-dominus.min.css" crossorigin="anonymous">
+    <!-- Popperjs -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <!-- Tempus Dominus JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/js/tempus-dominus.min.js" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/dayjs.min.js" integrity="sha512-hcV6DX35BKgiTiWYrJgPbu3FxS6CsCjKgmrsPRpUPkXWbvPiKxvSVSdhWX0yXcPctOI2FJ4WP6N1zH+17B/sAA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+
+  <nav th:insert="~{cabinet-template :: header}"></nav>
+  <aside th:insert="~{cabinet-template :: sidebar}"></aside>
+
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Новая заявка</h1>
+          </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>  Главная</a></li>
+                    <li class="breadcrumb-item">Вызов мастера</li>
+                    <li class="breadcrumb-item active">Новая заявка</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="page_content">
+
+      <div class="container-fluid">
+          <form method="post" th:object="${repairRequest}">
+            <div class="box">
+              <div class="box-body">
+                  <div class="modal-body">
+                      <div class="form-group">
+                          <h4 class="control-label">Тип мастера</h4>
+                          <select th:field="*{master}" id="master_select" class="my_selects">
+                              <option th:each="type : ${T(com.example.myhome.home.model.RepairMasterType).values()}"
+                                      th:value="${type}"
+                                      th:text="${type.getName()}"></option>
+                          </select>
+                      </div>
+                      <div class="form-group">
+                          <h4 class="control-label">Квартира</h4>
+                          <select th:field="*{apartment}" id="apartment_select" class="my_selects">
+                              <option value=""></option>
+                          </select>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <h4 class="control-label">Дата работ</h4>
+                                  <input type="text" id="date_picker" th:field="*{date}">
+                                  <span class="input-group-addon kv-date-calendar" title="Выбрать дату"><i class="fa fa-calendar"></i></span>
+                              </div>
+                          </div>
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <h4 class="control-label">Время работ</h4>
+                                  <input type="text" id="time_picker" th:field="*{time}">
+                                  <span class="input-group-addon kv-date-calendar" title="Выбрать дату"><i class="fa fa-clock"></i></span>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <h4 class="control-label">Описание</h4>
+                          <textarea th:field="*{description}" style="width:100%" rows="5"></textarea>
+                      </div>
+                  </div>
+                  <div class="modal-footer">
+                      <div class="row" style="justify-content:flex-end">
+                          <button type="submit" class="btn btn-success">Отправить заявку</button>
+                      </div>
+                  </div>
+              </div>
+
+          </div>
+          </form>
+      </div>
+    </section>
+
+  </div>
+
+  <footer th:insert="~{cabinet-template :: footer}"></footer>
+</div>
+
+<style>
+    h4 {font-weight: bold;}
+    #date_picker, #time_picker {
+        padding-block: 10px;
+        width: 93%;
+    }
+    .input-group-addon {
+        border: 0.5px solid silver;
+        padding: 11px;
+        background-color: white;
+    }
+</style>
+
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dist/js/adminlte.js}"></script>
+<script th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script th:src="@{/plugins/bootstrap-timepicker/src/timepicker-bs4.js}"></script>
+
+
+<script>
+    $(document).ready(function(){
+        $("#master_select").select2({width: '100%'});
+        $("#apartment_select").select2({width: '100%'});
+        $("#date_picker").datepicker();
+        $("#time_picker").timepicker();
+    });
+</script>
+
+</body>
+</html>

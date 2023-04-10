@@ -4,7 +4,9 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 // --- ЗАЯВКИ ВЫЗОВА МАСТЕРА ---
 
@@ -41,6 +43,11 @@ public class RepairRequest {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime request_date;
+
+    @Transient
+    private String date;
+    @Transient
+    private String time;
 
     @Enumerated(EnumType.STRING)
     private RepairStatus status;
