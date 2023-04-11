@@ -1,5 +1,6 @@
 package com.example.myhome.home.service;
 
+import com.example.myhome.home.configuration.security.CustomUserDetails;
 import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.ApartmentAccount;
@@ -33,6 +34,7 @@ public class OwnerService {
 
 
     public Owner findById (Long id) { return ownerRepository.findById(id).orElseThrow(() -> new NotFoundException());}
+    public Owner findByLogin(String login) {return ownerRepository.findByEmail(login).orElseThrow(NotFoundException::new);}
 
     public List<Owner> findAll() { return ownerRepository.findAll(); }
 
@@ -74,6 +76,10 @@ public class OwnerService {
 
         }
     return fileName;
+    }
+
+    public Owner fromCustomUserDetailsToOwner(CustomUserDetails details) {
+        return findByLogin(details.getUsername());
     }
 
 

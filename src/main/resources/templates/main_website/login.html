@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://thymeleaf.org">
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -17,7 +17,8 @@
         <div class="login-box">
             <a th:href="@{/}"><img th:src="@{/images/namelogo.png}" class="img-fluid" alt=""></a>
             <br>
-            <div class="credentials">
+            <form action="" method="post" th:action="@{/cabinet/site/login}">
+                <div class="credentials">
                 <div class="row tabs">
                     <div class="col-md-6 text-center active-tab">
                         <p>Для жильца</p>
@@ -27,21 +28,26 @@
                     </a>
                 </div>
                 <p style="text-align: center; padding-block: 20px;">Вход в личный кабинет</p>
+                    <p th:if="${param.error}" style="color: red">Произошла ошибка</p>
                 <div class="row inputs">
-                    <input type="text" placeholder="E-mail или ID" name="" id="">
+                    <input type="text" placeholder="E-mail или ID" name="username" id="">
                     <i class="fas fa-envelope"></i>
                 </div>
                 <div class="row inputs">
-                    <input type="text" placeholder="Пароль" name="" id="">
+                    <input type="password" placeholder="Пароль" name="password" id="">
                     <i class="fas fa-lock"></i>
                 </div>
                 <div class="row mt-4">
                     <input type="checkbox" name="" id="remember-me" style="display: inline; width:30px">Запомнить меня
                 </div>
                 <div class="row">
-                    <a href="" class="btn btn-default btn-primary text-center">Вход</a>
+                    <button type="submit" class="btn btn-default btn-primary text-center">Вход</button>
+                </div>
+                <div class="row">
+                    <a th:href="@{/cabinet/site/register}" class="btn btn-default btn-primary text-center">Регистрация</a>
                 </div>
             </div>
+            </form>
         </div>
     </div>
 

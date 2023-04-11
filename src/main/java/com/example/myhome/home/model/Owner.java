@@ -1,8 +1,11 @@
 package com.example.myhome.home.model;
 
+import com.example.myhome.home.configuration.security.CustomUserDetails;
+import com.example.myhome.util.UserRole;
 import com.example.myhome.util.UserStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -46,6 +49,7 @@ public class Owner {
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private List<Apartment> apartments;
 
+    @ToString.Exclude
     @ManyToMany(mappedBy = "receivers")
     private List<Message> messages;
 
@@ -54,6 +58,8 @@ public class Owner {
     private String description;
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+
+//    private UserRole role = UserRole.USER;
 
     //аватарка
     private String profile_picture;
@@ -74,4 +80,6 @@ public class Owner {
     public String getFullName() {
         return this.first_name + ' ' + this.fathers_name + ' ' + this.last_name;
     }
+
+
 }

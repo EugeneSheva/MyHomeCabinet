@@ -94,11 +94,10 @@ public class AdminController {
 
     @GetMapping("/get-masters-by-type")
     public @ResponseBody List<Admin> getMastersByType(@RequestParam String type) {
-        System.out.println(UserRole.ANY.name());
-        if(type.equalsIgnoreCase(UserRole.ANY.name()))
+        if(type.equalsIgnoreCase(UserRole.ROLE_ANY.name()))
             return adminService.findAll().stream()
-                    .filter(admin -> admin.getRole() != UserRole.ADMIN && admin.getRole() != UserRole.DIRECTOR
-                    && admin.getRole() != UserRole.MANAGER).collect(Collectors.toList());
+                    .filter(admin -> admin.getRole() != UserRole.ROLE_ADMIN && admin.getRole() != UserRole.ROLE_DIRECTOR
+                    && admin.getRole() != UserRole.ROLE_MANAGER).collect(Collectors.toList());
         else return adminService.getAdminsByRole(UserRole.valueOf(type.toUpperCase()));
     }
 

@@ -60,10 +60,10 @@ public class CashBoxController {
 
         // получение только юзеров с ролями "админ", "директор", "бухгалтер", без сантехников и т.д.
         adminDTOList = adminDTOList.stream()
-                .filter(admin -> admin.getRole() == UserRole.ADMIN ||
-                        admin.getRole() == UserRole.DIRECTOR ||
-                        admin.getRole() == UserRole.MANAGER ||
-                        admin.getRole() == UserRole.ACCOUNTANT)
+                .filter(admin -> admin.getRole() == UserRole.ROLE_ADMIN ||
+                        admin.getRole() == UserRole.ROLE_DIRECTOR ||
+                        admin.getRole() == UserRole.ROLE_MANAGER ||
+                        admin.getRole() == UserRole.ROLE_ACCOUNTANT)
                 .collect(Collectors.toList());
         model.addAttribute("admins", adminDTOList);
 

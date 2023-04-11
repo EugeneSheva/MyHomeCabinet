@@ -150,9 +150,9 @@ public class RequestController {
         model.addAttribute("time", LocalTime.now());
         model.addAttribute("owners", ownerService.findAll());
         model.addAttribute("masters", adminService.findAll().stream()
-                .filter(master -> master.getRole() != UserRole.ADMIN &&
-                        master.getRole() != UserRole.MANAGER &&
-                        master.getRole() != UserRole.DIRECTOR)
+                .filter(master -> master.getRole() != UserRole.ROLE_ADMIN &&
+                        master.getRole() != UserRole.ROLE_MANAGER &&
+                        master.getRole() != UserRole.ROLE_DIRECTOR)
                 .sorted(Comparator.comparing(o -> o.getRole().getName()))
                 .collect(Collectors.toList()));
     }
