@@ -6,8 +6,13 @@ import com.example.myhome.home.model.RepairRequest;
 import com.example.myhome.home.service.OwnerService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +20,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -28,6 +34,12 @@ public class PersonalCabinetController {
 
     @Autowired
     private OwnerService ownerService;
+
+    @Autowired
+    private PersistentTokenRepository repository;
+
+    @Autowired
+    private PersistentTokenBasedRememberMeServices rememberMeServices;
 
     @GetMapping
     public String getStartPage(){
@@ -85,21 +97,19 @@ public class PersonalCabinetController {
         return "cabinet/user_edit";
     }
 
-//    @ModelAttribute
-//    public void addOwnerAttribute(@AuthenticationPrincipal CustomUserDetails details, HttpSession session, Model model) {
-//        if(details == null) {
-//            details = (CustomUserDetails) session.getAttribute("user");
-//        }
-//        log.info(details.toString());
-//        Owner owner = ownerService.fromCustomUserDetailsToOwner(details);
-//        log.info(owner.toString());
-//        model.addAttribute("owner", owner);
-//    }
-
     @ModelAttribute
-    public void v() {
-        log.info(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-    }
+    public void addOwnerAttribute(@AuthenticationPrincipal CustomUserDetails details, HttpSession session,
+                                  HttpServletRequest request, HttpServletResponse response,
+                                  Model model) {
 
+        if(details != null) {
+            details = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Owner owner = ownerService.fromCustomUserDetailsToOwner(details);
+            model.addAttribute("owner", owner);
+        } else {
+            model.addAttribute("owner", new Owner());
+        }
+
+    }
 
 }

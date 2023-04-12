@@ -1,7 +1,6 @@
 package com.example.myhome.home.model;
 
-import com.example.myhome.home.configuration.security.CustomUserDetails;
-import com.example.myhome.util.UserRole;
+import com.example.myhome.home.service.registration.RegistrationRequest;
 import com.example.myhome.util.UserStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -9,7 +8,6 @@ import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -64,7 +62,17 @@ public class Owner {
     //аватарка
     private String profile_picture;
 
+    private Boolean enabled = false;
+
     public Owner() {
+    }
+
+    public Owner(RegistrationRequest request) {
+        this.first_name = request.getFirst_name();
+        this.last_name = request.getLast_name();
+        this.fathers_name = request.getFathers_name();
+        this.email = request.getEmail();
+        this.password = request.getPassword();
     }
 
     public Owner(Long id, String first_name, String last_name, String fathers_name, String phone_number, String email, String password) {
@@ -80,6 +88,8 @@ public class Owner {
     public String getFullName() {
         return this.first_name + ' ' + this.fathers_name + ' ' + this.last_name;
     }
+
+    public boolean isEnabled() {return this.enabled;}
 
 
 }

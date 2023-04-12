@@ -67,7 +67,8 @@
                       <a th:href="@{/admin/invoices/template?delete_id={id}(id=${template.id})}" class="text-danger" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash" aria-hidden="true"></i> Удалить шаблон</a>
                     </div>
                     <form method="post" th:object="${template}" enctype="multipart/form-data">
-                      <input type="hidden" name="_csrf-backend" value="ZFF2m8XrLRkJsb_BqV9yo_00YGreYPmXdR6oMr7ZrM1WZzHVv9JXUH_U26TOHjObl3YvMqkDo-ASQf5LxqzBtw==">            <div class="row">
+                      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                      <div class="row">
                       <div class="col-xs-12 col-sm-6">
                         <div class="form-group field-invoicetemplateform-file">
                           <label class="control-label">Загрузить пользовательский шаблон</label>

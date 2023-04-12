@@ -10,8 +10,7 @@ public class AdminSpecifications {
 
     public static Specification<Admin> hasNameLike(String s) {
         if(s == null) return (root, query, criteriaBuilder) -> null;
-        return (root, query, cb) -> cb.or(cb.like(root.get(Admin_.FIRST_NAME), "%"+s+"%"),
-                                          cb.like(root.get(Admin_.LAST_NAME), "%"+s+"%"));
+        return (root, query, cb) -> cb.like(root.get(Admin_.FULL_NAME), "%"+s+"%");
     }
 
     public static Specification<Admin> hasRole(UserRole role) {

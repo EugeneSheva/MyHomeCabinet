@@ -52,6 +52,7 @@
               </div>
               <div class="box-body">
                 <form method="post" th:object="${contactsPage}" enctype="multipart/form-data">
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                   <div class="row">
                     <div class="col-md-8">
                       <h3 class="page-header">Контактная информация</h3>

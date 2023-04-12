@@ -1,10 +1,12 @@
 package com.example.myhome.home.model.pages;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
 @Data
@@ -19,6 +21,9 @@ public class MainPage extends Page {
     @NotBlank(message = "Заполните поле")
     private String title, description;
     private boolean show_links;
+
+    @Transient
+    private MultipartFile img1;
 
     //Рядом с нами
     private String block_1_img, block_2_img, block_3_img, block_4_img, block_5_img, block_6_img;

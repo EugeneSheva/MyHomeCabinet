@@ -35,6 +35,8 @@ public class CustomUserDetails implements UserDetails {
         return owner.getEmail();
     }
 
+    public Owner getOwner() {return this.owner;}
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -52,6 +54,13 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.owner.isEnabled();
+    }
+
+    @Override
+    public String toString() {
+        return "CustomUserDetails{" +
+                "owner=" + owner +
+                '}';
     }
 }

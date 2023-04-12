@@ -62,7 +62,12 @@ public class AdminPanelSecurityConfig {
                     .logout()
                         .logoutSuccessUrl("/admin/site/login")
                         .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID");
+                        .deleteCookies("JSESSIONID")
+                .and()
+                .rememberMe()
+                .userDetailsService(adminDetailsService())
+                .tokenValiditySeconds(600)
+                .key("secretKey");
 
         return http.build();
     }

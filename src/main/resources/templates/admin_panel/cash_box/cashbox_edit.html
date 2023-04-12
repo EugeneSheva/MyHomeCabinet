@@ -49,6 +49,7 @@
         <!-- Main content -->
         <section class="page_content">
             <form method="post" th:action="@{/admin/cashbox/save}" th:object="${cashBoxItem}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <input type="hidden" id="apartment_exists" th:field="*{id}">
                 <div class="container-fluid">
                     <div class="row">

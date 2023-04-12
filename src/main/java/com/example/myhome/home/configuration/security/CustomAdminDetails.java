@@ -36,6 +36,8 @@ public class CustomAdminDetails implements UserDetails {
         return admin.getEmail();
     }
 
+    public Admin getAdmin() {return this.admin;}
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

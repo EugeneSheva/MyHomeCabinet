@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface OwnerRepository extends JpaRepository<Owner, Long> {
     Long countAllBy();
     Optional<Owner> findByEmail(String email);
+    Boolean existsByEmail(String email);
 }

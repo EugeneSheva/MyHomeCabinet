@@ -39,6 +39,8 @@ public class Admin {
     private String password;
     private boolean active = true;
 
+    private String full_name = first_name + " " + last_name;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfRegistry;
 
