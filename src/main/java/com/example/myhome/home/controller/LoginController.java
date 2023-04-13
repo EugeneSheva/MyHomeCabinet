@@ -1,5 +1,6 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.configuration.security.CustomUserDetails;
 import com.example.myhome.home.service.registration.LoginRequest;
 import com.example.myhome.home.service.registration.RegistrationRequest;
 import com.example.myhome.home.service.registration.RegisterService;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -39,6 +41,10 @@ public class LoginController {
 
     @Autowired private RegistrationRequestValidator validator;
     @Autowired private LoginRequestValidator loginRequestValidator;
+
+    @Autowired private PersistentTokenRepository repository;
+
+    @Autowired private AuthenticationManager manager;
 
     @GetMapping("/cabinet/site/login")
     public String showLoginPage(Model model) {
@@ -107,12 +113,14 @@ public class LoginController {
     @GetMapping("/cabinet/logout")
     public String logout (HttpServletRequest request, HttpServletResponse response) {
         clearRememberMeCookie(request, response);
+        clearRememberMeTokens();
         SecurityContextHolder.getContext().setAuthentication(null);
         return "redirect:/cabinet/site/login";
     }
 
     @GetMapping("/admin/logout")
-    public String adminLogout () {
+    public String adminLogout (HttpServletRequest request, HttpServletResponse response) {
+        clearRememberMeCookie(request, response);
         SecurityContextHolder.getContext().setAuthentication(null);
         return "redirect:/admin/site/login";
     }
@@ -124,6 +132,12 @@ public class LoginController {
         cookie.setMaxAge(0);
         cookie.setPath(StringUtils.hasLength(request.getContextPath()) ? request.getContextPath() : "/");
         response.addCookie(cookie);
+    }
+
+    void clearRememberMeTokens() {
+        CustomUserDetails details = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = details.getUsername();
+        repository.removeUserTokens(username);
     }
 
 }

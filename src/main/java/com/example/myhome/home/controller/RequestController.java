@@ -46,10 +46,11 @@ public class RequestController {
     public String showRequestsPage(Model model,
                                    FilterForm filterForm) throws IllegalAccessException {
 
+        if(filterForm.getPage() == null) return "redirect:/admin/requests?page=0";
+
         List<RepairRequest> requestList;
 
-        if(!filterForm.filtersPresent()) requestList = repairRequestService.findAllRequests();
-        else requestList = repairRequestService.findAllBySpecification(filterForm);
+        requestList = repairRequestService.findAllBySpecification(filterForm);
 
         model.addAttribute("requests", requestList);
         model.addAttribute("owners", ownerService.findAllDTO());
@@ -66,6 +67,16 @@ public class RequestController {
 
         model.addAttribute("repairRequest", new RepairRequest());
         model.addAttribute("id", repairRequestService.getMaxId()+1);
+        model.addAttribute("owners", ownerService.findAll());
+        model.addAttribute("masters", adminService.findAll().stream()
+                .filter(master -> master.getRole() != UserRole.ROLE_ADMIN &&
+                        master.getRole() != UserRole.ROLE_MANAGER &&
+                        master.getRole() != UserRole.ROLE_DIRECTOR)
+                .sorted(Comparator.comparing(o -> o.getRole().getName()))
+                .collect(Collectors.toList()));
+
+        model.addAttribute("date", LocalDate.now());
+        model.addAttribute("time", LocalTime.now());
 
         return "admin_panel/requests/request_card";
     }
@@ -81,6 +92,13 @@ public class RequestController {
         model.addAttribute("time", repairRequest.getRequest_date().toLocalTime());
         model.addAttribute("best_date", repairRequest.getBest_time_request().toLocalDate());
         model.addAttribute("best_time", repairRequest.getBest_time_request().toLocalTime());
+        model.addAttribute("owners", ownerService.findAll());
+        model.addAttribute("masters", adminService.findAll().stream()
+                .filter(master -> master.getRole() != UserRole.ROLE_ADMIN &&
+                        master.getRole() != UserRole.ROLE_MANAGER &&
+                        master.getRole() != UserRole.ROLE_DIRECTOR)
+                .sorted(Comparator.comparing(o -> o.getRole().getName()))
+                .collect(Collectors.toList()));
 
         return "admin_panel/requests/request_card";
     }
@@ -146,15 +164,8 @@ public class RequestController {
 
     @ModelAttribute
     public void addAttributes(Model model) {
-        model.addAttribute("date", LocalDate.now());
-        model.addAttribute("time", LocalTime.now());
-        model.addAttribute("owners", ownerService.findAll());
-        model.addAttribute("masters", adminService.findAll().stream()
-                .filter(master -> master.getRole() != UserRole.ROLE_ADMIN &&
-                        master.getRole() != UserRole.ROLE_MANAGER &&
-                        master.getRole() != UserRole.ROLE_DIRECTOR)
-                .sorted(Comparator.comparing(o -> o.getRole().getName()))
-                .collect(Collectors.toList()));
+
+
     }
 
 

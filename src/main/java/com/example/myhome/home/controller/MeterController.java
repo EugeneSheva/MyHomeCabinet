@@ -52,16 +52,11 @@ public class MeterController {
                                  @RequestParam(required = false) Long service,
                                  @RequestParam(required = false) Integer page) {
 
-        List<Long> list = meterDataService.findMeterIds();
-        List<MeterData> meterDataList;
-//        List<MeterData> meterDataList = meterDataService.filter(meterDataService.findAllMetersById(list), building, section, apartment, service);
+        if(page == null) return "redirect:/admin/meters?page=0";
 
-        if(building == null && section == null && apartment == null && service == null) {
-            if(page == null) meterDataList = meterDataService.findAllMetersById(meterDataService.findMeterIds());
-            else meterDataList = meterDataService.findAllBySpecificationAndPage(null, null, null, null, page);
-        }
-        else if(page == null) meterDataList = meterDataService.findAllBySpecification(building, section, apartment, service);
-        else meterDataList = meterDataService.findAllBySpecificationAndPage(building, section, apartment, service, page);
+        List<MeterData> meterDataList;
+
+        meterDataList = meterDataService.findAllBySpecificationAndPage(building, section, apartment, service, page);
 
         log.info(meterDataList.toString());
 
@@ -244,10 +239,6 @@ public class MeterController {
 
     @ModelAttribute
     public void addAttributes(Model model) {
-        model.addAttribute("id",meterDataService.getMaxIdPlusOne());
-        model.addAttribute("services", serviceService.findAllServices());
-        model.addAttribute("buildings", buildingService.findAll());
-        model.addAttribute("now", LocalDate.now());
     }
 
 

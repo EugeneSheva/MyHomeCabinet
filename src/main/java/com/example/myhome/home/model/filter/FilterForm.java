@@ -7,6 +7,8 @@ import java.lang.reflect.Field;
 @Data
 public class FilterForm {
 
+    private Integer page;
+
     private Long building;
     private Long service;
     private Long apartment;

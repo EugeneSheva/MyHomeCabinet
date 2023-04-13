@@ -6,6 +6,8 @@ import com.example.myhome.home.repository.RepairRequestRepository;
 import com.example.myhome.home.repository.specifications.RequestSpecifications;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +30,10 @@ public class RepairRequestService {
 
     public List<RepairRequest> findAllRequests() {return repairRequestRepository.findAll();}
 
-    public List<RepairRequest> findAllBySpecification(FilterForm filters) {
+    public List<RepairRequest> findAllBySpecification(FilterForm filters) throws IllegalAccessException {
+
+        if(!filters.filtersPresent()) return repairRequestRepository.findAll(PageRequest.of(filters.getPage(), 10)).toList();
+
         log.info("Filters found");
         log.info(filters.toString());
         Long id = filters.getId();
@@ -65,8 +70,10 @@ public class RepairRequestService {
                                 .and(RequestSpecifications.hasStatus(status))
                                 .and(RequestSpecifications.datesBetween(from, to)));
 
-        List<RepairRequest> foundItems = repairRequestRepository.findAll(specification);
-        log.info("Found items: " + foundItems.toString());
+        Pageable page = PageRequest.of(filters.getPage(),10);
+
+        List<RepairRequest> foundItems = repairRequestRepository.findAll(specification, page).toList();
+        log.info("Found items: " + foundItems);
 
         return foundItems;
     }

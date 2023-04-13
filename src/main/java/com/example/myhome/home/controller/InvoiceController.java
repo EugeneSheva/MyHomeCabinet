@@ -9,9 +9,12 @@ import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.*;
 import com.example.myhome.home.validator.InvoiceValidator;
 import com.example.myhome.util.FileUploadUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.java.Log;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -73,6 +76,7 @@ public class InvoiceController {
         else invoices = invoiceService.findAllBySpecification(form);
 
         model.addAttribute("invoices", invoices);
+        model.addAttribute("amount", invoices.size());
         model.addAttribute("owners", ownerService.findAllDTO());
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
         model.addAttribute("account_balance", apartmentAccountService.getSumOfAccountBalances());
@@ -214,6 +218,23 @@ public class InvoiceController {
         }
         invoiceService.saveTemplate(template);
         return "redirect:/admin/invoices/template";
+    }
+
+    @GetMapping(value="/get-invoices")
+    public @ResponseBody List<Invoice> getInvoices(@RequestParam Integer page,
+                                                   @RequestParam Integer page_size,
+                                                   @RequestParam String f_string) throws JsonProcessingException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        FilterForm filters = mapper.readValue(f_string, FilterForm.class);
+        return invoiceService.findAllBySpecificationAndPage(filters, page, page_size);
+    }
+
+    @GetMapping("/get-filtered-invoice-count")
+    public @ResponseBody Long getFilteredInvoiceCount(@RequestParam String f_string) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        FilterForm filters = mapper.readValue(f_string, FilterForm.class);
+        return invoiceService.getFilteredInvoiceCount(filters);
     }
 
     @ModelAttribute

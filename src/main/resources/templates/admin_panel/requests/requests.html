@@ -11,6 +11,7 @@
   <link rel="stylesheet" th:href="@{/plugins/bootstrap-datepicker/css/datepicker.css}">
   <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
   <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/css/tempus-dominus.min.css" crossorigin="anonymous">
     <!-- Popperjs -->
@@ -55,7 +56,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="box" style="padding:0;">
-                            <div class="box-header with-border" style="padding-block: 15px;">
+                            <div class="box-header with-border" >
                                 <h3 class="box-title"></h3>
                                 <div class="box-tools">
                                     <a th:href="@{/admin/requests}" class="btn btn-default btn-sm">
@@ -71,17 +72,17 @@
                                         <th style="width: 100px; min-width: 100px">
                                             № заявки
                                         </th>
-                                        <th style="width: 135px; min-width: 135px">
+                                        <th style="min-width: 220px">
                                             Удобное время
                                         </th>
-                                        <th style="min-width: 125px">
+                                        <th style="min-width: 150px">
                                             Тип мастера
                                         </th>
-                                        <th style="min-width: 350px">Описание</th>
+                                        <th>Описание</th>
                                         <th>Квартира</th>
-                                        <th style="min-width: 200px">Владелец</th>
+                                        <th style="min-width: 270px">Владелец</th>
                                         <th>Телефон</th>
-                                        <th style="min-width: 125px">Мастер</th>
+                                        <th style="min-width: 200px">Мастер</th>
                                         <th style="width: 135px; min-width: 135px">Статус</th>
                                         <th style="width: 80px; min-width: 80px">&nbsp;</th>
                                     </tr>
@@ -89,7 +90,7 @@
                                         <td style="padding: 10px">
                                             <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" th:field="*{id}" class="my_filters" data-name="id" type="text">
                                         </td>
-                                        <td style="padding: 10px; min-width: 220px;">
+                                        <td style="padding: 10px;">
 <!--                                            <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" type="date">-->
 <!--                                            <input type="text" id="best_time_datepicker">-->
                                             <div class="input-group" id="datetimepicker1" data-td-target-input="nearest" data-td-target-toggle="nearest">
@@ -169,6 +170,9 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                    <div id="page_button_container" class="mb-4" style="display: flex; justify-content: center;">
+
+                                    </div>
                                 </form>
                             </div>
                             <div class="box-footer clearfix"></div>
@@ -201,8 +205,9 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script th:src="@{/dist/js/filter.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<script>
+<script th:inline="javascript">
     let request_rows = document.getElementsByClassName("request");
     for(let i = 0; i < request_rows.length; i++) {
         let request_row_cells = request_rows[i].children;
@@ -228,7 +233,55 @@
 
     document.getElementById('datetime').readonly = false;
     document.getElementById('datetime').disabled = false;
+
+    const requests = [[${requests}]];
+    let page_buttons_container = document.getElementById("page_button_container");
+
+    let back_btn = document.createElement("a");
+    back_btn.classList.add("btn", "btn-default");
+    back_btn.href = window.location.href.slice(0,-1) + (pageNumber-1);
+    back_btn.innerText = ' < ';
+
+    if(pageNumber > 0) page_buttons_container.appendChild(back_btn);
+
+    for(let i = 0; i <= requests.length/10; i++) {
+        let btn = document.createElement("a");
+        btn.classList.add("btn", "btn-default");
+        if(i == pageNumber) btn.classList.add("selected");
+        btn.href = window.location.href.slice(0,-1) + i;
+        btn.innerText = i;
+        page_buttons_container.appendChild(btn);
+    }
+
+    let fwd_btn = document.createElement("a");
+    fwd_btn.classList.add("btn", "btn-default");
+    fwd_btn.href = window.location.href.slice(0,-1) + (pageNumber+1);
+    fwd_btn.innerText = ' > ';
+
+    if(pageNumber <= (requests.length/10 - 1)) page_buttons_container.appendChild(fwd_btn);
+
+    $(document).ready(function(){
+        $("#master_type, #owner, #master, #status").select2();
+
+        let clone = document.getElementById("page_button_container").cloneNode(true);
+        $(".box-header").append(clone);
+
+    });
 </script>
+
+<style>
+        a.selected {
+            background-color: black;
+            color: white;
+            cursor: initial;
+            caret-color:transparent;
+        }
+
+        a.selected:hover {
+            background-color: black;
+            color: white;
+        }
+</style>
 
 <!-- PAGE PLUGINS -->
 <!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->

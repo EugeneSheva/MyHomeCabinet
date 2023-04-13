@@ -10,6 +10,7 @@
   <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
   <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
   <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
 <!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
 
@@ -99,7 +100,7 @@
         <div class="row">
           <div class="col-md-12">
             <div class="box" style="padding:0;">
-              <div class="box-header with-border" style="padding-block:15px;">
+              <div class="box-header with-border">
                 <h3 class="box-title"></h3>
                 <div class="box-tools">
                   <a th:href="@{/admin/accounts}" class="btn btn-default btn-sm">
@@ -123,20 +124,20 @@
                       </tr>
                       <tr>
                           <td style="padding: 10px">
-                              <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" th:field="*{id}" class="my_filters" type="text">
+                              <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" th:field="*{id}" data-name="id" class="my_filters" type="text">
                           </td>
                           <td style="padding: 10px">
-                              <select style="width: 100%; padding-block: 10px" th:field="*{active}" class="my_filters">
+                              <select style="width: 100%; padding-block: 10px" th:field="*{active}" data-name="active" class="my_filters">
                                   <option value=""></option>
                                   <option value="true">Активен</option>
                                   <option value="false">Не активен</option>
                               </select>
                           </td>
                           <td style="padding: 10px">
-                              <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" th:field="*{apartment}" class="my_filters" type="text">
+                              <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" th:field="*{apartment}" data-name="apartment" class="my_filters" type="text">
                           </td>
                           <td style="padding: 10px">
-                              <select style="width: 100%; padding-block: 10px" th:field="*{building}" class="my_filters">
+                              <select style="width: 100%; padding-block: 10px" th:field="*{building}" data-name="building" class="my_filters">
                                   <option value=""></option>
                                   <option th:each="building : ${buildings}"
                                           th:value="${building.id}"
@@ -144,11 +145,11 @@
                               </select>
                           </td>
                           <td style="padding: 10px">
-                              <select disabled th:if="*{building == 0}" th:field="*{section}" style="width: 100%; padding-block: 10px" >
+                              <select disabled th:if="*{building == 0}" data-name="section" th:field="*{section}" style="width: 100%; padding-block: 10px" >
                                   <option value="0" >Выберите дом...</option>
                               </select>
 
-                              <select th:if="*{building != 0}" class="my_filters" th:field="*{section}" style="width: 100%; padding-block: 10px">
+                              <select th:if="*{building != 0}" class="my_filters" data-name="section" th:field="*{section}" style="width: 100%; padding-block: 10px">
                                   <option value="" >Выберите дом...</option>
                                   <option th:each="section : ${sections}"
                                           th:value="${section}"
@@ -156,7 +157,7 @@
                               </select>
                           </td>
                           <td style="padding: 10px">
-                              <select style="width: 100%; padding-block: 10px" th:field="*{owner}" class="my_filters">
+                              <select style="width: 100%; padding-block: 10px" th:field="*{owner}" data-name="owner" class="my_filters">
                                   <option value=""></option>
                                   <option th:each="owner : ${owners}"
                                           th:value="${owner.id}"
@@ -164,7 +165,7 @@
                               </select>
                           </td>
                           <td style="padding: 10px">
-                              <select style="width: 100%; padding-block: 10px" th:field="*{debt}" class="my_filters">
+                              <select style="width: 100%; padding-block: 10px" th:field="*{debt}" data-name="debt" class="my_filters">
                                   <option value=""></option>
                                   <option value="true">Есть долг</option>
                                   <option value="false">Нет долга</option>
@@ -200,6 +201,9 @@
                   </tr>
                   </tbody>
                 </table>
+                  <div id="page_button_container" class="mb-4" style="display: flex; justify-content: center;">
+
+                  </div>
                   </form>
               </div>
               <div class="box-footer clearfix"></div>
@@ -227,10 +231,12 @@
 <!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
+<script th:src="@{/dist/js/filter.js}"></script>
 
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<script>
+<script th:inline="javascript">
 
     let rows = document.getElementsByClassName("account_row");
     for(let i = 0; i < rows.length; i++) {
@@ -255,54 +261,95 @@
         XLSX.writeFile(excel_file, "Лицевые счета " + `${day}-${month}-${year}` + ".xlsx");
     }
 
+    const accounts = [[${accounts}]];
+    let page_buttons_container = document.getElementById("page_button_container");
+
+    let back_btn = document.createElement("a");
+    back_btn.classList.add("btn", "btn-default");
+    back_btn.href = window.location.href.slice(0,-1) + (pageNumber-1);
+    back_btn.innerText = ' < ';
+
+    if(pageNumber > 0) page_buttons_container.appendChild(back_btn);
+
+    for(let i = 0; i <= accounts.length/10; i++) {
+        let btn = document.createElement("a");
+        btn.classList.add("btn", "btn-default");
+        if(i == pageNumber) btn.classList.add("selected");
+        btn.href = window.location.href.slice(0,-1) + i;
+        btn.innerText = i;
+        page_buttons_container.appendChild(btn);
+    }
+
+    let fwd_btn = document.createElement("a");
+    fwd_btn.classList.add("btn", "btn-default");
+    fwd_btn.href = window.location.href.slice(0,-1) + (pageNumber+1);
+    fwd_btn.innerText = ' > ';
+
+    if(pageNumber < (accounts.length/10 - 1)) page_buttons_container.appendChild(fwd_btn);
+
     // ФИЛЬТРЫ
     $(document).ready(function(){
 
-        $(".my_filters").change(function(){
-            let building_id = $("#building").val();
-            let service_id = $("#service").val();
-            let apartment_number = $("#apartment").val();
-            let section_name = $("#section").val();
+        let clone = document.getElementById("page_button_container").cloneNode(true);
+        $(".box-header").append(clone);
 
-            let id = $("#id").val();
-            let datetime = $("#datetime").val();
-            let description = $("#description").val();
-            let master_type = $("#master_type").val();
-            let master_id = $("#master").val();
-            let owner_id = $("#owner").val();
-            let phone = $("#phone").val();
-            let status = $("#status").val();
+<!--        $(".my_filters").change(function(){-->
+<!--            let building_id = $("#building").val();-->
+<!--            let service_id = $("#service").val();-->
+<!--            let apartment_number = $("#apartment").val();-->
+<!--            let section_name = $("#section").val();-->
 
-            let active = $("#active").val();
-            let debt = $("#debt").val();
+<!--            let id = $("#id").val();-->
+<!--            let datetime = $("#datetime").val();-->
+<!--            let description = $("#description").val();-->
+<!--            let master_type = $("#master_type").val();-->
+<!--            let master_id = $("#master").val();-->
+<!--            let owner_id = $("#owner").val();-->
+<!--            let phone = $("#phone").val();-->
+<!--            let status = $("#status").val();-->
 
-            const link_elements = [];
+<!--            let active = $("#active").val();-->
+<!--            let debt = $("#debt").val();-->
 
-            if(building_id != null && building_id != 0) link_elements.push('building='+building_id);
-            if(service_id != null && service_id != 0) link_elements.push('service='+service_id);
-            if(apartment_number != null && apartment_number != 0) link_elements.push('apartment='+apartment_number);
-            if(section_name != null && section_name != '') link_elements.push('section='+section_name);
+<!--            const link_elements = [];-->
 
-            if(id != null && id != 0) link_elements.push('id='+id);
-            if(datetime != null && datetime != '') link_elements.push('datetime='+datetime);
-            if(description != null && description != '') link_elements.push('description='+description);
-            if(master_type != null && master_type != '') link_elements.push('master_type='+master_type);
-            if(master_id != null && master_id != 0) link_elements.push('master_id='+master_id);
-            if(owner_id != null && owner_id != 0) link_elements.push('owner_id='+owner_id);
-            if(phone != null && phone != '') link_elements.push('phone='+phone);
-            if(status != null && status != '') link_elements.push('status='+status);
+<!--            if(building_id != null && building_id != 0) link_elements.push('building='+building_id);-->
+<!--            if(service_id != null && service_id != 0) link_elements.push('service='+service_id);-->
+<!--            if(apartment_number != null && apartment_number != 0) link_elements.push('apartment='+apartment_number);-->
+<!--            if(section_name != null && section_name != '') link_elements.push('section='+section_name);-->
 
-            if(active != null && active != '') link_elements.push('active='+active);
-            if(debt != null && debt != '') link_elements.push('debt='+debt);
+<!--            if(id != null && id != 0) link_elements.push('id='+id);-->
+<!--            if(datetime != null && datetime != '') link_elements.push('datetime='+datetime);-->
+<!--            if(description != null && description != '') link_elements.push('description='+description);-->
+<!--            if(master_type != null && master_type != '') link_elements.push('master_type='+master_type);-->
+<!--            if(master_id != null && master_id != 0) link_elements.push('master_id='+master_id);-->
+<!--            if(owner_id != null && owner_id != 0) link_elements.push('owner_id='+owner_id);-->
+<!--            if(phone != null && phone != '') link_elements.push('phone='+phone);-->
+<!--            if(status != null && status != '') link_elements.push('status='+status);-->
 
-            let final_link = (link_elements.length > 0) ? ('?' + link_elements.join('&')) : '';
+<!--            if(active != null && active != '') link_elements.push('active='+active);-->
+<!--            if(debt != null && debt != '') link_elements.push('debt='+debt);-->
 
-            window.location.href = '/admin/accounts'+final_link;
-        });
+<!--            let final_link = (link_elements.length > 0) ? ('?' + link_elements.join('&')) : '';-->
+
+<!--            window.location.href = '/admin/accounts'+final_link;-->
+<!--        });-->
     });
 </script>
 
+<style>
+        a.selected {
+            background-color: black;
+            color: white;
+            cursor: initial;
+            caret-color:transparent;
+        }
 
+        a.selected:hover {
+            background-color: black;
+            color: white;
+        }
+</style>
 <!-- PAGE PLUGINS -->
 <!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->
 <!--<script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>-->

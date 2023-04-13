@@ -41,6 +41,10 @@ public class Building {
             inverseJoinColumns = @JoinColumn(name="admin_id"))
     List<Admin> admins;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "building")
+    private List<Invoice> invoiceList;
+
     public Building() {
     }
 

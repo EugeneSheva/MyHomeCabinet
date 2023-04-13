@@ -97,19 +97,4 @@ public class PersonalCabinetController {
         return "cabinet/user_edit";
     }
 
-    @ModelAttribute
-    public void addOwnerAttribute(@AuthenticationPrincipal CustomUserDetails details, HttpSession session,
-                                  HttpServletRequest request, HttpServletResponse response,
-                                  Model model) {
-
-        if(details != null) {
-            details = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Owner owner = ownerService.fromCustomUserDetailsToOwner(details);
-            model.addAttribute("owner", owner);
-        } else {
-            model.addAttribute("owner", new Owner());
-        }
-
-    }
-
 }

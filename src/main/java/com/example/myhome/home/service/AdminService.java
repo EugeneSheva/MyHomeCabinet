@@ -1,5 +1,6 @@
 package com.example.myhome.home.service;
 
+import com.example.myhome.home.configuration.security.CustomAdminDetails;
 import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.model.AdminDTO;
@@ -88,6 +89,10 @@ public class AdminService {
     public void deleteAdminById(Long id) { adminRepository.deleteById(id); }
 
     public List<Admin> getAdminsByRole(UserRole role) { return adminRepository.getAdminsByRole(role);}
+
+    public Admin fromCustomAdminDetailsToAdmin(CustomAdminDetails details) {
+        return findAdminByLogin(details.getUsername());
+    }
 
 
 

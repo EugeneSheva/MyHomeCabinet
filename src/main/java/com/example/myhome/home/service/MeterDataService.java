@@ -59,6 +59,10 @@ public class MeterDataService {
     }
 
     public List<MeterData> findAllBySpecificationAndPage(Long building_id, String section_name, Long apartment_number, Long service_id, Integer page) {
+
+        if(building_id == null && section_name == null && apartment_number == null && service_id == null)
+            return meterDataRepository.findAll(PageRequest.of(page, 10)).toList();
+
         Building building = (building_id != null) ? buildingService.findById(building_id) : null;
         Apartment apartment = (apartment_number != null) ? apartmentService.findByNumber(apartment_number) : null;
         com.example.myhome.home.model.Service service = (service_id != null) ? serviceService.findServiceById(service_id) : null;

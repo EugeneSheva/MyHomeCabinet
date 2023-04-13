@@ -10,6 +10,7 @@ import com.example.myhome.home.repository.ApartmentRepository;
 import com.example.myhome.home.repository.specifications.AccountSpecifications;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,9 @@ public class AccountService {
     public List<ApartmentAccount> findAll() {return accountRepository.findAll();}
 
     public List<ApartmentAccount> findAllBySpecification(FilterForm filters) {
+
+        if(filters.getPage() == null) return accountRepository.findAll(PageRequest.of(0, 10)).toList();
+
         log.info("Filters found!");
         log.info(filters.toString());
 
@@ -52,7 +56,7 @@ public class AccountService {
                         .and(AccountSpecifications.hasSection(section))
                         .and(AccountSpecifications.hasOwner(owner)));
 
-        return accountRepository.findAll(specification);
+        return accountRepository.findAll(specification, PageRequest.of(filters.getPage(), 10)).stream().toList();
     }
 
     public ApartmentAccount getAccountById(long account_id) {

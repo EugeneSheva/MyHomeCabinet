@@ -61,6 +61,8 @@ public class Admin {
     @ManyToMany(mappedBy = "admins")
     List<Building> buildings;
 
+
+
     @Override
     public String toString() {
         return "Admin{" +

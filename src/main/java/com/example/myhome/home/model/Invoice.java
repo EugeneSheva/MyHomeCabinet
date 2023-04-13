@@ -1,5 +1,6 @@
 package com.example.myhome.home.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -33,14 +34,17 @@ public class Invoice {
 
     private String section;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "account_id")
     private ApartmentAccount account;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private Owner owner;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="tariff_id")
     private Tariff tariff;
@@ -56,6 +60,7 @@ public class Invoice {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateTo;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "invoice", cascade = {CascadeType.ALL})
     private List<InvoiceComponents> components;
 
