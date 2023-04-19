@@ -12,16 +12,8 @@
     <!--    navigation card bootstrap-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-     add & del input field in navigation card bootstrap
+<!--     add & del input field in navigation card bootstrap-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
-
-
-
-
-
-
-
     <!-- Select2 -->
     <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
@@ -43,14 +35,14 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-<!--                        <h1 class="m-0" th:text="'Квартира '+${apartment.number} + ', ' +${apartment.building.name} + ' редакторование'"></h1>-->
-                    </div>
+                       <h1  th:text="${(apartment.id != null) ? ('Квартира '+ apartment.number + ', ' +apartment.building.name): ('Новая квартира')}"></h1>
+                   </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
                             <li class="breadcrumb-item"><a th:href="@{/admin/apartments/}">Квартиры</a></li>
-<!--                            <li class="breadcrumb-item active"-->
-<!--                                th:text="'Квартира '+${apartment.number} + ', ' +${apartment.building.name} + ' редакторование'"></li>-->
+                            <li class="breadcrumb-item active"
+                                th:text="${apartment.id != null? ('Квартира '+ apartment.number + ', ' + apartment.building.name + ' / редакторование'): 'Новая квартира'}"></li>
                         </ol>
                     </div>
                 </div>
@@ -63,7 +55,7 @@
             <div class="container-fluid">
                 <form class="row g-3 needs-validation" novalidate th:method="POST"
                       th:action="@{/admin/apartments/save}" th:object="${apartment}" enctype="multipart/form-data">
-                    <div class="card" style="padding: 10px">
+                    <div class="card card card-primary card-outline" style="padding: 10px; border-top-color: #bbbbbb;">
                         <div class="row">
                             <div class="col-md-6">
 
@@ -83,55 +75,81 @@
                                 <label for="building"  class="form-label" >Дом</label>
                                 <select class="form-select" id="building" name="building" th:onchange="selectBuilding()">
                                     <option selected="" disabled="" value="">Choose...</option>
-                                    <option  th:each="building, item : ${buildings}"
-                                    th:text="${buildings[__${item.index}__].name}"
-                                    th:value="${buildings[__${item.index}__].id}" th:id="${item.count}"></option>
+                                    <option  th:each="building : ${buildings}"
+                                    th:text="${building.name}"
+                                    th:value="${building.id}"
+                                             th:selected="${#strings.containsIgnoreCase((building.name),((apartment.building != null) ? (apartment.building.name ): ('empty') ))}"
+                                    ></option>
                                 </select>
                                 <div style="color: #d80450" th:if="${#fields.hasErrors('building')}" th:errors="*{building}"></div>
 
                                 <label for="section"   class="form-label" >Секция</label>
                                 <select class="form-select"  id="section" name="section">
                                     <option selected="" disabled="" value="">Choose...</option>
+                                    <option  th:if="${apartment.building != null}"
+                                             th:each="section : ${sections}"
+                                             th:text="${section}"
+                                             th:value="${section}"
+                                             th:selected="${#strings.containsIgnoreCase(section,((apartment.section != null) ? (apartment.section): ('empty') ))}"
+                                    ></option>
                                 </select>
                                 <div style="color: #d80450" th:if="${#fields.hasErrors('section')}" th:errors="*{section}"></div>
 
                                 <label for="floor"  class="form-label" >Этаж</label>
                                 <select class="form-select"   id="floor" name="floor">
                                     <option selected="" disabled="" value="">Choose...</option>
+                                    <option  th:if="${apartment.building != null}"
+                                             th:each="floor : ${floors}"
+                                             th:text="${floor}"
+                                             th:value="${floor}"
+                                             th:selected="${#strings.containsIgnoreCase(floor,((apartment.floor != null) ? (apartment.floor): ('empty') ))}"
+                                    ></option>
                                 </select>
                                 <div style="color: #d80450" th:if="${#fields.hasErrors('floor')}" th:errors="*{floor}"></div>
-
-
                                 <div class="form-group">
                                     <label>Владелец</label>
                                     <select class="form-control select2bs4" name="owner" style="width: 100%;">
                                         <option selected="" disabled="" value="">Choose...</option>
-                                        <option  th:each="owner, item : ${owners}"
-                                                 th:text="${owners[__${item.index}__].first_name}+ ' '+${owners[__${item.index}__].last_name}+' '+${owners[__${item.index}__].fathers_name}"
-                                                 th:value="${owners[__${item.index}__].id}" th:id="${item.count}"></option>
+                                        <option  th:each="owner : ${owners}"
+                                                 th:text="${owner.first_name}+ ' '+${owner.last_name}+' '+${owner.fathers_name}"
+                                                 th:value="${owner.id}"
+                                                 th:selected="${owner.id == (apartment.owner != null ? apartment.owner.id:0)}"
+                                        ></option>
                                     </select>
                                     <div style="color: #d80450" th:if="${#fields.hasErrors('owner')}" th:errors="*{owner}"></div>
                                 </div>
                                 <label for="tariff" class="form-label" >Тариф</label>
                                 <select class="form-select" id="tariff" name="tariff">
                                     <option selected="" disabled="" value="">Choose...</option>
-
+                                    <option  th:each="tariff: ${tariffs}"
+                                             th:text="${tariff.name}"
+                                             th:value="${tariff.id}"
+                                             th:selected="${tariff.id == (apartment.tariff != null ? apartment.tariff.id:0)}"
+                                    ></option>
                                 </select>
                             </div>
                             <div class="col-md-6">
 
                                 <label for="account" class="form-label" >Лицевой счет</label>
-                                <input type="account" id="account" class="form-control" name="square"
+                                <input type="account" id="account" class="form-control" th:field="${apartment.account}" name="account"
                                        placeholder="">
                                 <select class="form-select" id="accounts" name="accounts">
                                     <option selected="" disabled="" value="">Choose...</option>
-                                    <option>1</option>
+                                    <option  th:each="account: ${accounts}"
+                                             th:text="${T(java.lang.String).format('%010d',account.id)}"
+                                             th:value="${account.id}"
+                                             ></option>
                                 </select>
 
                             </div>
                         </div>
+                        <div class="form-group">
+                            <button th:formaction="@{/admin/apartments/save&new/}" type="submit" class="btn btn-success btn-sm float-right" style="margin-left: 2px;">Сохранить
+                                и добавить новую</button>
+                            <button type="submit" class="btn btn-success btn-sm float-right" style="margin-left: 2px;">Сохранить</button>
+                            <a th:href="@{/admin/apartments/}" class="btn btn-secondary btn-sm float-right">Отменить</a>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-secondary">Сохранить</button>
                 </form>
             </div>
         </section>
@@ -170,6 +188,17 @@
             selectF.appendChild(optionF);
         }
     }
+</script>
+<script>
+    const selectElement = document.getElementById("accounts");
+    const inputElement = document.getElementById("account");
+
+    selectElement.addEventListener("change", function() {
+        const id = selectElement.value;
+        const paddedId = id.padStart(10, '0');
+        inputElement.value = paddedId;
+
+    });
 </script>
 <!-- Icons -->
 <script th:src="@{https://kit.fontawesome.com/41663a8b50.js}" crossorigin="anonymous"></script>

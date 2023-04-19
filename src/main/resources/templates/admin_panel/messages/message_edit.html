@@ -88,7 +88,7 @@
 <!--                                   th:value="${#authentication.name}">-->
 
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="true" id="debt" name="debt" th:onchange="apartmentList()">
+                                <input class="form-check-input" type="checkbox" value="true" id="debt" name="debt" th:checked="${selectWithDebt!=null}" th:onchange="apartmentList()">
                                 <label class="form-check-label" for="debt">Владельцам с задолженостями</label>
                             </div>
 

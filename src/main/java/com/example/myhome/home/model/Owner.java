@@ -46,8 +46,8 @@ public class Owner {
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private List<Apartment> apartments;
 
-    @ManyToMany(mappedBy = "receivers")
-    private List<Message> messages;
+//    @ManyToMany(mappedBy = "receivers")
+//    private List<Message> messages;
 
     private boolean has_debt;
 

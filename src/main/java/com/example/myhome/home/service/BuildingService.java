@@ -10,6 +10,8 @@ import com.example.myhome.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +35,7 @@ public class BuildingService {
     public Building findById (Long id) { return buildingRepository.findById(id).orElseThrow(() -> new NotFoundException());}
 
     public List<Building> findAll() { return buildingRepository.findAll(); }
+    public Page<Building> findAll(Pageable pageable) { return buildingRepository.findAll(pageable); }
     public List<BuildingDTO> findAllDTO() {
         List<BuildingDTO>buildingDTOList= new ArrayList<>();
         for (Building building : buildingRepository.findAll()) {

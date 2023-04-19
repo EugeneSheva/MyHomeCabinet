@@ -7,6 +7,8 @@ import com.example.myhome.home.repository.ApartmentRepository;
 import com.example.myhome.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ public class ApartmentService {
     private final ApartmentRepository apartmentRepository;
     private final FileUploadUtil fileUploadUtil;
 
+
     public Apartment findById (Long id) { return (id == null) ? null : apartmentRepository.findById(id).orElseThrow(NotFoundException::new);}
     public Apartment findByNumber(Long number) {return apartmentRepository.findByNumber(number).orElse(null);}
 
@@ -29,6 +32,8 @@ public class ApartmentService {
     public void deleteById(Long id) { apartmentRepository.deleteById(id); }
 
     public List<Apartment> findAll() { return apartmentRepository.findAll(); }
+
+    public Page<Apartment> findAll(Pageable pageable) { return apartmentRepository.findAll(pageable); }
     public List<ApartmentDTO> findDtoApartments() {
         List<ApartmentDTO>apartmentDTOList= new ArrayList<>();
         for (Apartment apartment : apartmentRepository.findAll()) {

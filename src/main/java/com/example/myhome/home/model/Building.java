@@ -39,7 +39,7 @@ public class Building {
     @JoinTable(name="building_admins",
             joinColumns = @JoinColumn(name="building_id"),
             inverseJoinColumns = @JoinColumn(name="admin_id"))
-    List<Admin> admins;
+    List<Admin> admins = new ArrayList<>();
 
     public Building() {
     }
