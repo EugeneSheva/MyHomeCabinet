@@ -29,7 +29,7 @@
       <li class="dropdown user user-menu">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
           <img th:src="@{/images/placeholder.jpg}" class="user-image" alt="User Image">
-          <span class="hidden-xs" style="color:grey;">Иванов Иван</span>
+          <span class="hidden-xs" style="color:grey;" th:text="${auth_owner.getFullName()}">Иванов Иван</span>
         </a>
         <ul class="dropdown-menu">
           <li class="user-header"
@@ -37,16 +37,16 @@
               justify-content:center;align-items:center;">
             <img th:src="@{/images/placeholder.jpg}" class="img-circle" alt="User Image">
             <p style="margin: 0">
-              <b>Иванов Иван</b>
+              <b th:text="${auth_owner.getFullName()}">Иванов Иван</b>
             </p>
           </li>
           <li class="user-footer">
             <div class="pull-left" style="float: left;">
-              <a href="@{/cabinet/user/view}" class="btn btn-warning">Профиль</a>
+              <a th:href="@{/cabinet/user/view}" class="btn btn-warning">Профиль</a>
             </div>
-            <div class="pull-right">
-              <a href="#" class="btn btn-danger">Выйти</a>
-            </div>
+              <div class="pull-right">
+                <a th:href="@{/cabinet/logout}" type="submit" class="btn btn-danger">Выйти</a>
+              </div>
           </li>
         </ul>
       </li>

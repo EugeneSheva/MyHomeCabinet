@@ -1,3 +1,10 @@
+const queryParams = window.location.search;
+console.log(queryParams);
+const urlParams = new URLSearchParams(queryParams);
+let pageNumber = parseInt(urlParams.get('page'));
+console.log('page number ' +pageNumber);
+
+
 
     function checkFilters() {
 //        let building_id = $("#building").val();
@@ -47,6 +54,8 @@
         if(datetime_filter != null && datetime_filter.value != null && datetime_filter.value.split(' to ').length > 1 && datetime_filter.value != '') {
             link_elements.push(datetime_filter.dataset.name + '=' + datetime_filter.value);
         }
+        pageNumber = 0;
+        link_elements.push('page='+pageNumber);
         let final_link = (link_elements.length > 0) ? ('?' + link_elements.join('&')) : '';
         console.log(window.location.href.split('?')[0]);
         window.location.href = window.location.href.split('?')[0]+final_link;

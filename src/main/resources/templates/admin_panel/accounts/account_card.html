@@ -23,6 +23,7 @@
 
   <div class="content-wrapper">
     <form method="post" th:object="${apartmentAccount}">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
     <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">

@@ -100,141 +100,124 @@
                 </div>
             </div>
 
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="box" style="padding:0;">
-                            <div class="box-header with-border" style="padding-block:15px;">
-                                <h3 class="box-title"></h3>
-                                <div class="box-tools">
-                                    <a th:href="@{/admin/accounts}" class="btn btn-default btn-sm">
-                                        <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs"
-                                                                                  aria-hidden="true"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="box-body table-responsive">
-                                <form action="" method="get" th:object="${filter_form}">
-                                    <table id="table_to_excel"
-                                           class="table table-bordered table-hover table-striped linkedRow">
-                                        <thead>
-                                        <tr>
-                                            <th>№</th>
-                                            <th>Статус</th>
-                                            <th>Квартира</th>
-                                            <th>Дом</th>
-                                            <th>Секция</th>
-                                            <th>Владелец</th>
-                                            <th>Остаток(грн)</th>
-                                            <th></th>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 10px">
-                                                <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;"
-                                                       th:field="*{id}" class="my_filters" type="text">
-                                            </td>
-                                            <td style="padding: 10px">
-                                                <select style="width: 100%; padding-block: 10px" th:field="*{active}"
-                                                        class="my_filters">
-                                                    <option value=""></option>
-                                                    <option value="true">Активен</option>
-                                                    <option value="false">Не активен</option>
-                                                </select>
-                                            </td>
-                                            <td style="padding: 10px">
-                                                <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;"
-                                                       th:field="*{apartment}" class="my_filters" type="text">
-                                            </td>
-                                            <td style="padding: 10px">
-                                                <select style="width: 100%; padding-block: 10px" th:field="*{building}"
-                                                        class="my_filters">
-                                                    <option value=""></option>
-                                                    <option th:each="building : ${buildings}"
-                                                            th:value="${building.id}"
-                                                            th:text="${building.name}"></option>
-                                                </select>
-                                            </td>
-                                            <td style="padding: 10px">
-                                                <select disabled th:if="*{building == 0}" th:field="*{section}"
-                                                        style="width: 100%; padding-block: 10px">
-                                                    <option value="0">Выберите дом...</option>
-                                                </select>
-
-                                                <select th:if="*{building != 0}" class="my_filters"
-                                                        th:field="*{section}" style="width: 100%; padding-block: 10px">
-                                                    <option value="">Выберите дом...</option>
-                                                    <option th:each="section : ${sections}"
-                                                            th:value="${section}"
-                                                            th:text="${section}"></option>
-                                                </select>
-                                            </td>
-                                            <td style="padding: 10px">
-                                                <select style="width: 100%; padding-block: 10px" th:field="*{owner}"
-                                                        class="my_filters">
-                                                    <option value=""></option>
-                                                    <option th:each="owner : ${owners}"
-                                                            th:value="${owner.id}"
-                                                            th:text="${owner.getFullName()}"></option>
-                                                </select>
-                                            </td>
-                                            <td style="padding: 10px">
-                                                <select style="width: 100%; padding-block: 10px" th:field="*{debt}"
-                                                        class="my_filters">
-                                                    <option value=""></option>
-                                                    <option value="true">Есть долг</option>
-                                                    <option value="false">Нет долга</option>
-                                                </select>
-                                            </td>
-                                            <td></td>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr style="cursor: pointer;" class="account_row"
-                                            th:each="account : ${accounts}">
-                                            <td th:text="${T(java.lang.String).format('%010d',account.id)}"></td>
-                                            <td>
-                                                <small class="label label-success"
-                                                       th:if="${account.isActive}">Активен</small>
-                                                <small class="label label-danger"
-                                                       th:if="${!account.isActive}">Неактивен</small>
-                                            </td>
-                                            <td th:text="${account.apartment.number}"></td>
-                                            <td th:text="${account.apartment.building.name}"></td>
-                                            <td th:text="${account.apartment.section}"></td>
-                                            <td th:text="${account.apartment.owner.getFullName()}"></td>
-                                            <td th:text="${account.getBalance()}"
-                                                th:style="${'color: ' + (__${account.getBalance()}__ > 0 ? 'green' : 'red')}"></td>
-                                            <td>
-                                                <div class="btn-group pull-right">
-                                                    <a class="btn btn-default btn-sm"
-                                                       th:href="@{/admin/accounts/update/{id}(id=${account.id})}"><i
-                                                            class="fa fa-pencil"></i></a>
-                                                    <a class="btn btn-default btn-sm"
-                                                       th:attr="data-url='/admin/accounts/delete/'+${account.id}"
-                                                       th:onclick="if(confirm('Удалить лицевой счёт?')) window.location.href=this.dataset.url"><i
-                                                            class="fa fa-trash"></i></a>
-                                                </div>
-                                            </td>
-                                            <input type="hidden" th:value="${account.id}">
-                                        </tr>
-                                        <tr th:if="${accounts.size() == 0}">
-                                            <td colspan="8">Ничего не найдено...</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </form>
-                            </div>
-                            <div class="box-footer clearfix"></div>
-                        </div>
-                    </div>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box" style="padding:0;">
+              <div class="box-header with-border">
+                <h3 class="box-title"></h3>
+                <div class="box-tools">
+                  <a th:href="@{/admin/accounts}" class="btn btn-default btn-sm">
+                    <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                  </a>
                 </div>
+              </div>
+              <div class="box-body table-responsive">
+                  <form action="" method="get" th:object="${filter_form}">
+                    <table id="table_to_excel" class="table table-bordered table-hover table-striped linkedRow">
+                  <thead>
+                      <tr>
+                        <th>№</th>
+                        <th>Статус</th>
+                        <th>Квартира</th>
+                        <th>Дом</th>
+                        <th>Секция</th>
+                        <th>Владелец</th>
+                        <th>Остаток(грн)</th>
+                        <th></th>
+                      </tr>
+                      <tr>
+                          <td style="padding: 10px">
+                              <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" th:field="*{id}" data-name="id" class="my_filters" type="text">
+                          </td>
+                          <td style="padding: 10px">
+                              <select style="width: 100%; padding-block: 10px" th:field="*{active}" data-name="active" class="my_filters">
+                                  <option value=""></option>
+                                  <option value="true">Активен</option>
+                                  <option value="false">Не активен</option>
+                              </select>
+                          </td>
+                          <td style="padding: 10px">
+                              <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" th:field="*{apartment}" data-name="apartment" class="my_filters" type="text">
+                          </td>
+                          <td style="padding: 10px">
+                              <select style="width: 100%; padding-block: 10px" th:field="*{building}" data-name="building" class="my_filters">
+                                  <option value=""></option>
+                                  <option th:each="building : ${buildings}"
+                                          th:value="${building.id}"
+                                          th:text="${building.name}"></option>
+                              </select>
+                          </td>
+                          <td style="padding: 10px">
+                              <select disabled th:if="*{building == 0}" data-name="section" th:field="*{section}" style="width: 100%; padding-block: 10px" >
+                                  <option value="0" >Выберите дом...</option>
+                              </select>
+
+                              <select th:if="*{building != 0}" class="my_filters" th:field="*{section}" style="width: 100%; padding-block: 10px">
+                                  <option value="" >Выберите дом...</option>
+                                  <option th:each="section : ${sections}"
+                                          th:value="${section}"
+                                          th:text="${section}"></option>
+                              </select>
+                          </td>
+                          <td style="padding: 10px">
+                              <select style="width: 100%; padding-block: 10px" th:field="*{owner}" class="my_filters">
+                                  <option value=""></option>
+                                  <option th:each="owner : ${owners}"
+                                          th:value="${owner.id}"
+                                          th:text="${owner.getFullName()}"></option>
+                              </select>
+                          </td>
+                          <td style="padding: 10px">
+                              <select style="width: 100%; padding-block: 10px" th:field="*{debt}" class="my_filters">
+                                  <option value=""></option>
+                                  <option value="true">Есть долг</option>
+                                  <option value="false">Нет долга</option>
+                              </select>
+                          </td>
+                          <td></td>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="cursor: pointer;" class="account_row" th:each="account : ${accounts}">
+                        <td th:text="${T(java.lang.String).format('%010d',account.id)}"></td>
+                        <td>
+                            <small class="label label-success" th:if="${account.isActive}">Активен</small>
+                            <small class="label label-danger" th:if="${!account.isActive}">Неактивен</small>
+                        </td>
+                        <td th:text="${account.apartment.number}"></td>
+                        <td th:text="${account.apartment.building.name}"></td>
+                        <td th:text="${account.apartment.section}"></td>
+                        <td th:text="${account.apartment.owner.getFullName()}"></td>
+                        <td th:text="${account.getBalance()}" th:style="${'color: ' + (__${account.getBalance()}__ > 0 ? 'green' : 'red')}"></td>
+                        <td>
+                            <div class="btn-group pull-right">
+                                <a class="btn btn-default btn-sm" th:href="@{/admin/accounts/update/{id}(id=${account.id})}"><i class="fa fa-pencil"></i></a>
+                                <a class="btn btn-default btn-sm"
+                                   th:attr="data-url='/admin/accounts/delete/'+${account.id}"
+                                   th:onclick="if(confirm('Удалить лицевой счёт?')) window.location.href=this.dataset.url"><i class="fa fa-trash"></i></a>
+                            </div>
+                        </td>
+                        <input type="hidden" th:value="${account.id}">
+                    </tr>
+                  <tr th:if="${accounts.size() == 0}">
+                      <td colspan="8">Ничего не найдено...</td>
+                  </tr>
+                  </tbody>
+                </table>
+                  </form>
+              </div>
+              <div class="box-footer clearfix"></div>
             </div>
-        </section>
+          </div>
+        </div>
+      </div>
+    </section>
 
     </div>
 
-    <!-- Main Footer -->
-    <footer th:insert="~{main-template :: footer}"></footer>
+  <!-- Main Footer -->
+  <footer th:insert="~{main-template :: footer}"></footer>
 </div>
 <!-- ./wrapper -->
 
@@ -249,18 +232,20 @@
 <!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
+<script th:src="@{/dist/js/filter.js}"></script>
 
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<script>
+<script th:inline="javascript">
 
     let rows = document.getElementsByClassName("account_row");
-    for (let i = 0; i < rows.length; i++) {
+    for(let i = 0; i < rows.length; i++) {
         let row_children = rows[i].children;
-        let account_id = row_children[row_children.length - 1].value;
-        for (let j = 1; j < row_children.length - 1; j++) {
-            row_children[j].addEventListener('click', function () {
-                window.location.href = '/admin/accounts/' + account_id;
+        let account_id = row_children[row_children.length-1].value;
+        for(let j = 1; j < row_children.length - 1; j++) {
+            row_children[j].addEventListener('click', function(){
+                window.location.href = '/admin/accounts/'+account_id;
             });
         }
     }
@@ -277,54 +262,95 @@
         XLSX.writeFile(excel_file, "Лицевые счета " + `${day}-${month}-${year}` + ".xlsx");
     }
 
+    const accounts = [[${accounts}]];
+    let page_buttons_container = document.getElementById("page_button_container");
+
+    let back_btn = document.createElement("a");
+    back_btn.classList.add("btn", "btn-default");
+    back_btn.href = window.location.href.slice(0,-1) + (pageNumber-1);
+    back_btn.innerText = ' < ';
+
+    if(pageNumber > 0) page_buttons_container.appendChild(back_btn);
+
+    for(let i = 0; i <= accounts.length/10; i++) {
+        let btn = document.createElement("a");
+        btn.classList.add("btn", "btn-default");
+        if(i == pageNumber) btn.classList.add("selected");
+        btn.href = window.location.href.slice(0,-1) + i;
+        btn.innerText = i;
+        page_buttons_container.appendChild(btn);
+    }
+
+    let fwd_btn = document.createElement("a");
+    fwd_btn.classList.add("btn", "btn-default");
+    fwd_btn.href = window.location.href.slice(0,-1) + (pageNumber+1);
+    fwd_btn.innerText = ' > ';
+
+    if(pageNumber < (accounts.length/10 - 1)) page_buttons_container.appendChild(fwd_btn);
+
     // ФИЛЬТРЫ
-    $(document).ready(function () {
+    $(document).ready(function(){
 
-        $(".my_filters").change(function () {
-            let building_id = $("#building").val();
-            let service_id = $("#service").val();
-            let apartment_number = $("#apartment").val();
-            let section_name = $("#section").val();
+        let clone = document.getElementById("page_button_container").cloneNode(true);
+        $(".box-header").append(clone);
 
-            let id = $("#id").val();
-            let datetime = $("#datetime").val();
-            let description = $("#description").val();
-            let master_type = $("#master_type").val();
-            let master_id = $("#master").val();
-            let owner_id = $("#owner").val();
-            let phone = $("#phone").val();
-            let status = $("#status").val();
+<!--        $(".my_filters").change(function(){-->
+<!--            let building_id = $("#building").val();-->
+<!--            let service_id = $("#service").val();-->
+<!--            let apartment_number = $("#apartment").val();-->
+<!--            let section_name = $("#section").val();-->
 
-            let active = $("#active").val();
-            let debt = $("#debt").val();
+<!--            let id = $("#id").val();-->
+<!--            let datetime = $("#datetime").val();-->
+<!--            let description = $("#description").val();-->
+<!--            let master_type = $("#master_type").val();-->
+<!--            let master_id = $("#master").val();-->
+<!--            let owner_id = $("#owner").val();-->
+<!--            let phone = $("#phone").val();-->
+<!--            let status = $("#status").val();-->
 
-            const link_elements = [];
+<!--            let active = $("#active").val();-->
+<!--            let debt = $("#debt").val();-->
 
-            if (building_id != null && building_id != 0) link_elements.push('building=' + building_id);
-            if (service_id != null && service_id != 0) link_elements.push('service=' + service_id);
-            if (apartment_number != null && apartment_number != 0) link_elements.push('apartment=' + apartment_number);
-            if (section_name != null && section_name != '') link_elements.push('section=' + section_name);
+<!--            const link_elements = [];-->
 
-            if (id != null && id != 0) link_elements.push('id=' + id);
-            if (datetime != null && datetime != '') link_elements.push('datetime=' + datetime);
-            if (description != null && description != '') link_elements.push('description=' + description);
-            if (master_type != null && master_type != '') link_elements.push('master_type=' + master_type);
-            if (master_id != null && master_id != 0) link_elements.push('master_id=' + master_id);
-            if (owner_id != null && owner_id != 0) link_elements.push('owner_id=' + owner_id);
-            if (phone != null && phone != '') link_elements.push('phone=' + phone);
-            if (status != null && status != '') link_elements.push('status=' + status);
+<!--            if(building_id != null && building_id != 0) link_elements.push('building='+building_id);-->
+<!--            if(service_id != null && service_id != 0) link_elements.push('service='+service_id);-->
+<!--            if(apartment_number != null && apartment_number != 0) link_elements.push('apartment='+apartment_number);-->
+<!--            if(section_name != null && section_name != '') link_elements.push('section='+section_name);-->
 
-            if (active != null && active != '') link_elements.push('active=' + active);
-            if (debt != null && debt != '') link_elements.push('debt=' + debt);
+<!--            if(id != null && id != 0) link_elements.push('id='+id);-->
+<!--            if(datetime != null && datetime != '') link_elements.push('datetime='+datetime);-->
+<!--            if(description != null && description != '') link_elements.push('description='+description);-->
+<!--            if(master_type != null && master_type != '') link_elements.push('master_type='+master_type);-->
+<!--            if(master_id != null && master_id != 0) link_elements.push('master_id='+master_id);-->
+<!--            if(owner_id != null && owner_id != 0) link_elements.push('owner_id='+owner_id);-->
+<!--            if(phone != null && phone != '') link_elements.push('phone='+phone);-->
+<!--            if(status != null && status != '') link_elements.push('status='+status);-->
 
-            let final_link = (link_elements.length > 0) ? ('?' + link_elements.join('&')) : '';
+<!--            if(active != null && active != '') link_elements.push('active='+active);-->
+<!--            if(debt != null && debt != '') link_elements.push('debt='+debt);-->
 
-            window.location.href = '/admin/accounts' + final_link;
-        });
+<!--            let final_link = (link_elements.length > 0) ? ('?' + link_elements.join('&')) : '';-->
+
+<!--            window.location.href = '/admin/accounts'+final_link;-->
+<!--        });-->
     });
 </script>
 
+<style>
+        a.selected {
+            background-color: black;
+            color: white;
+            cursor: initial;
+            caret-color:transparent;
+        }
 
+        a.selected:hover {
+            background-color: black;
+            color: white;
+        }
+</style>
 <!-- PAGE PLUGINS -->
 <!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->
 <!--<script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>-->

@@ -10,6 +10,7 @@
   <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
   <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
   <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
 <!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
 
@@ -52,7 +53,7 @@
         <div class="row">
           <div class="col-md-12">
             <div class="box" style="padding:0;">
-              <div class="box-header with-border" style="padding-block:15px;">
+              <div class="box-header with-border" >
                 <h3 class="box-title"></h3>
                 <div class="box-tools">
                   <a href="" class="btn btn-default btn-sm">
@@ -128,7 +129,11 @@
                       <td colspan="7">Ничего не найдено</td>
                   </tr>
                   </tbody>
+
                 </table>
+                  <div id="page_button_container" class="mb-4" style="display: flex; justify-content: center;">
+
+                  </div>
               </div>
               <div class="box-footer clearfix"></div>
             </div>
@@ -138,6 +143,20 @@
     </section>
 
   </div>
+
+    <style>
+        a.selected {
+            background-color: black;
+            color: white;
+            cursor: initial;
+            caret-color:transparent;
+        }
+
+        a.selected:hover {
+            background-color: black;
+            color: white;
+        }
+    </style>
 
   <!-- Main Footer -->
   <footer th:insert="~{main-template :: footer}"></footer>
@@ -155,8 +174,9 @@
 <!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<script>
+<script th:inline="javascript">
 
     let rows = document.getElementsByClassName("meter_data_row");
     for(let i = 0; i < rows.length; i++) {
@@ -172,8 +192,47 @@
         }
     }
 
+    const queryParams = window.location.search;
+    console.log(queryParams);
+
+    const urlParams = new URLSearchParams(queryParams);
+
+    let pageNumber = parseInt(urlParams.get('page'));
+    console.log('page number ' +pageNumber);
+
+    const meters = [[${meter_data_rows}]];
+    let page_buttons_container = document.getElementById("page_button_container");
+
+    let back_btn = document.createElement("a");
+    back_btn.classList.add("btn", "btn-default");
+    back_btn.href = window.location.href.slice(0,-1) + (pageNumber-1);
+    back_btn.innerText = ' < ';
+
+    if(pageNumber > 0) page_buttons_container.appendChild(back_btn);
+
+    for(let i = 0; i <= meters.length/10 + 1; i++) {
+        let btn = document.createElement("a");
+        btn.classList.add("btn", "btn-default");
+        if(i == pageNumber) btn.classList.add("selected");
+        btn.href = window.location.href.slice(0,-1) + i;
+        btn.innerText = i;
+        page_buttons_container.appendChild(btn);
+    }
+
+    let fwd_btn = document.createElement("a");
+    fwd_btn.classList.add("btn", "btn-default");
+    fwd_btn.href = window.location.href.slice(0,-1) + (pageNumber+1);
+    fwd_btn.innerText = ' > ';
+
+    if(pageNumber <= (meters.length/10)) page_buttons_container.appendChild(fwd_btn);
+
     // ФИЛЬТРЫ
     $(document).ready(function(){
+
+        let clone = document.getElementById("page_button_container").cloneNode(true);
+        $(".box-header").append(clone);
+
+        $("#section, #service, #building").select2();
 
         $(".my_filters").change(function(){
             let building_id = $("#building").val();
@@ -206,10 +265,16 @@
             if(phone != null && phone != '') link_elements.push('phone='+phone);
             if(status != null && status != '') link_elements.push('status='+status);
 
+            pageNumber = 0;
+
+            link_elements.push('page='+pageNumber);
+
             let final_link = (link_elements.length > 0) ? ('?' + link_elements.join('&')) : '';
 
             window.location.href = '/admin/meters'+final_link;
         });
+
+
     });
 </script>
 

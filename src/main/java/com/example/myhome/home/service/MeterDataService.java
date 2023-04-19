@@ -9,6 +9,8 @@ import com.example.myhome.home.repository.specifications.MeterSpecifications;
 import com.example.myhome.home.validator.MeterValidator;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,6 +56,29 @@ public class MeterDataService {
                                         .and(MeterSpecifications.hasSection(section_name))
                                         .and(MeterSpecifications.hasApartment(apartment))
                                         .and(MeterSpecifications.hasService(service)));
+    }
+
+    public List<MeterData> findAllBySpecificationAndPage(Long building_id, String section_name, Long apartment_number, Long service_id, Integer page) {
+
+        if(building_id == null && section_name == null && apartment_number == null && service_id == null)
+            return meterDataRepository.findAll(PageRequest.of(page, 10)).toList();
+
+        Building building = (building_id != null) ? buildingService.findById(building_id) : null;
+        Apartment apartment = (apartment_number != null) ? apartmentService.findByNumber(apartment_number) : null;
+        com.example.myhome.home.model.Service service = (service_id != null) ? serviceService.findServiceById(service_id) : null;
+
+        log.info("Building: " + building);
+        log.info("Apartment: " + apartment);
+        log.info("Service: " + service);
+        log.info("Section: " + section_name);
+
+        Specification<MeterData> specification = Specification.where(MeterSpecifications.hasBuilding(building)
+                                                                .and(MeterSpecifications.hasSection(section_name))
+                                                                .and(MeterSpecifications.hasApartment(apartment))
+                                                                .and(MeterSpecifications.hasService(service)));
+        Pageable pageable = PageRequest.of(page, 10);
+
+        return meterDataRepository.findAll(specification, pageable).toList();
     }
 
     public Long getMaxId() {return meterDataRepository.getMaxId().orElse(0L);}

@@ -45,10 +45,11 @@ public class AccountController {
     public String showAccountsPage(Model model,
                                    FilterForm filterForm) throws IllegalAccessException {
 
+        if(filterForm.getPage() == null) return "redirect:/admin/accounts?page=0";
+
         List<ApartmentAccount> accountList;
 
-        if(!filterForm.filtersPresent()) accountList = accountService.findAll();
-        else accountList = accountService.findAllBySpecification(filterForm);
+        accountList = accountService.findAllBySpecification(filterForm);
 
         model.addAttribute("accounts", accountList);
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
@@ -78,6 +79,9 @@ public class AccountController {
     @GetMapping("/create")
     public String showCreateAccountPage(Model model) {
         model.addAttribute("apartmentAccount", new ApartmentAccount());
+        model.addAttribute("buildings", buildingService.findAll());
+        model.addAttribute("id", accountService.getMaxId());
+
         return "admin_panel/accounts/account_card";
     }
 
@@ -107,6 +111,8 @@ public class AccountController {
     public String showUpdateAccountPage(@PathVariable long id, Model model) {
         model.addAttribute("apartmentAccount", accountService.getAccountById(id));
         model.addAttribute("id", id);
+        model.addAttribute("buildings", buildingService.findAll());
+
         return "admin_panel/accounts/account_card";
     }
 
@@ -136,8 +142,6 @@ public class AccountController {
 
     @ModelAttribute
     public void addAttributes(Model model) {
-        model.addAttribute("id", accountService.getMaxId());
-        model.addAttribute("buildings", buildingService.findAll());
     }
 
 }

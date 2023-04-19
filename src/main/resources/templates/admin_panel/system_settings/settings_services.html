@@ -42,7 +42,7 @@
             <div class="box">
               <div class="box-body">
                 <form method="post" th:object="${serviceForm}" enctype="multipart/form-data">
-
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                   <div class="row">
                     <div class="col-xs-12 col-lg-7">
                       <div class="nav-tabs-custom">

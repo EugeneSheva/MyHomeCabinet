@@ -12,6 +12,8 @@ import java.time.LocalDate;
 @Data
 public class FilterForm {
 
+    private Integer page;
+
     private Long building;
     private Long service;
     private Long apartment;

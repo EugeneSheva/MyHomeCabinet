@@ -2,12 +2,9 @@ package com.example.myhome.home.controller.admin_panel;
 
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.repository.*;
-import com.example.myhome.home.service.AdminService;
-import com.example.myhome.home.service.ServiceService;
-import com.example.myhome.home.service.TariffService;
-import com.example.myhome.util.UserRole;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,13 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
 @Log
@@ -33,6 +26,13 @@ public class SettingsController {
     @Autowired
     private PaymentDetailsRepository paymentDetailsRepository;
 
+    @Autowired
+    private PageRoleDisplayRepository pageRoleDisplayRepository;
+
+    @GetMapping("/admin")
+    public String redirectToStatPage() {
+        return "redirect:/admin/statistics";
+    }
 
     @GetMapping("/admin/payment-details")
     public String showPaymentDetailsPage(Model model) {
@@ -45,11 +45,11 @@ public class SettingsController {
         List<IncomeExpenseItems> transactions = new ArrayList<>();
         if(sort != null) {
             if(sort.equalsIgnoreCase("exp")) {
-                transactions = incomeExpenseRepository.findAllByOrderByIncomeExpenseTypeAsc();
+                transactions = incomeExpenseRepository.findAll(Sort.by(Sort.Direction.ASC, "incomeExpenseType"));
                 model.addAttribute("type", "inc");
             }
             else if(sort.equalsIgnoreCase("inc")) {
-                transactions = incomeExpenseRepository.findAllByOrderByIncomeExpenseTypeDesc();
+                transactions = incomeExpenseRepository.findAll(Sort.by(Sort.Direction.DESC, "incomeExpenseType"));
                 model.addAttribute("type", "exp");
             }
         } else {
@@ -122,11 +122,21 @@ public class SettingsController {
 
     @GetMapping("/admin/roles")
     public String showRolesPage(Model model) {
+        PageRoleForm pageForm = new PageRoleForm();
+        pageForm.setPages(pageRoleDisplayRepository.findAll());
+        model.addAttribute("pageForm", pageForm);
         return "admin_panel/system_settings/roles";
     }
 
     @PostMapping("/admin/roles")
-    public String saveRolesPage(RedirectAttributes redirectAttributes, Model model) {
+    public String saveRolesPage(@ModelAttribute PageRoleForm pageForm, RedirectAttributes redirectAttributes, Model model) {
+        List<PageRoleDisplay> originalList = pageRoleDisplayRepository.findAll();
+        List<PageRoleDisplay> pages = pageForm.getPages();
+        for(int i = 0; i < pages.size(); i++) {
+            pages.get(i).setId((long) i+1);
+            pages.get(i).setPage_name(originalList.get(i).getPage_name());
+        }
+        pageRoleDisplayRepository.saveAll(pages);
         redirectAttributes.addFlashAttribute("success", "Сохранено!");
         return "redirect:/admin/roles";
     }

@@ -4,6 +4,7 @@ import com.example.myhome.home.model.pages.*;
 import com.example.myhome.home.repository.DocumentRepository;
 import com.example.myhome.home.repository.PageRepository;
 import com.example.myhome.home.service.WebsiteService;
+import com.example.myhome.home.validator.pages.MainPageValidator;
 import com.example.myhome.util.FileUploadUtil;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -28,10 +26,12 @@ import java.util.stream.Collectors;
 public class WebsiteController {
 
     @Autowired private WebsiteService websiteService;
+    @Autowired private MainPageValidator validator;
 
     @GetMapping("/home")
     public String showEditHomePage(Model model) {
         model.addAttribute("mainPage", websiteService.getMainPage());
+        log.info(Objects.requireNonNull(model.getAttribute("mainPage")).toString());
         return "admin_panel/website_settings/website_home";
     }
 
@@ -84,7 +84,7 @@ public class WebsiteController {
 
     @GetMapping("/contacts")
     public String showEditContactsPage(Model model) {
-        model.addAttribute("page", websiteService.getContactsPage());
+        model.addAttribute("contactsPage", websiteService.getContactsPage());
         return "admin_panel/website_settings/website_contacts";
     }
 
@@ -102,6 +102,8 @@ public class WebsiteController {
                                @RequestPart(required = false) MultipartFile page_block_4_img,
                                @RequestPart(required = false) MultipartFile page_block_5_img,
                                @RequestPart(required = false) MultipartFile page_block_6_img) throws IOException {
+
+        validator.validate(page, bindingResult);
 
         if(bindingResult.hasErrors()) {
             log.info("Errors found");

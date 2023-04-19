@@ -1,5 +1,6 @@
 package com.example.myhome.home.service;
 
+import com.example.myhome.home.configuration.security.CustomUserDetails;
 import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.repository.AccountRepository;
@@ -37,6 +38,7 @@ public class OwnerService {
     public OwnerDTO findByIdDTO (Long id) {
         Owner owner = ownerRepository.findById(id).orElseThrow(() -> new NotFoundException());
     return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()));}
+    public Owner findByLogin(String login) {return ownerRepository.findByEmail(login).orElseThrow(NotFoundException::new);}
 
     public List<Owner> findAll() { return ownerRepository.findAll(); }
     public Page<Owner> findAll(Pageable pageable) { return ownerRepository.findAll(pageable); }
@@ -128,5 +130,9 @@ public class OwnerService {
 //        }
 //        return ownerDTOList;
 //    }
+    public Owner fromCustomUserDetailsToOwner(CustomUserDetails details) {
+        return findByLogin(details.getUsername());
+    }
+
 
 }

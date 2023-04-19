@@ -55,18 +55,21 @@
               </div>
               <div class="box-body">
                 <form method="post" th:object="${mainPage}" enctype="multipart/form-data">
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                   <h3 class="page-header">Карусель(слайдер)</h3>
                   <div class="row">
                     <div class="col-md-4">
                       <h4>Слайд 1</h4>
                       <img th:src="*{slide1 != null && !slide1.isEmpty()} ?
                                    @{/images/{url}(url=${mainPage.slide1})} :
-                                   @{/images/placeholder.jpg}" class="page_image" alt="">
+                                   @{/images/placeholder.jpg}"
+                           th:styleappend="${#fields.hasErrors('img1')} ? 'border:0.5px solid red'" class="page_image" alt="">
                       <div class="form-group mb-30">
-                        <label for="page_slide1" class="control-label">Рекомендуемый размер: (1920х800)</label>
+                        <label for="img1" class="control-label">Рекомендуемый размер: (1920х800)</label>
                         <input type="hidden" name="WebsiteHomeSlide[0][imageFile]" id="">
-                        <input type="file" name="page_slide1" id="page_slide1" accept="image/*">
+                        <input type="file" th:field="*{img1}" name="img1" id="img1" accept="image/*">
                       </div>
+                      <h4 th:if="${#fields.hasErrors('img1')}" th:errors="*{img1}" style="color:red"></h4>
                     </div>
                     <div class="col-md-4">
                       <h4>Слайд 2</h4>

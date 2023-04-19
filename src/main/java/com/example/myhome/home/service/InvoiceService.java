@@ -8,6 +8,8 @@ import com.example.myhome.home.repository.InvoiceTemplateRepository;
 import com.example.myhome.home.repository.specifications.InvoiceSpecifications;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -37,40 +39,31 @@ public class InvoiceService {
 
     public List<Invoice> findAllInvoices() {return invoiceRepository.findAll();}
 
+    public List<Invoice> findAllByPage(Integer page, Integer page_size) {
+        return invoiceRepository.findAll(PageRequest.of(page, page_size)).toList();
+    }
+
     public List<Invoice> findAllBySpecification(FilterForm filters) {
         log.info("Filters found!");
         log.info(filters.toString());
 
-        Long id = filters.getId();
-        InvoiceStatus status = (filters.getStatus() != null) ? InvoiceStatus.valueOf(filters.getStatus()) : null;
-        Apartment apartment = (filters.getApartment() != null) ? apartmentService.findByNumber(filters.getApartment()) : null;
-        Owner owner = (filters.getOwner() != null) ? ownerService.findById(filters.getOwner()) : null;
-        Boolean completed = filters.getCompleted();
-
-        String month = filters.getMonth();
-        LocalDate m = (month != null && !month.isEmpty()) ? LocalDate.of(Integer.parseInt(month.split("-")[0]),
-                Integer.parseInt(month.split("-")[1]), 1) : null;
-        LocalDate m2 = (m != null) ? m.plusMonths(1).minusDays(1) : null;
-
-        String date = filters.getDate();
-        LocalDate date_from = null;
-        LocalDate date_to = null;
-        if(date != null && !date.isEmpty()) {
-            date_from = LocalDate.parse(date.split(" to ")[0]);
-            date_to = LocalDate.parse(date.split(" to ")[1]);
-        }
-
-        Specification<Invoice> specification =
-                Specification.where(InvoiceSpecifications.hasId(id)
-                        .and(InvoiceSpecifications.hasStatus(status))
-                        .and(InvoiceSpecifications.hasApartment(apartment))
-                        .and(InvoiceSpecifications.hasOwner(owner))
-                        .and(InvoiceSpecifications.isCompleted(completed))
-                        .and(InvoiceSpecifications.datesBetween(date_from, date_to))
-                        .and(InvoiceSpecifications.datesBetween(m, m2)));
+        Specification<Invoice> specification = buildSpecFromFilters(filters);
 
         return invoiceRepository.findAll(specification);
     }
+
+    public List<Invoice> findAllBySpecificationAndPage(FilterForm filters, Integer page, Integer page_size) {
+        log.info("Filters found!");
+        log.info(filters.toString());
+
+        Specification<Invoice> specification = buildSpecFromFilters(filters);
+
+        Pageable pageable = PageRequest.of(page, page_size);
+
+        return invoiceRepository.findAll(specification, pageable).toList();
+    }
+
+    public Long count() {return invoiceRepository.count();}
 
     public List<InvoiceTemplate> findAllTemplates() {return invoiceTemplateRepository.findAll();}
 
@@ -192,5 +185,42 @@ public class InvoiceService {
 
         return saveAllInvoicesComponents(componentsList);
     }
+
+    public Specification<Invoice> buildSpecFromFilters(FilterForm filters) {
+        Long id = filters.getId();
+        InvoiceStatus status = (filters.getStatus() != null) ? InvoiceStatus.valueOf(filters.getStatus()) : null;
+        Apartment apartment = (filters.getApartment() != null) ? apartmentService.findByNumber(filters.getApartment()) : null;
+        Owner owner = (filters.getOwner() != null) ? ownerService.findById(filters.getOwner()) : null;
+        Boolean completed = filters.getCompleted();
+
+        String month = filters.getMonth();
+        LocalDate m = (month != null && !month.isEmpty()) ? LocalDate.of(Integer.parseInt(month.split("-")[0]),
+                Integer.parseInt(month.split("-")[1]), 1) : null;
+        LocalDate m2 = (m != null) ? m.plusMonths(1).minusDays(1) : null;
+
+        String date = filters.getDate();
+        LocalDate date_from = null;
+        LocalDate date_to = null;
+        if(date != null && !date.isEmpty()) {
+            date_from = LocalDate.parse(date.split(" to ")[0]);
+            date_to = LocalDate.parse(date.split(" to ")[1]);
+        }
+
+        return Specification.where(InvoiceSpecifications.hasId(id)
+                .and(InvoiceSpecifications.hasStatus(status))
+                .and(InvoiceSpecifications.hasApartment(apartment))
+                .and(InvoiceSpecifications.hasOwner(owner))
+                .and(InvoiceSpecifications.isCompleted(completed))
+                .and(InvoiceSpecifications.datesBetween(date_from, date_to))
+                .and(InvoiceSpecifications.datesBetween(m, m2)));
+    }
+
+    public Long getFilteredInvoiceCount(FilterForm filters) {
+
+        Specification<Invoice> spec = buildSpecFromFilters(filters);
+
+        return invoiceRepository.count(spec);
+    }
+
 
 }

@@ -1,22 +1,45 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.configuration.security.CustomUserDetails;
 import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.model.RepairRequest;
+import com.example.myhome.home.service.OwnerService;
+import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.text.SimpleDateFormat;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping("/cabinet")
+@Log
 public class PersonalCabinetController {
 
+    @Autowired
+    private OwnerService ownerService;
+
+    @Autowired
+    private PersistentTokenRepository repository;
+
+    @Autowired
+    private PersistentTokenBasedRememberMeServices rememberMeServices;
 
     @GetMapping
     public String getStartPage(){
@@ -73,6 +96,5 @@ public class PersonalCabinetController {
         model.addAttribute("owner", new Owner());
         return "cabinet/user_edit";
     }
-
 
 }

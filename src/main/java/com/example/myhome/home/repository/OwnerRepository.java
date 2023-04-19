@@ -15,6 +15,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.time.LocalDate;
 public interface OwnerRepository extends JpaRepository<Owner, Long>, JpaSpecificationExecutor<Owner> {
+import java.util.Optional;
+
+
     Long countAllBy();
 
     default Page<Owner> findByFilters(Long id, String name, String phoneNumber, String email, String buildingName, Long apartmentNumber, LocalDate added, UserStatus status, Boolean is_debt, Pageable pageable) {
@@ -69,4 +72,6 @@ public interface OwnerRepository extends JpaRepository<Owner, Long>, JpaSpecific
 
 //    List<Owner> findByfirst_nameContainingOrlast_nameContainingOrfather_nameContaining(String firstName, String lastName, String fatherName, Pageable pageable);
 
+    Optional<Owner> findByEmail(String email);
+    Boolean existsByEmail(String email);
 }

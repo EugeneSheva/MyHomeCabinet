@@ -43,10 +43,11 @@
     <!-- Main content -->
     <section class="page_content">
 
+
       <div class="container-fluid">
 
-        <form method="post">
-
+        <form method="post" th:object="${pageForm}">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
           <div class="row">
             <div class="col-md-12">
               <div class="box">
@@ -55,86 +56,47 @@
                     <thead>
                       <tr>
                         <th>Роль</th>
-                        <th>Статистика</th>
-                        <th>Касса</th>
-                        <th>Квитанции на оплату</th>
-                        <th>Лицевые счета</th>
-                        <th>Квартиры</th>
-                        <th>Владельцы квартир</th>
-                        <th>Квартиры</th>
-                        <th>Дома</th>
-                        <th>Сообщения</th>
-                        <th>Заявки вызова мастера</th>
-                        <th>Счётчики</th>
-                        <th>Управление сайтом</th>
-                        <th>Услуги</th>
-                        <th>Тарифы</th>
-                        <th>Роли</th>
-                        <th>Пользователи</th>
-                        <th>Платежные реквизиты</th>
+                        <th th:each="page, iter : *{pages}" th:text="${page.page_name}"></th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
                         <td>Директор</td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
-                        <td><input type="checkbox" checked disabled name="" id=""></td>
+                        <td th:each="page, iter : *{pages}">
+                          <input type="checkbox" checked disabled>
+                        </td>
                       </tr>
                       <tr>
                         <td>Администратор</td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
+                        <td th:each="page, iter : *{pages}">
+                          <input type="checkbox" th:field="*{pages[__${iter.index}__].role_admin}">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Управляющий</td>
+                        <td th:each="page, iter : *{pages}">
+                          <input type="checkbox" th:field="*{pages[__${iter.index}__].role_manager}">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Бухгалтер</td>
+                        <td th:each="page, iter : *{pages}">
+                          <input type="checkbox" th:field="*{pages[__${iter.index}__].role_accountant}">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Электрик</td>
+                        <td th:each="page, iter : *{pages}">
+                          <input type="checkbox" th:field="*{pages[__${iter.index}__].role_electrician}">
+                        </td>
                       </tr>
                       <tr>
                         <td>Сантехник</td>
-                        <td><input type="checkbox"  name="" id=""></td>
-                        <td><input type="checkbox"  name="" id=""></td>
-                        <td><input type="checkbox"  name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
-                        <td><input type="checkbox" checked name="" id=""></td>
+                        <td th:each="page, iter : *{pages}">
+                          <input type="checkbox" th:field="*{pages[__${iter.index}__].role_plumber}">
+                        </td>
                       </tr>
+
                     </tbody>
                   </table>
                 </div>
@@ -144,7 +106,7 @@
           <div class="row">
             <div class="col-md-12">
               <button type="button" class="btn btn-default">Отменить</button>
-              <button type="submit" class="btn btn-success" disabled>Сохранить</button>
+              <button type="submit" class="btn btn-success">Сохранить</button>
             </div>
           </div>
           <div style="text-align: center; color: green; font-size: 20px; width: 100%">
@@ -152,9 +114,6 @@
           </div>
 
         </form>
-
-        <div id="summernote"><p>Hello Summernote</p></div>
-
 
 
       </div>
@@ -166,6 +125,23 @@
   <footer th:insert="~{main-template :: footer}"></footer>
 </div>
 <!-- ./wrapper -->
+
+<style>
+  input[type=checkbox] {
+    width: 18px;
+    height: 18px;
+    margin-top: 6px;
+  }
+
+  td {
+    cursor: pointer;
+  }
+
+  td:hover {
+    background-color: rgba(0,0,0,.1);
+  }
+</style>
+
 
 <!-- REQUIRED SCRIPTS -->
 <!-- Icons -->
@@ -181,8 +157,16 @@
 <script th:src="@{/summernote/summernote.min.js}"></script>
 
 <script>
-  $(document).ready(function() {
-      $('#summernote').summernote();
+  $(document).ready(function(){
+    let td = document.getElementsByTagName("td");
+    for (const cell of td) {
+      let checkbox = cell.firstElementChild;
+      console.log(checkbox);
+      cell.addEventListener("click", () => {
+        if(checkbox.checked) checkbox.checked = false;
+        else checkbox.checked = true;
+      });
+    }
   });
 </script>
 

@@ -1,5 +1,6 @@
 package com.example.myhome.home.service;
 
+import com.example.myhome.home.configuration.security.CustomAdminDetails;
 import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.model.AdminDTO;
@@ -11,9 +12,12 @@ import com.example.myhome.home.repository.specifications.AdminSpecifications;
 import com.example.myhome.util.UserRole;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +28,12 @@ import java.util.logging.Filter;
 public class AdminService {
 
 
-    private final AdminRepository adminRepository;
-;
+    @Autowired private final AdminRepository adminRepository;
+    @Autowired private final PasswordEncoder passwordEncoder;
 
 
     public Admin findAdminById (Long id) { return adminRepository.findById(id).orElseThrow(NotFoundException::new);}
+    public Admin findAdminByLogin(String login) {return adminRepository.findByEmail(login).orElseThrow(NotFoundException::new);}
 
     public List<Admin> findAll() { return adminRepository.findAll(); }
     public List<Admin> findAll(int page_number) {return adminRepository.findAll(PageRequest.of(page_number, 5)).toList();}
@@ -36,7 +41,7 @@ public class AdminService {
     public List<Admin> findAllBySpecification(FilterForm filters) {
 
         String name = filters.getName();
-        UserRole role = (filters.getRole() != null) ? UserRole.valueOf(filters.getRole()) : null;
+        UserRole role = (filters.getRole() != null && !filters.getRole().isEmpty()) ? UserRole.valueOf(filters.getRole()) : null;
         String phone = filters.getPhone();
         String email = filters.getEmail();
         Boolean active = filters.getActive();
@@ -76,11 +81,18 @@ public class AdminService {
         return adminDTOList;
     }
 
-    public Admin saveAdmin(Admin admin) { return adminRepository.save(admin); }
+    public Admin saveAdmin(Admin admin) {
+        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+        return adminRepository.save(admin);
+    }
 
     public void deleteAdminById(Long id) { adminRepository.deleteById(id); }
 
     public List<Admin> getAdminsByRole(UserRole role) { return adminRepository.getAdminsByRole(role);}
+
+    public Admin fromCustomAdminDetailsToAdmin(CustomAdminDetails details) {
+        return findAdminByLogin(details.getUsername());
+    }
 
 
 
