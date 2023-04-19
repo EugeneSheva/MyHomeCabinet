@@ -2,6 +2,7 @@ package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Owner;
+import com.example.myhome.home.model.OwnerDTO;
 import com.example.myhome.home.service.OwnerService;
 import com.example.myhome.home.validator.BuildingValidator;
 import com.example.myhome.home.validator.OwnerValidator;
@@ -18,7 +19,9 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -92,5 +95,19 @@ public class OwnerController {
     @GetMapping("/get-apartment-accounts")
     public @ResponseBody List<Long> getOwnerApartmentAccountsIds(@RequestParam long owner_id) {
         return ownerService.getOwnerApartmentAccountsIds(owner_id);
+    }
+
+    @GetMapping("/get-all-owners")
+    public @ResponseBody Map<String, Object> getAllOwners(@RequestParam String search, @RequestParam int page) {
+        log.info(ownerService.findAllDTO().toString());
+        log.info("Getting all owners that have in their name: " + search);
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Boolean> pagination = new HashMap<>();
+        pagination.put("more", (page*10L) < ownerService.countAllOwners());
+        map.put("results", ownerService.getOwnerDTOByPage(search, page-1));
+        map.put("pagination", pagination);
+        System.out.println(map.get("results").toString());
+        System.out.println(map.get("pagination").toString());
+        return map;
     }
 }

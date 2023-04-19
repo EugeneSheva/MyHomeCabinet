@@ -12,6 +12,7 @@ import com.example.myhome.home.service.OwnerService;
 import com.example.myhome.home.validator.AccountValidator;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -45,13 +46,14 @@ public class AccountController {
     public String showAccountsPage(Model model,
                                    FilterForm filterForm) throws IllegalAccessException {
 
-        if(filterForm.getPage() == null) return "redirect:/admin/accounts?page=0";
+        if(filterForm.getPage() == null) return "redirect:/admin/accounts?page=1";
 
-        List<ApartmentAccount> accountList;
+        Page<ApartmentAccount> accountList;
 
         accountList = accountService.findAllBySpecification(filterForm);
 
-        model.addAttribute("accounts", accountList);
+        model.addAttribute("accounts", accountList.getContent());
+        model.addAttribute("pages_count", accountList.getTotalPages());
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
         model.addAttribute("account_balance", accountService.getSumOfAccountBalances());
         model.addAttribute("account_debt", accountService.getSumOfAccountDebts());

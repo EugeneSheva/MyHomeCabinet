@@ -61,17 +61,10 @@ public class Invoice {
     private LocalDate dateTo;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "invoice", cascade = {CascadeType.ALL})
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "invoice")
     private List<InvoiceComponents> components;
 
     private double total_price;
-
-
-
-    @PreRemove
-    public void clearComponents() {
-        this.components = null;
-    }
 
     public void addComponent(InvoiceComponents component) {
         component.setInvoice(this);

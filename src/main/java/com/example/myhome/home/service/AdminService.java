@@ -12,7 +12,9 @@ import com.example.myhome.home.repository.specifications.AdminSpecifications;
 import com.example.myhome.util.UserRole;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -22,9 +24,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Filter;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Log
 public class AdminService {
 
 
@@ -81,10 +85,36 @@ public class AdminService {
         return adminDTOList;
     }
 
+    public List<AdminDTO> findAllMasters(String search, int page){
+        Pageable pageable = PageRequest.of(page, 5);
+
+        Specification<Admin> spec = Specification.not(AdminSpecifications.hasRole(UserRole.ROLE_ADMIN)
+                                                .and(AdminSpecifications.hasRole(UserRole.ROLE_MANAGER))
+                                                .and(AdminSpecifications.hasRole(UserRole.ROLE_DIRECTOR))
+                                                .and(AdminSpecifications.hasRole(UserRole.ROLE_ACCOUNTANT)))
+                .and(AdminSpecifications.hasNameLike(search));
+
+        return adminRepository.findAll(spec, pageable)
+                .stream()
+                .map(admin -> new AdminDTO(admin.getId(), admin.getFirst_name(), admin.getLast_name()))
+                .collect(Collectors.toList());
+    }
+
+    public Long countAllMasters() {
+
+        Specification<Admin> spec = Specification.not(AdminSpecifications.hasRole(UserRole.ROLE_ADMIN)
+                                                .and(AdminSpecifications.hasRole(UserRole.ROLE_MANAGER))
+                                                .and(AdminSpecifications.hasRole(UserRole.ROLE_DIRECTOR))
+                                                .and(AdminSpecifications.hasRole(UserRole.ROLE_ACCOUNTANT)));
+
+        return adminRepository.count(spec);
+    }
+
     public Admin saveAdmin(Admin admin) {
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         return adminRepository.save(admin);
     }
+
 
     public void deleteAdminById(Long id) { adminRepository.deleteById(id); }
 

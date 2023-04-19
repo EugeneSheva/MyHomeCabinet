@@ -5,8 +5,12 @@ import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.InvoiceComponentRepository;
 import com.example.myhome.home.repository.InvoiceRepository;
 import com.example.myhome.home.repository.InvoiceTemplateRepository;
+import com.example.myhome.home.repository.PaymentDetailsRepository;
 import com.example.myhome.home.repository.specifications.InvoiceSpecifications;
 import lombok.extern.java.Log;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +20,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
+import java.io.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -34,8 +41,13 @@ public class InvoiceService {
     @Autowired
     private ServiceService serviceService;
 
+    @Autowired private PaymentDetailsRepository paymentDetailsRepository;
+
     @Autowired private ApartmentService apartmentService;
     @Autowired private OwnerService ownerService;
+    @Autowired private EmailService emailService;
+
+    private static final String FILE_PATH = "C:\\Users\\OneSmiLe\\IdeaProjects\\MyHome\\src\\main\\resources\\static\\files\\";
 
     public List<Invoice> findAllInvoices() {return invoiceRepository.findAll();}
 
@@ -98,8 +110,7 @@ public class InvoiceService {
 
     public void deleteInvoiceById(long invoice_id) {
         Invoice invoice = findInvoiceById(invoice_id);
-        invoiceComponentRepository.deleteAll(invoice.getComponents());
-//        invoice.removeAllChildren();
+        invoice.getComponents().clear();
         invoiceRepository.delete(invoice);
     }
 
@@ -189,7 +200,8 @@ public class InvoiceService {
     public Specification<Invoice> buildSpecFromFilters(FilterForm filters) {
         Long id = filters.getId();
         InvoiceStatus status = (filters.getStatus() != null) ? InvoiceStatus.valueOf(filters.getStatus()) : null;
-        Apartment apartment = (filters.getApartment() != null) ? apartmentService.findByNumber(filters.getApartment()) : null;
+//        Apartment apartment = (filters.getApartment() != null) ? apartmentService.findByNumber(filters.getApartment()) : null;
+        Long apartment = filters.getApartment() != null ? filters.getApartment() : null;
         Owner owner = (filters.getOwner() != null) ? ownerService.findById(filters.getOwner()) : null;
         Boolean completed = filters.getCompleted();
 
@@ -208,7 +220,7 @@ public class InvoiceService {
 
         return Specification.where(InvoiceSpecifications.hasId(id)
                 .and(InvoiceSpecifications.hasStatus(status))
-                .and(InvoiceSpecifications.hasApartment(apartment))
+                .and(InvoiceSpecifications.hasApartmentNumber(apartment))
                 .and(InvoiceSpecifications.hasOwner(owner))
                 .and(InvoiceSpecifications.isCompleted(completed))
                 .and(InvoiceSpecifications.datesBetween(date_from, date_to))
@@ -222,5 +234,76 @@ public class InvoiceService {
         return invoiceRepository.count(spec);
     }
 
+
+    public String turnInvoiceIntoExcel(Invoice invoice, InvoiceTemplate template) throws IOException {
+
+        log.info(invoice.toString());
+
+        PaymentDetails pd = paymentDetailsRepository.findById(1L).orElse(null);
+        String paymentDetails = (pd != null) ? pd.getName() + ", " + pd.getDescription() : "N/A";
+        String invoiceOwnerName = (invoice.getApartment() != null && invoice.getApartment().getOwner() != null) ?
+                invoice.getApartment().getOwner().getFullName() : "N/A";
+        String invoiceTotalPrice = String.valueOf(invoice.getTotal_price());
+        String invoiceAccountNumber = (invoice.getAccount() != null) ? String.format("%010d", invoice.getAccount().getId()) : "N/A";
+        String invoiceAccountBalance = (invoice.getAccount() != null) ? String.valueOf(invoice.getAccount().getBalance()) : "N/A";
+        String invoiceID = String.valueOf(invoice.getId());
+        String invoiceDate = invoice.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        String invoiceMonth = invoice.getDate().format(DateTimeFormatter.ofPattern("MMMM yyyy"));
+
+        try(InputStream in = new FileInputStream(FILE_PATH+template.getFile())){
+            Workbook workbook = WorkbookFactory.create(in);
+            log.info(workbook.toString());
+            Sheet sheet = workbook.getSheetAt(0);
+            log.info(sheet.getSheetName());
+            log.info(sheet.toString());
+
+            for(Row row : sheet) {
+                for(Cell cell : row) {
+                    if(cell.getCellType().equals(CellType.STRING)) {
+                        String param = cell.getStringCellValue();
+                        switch(param) {
+                            case "%paymentDetails%": cell.setCellValue(paymentDetails); break;
+                            case "%invoiceOwnerName%": cell.setCellValue(invoiceOwnerName); break;
+                            case "%invoiceTotalPrice%", "%total%": cell.setCellValue(invoiceTotalPrice); break;
+                            case "%invoiceAccountNumber%": cell.setCellValue(invoiceAccountNumber); break;
+                            case "%invoiceAccountBalance%": cell.setCellValue(invoiceAccountBalance); break;
+                            case "%invoiceID%": cell.setCellValue(invoiceID); break;
+                            case "%invoiceDate%": cell.setCellValue(invoiceDate); break;
+                            case "%invoiceMonth%": cell.setCellValue(invoiceMonth); break;
+//                            case "%services%": insertService(invoice, sheet, row); break;
+                            default:
+                        }
+                    }
+                }
+            }
+            try (OutputStream fileOut = new FileOutputStream(FILE_PATH+template.getFile())){
+                workbook.write(fileOut);
+            }
+            log.info("Workbook closed");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        log.info("try block over");
+        return template.getFile();
+    }
+
+    public void insertService(Invoice invoice, Sheet sheet, Row row) {
+
+        List<InvoiceComponents> componentsList = invoice.getComponents();
+        for (int i = 0; i < componentsList.size(); i++) {
+            Row newRow = sheet.createRow(row.getRowNum()+i+1);
+            InvoiceComponents component = componentsList.get(i);
+            newRow.createCell(0).setCellValue(component.getService().getName());
+            newRow.createCell(1).setCellValue(invoice.getTariff().getName());
+            newRow.createCell(2).setCellValue(component.getService().getUnit().getName());
+            newRow.createCell(3).setCellValue(component.getUnit_amount());
+            newRow.createCell(4).setCellValue(component.getTotalPrice());
+        }
+    }
+
+    public void sendExcelInvoiceToEmail() {
+
+    }
 
 }

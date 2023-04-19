@@ -46,6 +46,11 @@ public class ApartmentAccount {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "apartmentAccount")
     private List<CashBox> transactions = new ArrayList<>();
 
+    @ToString.Exclude
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
+    private List<Invoice> invoices = new ArrayList<>();
+
     private Double balance = 0.0;
 
     public ApartmentAccount() {
@@ -75,6 +80,10 @@ public class ApartmentAccount {
                 .map(Invoice::getTotal_price)
                 .reduce(Double::sum)
                 .orElse(0.0);
+    }
+
+    public void addToBalance(double amount) {
+        this.balance += amount;
     }
 
     public Long getId() {

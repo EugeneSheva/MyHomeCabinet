@@ -10,6 +10,8 @@ import com.example.myhome.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +21,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,12 +42,24 @@ public class BuildingService {
             buildingDTOList.add(new BuildingDTO(building.getId(),building.getName(), building.getSections(), building.getAddress(), building.getFloors()));
         }
         return buildingDTOList; }
+
     public Building save(Building building) { return buildingRepository.save(building); }
+
+    public List<BuildingDTO> findByPage(String search, int page) {
+        log.info(buildingRepository.findAll().toString());
+        log.info(buildingRepository.findAll(PageRequest.of(page-1, 5)).getContent().toString());
+        log.info(buildingRepository.findByName(search, PageRequest.of(page-1, 5)).toString());
+
+        return buildingRepository.findByName(search, PageRequest.of(page-1, 5)).stream()
+                .map(building -> new BuildingDTO(building.getId(), building.getName())).collect(Collectors.toList());
+    }
 
     public List<Apartment> getSectionApartments(long building_id, String section_name) {
         log.info("ID BUILDING: " + building_id + ", SECTION NAME: " + section_name);
         return buildingRepository.getSectionApartments(building_id, section_name);
     }
+
+    public Long countBuildings() {return buildingRepository.count();}
 
     public void deleteById(Long id) { buildingRepository.deleteById(id); }
 

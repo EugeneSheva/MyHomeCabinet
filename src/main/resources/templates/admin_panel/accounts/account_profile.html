@@ -117,7 +117,7 @@
                       </p>
                       <p style="margin-bottom: 5px;"><a href="">Посмотреть приходы</a></p>
                       <p style="margin-bottom: 5px;">
-                        <a th:href="@{/admin/invoices/search?flat_id={flat_id}(flat_id=${account.apartment.id})}">Посмотреть квитанции</a>
+                        <a th:href="@{/admin/invoices?apartment={flat_id}&page=1(flat_id=${account.apartment.id})}">Посмотреть квитанции</a>
                       </p>
                     </div>
 

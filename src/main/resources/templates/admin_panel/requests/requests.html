@@ -165,7 +165,7 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                        <tr th:if="${requests.size() == 0}">
+                                        <tr th:if="${requests.getTotalElements() == 0}">
                                             <td colspan="10">Ничего не найдено...</td>
                                         </tr>
                                     </tbody>
@@ -234,34 +234,167 @@
     document.getElementById('datetime').readonly = false;
     document.getElementById('datetime').disabled = false;
 
+    const queryParams = window.location.search;
+    console.log(queryParams);
+
+    const urlParams = new URLSearchParams(queryParams);
+
+    let pageNumber = parseInt(urlParams.get('page'));
+    console.log('page number ' +pageNumber);
+
     const requests = [[${requests}]];
+    const pages_count = [[${pages_count}]];
+    console.log('total pages count : ' + pages_count);
     let page_buttons_container = document.getElementById("page_button_container");
 
+    let url = new URL(window.location.href)
+    url.searchParams.delete('page');
+    let url_without_page = url.toString();
+
     let back_btn = document.createElement("a");
-    back_btn.classList.add("btn", "btn-default");
-    back_btn.href = window.location.href.slice(0,-1) + (pageNumber-1);
+    back_btn.classList.add("btn");
+    if(pageNumber > 1) {back_btn.classList.add("btn-primary"); url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber-1)); back_btn.href = url.toString();}
+    else {back_btn.classList.add("btn-default"); back_btn.style.opacity = 0.6; back_btn.href = '#'}
     back_btn.innerText = ' < ';
 
-    if(pageNumber > 0) page_buttons_container.appendChild(back_btn);
+    page_buttons_container.appendChild(back_btn);
 
-    for(let i = 0; i <= requests.length/10; i++) {
-        let btn = document.createElement("a");
+    function insertPreviousNumbers(page_number) {
+        if(page_number-1 <= 1 || page_number === 1) return;
+
+        if(page_number == pages_count) {
+            btn = document.createElement("a");
+            btn.classList.add("btn", "btn-default");
+            url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber-2));
+            btn.href = url.toString();
+            console.log(btn.href);
+            btn.innerText = pageNumber-2;
+            page_buttons_container.appendChild(btn);
+        }
+
+        btn = document.createElement("a");
         btn.classList.add("btn", "btn-default");
-        if(i == pageNumber) btn.classList.add("selected");
-        btn.href = window.location.href.slice(0,-1) + i;
-        btn.innerText = i;
+        url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber-1));
+        btn.href = url.toString();
+        console.log(btn.href);
+        btn.innerText = pageNumber-1;
         page_buttons_container.appendChild(btn);
     }
 
+    function insertNextNumbers(page_number) {
+        if(page_number+1 >= pages_count || page_number === pages_count) return;
+        btn = document.createElement("a");
+        btn.classList.add("btn", "btn-default");
+        url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber+1));
+        btn.href = url.toString();
+        console.log(btn.href);
+        btn.innerText = pageNumber+1;
+        page_buttons_container.appendChild(btn);
+
+        if(page_number == 1) {
+            btn = document.createElement("a");
+            btn.classList.add("btn", "btn-default");
+            url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber+2));
+            btn.href = url.toString();
+            btn.innerText = pageNumber+2;
+            page_buttons_container.appendChild(btn);
+        }
+    }
+
+    function insertNumber(page_number) {
+        btn = document.createElement("a");
+        btn.classList.add("btn", "btn-default", "selected");
+        url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber));
+        btn.href = url.toString();
+        btn.innerText = pageNumber;
+        page_buttons_container.appendChild(btn);
+    }
+
+    //first button (1)
+    let btn = document.createElement("a");
+    btn.classList.add("btn", "btn-default");
+    if(pageNumber == 1) btn.classList.add("selected");
+    url.searchParams.delete('page'); url.searchParams.append('page', 1);
+    btn.href = url.toString();
+    btn.innerText = 1;
+    page_buttons_container.appendChild(btn);
+
+    // ... block
+    if(pageNumber >= 4 && pages_count > 4) {
+        btn = document.createElement("a");
+        btn.classList.add("btn", "btn-default");
+        btn.style.opacity = 0.6;
+        btn.href = '#';
+        btn.innerText = '...';
+        page_buttons_container.appendChild(btn);
+    }
+
+    // prev.page number, current page number, next page number
+    insertPreviousNumbers(pageNumber);
+    if(pageNumber != 1 && pageNumber != pages_count) insertNumber(pageNumber);
+    insertNextNumbers(pageNumber);
+
+    // ... block
+    if(pageNumber < pages_count-2 && pages_count > 4) {
+        btn = document.createElement("a");
+        btn.classList.add("btn", "btn-default");
+        btn.style.opacity = 0.6;
+        btn.href = '#';
+        btn.innerText = '...';
+        page_buttons_container.appendChild(btn);
+    }
+
+    //last button
+    btn = document.createElement("a");
+    btn.classList.add("btn", "btn-default");
+    if(pageNumber == pages_count) btn.classList.add("selected");
+    url.searchParams.delete('page'); url.searchParams.append('page', pages_count);
+    btn.href = url.toString();
+    btn.innerText = pages_count;
+    page_buttons_container.appendChild(btn);
+
     let fwd_btn = document.createElement("a");
-    fwd_btn.classList.add("btn", "btn-default");
-    fwd_btn.href = window.location.href.slice(0,-1) + (pageNumber+1);
+    fwd_btn.classList.add("btn");
+    if(pageNumber < pages_count) {fwd_btn.classList.add("btn-primary"); url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber+1)); fwd_btn.href = url.toString();}
+    else {fwd_btn.classList.add("btn-default"); fwd_btn.style.opacity = 0.6; fwd_btn.href = '#'}
     fwd_btn.innerText = ' > ';
 
-    if(pageNumber <= (requests.length/10 - 1)) page_buttons_container.appendChild(fwd_btn);
+    page_buttons_container.appendChild(fwd_btn);
 
     $(document).ready(function(){
-        $("#master_type, #owner, #master, #status").select2();
+        $("#master_type, #status").select2({placeholder: 'Выберите...'});
+
+        $("#owner").select2({
+            ajax: {
+                url: '/admin/owners/get-all-owners',
+                data: function(params){
+                    console.log(params.page);
+                    return {
+                        search: params.term || "",
+                        page: params.page || 1
+                    }
+                },
+
+            },
+            placeholder: 'Выберите...',
+            minimumInputLength: 2
+        });
+
+        $("#master").select2({
+            ajax: {
+                url: '/admin/admins/get-all-masters',
+                data: function(params){
+                    console.log(params.page);
+                    return {
+                        search: params.term || "",
+                        page: params.page || 1
+                    }
+                },
+
+            },
+            placeholder: 'Выберите...',
+            minimumInputLength: 2
+        });
 
         let clone = document.getElementById("page_button_container").cloneNode(true);
         $(".box-header").append(clone);
@@ -271,14 +404,14 @@
 
 <style>
         a.selected {
-            background-color: black;
+            background-color: rgba(0, 179, 255, 0.4);
             color: white;
             cursor: initial;
             caret-color:transparent;
         }
 
         a.selected:hover {
-            background-color: black;
+            background-color: rgba(0, 179, 255, 0.4);
             color: white;
         }
 </style>

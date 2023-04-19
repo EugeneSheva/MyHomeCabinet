@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta th:name="_csrf" th:content="${_csrf.token}"/>
+  <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
   <title>МойДом24</title>
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
@@ -331,10 +333,17 @@
 
       console.log(meter);
 
+      var token = $("meta[name='_csrf']").attr("content");
+      var header = $("meta[name='_csrf_header']").attr("content");
+
       $.ajax({
         type:"POST",
         url:'/admin/meters/save-meter',
         data: meter,
+        beforeSend: function (xhr) {
+            alert(token);
+            xhr.setRequestHeader(header, token);
+        },
         success: function(data){
           let errors = [];
           console.log(data.length);
@@ -342,7 +351,7 @@
             console.log(typeof msg);
             errors.push(msg.toString());
           }
-          if(data == null) {
+          if(data == null || data.length === 0) {
             alert("Сохранил заебись");
             window.location.href='/admin/meters/create-add?flat_id='+apartment_id+'&service_id='+service_id;
           }

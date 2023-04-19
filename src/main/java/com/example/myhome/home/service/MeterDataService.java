@@ -4,11 +4,13 @@ import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Building;
 import com.example.myhome.home.model.MeterData;
 import com.example.myhome.home.model.MeterPaymentStatus;
+import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.MeterDataRepository;
 import com.example.myhome.home.repository.specifications.MeterSpecifications;
 import com.example.myhome.home.validator.MeterValidator;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -42,6 +44,40 @@ public class MeterDataService {
         else return meterDataRepository.findByApartmentId(apartment_id);
     }
 
+    public List<MeterData> findSingleMeterData(FilterForm form) {
+
+        Specification<MeterData> specification = buildSpecFromFilters(form);
+//        Pageable pageable = PageRequest.of()
+
+        return meterDataRepository.findAll(specification);
+    }
+
+    private Specification<MeterData> buildSpecFromFilters(FilterForm form) {
+        Long id = form.getId();
+        MeterPaymentStatus status = form.getStatus() != null ? MeterPaymentStatus.valueOf(form.getStatus()) : null;
+        String date = form.getDate();
+        LocalDate date_from = null;
+        LocalDate date_to = null;
+        if(date != null && !date.isEmpty()) {
+            date_from = LocalDate.parse(date.split(" to ")[0]);
+            date_to = LocalDate.parse(date.split(" to ")[1]);
+        }
+        Building building = (form.getBuilding() != null) ? buildingService.findById(form.getBuilding()) : null;
+        String section = form.getSection();
+        Apartment apartment = (form.getApartment() != null) ? apartmentService.findById(form.getApartment()) : null;
+        com.example.myhome.home.model.Service service = (form.getService() != null) ? serviceService.findServiceById(form.getService()) : null;
+
+        Specification<MeterData> spec = Specification.where(MeterSpecifications.hasId(id)
+                                                        .and(MeterSpecifications.hasStatus(status))
+                                                        .and(MeterSpecifications.datesBetween(date_from, date_to))
+                                                        .and(MeterSpecifications.hasBuilding(building))
+                                                        .and(MeterSpecifications.hasSection(section))
+                                                        .and(MeterSpecifications.hasApartment(apartment))
+                                                        .and(MeterSpecifications.hasService(service)));
+
+        return spec;
+    }
+
     public List<MeterData> findAllBySpecification(Long building_id, String section_name, Long apartment_number, Long service_id) {
         Building building = (building_id != null) ? buildingService.findById(building_id) : null;
         Apartment apartment = (apartment_number != null) ? apartmentService.findByNumber(apartment_number) : null;
@@ -55,16 +91,17 @@ public class MeterDataService {
         return meterDataRepository.findAll(MeterSpecifications.hasBuilding(building)
                                         .and(MeterSpecifications.hasSection(section_name))
                                         .and(MeterSpecifications.hasApartment(apartment))
-                                        .and(MeterSpecifications.hasService(service)));
+                                        .and(MeterSpecifications.hasService(service))
+                                        .and(MeterSpecifications.groupTest()));
     }
 
-    public List<MeterData> findAllBySpecificationAndPage(Long building_id, String section_name, Long apartment_number, Long service_id, Integer page) {
+    public Page<MeterData> findAllBySpecificationAndPage(Long building_id, String section_name, Long apartment, Long service_id, Integer page) {
 
-        if(building_id == null && section_name == null && apartment_number == null && service_id == null)
-            return meterDataRepository.findAll(PageRequest.of(page, 10)).toList();
+        if(building_id == null && section_name == null && apartment == null && service_id == null)
+            return meterDataRepository.findAll(MeterSpecifications.groupTest(),PageRequest.of(page-1, 5));
 
         Building building = (building_id != null) ? buildingService.findById(building_id) : null;
-        Apartment apartment = (apartment_number != null) ? apartmentService.findByNumber(apartment_number) : null;
+//        Apartment apartment = (apartment_number != null) ? apartmentService.findByNumber(apartment_number) : null;
         com.example.myhome.home.model.Service service = (service_id != null) ? serviceService.findServiceById(service_id) : null;
 
         log.info("Building: " + building);
@@ -74,11 +111,12 @@ public class MeterDataService {
 
         Specification<MeterData> specification = Specification.where(MeterSpecifications.hasBuilding(building)
                                                                 .and(MeterSpecifications.hasSection(section_name))
-                                                                .and(MeterSpecifications.hasApartment(apartment))
-                                                                .and(MeterSpecifications.hasService(service)));
-        Pageable pageable = PageRequest.of(page, 10);
+                                                                .and(MeterSpecifications.hasApartmentNumber(apartment))
+                                                                .and(MeterSpecifications.hasService(service))
+                                                                .and(MeterSpecifications.groupTest()));
+        Pageable pageable = PageRequest.of(page-1, 5);
 
-        return meterDataRepository.findAll(specification, pageable).toList();
+        return meterDataRepository.findAll(specification, pageable);
     }
 
     public Long getMaxId() {return meterDataRepository.getMaxId().orElse(0L);}

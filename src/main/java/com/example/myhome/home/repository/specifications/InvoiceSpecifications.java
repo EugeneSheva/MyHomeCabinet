@@ -23,6 +23,14 @@ public class InvoiceSpecifications {
         return (root, query, cb) -> cb.equal(root.get(Invoice_.APARTMENT), apartment);
     }
 
+    public static Specification<Invoice> hasApartmentNumber(Long number) {
+        if(number == null) return (root, query, criteriaBuilder) -> null;
+        return (root, query, cb) -> {
+            Join<Apartment, Invoice> invoiceApartment = root.join("apartment");
+            return cb.equal(invoiceApartment.get(Apartment_.NUMBER), number);
+        };
+    }
+
     public static Specification<Invoice> hasOwner(Owner owner) {
         if(owner == null) return  (root, query, criteriaBuilder) -> null;
         return (root, query, cb) -> {

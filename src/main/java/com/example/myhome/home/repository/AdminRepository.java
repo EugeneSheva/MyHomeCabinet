@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,6 +18,9 @@ public interface AdminRepository extends JpaRepository<Admin, Long>, JpaSpecific
 
     List<Admin> getAdminsByRole(UserRole role);
     Optional<Admin> findByEmail(String email);
+
+    @Query(value="SELECT a FROM Admin a WHERE a.first_name LIKE %:name% OR a.last_name LIKE %:name%")
+    Page<Admin> findByName(String name, Pageable pageable);
 
 //    List<Admin> findAllBySpecificationAndPage(Specification<Admin> specification, Pageable pageable);
 

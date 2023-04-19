@@ -232,121 +232,138 @@
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
 <script th:src="@{/dist/js/filter.js}"></script>
+<script th:src="@{/dist/js/accounts.js}"></script>
 
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script th:inline="javascript">
 
-    let rows = document.getElementsByClassName("account_row");
-    for(let i = 0; i < rows.length; i++) {
-        let row_children = rows[i].children;
-        let account_id = row_children[row_children.length-1].value;
-        for(let j = 1; j < row_children.length - 1; j++) {
-            row_children[j].addEventListener('click', function(){
-                window.location.href = '/admin/accounts/'+account_id;
-            });
-        }
-    }
+    const queryParams = window.location.search;
+    console.log(queryParams);
 
-    function downloadExcelTable() {
-        const date = new Date();
+    const urlParams = new URLSearchParams(queryParams);
 
-        let day = date.getDate();
-        let month = date.getMonth() + 1;
-        let year = date.getFullYear();
-
-        let table = document.getElementById("table_to_excel");
-        let excel_file = XLSX.utils.table_to_book(table);
-        XLSX.writeFile(excel_file, "Лицевые счета " + `${day}-${month}-${year}` + ".xlsx");
-    }
+    let pageNumber = parseInt(urlParams.get('page'));
+    console.log('page number ' +pageNumber);
 
     const accounts = [[${accounts}]];
+    const pages_count = [[${pages_count}]];
+
     let page_buttons_container = document.getElementById("page_button_container");
 
+    let url = new URL(window.location.href)
+    url.searchParams.delete('page');
+    let url_without_page = url.toString();
+
     let back_btn = document.createElement("a");
-    back_btn.classList.add("btn", "btn-default");
-    back_btn.href = window.location.href.slice(0,-1) + (pageNumber-1);
+    back_btn.classList.add("btn");
+    if(pageNumber > 1) {back_btn.classList.add("btn-primary"); url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber-1)); back_btn.href = url.toString();}
+    else {back_btn.classList.add("btn-default"); back_btn.style.opacity = 0.6; back_btn.href = '#'}
     back_btn.innerText = ' < ';
 
-    if(pageNumber > 0) page_buttons_container.appendChild(back_btn);
+    page_buttons_container.appendChild(back_btn);
 
-    for(let i = 0; i <= accounts.length/10; i++) {
-        let btn = document.createElement("a");
+    //first button (1)
+    let btn = document.createElement("a");
+    btn.classList.add("btn", "btn-default");
+    if(pageNumber == 1) btn.classList.add("selected");
+    url.searchParams.delete('page'); url.searchParams.append('page', 1);
+    btn.href = url.toString();
+    btn.innerText = 1;
+    page_buttons_container.appendChild(btn);
+
+    // ... block
+    if(pageNumber >= 4 && pages_count > 4) {
+        btn = document.createElement("a");
         btn.classList.add("btn", "btn-default");
-        if(i == pageNumber) btn.classList.add("selected");
-        btn.href = window.location.href.slice(0,-1) + i;
-        btn.innerText = i;
+        btn.style.opacity = 0.6;
+        btn.href = '#';
+        btn.innerText = '...';
         page_buttons_container.appendChild(btn);
     }
 
+    // prev.page number, current page number, next page number
+    insertPreviousNumbers(pageNumber);
+    if(pageNumber != 1 && pageNumber != pages_count) insertNumber(pageNumber);
+    insertNextNumbers(pageNumber);
+
+    // ... block
+    if(pageNumber < pages_count-2 && pages_count > 4) {
+        btn = document.createElement("a");
+        btn.classList.add("btn", "btn-default");
+        btn.style.opacity = 0.6;
+        btn.href = '#';
+        btn.innerText = '...';
+        page_buttons_container.appendChild(btn);
+    }
+
+    //last button
+    btn = document.createElement("a");
+    btn.classList.add("btn", "btn-default");
+    if(pageNumber == pages_count) btn.classList.add("selected");
+    url.searchParams.delete('page'); url.searchParams.append('page', pages_count);
+    btn.href = url.toString();
+    btn.innerText = pages_count;
+    page_buttons_container.appendChild(btn);
+
     let fwd_btn = document.createElement("a");
-    fwd_btn.classList.add("btn", "btn-default");
-    fwd_btn.href = window.location.href.slice(0,-1) + (pageNumber+1);
+    fwd_btn.classList.add("btn");
+    if(pageNumber < pages_count) {fwd_btn.classList.add("btn-primary"); url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber+1)); fwd_btn.href = url.toString();}
+    else {fwd_btn.classList.add("btn-default"); fwd_btn.style.opacity = 0.6; fwd_btn.href = '#'}
     fwd_btn.innerText = ' > ';
 
-    if(pageNumber < (accounts.length/10 - 1)) page_buttons_container.appendChild(fwd_btn);
+    page_buttons_container.appendChild(fwd_btn);
 
     // ФИЛЬТРЫ
     $(document).ready(function(){
+        $("#active, #debt").select2({placeholder: 'Выберите...'});
+        $("#owner").select2({
+            ajax: {
+                url: '/admin/owners/get-all-owners',
+                data: function(params){
+                    console.log(params.page);
+                    return {
+                        search: params.term || "",
+                        page: params.page || 1
+                    }
+                },
+
+            },
+            placeholder: 'Выберите...',
+            minimumInputLength: 2
+        });
+
+        $("#building").select2({
+            ajax: {
+                url: '/admin/buildings/get-buildings',
+                data: function(params){
+                    console.log(params.page);
+                    return {
+                        search: params.term || "",
+                        page: params.page || 1
+                    }
+                },
+            },
+            placeholder: 'Выберите...'
+        });
 
         let clone = document.getElementById("page_button_container").cloneNode(true);
         $(".box-header").append(clone);
 
-<!--        $(".my_filters").change(function(){-->
-<!--            let building_id = $("#building").val();-->
-<!--            let service_id = $("#service").val();-->
-<!--            let apartment_number = $("#apartment").val();-->
-<!--            let section_name = $("#section").val();-->
-
-<!--            let id = $("#id").val();-->
-<!--            let datetime = $("#datetime").val();-->
-<!--            let description = $("#description").val();-->
-<!--            let master_type = $("#master_type").val();-->
-<!--            let master_id = $("#master").val();-->
-<!--            let owner_id = $("#owner").val();-->
-<!--            let phone = $("#phone").val();-->
-<!--            let status = $("#status").val();-->
-
-<!--            let active = $("#active").val();-->
-<!--            let debt = $("#debt").val();-->
-
-<!--            const link_elements = [];-->
-
-<!--            if(building_id != null && building_id != 0) link_elements.push('building='+building_id);-->
-<!--            if(service_id != null && service_id != 0) link_elements.push('service='+service_id);-->
-<!--            if(apartment_number != null && apartment_number != 0) link_elements.push('apartment='+apartment_number);-->
-<!--            if(section_name != null && section_name != '') link_elements.push('section='+section_name);-->
-
-<!--            if(id != null && id != 0) link_elements.push('id='+id);-->
-<!--            if(datetime != null && datetime != '') link_elements.push('datetime='+datetime);-->
-<!--            if(description != null && description != '') link_elements.push('description='+description);-->
-<!--            if(master_type != null && master_type != '') link_elements.push('master_type='+master_type);-->
-<!--            if(master_id != null && master_id != 0) link_elements.push('master_id='+master_id);-->
-<!--            if(owner_id != null && owner_id != 0) link_elements.push('owner_id='+owner_id);-->
-<!--            if(phone != null && phone != '') link_elements.push('phone='+phone);-->
-<!--            if(status != null && status != '') link_elements.push('status='+status);-->
-
-<!--            if(active != null && active != '') link_elements.push('active='+active);-->
-<!--            if(debt != null && debt != '') link_elements.push('debt='+debt);-->
-
-<!--            let final_link = (link_elements.length > 0) ? ('?' + link_elements.join('&')) : '';-->
-
-<!--            window.location.href = '/admin/accounts'+final_link;-->
-<!--        });-->
     });
 </script>
 
 <style>
         a.selected {
-            background-color: black;
+            background-color: rgba(0, 179, 255, 0.4);
             color: white;
             cursor: initial;
             caret-color:transparent;
         }
 
         a.selected:hover {
-            background-color: black;
+            background-color: rgba(0, 179, 255, 0.4);
             color: white;
         }
 </style>

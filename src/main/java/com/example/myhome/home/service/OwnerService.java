@@ -8,9 +8,12 @@ import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.model.OwnerDTO;
 import com.example.myhome.home.repository.AccountRepository;
 import com.example.myhome.home.repository.OwnerRepository;
+import com.example.myhome.home.specification.Specification;
 import com.example.myhome.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +36,7 @@ public class OwnerService {
     private final FileUploadUtil fileUploadUtil;
 
 
-    public Owner findById (Long id) { return ownerRepository.findById(id).orElseThrow(() -> new NotFoundException());}
+    public Owner findById (Long id) { return ownerRepository.findById(id).orElseThrow(NotFoundException::new);}
     public Owner findByLogin(String login) {return ownerRepository.findByEmail(login).orElseThrow(NotFoundException::new);}
 
     public List<Owner> findAll() { return ownerRepository.findAll(); }
@@ -44,6 +47,21 @@ public class OwnerService {
             ownerDTOList.add(new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name()));
         }
         return ownerDTOList;
+    }
+
+    public List<OwnerDTO> getOwnerDTOByPage(String name, int page_number) {
+
+        Pageable pageable = PageRequest.of(page_number, 10);
+        return ownerRepository.findByName(name, pageable)
+                .stream()
+                .map(owner -> new OwnerDTO(
+                            owner.getId(),
+                            owner.getFirst_name(),
+                            owner.getLast_name(),
+                            owner.getFathers_name()
+                        )
+                )
+                .toList();
     }
 
     public Owner save(Owner owner) { return ownerRepository.save(owner); }
@@ -80,6 +98,10 @@ public class OwnerService {
 
     public Owner fromCustomUserDetailsToOwner(CustomUserDetails details) {
         return findByLogin(details.getUsername());
+    }
+
+    public Long countAllOwners() {
+        return ownerRepository.count();
     }
 
 

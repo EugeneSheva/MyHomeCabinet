@@ -13,7 +13,7 @@ import java.time.LocalTime;
 @Data
 @Entity
 @Table(name = "repair_requests")
-public class RepairRequest {
+public class RepairRequest implements Cloneable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,4 +53,14 @@ public class RepairRequest {
     private RepairStatus status;
 
 
+    @Override
+    public RepairRequest clone() {
+        try {
+            RepairRequest clone = (RepairRequest) super.clone();
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

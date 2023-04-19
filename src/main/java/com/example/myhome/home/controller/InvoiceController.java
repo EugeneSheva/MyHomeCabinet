@@ -8,6 +8,7 @@ import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.*;
 import com.example.myhome.home.validator.InvoiceValidator;
+import com.example.myhome.util.FileDownloadUtil;
 import com.example.myhome.util.FileUploadUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -29,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unused")
 @Controller
 @RequestMapping("/admin/invoices")
 @Log
@@ -66,17 +70,24 @@ public class InvoiceController {
     @Autowired
     private InvoiceValidator validator;
 
+    @Autowired
+    private FileDownloadUtil fileDownloadUtil;
+
     @GetMapping
     public String showInvoicePage(Model model,
                                   FilterForm form) throws IllegalAccessException {
 
+        if(form.getPage() == null) return "redirect:/admin/invoices?page=1";
+
         List<Invoice> invoices;
 
         if(!form.filtersPresent()) invoices = invoiceService.findAllInvoices();
-        else invoices = invoiceService.findAllBySpecification(form);
+        else invoices = invoiceService.findAllBySpecificationAndPage(form, form.getPage()-1, 5);
+
+        log.info(invoices.toString());
 
         model.addAttribute("invoices", invoices);
-        model.addAttribute("amount", invoices.size());
+        model.addAttribute("amount", invoiceService.getFilteredInvoiceCount(form));
         model.addAttribute("owners", ownerService.findAllDTO());
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
         model.addAttribute("account_balance", apartmentAccountService.getSumOfAccountBalances());
@@ -89,6 +100,7 @@ public class InvoiceController {
     @GetMapping("/search")
     public String showSearch(@RequestParam long flat_id, Model model) {
         Apartment apartment = apartmentService.findById(flat_id);
+        model.addAttribute("current_date", LocalDate.now());
         model.addAttribute("invoices", apartment.getInvoiceList());
         return "admin_panel/invoices/invoices";
     }
@@ -103,6 +115,7 @@ public class InvoiceController {
                 .orElse(0.0);
         model.addAttribute("invoice", invoice);
         model.addAttribute("total_price", total_price);
+        model.addAttribute("current_date", LocalDate.now());
         return "admin_panel/invoices/invoice_profile";
     }
 
@@ -114,6 +127,7 @@ public class InvoiceController {
 
         model.addAttribute("invoice", invoice);
         model.addAttribute("meters", (flat_id == null) ? meterDataService.findAllMeters() : meterDataService.findSingleMeterData(flat_id, null));
+        model.addAttribute("current_date", LocalDate.now());
         return "admin_panel/invoices/invoice_card";
     }
 
@@ -126,6 +140,7 @@ public class InvoiceController {
         model.addAttribute("id", id);
         model.addAttribute("invoice", invoice);
         model.addAttribute("meters", meterDataService.findSingleMeterData(id, null));
+        model.addAttribute("current_date", LocalDate.now());
         return "admin_panel/invoices/invoice_card";
     }
 
@@ -185,6 +200,32 @@ public class InvoiceController {
         return "admin_panel/invoices/invoice_print";
     }
 
+    @PostMapping("/print/{id}")
+    public String printInvoice(@PathVariable long id, @RequestParam String template, RedirectAttributes redirectAttributes) {
+        Invoice invoice = invoiceService.findInvoiceById(id);
+        InvoiceTemplate invoiceTemplate = invoiceService.findTemplateById(Long.parseLong(template));
+        try {
+            String fileName = invoiceService.turnInvoiceIntoExcel(invoice, invoiceTemplate);
+            return "redirect:/admin/invoices/download/" + fileName;
+        } catch (IOException e) {
+            log.severe("Error while creating excel file");
+            redirectAttributes.addFlashAttribute("fail", "Загрузка файла не удалась");
+            return "redirect:/admin/invoices/print/" + id;
+        }
+    }
+
+//    @GetMapping("/email/{id}")
+//    public String sendEmail(@PathVariable long id, Model model) {
+//
+//    }
+
+    @GetMapping("/download/{fileName}")
+    public void downloadFile(@PathVariable String fileName,
+                               HttpServletRequest request,
+                               HttpServletResponse response) throws IOException {
+        FileDownloadUtil.downloadFile(response, fileName);
+    }
+
     @GetMapping("/template")
     public String getTemplateSettingPage(Model model,
                                          @RequestParam(required = false) Long default_id,
@@ -239,7 +280,6 @@ public class InvoiceController {
 
     @ModelAttribute
     public void addAttributes(Model model) {
-        model.addAttribute("current_date", LocalDate.now());
         model.addAttribute("buildings", buildingService.findAll());
         model.addAttribute("tariffs", tariffService.findAllTariffs());
         model.addAttribute("services", serviceService.findAllServices());

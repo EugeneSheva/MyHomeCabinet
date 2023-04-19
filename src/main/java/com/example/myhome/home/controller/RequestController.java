@@ -13,6 +13,7 @@ import com.example.myhome.util.UserRole;
 import lombok.extern.java.Log;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -46,13 +47,14 @@ public class RequestController {
     public String showRequestsPage(Model model,
                                    FilterForm filterForm) throws IllegalAccessException {
 
-        if(filterForm.getPage() == null) return "redirect:/admin/requests?page=0";
+        if(filterForm.getPage() == null) return "redirect:/admin/requests?page=1";
 
-        List<RepairRequest> requestList;
+        Page<RepairRequest> requestList;
 
         requestList = repairRequestService.findAllBySpecification(filterForm);
 
         model.addAttribute("requests", requestList);
+        model.addAttribute("pages_count", requestList.getTotalPages());
         model.addAttribute("owners", ownerService.findAllDTO());
         model.addAttribute("masters", adminService.findAllDTO());
 

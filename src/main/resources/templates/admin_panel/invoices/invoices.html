@@ -186,32 +186,32 @@
                       </tr>
                   </thead>
                   <tbody>
-<!--                    <tr style="cursor: pointer;" class="invoice_row" th:each="invoice : ${invoices}">-->
-<!--                        <input type="hidden" th:value="${invoice.id}">-->
-<!--                        <td><input type="checkbox" name="" id=""></td>-->
-<!--                        <td th:text="${T(java.lang.String).format('%010d',invoice.id)}"></td>-->
-<!--                        <td>-->
-<!--                            <small th:class="'label ' +-->
-<!--                            ${invoice.status == T(com.example.myhome.home.model.InvoiceStatus).PAID ? 'label-success' :-->
-<!--                            (invoice.status == T(com.example.myhome.home.model.InvoiceStatus).UNPAID) ? 'label-danger' : 'label-warning'}"-->
-<!--                                   th:text="${invoice.status.getName()}">-->
-<!--                            </small>-->
-<!--                        </td>-->
-<!--                        <td th:text="${invoice.date}"></td>-->
-<!--                        <td th:text="${#temporals.format(invoice.date, 'MMM yyyy')}"></td>-->
-<!--                        <td th:text="${invoice.apartment.number} + ', ' + ${invoice.apartment.building.name}"></td>-->
-<!--                        <td th:text="${invoice.apartment.owner.getFullName()}"></td>-->
-<!--                        <td><span th:text="${invoice.completed} ? 'Проведена' : 'Не проведена'"></span></td>-->
-<!--                        <td><span th:text="${invoice.total_price}"></span></td>-->
-<!--                        <td>-->
-<!--                            <div class="btn-group pull-right">-->
-<!--                                <a class="btn btn-default btn-sm" th:href="@{/admin/invoices/update/{id}(id=${invoice.id})}"><i class="fa fa-pencil"></i></a>-->
-<!--                                <a class="btn btn-default btn-sm"-->
-<!--                                   th:attr="data-url='/admin/invoices/delete/'+${invoice.id}"-->
-<!--                                   th:onclick="if(confirm('Удалить квитанцию?')) window.location.href=this.dataset.url"><i class="fa fa-trash"></i></a>-->
-<!--                            </div>-->
-<!--                        </td>-->
-<!--                    </tr>-->
+                      <tr style="cursor: pointer;" class="invoice_row" th:each="invoice : ${invoices}">
+                          <input type="hidden" th:value="${invoice.id}">
+                          <td><input type="checkbox" name="" id=""></td>
+                          <td th:text="${T(java.lang.String).format('%010d',invoice.id)}"></td>
+                          <td>
+                              <small th:class="'label ' +
+                              ${invoice.status == T(com.example.myhome.home.model.InvoiceStatus).PAID ? 'label-success' :
+                              (invoice.status == T(com.example.myhome.home.model.InvoiceStatus).UNPAID) ? 'label-danger' : 'label-warning'}"
+                                     th:text="${invoice.status.getName()}">
+                              </small>
+                          </td>
+                          <td th:text="${invoice.date}"></td>
+                          <td th:text="${#temporals.format(invoice.date, 'MMM yyyy')}"></td>
+                          <td th:text="${invoice.apartment.number} + ', ' + ${invoice.apartment.building.name}"></td>
+                          <td th:text="${invoice.apartment.owner.getFullName()}"></td>
+                          <td><span th:text="${invoice.completed} ? 'Проведена' : 'Не проведена'"></span></td>
+                          <td><span th:text="${invoice.total_price}"></span></td>
+                          <td>
+                              <div class="btn-group pull-right">
+                                  <a class="btn btn-default btn-sm" th:href="@{/admin/invoices/update/{id}(id=${invoice.id})}"><i class="fa fa-pencil"></i></a>
+                                  <a class="btn btn-default btn-sm"
+                                     th:attr="data-url='/admin/invoices/delete/'+${invoice.id}"
+                                     th:onclick="if(confirm('Удалить квитанцию?')) window.location.href=this.dataset.url"><i class="fa fa-trash"></i></a>
+                              </div>
+                          </td>
+                      </tr>
                   <tr th:if="${invoices.size() == 0}">
                       <td colspan="10">Ничего не найдено...</td>
                   </tr>
@@ -250,18 +250,17 @@
 <script th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<!--<script th:src="@{/dist/js/filter.js}"></script>-->
+<script th:src="@{/dist/js/filter.js}"></script>
+<script th:src="@{/dist/js/invoices.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
-
     let current_page_number = 0;
     let invoices_amount = [[${amount}]];
-    let pages_count = Math.floor(invoices_amount / 5);
     const invoices_on_page = 5;
+    const pages_count = Math.floor(invoices_amount / invoices_on_page);
 
     let page_buttons_container = document.getElementById("page_button_container");
-    let page_buttons_container_top = document.getElementById("page_button_container_top");
 
     document.getElementById("check_all").addEventListener('click', function(){
         console.log(this.checked);
@@ -279,164 +278,94 @@
 
     });
 
-    function deleteChosen(){
-        if(confirm('Удалить выбранные квитанции?')) {
-            for(const row of document.querySelectorAll(".invoice_row")) {
-                console.log(row.querySelector("input[type=checkbox]"));
-                if(row.querySelector("input[type=checkbox]").checked == true) {
-                    let invoice_id = row.children[0].value;
-                    console.log(invoice_id);
-                    $.get('/admin/invoices/delete-invoice', {id:invoice_id}, function(data){console.log(data); row.remove();}).fail(function(){alert('Ошибка в удалении квитанций')});
-                }
-            }
-            window.location.href='/admin/invoices';
+    let rows = document.getElementsByClassName("invoice_row");
+    for(let i = 0; i < rows.length; i++) {
+        let row_children = rows[i].children;
+        let invoice_id = row_children[0].value;
+        for(let j = 2; j < row_children.length - 1; j++) {
+            row_children[j].addEventListener('click', () => {window.location.href = '/admin/invoices/' + invoice_id});
         }
     }
 
-    function gatherFilters() {
+    const queryParams = window.location.search;
+    console.log(queryParams);
 
-        let building_id = $("#building").val();
-        let service_id = $("#service").val();
-        let apartment_number = $("#apartment").val();
-        let section_name = $("#section").val();
+    const urlParams = new URLSearchParams(queryParams);
 
-        let id = $("#id").val();
-        let datetime = $("#datetime").val();
-        let description = $("#description").val();
-        let master_type = $("#master_type").val();
-        let master_id = $("#master").val();
-        let owner_id = $("#owner").val();
-        let phone = $("#phone").val();
-        let status = $("#status").val();
+    let pageNumber = parseInt(urlParams.get('page'));
+    console.log('page number ' +pageNumber);
 
-        let completed = $("#completed").val();
+    console.log('total pages count : ' + pages_count);
 
-        console.log(apartment_number);
+    let url = new URL(window.location.href)
+    url.searchParams.delete('page');
+    let url_without_page = url.toString();
 
-        let filterForm = {
-            building: (building_id) ? building_id : null,
-            service: (service_id) ? service_id : null,
-            apartment: (apartment_number) ? apartment_number : null,
-            section: (section_name) ? section_name : null,
-            id: (id) ? id : null,
-            datetime: (datetime) ? datetime : null,
-            description: (description) ? description : null,
-            master_type: (master_type) ? master_type : null,
-            master: (master_id) ? master_id : null,
-            owner: (owner_id) ? owner_id : null,
-            phone: (phone) ? phone : null,
-            status: (status) ? status : null,
-            completed: (completed) ? completed : null
-        };
+    let back_btn = document.createElement("a");
+    back_btn.classList.add("btn");
+    if(pageNumber > 1) {back_btn.classList.add("btn-primary"); url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber-1)); back_btn.href = url.toString();}
+    else {back_btn.classList.add("btn-default"); back_btn.style.opacity = 0.6; back_btn.href = '#'}
+    back_btn.innerText = ' < ';
 
-        return filterForm;
+    page_buttons_container.appendChild(back_btn);
+
+    //first button (1)
+    let btn = document.createElement("a");
+    btn.classList.add("btn", "btn-default");
+    if(pageNumber == 1) btn.classList.add("selected");
+    url.searchParams.delete('page'); url.searchParams.append('page', 1);
+    btn.href = url.toString();
+    btn.innerText = 1;
+    page_buttons_container.appendChild(btn);
+
+    // ... block
+    if(pageNumber >= 4 && pages_count > 4) {
+        btn = document.createElement("a");
+        btn.classList.add("btn", "btn-default");
+        btn.style.opacity = 0.6;
+        btn.href = '#';
+        btn.innerText = '...';
+        page_buttons_container.appendChild(btn);
     }
 
+    // prev.page number, current page number, next page number
+    insertPreviousNumbers(pageNumber);
+    if(pageNumber != 1 && pageNumber != pages_count) insertNumber(pageNumber);
+    insertNextNumbers(pageNumber);
 
-    function fillPageButtonsContainer(page_buttons_container, invoice_list_length) {
-
-        invoices_amount = invoice_list_length;
-        pages_count = Math.floor(invoices_amount / 5);
-
-        page_buttons_container.innerHTML = '';
-
-        let back_btn = document.createElement("a");
-        back_btn.classList.add("btn", "btn-default");
-        back_btn.innerText = ' < ';
-        back_btn.addEventListener('click', () => switchPage(current_page_number - 1));
-
-        page_buttons_container.appendChild(back_btn);
-
-        for(let i = 0; i <= pages_count; i++) {
-            let btn = document.createElement("a");
-            btn.classList.add("btn", "btn-default");
-            if(i == current_page_number) btn.classList.add("selected");
-            btn.innerText = i+1;
-            btn.addEventListener('click', () => switchPage(i));
-            page_buttons_container.appendChild(btn);
-        }
-
-        let fwd_btn = document.createElement("a");
-        fwd_btn.classList.add("btn", "btn-default");
-        fwd_btn.innerText = ' > ';
-        fwd_btn.addEventListener('click', () => switchPage(current_page_number + 1));
-
-        page_buttons_container.appendChild(fwd_btn);
+    // ... block
+    if(pageNumber < pages_count-2 && pages_count > 4) {
+        btn = document.createElement("a");
+        btn.classList.add("btn", "btn-default");
+        btn.style.opacity = 0.6;
+        btn.href = '#';
+        btn.innerText = '...';
+        page_buttons_container.appendChild(btn);
     }
 
-    function setInvoicesForPage(page_number) {
-
-        let filterForm = JSON.stringify(gatherFilters());
-        console.log(filterForm);
-
-        $.get("/admin/invoices/get-invoices", {page:page_number, page_size:invoices_on_page, f_string:filterForm}, function(data){
-            $("#invoices_table tbody").html('');
-            for(const row of data) {
-                let date = new Date(row.date);
-                date.setDate(date.getDate() + 1);
-                const monthNames = ["January", "February", "March", "April", "May", "June",
-                  "July", "August", "September", "October", "November", "December"
-                ];
-                let month_string = monthNames[date.getMonth()] + ' ' + date.getFullYear();
-                let table_row = document.createElement('tr');
-                table_row.style.cursor = 'pointer';
-                table_row.class = 'invoice_row';
-                table_row.innerHTML = '<input type="hidden" value=' + row.id.toString() + '>' +
-                        '<td><input type="checkbox" name="" id=""></td>' +
-                        '<td>' + row.id.toString().padStart(10, '0') + '</td>' +
-                        '<td>' +
-                            '<small class="label ' + (row.status == 'PAID' ? 'label-success' : row.status == 'UNPAID' ? 'label-danger' : 'label-warning') + '">' +
-                            row.status +
-                            '</small>' +
-                       '</td>' +
-                        '<td>' + date.toISOString().split('T')[0] + '</td>' +
-                        '<td>' + month_string + '</td>' +
-                        '<td>' + row.apartment.number.toString() + ', ' + row.apartment.building.name.toString() + '</td>' +
-                        '<td>' + row.apartment.owner.fullName.toString() + '</td>' +
-                        '<td><span>' + (row.completed ? 'Проведена' : 'Не проведена') + '</span></td>' +
-                        '<td><span>' + row.total_price.toString() + '</span></td>' +
-                        '<td>'+
-                            '<div class="btn-group pull-right">' +
-                                '<a class="btn btn-default btn-sm" href="/admin/invoices/update/' + row.id.toString() + '"><i class="fa fa-pencil"></i></a>' +
-                                '<a class="btn btn-default btn-sm"' +
-                                   'data-url="/admin/invoices/delete/' + row.id.toString() + '"' +
-                                   'onclick="if(confirm(\'Удалить квитанцию?\')) window.location.href=this.dataset.url"><i class="fa fa-trash"></i></a>' +
-                            '</div>' +
-                        '</td>';
-
-                let row_children = table_row.children;
-                let invoice_id = row.id;
-                for(let j = 2; j < row_children.length - 1; j++) {
-                    row_children[j].addEventListener('click', function(){
-                        window.location.href = '/admin/invoices/'+invoice_id;
-                    });
-                }
-
-                $("#invoices_table tbody").append(table_row);
-
-            }
-        });
-
-        $.get("/admin/invoices/get-filtered-invoice-count", {f_string:filterForm}, function(invoice_list_length) {
-            fillPageButtonsContainer(page_buttons_container, invoice_list_length);
-            fillPageButtonsContainer(page_buttons_container_top, invoice_list_length);
-        })
+    //last button
+    if(pages_count > 1) {
+        btn = document.createElement("a");
+        btn.classList.add("btn", "btn-default");
+        if(pageNumber == pages_count) btn.classList.add("selected");
+        url.searchParams.delete('page'); url.searchParams.append('page', pages_count);
+        btn.href = url.toString();
+        btn.innerText = pages_count;
+        page_buttons_container.appendChild(btn);
     }
 
-    function switchPage(page_number) {
+    let fwd_btn = document.createElement("a");
+    fwd_btn.classList.add("btn");
+    if(pageNumber < pages_count) {fwd_btn.classList.add("btn-primary"); url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber+1)); fwd_btn.href = url.toString();}
+    else {fwd_btn.classList.add("btn-default"); fwd_btn.style.opacity = 0.6; fwd_btn.href = '#'}
+    fwd_btn.innerText = ' > ';
 
-        if(page_number < 0) page_number = pages_count;
-        else if(page_number > pages_count) page_number = 0;
-
-        setInvoicesForPage(page_number);
-
-        current_page_number = page_number;
-
-    }
+    page_buttons_container.appendChild(fwd_btn);
 
     $(document).ready(function(){
 
-        setInvoicesForPage(current_page_number);
+        let clone = document.getElementById("page_button_container").cloneNode(true);
+        $(".box-header").append(clone);
 
         let config = {
             enableTime: false,
@@ -456,17 +385,29 @@
         flatpickr("#datetime", config);
         flatpickr("#month", config2);
 
-        $("#status, #owner, #completed").select2();
+        $("#status, #completed").select2();
+        $("#owner").select2({
+            ajax: {
+                url: '/admin/owners/get-all-owners',
+                data: function(params){
+                    console.log(params.page);
+                    return {
+                        search: params.term || "",
+                        page: params.page || 1
+                    }
+                },
 
-        fillPageButtonsContainer(page_buttons_container);
-        fillPageButtonsContainer(page_buttons_container_top);
+            },
+            placeholder: 'Выберите...',
+            minimumInputLength: 2
+        });
 
-        $(".my_filters").change(() => setInvoicesForPage(0));
+        $(".my_filters").change(() => checkFilters());
         $(".datetime_filter").change(function(){
             let datetime = this.value;
             console.log(datetime);
             console.log(datetime.split(' to '));
-            if(datetime.split(' to ').length > 1) setInvoicesForPage(0);
+            if(datetime.split(' to ').length > 1) checkFilters();
         });
 
     });
@@ -475,14 +416,14 @@
 
 <style>
         a.selected {
-            background-color: black;
+            background-color: rgba(0, 179, 255, 0.4);
             color: white;
             cursor: initial;
             caret-color:transparent;
         }
 
         a.selected:hover {
-            background-color: black;
+            background-color: rgba(0, 179, 255, 0.4);
             color: white;
         }
 </style>

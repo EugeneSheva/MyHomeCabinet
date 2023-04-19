@@ -67,7 +67,7 @@
                   <a th:href="@{/admin/invoices/print/{id}(id=${invoice.id})}" class="btn btn-default btn-sm">
                     <span class="hidden-xs"> Печать </span>
                   </a>
-                  <a href="" class="btn btn-default btn-sm">
+                  <a th:href="@{/admin/invoices/email/{id}(id=${invoice.id})}" class="btn btn-default btn-sm">
                     <i class="fa fa-files visible-xs" aria-hidden="true"></i><span class="hidden-xs"> Отправить на e-mail </span>
                   </a>
                   <a th:href="@{/admin/invoices/update/{id}(id=${invoice.id})}" class="btn btn-primary btn-sm">
@@ -98,7 +98,8 @@
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Период</td>
-                        <td th:text="${invoice.dateFrom} + ' - ' + ${invoice.dateTo}"></td>
+                        <td th:text="${invoice.dateFrom != null && invoice.dateTo != null} ?
+                            ${invoice.dateFrom} + ' - ' + ${invoice.dateTo} : ''"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Владелец</td>

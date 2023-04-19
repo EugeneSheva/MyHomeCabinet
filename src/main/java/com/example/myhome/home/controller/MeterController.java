@@ -9,6 +9,7 @@ import com.example.myhome.home.service.ServiceService;
 import com.example.myhome.home.validator.MeterValidator;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,15 +53,17 @@ public class MeterController {
                                  @RequestParam(required = false) Long service,
                                  @RequestParam(required = false) Integer page) {
 
-        if(page == null) return "redirect:/admin/meters?page=0";
+        if(page == null) return "redirect:/admin/meters?page=1";
 
-        List<MeterData> meterDataList;
+        Page<MeterData> meterDataList;
 
         meterDataList = meterDataService.findAllBySpecificationAndPage(building, section, apartment, service, page);
 
         log.info(meterDataList.toString());
 
-        model.addAttribute("meter_data_rows", meterDataList);
+        model.addAttribute("meter_data_rows", meterDataList.getContent());
+        model.addAttribute("pages_count", meterDataList.getTotalPages());
+
         model.addAttribute("buildings", buildingService.findAllDTO());
         if(building != null) model.addAttribute("sections", buildingService.findById(building).getSections());
         model.addAttribute("services", serviceService.findAllServices());
@@ -79,10 +82,20 @@ public class MeterController {
     @GetMapping("/data")
     public String showSingleMeterData(@RequestParam(required = false) Long flat_id,
                                       @RequestParam(required = false) Long service_id,
-                                      Model model) {
+                                      Model model,
+                                      FilterForm form) {
 
-        model.addAttribute("apart_number", apartmentService.findById(flat_id).getNumber());
-        model.addAttribute("meter_data_rows", meterDataService.findSingleMeterData(flat_id, service_id));
+        form.setApartment(flat_id);
+        form.setService(service_id);
+
+        log.info(form.toString());
+
+        List<MeterData> meterDataPage = meterDataService.findSingleMeterData(form);
+
+        log.info(meterDataPage.toString());
+
+        model.addAttribute("meter_data_rows", meterDataPage);
+        model.addAttribute("filter_form", form);
         model.addAttribute("flat_id", flat_id);
         model.addAttribute("service_id", service_id);
 
@@ -107,7 +120,7 @@ public class MeterController {
     public String showCreateAdditionalMeterPage(@RequestParam long flat_id, @RequestParam long service_id, Model model) {
         List<MeterData> meterDataList = meterDataService.findSingleMeterData(flat_id, service_id);
         MeterData meter = (meterDataList.isEmpty()) ? new MeterData() : meterDataList.get(meterDataList.size()-1);
-        meter.setId(meter.getId()+1);
+        meter.setId(meterDataService.getMaxIdPlusOne());
         model.addAttribute("id",meter.getId());
         model.addAttribute("meterData", meter);
         model.addAttribute("services", serviceService.findAllServices());

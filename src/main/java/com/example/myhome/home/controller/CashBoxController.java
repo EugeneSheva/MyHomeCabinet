@@ -8,6 +8,7 @@ import com.example.myhome.home.validator.CashBoxtValidator;
 import com.example.myhome.util.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/cashbox")
+@Transactional
 public class CashBoxController {
 
     private final CashBoxService cashBoxService;
@@ -135,7 +137,10 @@ public class CashBoxController {
             } else {
                 if (id>0) cashbox.setId(id);
                 cashbox.setOwner(ownerService.findById(ownerId));
-                cashbox.setApartmentAccount(apartmentAccountService.findById(accountId));
+                ApartmentAccount account = apartmentAccountService.findById(accountId);
+                account.getTransactions().add(cashbox);
+                account.addToBalance(cashbox.getAmount());
+                cashbox.setApartmentAccount(account);
             }
             if (id>0) cashbox.setId(id);
             cashbox.setIncomeExpenseItems(incomeExpenseItemService.findById(incomeExpenseItemId));

@@ -22,6 +22,14 @@ public class AccountSpecifications {
         else return (root, query, cb) -> cb.equal(root.get(ApartmentAccount_.APARTMENT), apartment);
     }
 
+    public static Specification<ApartmentAccount> hasApartmentNumber(Long number) {
+        if(number == null) return (root, query, criteriaBuilder) -> null;
+        return (root, query, cb) -> {
+            Join<Apartment, ApartmentAccount> accountApartment = root.join("apartment");
+            return cb.equal(accountApartment.get(Apartment_.NUMBER), number);
+        };
+    }
+
     public static Specification<ApartmentAccount> hasBuilding(Building building) {
         if(building == null) return (root, query, criteriaBuilder) -> null;
         else return (root, query, cb) -> {
@@ -46,9 +54,9 @@ public class AccountSpecifications {
         };
     }
 
-//    public static Specification<ApartmentAccount> hasDebt(Boolean hasDebt) {
-//        if(hasDebt == null) return (root, query, criteriaBuilder) -> null;
-//        return (root, query, cb) -> cb.equal(root.get(ApartmentAccount_.))
-//    }
+    public static Specification<ApartmentAccount> hasDebt(Boolean hasDebt) {
+        if(hasDebt == null) return (root, query, criteriaBuilder) -> null;
+        return (root, query, cb) -> cb.lessThan(root.get(ApartmentAccount_.BALANCE), 0);
+    }
 
 }

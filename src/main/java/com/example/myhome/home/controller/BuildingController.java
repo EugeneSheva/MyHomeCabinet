@@ -6,6 +6,7 @@ import com.example.myhome.home.model.BuildingDTO;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.validator.BuildingValidator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -21,13 +22,16 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/buildings")
+@Log
 public class BuildingController {
 
     @Autowired
@@ -117,5 +121,19 @@ public class BuildingController {
     @GetMapping("/get-section-apartments/{id}")
     public @ResponseBody List<Apartment> getBuildingSectionApartmentsFromQuery(@PathVariable long id, @RequestParam String section_name) {
         return buildingService.getSectionApartments(id, section_name);
+    }
+
+    @GetMapping("/get-buildings")
+    public @ResponseBody Map<String, Object> getBuildings(@RequestParam String search,
+                                                     @RequestParam int page) {
+        log.info("Getting all buildings that have in their name: " + search);
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Boolean> pagination = new HashMap<>();
+        pagination.put("more", ((long) page*5) < buildingService.countBuildings());
+        map.put("results", buildingService.findByPage(search, page));
+        map.put("pagination", pagination);
+        System.out.println(map.get("results").toString());
+        System.out.println(map.get("pagination").toString());
+        return map;
     }
 }

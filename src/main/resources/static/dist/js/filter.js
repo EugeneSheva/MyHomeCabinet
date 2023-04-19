@@ -1,9 +1,3 @@
-const queryParams = window.location.search;
-console.log(queryParams);
-const urlParams = new URLSearchParams(queryParams);
-let pageNumber = parseInt(urlParams.get('page'));
-console.log('page number ' +pageNumber);
-
 
 
     function checkFilters() {
@@ -41,6 +35,8 @@ console.log('page number ' +pageNumber);
 //
 //        window.location.href = '/admin/requests'+final_link;
 
+        let urlParams = new URL(window.location.href).searchParams;
+
         let filters = document.querySelectorAll(".my_filters");
         let link_elements = [];
         for(const filter of filters) {
@@ -54,7 +50,12 @@ console.log('page number ' +pageNumber);
         if(datetime_filter != null && datetime_filter.value != null && datetime_filter.value.split(' to ').length > 1 && datetime_filter.value != '') {
             link_elements.push(datetime_filter.dataset.name + '=' + datetime_filter.value);
         }
-        pageNumber = 0;
+        let flat_id = urlParams.get("flat_id");
+        if(flat_id != null && flat_id != 0 && flat_id != '' && !isNaN(flat_id)) link_elements.push('flat_id='+flat_id);
+        let service_id = urlParams.get("service_id");
+        if(service_id != null && service_id != 0 && service_id != '' && !isNaN(service_id)) link_elements.push('service_id='+service_id);
+
+        pageNumber = 1;
         link_elements.push('page='+pageNumber);
         let final_link = (link_elements.length > 0) ? ('?' + link_elements.join('&')) : '';
         console.log(window.location.href.split('?')[0]);

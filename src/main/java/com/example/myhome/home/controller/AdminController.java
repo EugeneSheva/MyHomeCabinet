@@ -12,7 +12,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -99,6 +101,18 @@ public class AdminController {
                     .filter(admin -> admin.getRole() != UserRole.ROLE_ADMIN && admin.getRole() != UserRole.ROLE_DIRECTOR
                     && admin.getRole() != UserRole.ROLE_MANAGER).collect(Collectors.toList());
         else return adminService.getAdminsByRole(UserRole.valueOf(type.toUpperCase()));
+    }
+
+    @GetMapping("/get-all-masters")
+    public @ResponseBody Map<String, Object> getAllMasters(@RequestParam String search, @RequestParam int page) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Boolean> pagination = new HashMap<>();
+        pagination.put("more", (page*5L) < adminService.countAllMasters());
+        map.put("results", adminService.findAllMasters(search, page-1));
+        map.put("pagination", pagination);
+        System.out.println(map.get("results").toString());
+        System.out.println(map.get("pagination").toString());
+        return map;
     }
 
 }

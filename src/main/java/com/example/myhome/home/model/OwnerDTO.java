@@ -17,6 +17,7 @@ import java.util.List;
 public class OwnerDTO {
 
     private Long id;
+    private String text;
 
     private String first_name, last_name, fathers_name;
 
@@ -24,5 +25,14 @@ public class OwnerDTO {
         return this.first_name + ' ' + this.fathers_name + ' ' + this.last_name;
     }
 
+    public OwnerDTO() {
+    }
 
+    public OwnerDTO(Long id, String first_name, String last_name, String fathers_name) {
+        this.id = id;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.fathers_name = fathers_name;
+        this.text = getFullName();
+    }
 }

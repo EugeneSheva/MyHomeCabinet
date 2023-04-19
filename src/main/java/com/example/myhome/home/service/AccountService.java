@@ -10,9 +10,11 @@ import com.example.myhome.home.repository.ApartmentRepository;
 import com.example.myhome.home.repository.specifications.AccountSpecifications;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,16 +35,17 @@ public class AccountService {
 
     public List<ApartmentAccount> findAll() {return accountRepository.findAll();}
 
-    public List<ApartmentAccount> findAllBySpecification(FilterForm filters) {
+    public Page<ApartmentAccount> findAllBySpecification(FilterForm filters) {
 
-        if(filters.getPage() == null) return accountRepository.findAll(PageRequest.of(0, 10)).toList();
+        if(filters.getPage() == null) return accountRepository.findAll(PageRequest.of(0, 4));
 
         log.info("Filters found!");
         log.info(filters.toString());
 
         Long id = filters.getId();
         Boolean active = filters.getActive();
-        Apartment apartment = (filters.getApartment() != null) ? apartmentService.findByNumber(filters.getApartment()) : null;
+//        Apartment apartment = (filters.getApartment() != null) ? apartmentService.findByNumber(filters.getApartment()) : null;
+        Long apartment = (filters.getApartment() != null) ? filters.getApartment() : null;
         Building building = (filters.getBuilding() != null) ? buildingService.findById(filters.getBuilding()) : null;
         String section = filters.getSection();
         Owner owner = (filters.getOwner() != null) ? ownerService.findById(filters.getOwner()) : null;
@@ -51,12 +54,13 @@ public class AccountService {
         Specification<ApartmentAccount> specification =
                 Specification.where(AccountSpecifications.hasId(id)
                         .and(AccountSpecifications.isActive(active))
-                        .and(AccountSpecifications.hasApartment(apartment))
+                        .and(AccountSpecifications.hasApartmentNumber(apartment))
                         .and(AccountSpecifications.hasBuilding(building))
                         .and(AccountSpecifications.hasSection(section))
-                        .and(AccountSpecifications.hasOwner(owner)));
+                        .and(AccountSpecifications.hasOwner(owner))
+                        .and(AccountSpecifications.hasDebt(debt)));
 
-        return accountRepository.findAll(specification, PageRequest.of(filters.getPage(), 10)).stream().toList();
+        return accountRepository.findAll(specification, PageRequest.of(filters.getPage()-1, 4));
     }
 
     public ApartmentAccount getAccountById(long account_id) {
@@ -67,7 +71,14 @@ public class AccountService {
 
     public ApartmentAccount save(ApartmentAccount account) {return accountRepository.save(account);}
 
-    public void deleteAccountById(long account_id) {accountRepository.deleteById(account_id);}
+    @Transactional
+    public void deleteAccountById(long account_id) {
+        ApartmentAccount account = getAccountById(account_id);
+        account.getTransactions().clear();
+        account.getInvoices().forEach(inv -> inv.setAccount(null));
+        account.getInvoices().clear();
+        accountRepository.delete(account);
+    }
 
     public boolean apartmentHasAccount(long apartment_id) {
         return (apartmentRepository.findById(apartment_id).orElseThrow().getAccount() != null);
