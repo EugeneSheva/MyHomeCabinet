@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Log
@@ -56,7 +57,7 @@ public class AccountService {
                         .and(AccountSpecifications.hasSection(section))
                         .and(AccountSpecifications.hasOwner(owner)));
 
-        return accountRepository.findAll(specification, PageRequest.of(filters.getPage(), 10)).stream().toList();
+        return accountRepository.findAll(specification, PageRequest.of(filters.getPage(), 10)).stream().collect(Collectors.toList());
     }
 
     public ApartmentAccount getAccountById(long account_id) {

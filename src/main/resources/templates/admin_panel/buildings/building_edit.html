@@ -235,7 +235,7 @@
                                                         <div class="multi-field input-group"
                                                              style="margin-top: 10px; margin-bottom: 10px;">
                                                             <label for="admin" class="form-label"> </label>
-                                                            <select class="form-select" id="admin" name="admins">
+                                                            <select class="form-select" id="admin-1" name="admins" th:onchange="'selectAdmin(1)'">
                                                                 <option selected="" disabled="" value="">Choose...
                                                                 <option th:each="adminL : ${adminList}"
                                                                         th:text="${adminL.first_name}+ ' '+${adminL.last_name}"
@@ -244,8 +244,8 @@
                                                                 <!--                                                                th:selected="${admin.id == (apartment.admin != null ? apartment.owner.id:0)}"-->
                                                             </select>
                                                             <label for="adminrole" class="form-label"> </label>
-                                                            <input type="text" id="adminrole" class="form-control"
-                                                                   name="users">
+                                                            <input type="text" id="adminrole-1" class="form-control"
+                                                                   name="users" style="margin-left: 10px;">
                                                             <button type="button"
                                                                     class="remove-field btn btn-danger btn-sm"><i
                                                                     class="fa fa-trash-o" aria-hidden="true"></i>
@@ -345,14 +345,6 @@
     });
 
 
-    // function selectAdmin(index) {
-    //     console.log('Вызов JS')
-    //     console.log('index '+index)
-    //     var selectEl = document.getElementById("admin-" + index);
-    //     var selectedOption = selectEl.options[selectEl.selectedIndex];
-    //     var roleInputEl = document.getElementById("adminrole-" + index);
-    //     roleInputEl.value = adminList[index].role;
-    // }
     function selectAdmin(index) {
         var adminSelect = document.getElementById('admin-' + index);
         var adminRole = document.getElementById('adminrole-' + index);
@@ -367,20 +359,6 @@
 
 
 
-
-    // var optionsF = adminList[selectedIndex].role;
-    //
-    // var list = /*[[${buildings}]]*/ [];
-    //
-    // var selectF = document.getElementById("floor");
-    // selectF.innerHTML = "<option selected=\"\" disabled=\"\" value=\"\">Choose...</option>";
-    // var optionsF = adminList[selectedIndex].role;
-    // for (let i = 0; i < optionsF.length; i++) {
-    //     const optionF = document.createElement("option");
-    //     optionF.value = optionsF[i];
-    //     optionF.textContent = optionsF[i];
-    //     selectF.appendChild(optionF);
-    // }
 
 
 </script>

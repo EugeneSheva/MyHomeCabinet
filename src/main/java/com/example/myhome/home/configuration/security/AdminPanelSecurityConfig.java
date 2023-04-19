@@ -40,7 +40,7 @@ public class AdminPanelSecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder2() {return new BCryptPasswordEncoder();}
+    public PasswordEncoder passwordEncoder2() {return new BCryptPasswordEncoder(12);}
 
     @Bean
     public DaoAuthenticationProvider authenticationProviderAdmin(){
