@@ -164,24 +164,19 @@ public class InvoiceService {
                                        String[] services,
                                        String[] unit_prices,
                                        String[] unit_amounts) {
-        invoice.setComponents(new ArrayList<>());
         invoice.setDate(LocalDate.parse(date));
         Invoice savedInvoice = saveInvoice(invoice);
 
-        List<InvoiceComponents> componentsList = buildAndSaveComponents(savedInvoice, services, unit_prices, unit_amounts);
-        Double total_price = componentsList.stream().map(InvoiceComponents::getTotalPrice).reduce(Double::sum).orElse(0.0);
-        savedInvoice.setTotal_price(total_price);
-        invoice.setComponents(componentsList);
+        savedInvoice = buildComponents(savedInvoice, services, unit_prices, unit_amounts);
 
         return saveInvoice(savedInvoice);
     }
 
-    public List<InvoiceComponents> buildAndSaveComponents(Invoice invoice,
+    public Invoice buildComponents(Invoice invoice,
                                    String[] services,
                                    String[] unit_prices,
                                    String[] unit_amounts) {
 
-        List<InvoiceComponents> componentsList = new ArrayList<>();
 
         for (int i = 1; i < services.length; i++) {
             InvoiceComponents component = new InvoiceComponents();
@@ -189,12 +184,12 @@ public class InvoiceService {
             component.setService(serviceService.findServiceById(Long.parseLong(services[i])));
             component.setUnit_price(Double.parseDouble(unit_prices[i]));
             component.setUnit_amount(Double.parseDouble(unit_amounts[i]));
-            componentsList.add(component);
+            invoice.getComponents().add(component);
         }
-        Double total_price = componentsList.stream().map(InvoiceComponents::getTotalPrice).reduce(Double::sum).orElse(0.0);
+        Double total_price = invoice.getComponents().stream().map(InvoiceComponents::getTotalPrice).reduce(Double::sum).orElse(0.0);
         invoice.setTotal_price(total_price);
 
-        return saveAllInvoicesComponents(componentsList);
+        return invoice;
     }
 
     public Specification<Invoice> buildSpecFromFilters(FilterForm filters) {

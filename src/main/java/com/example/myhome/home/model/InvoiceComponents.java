@@ -20,7 +20,7 @@ public class InvoiceComponents {
     private double unit_price;
     private double unit_amount;
 
-    @ManyToOne(cascade = {CascadeType.ALL, CascadeType.REMOVE})
+    @ManyToOne
     @JoinColumn(name = "invoice_id")
     private Invoice invoice;
 

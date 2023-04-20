@@ -135,6 +135,7 @@ public class SettingsController {
         for(int i = 0; i < pages.size(); i++) {
             pages.get(i).setId((long) i+1);
             pages.get(i).setPage_name(originalList.get(i).getPage_name());
+            pages.get(i).setRole_director(true);
         }
         pageRoleDisplayRepository.saveAll(pages);
         redirectAttributes.addFlashAttribute("success", "Сохранено!");

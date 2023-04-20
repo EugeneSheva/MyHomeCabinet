@@ -153,7 +153,8 @@
                                             <td><a th:href="@{/admin/apartments/{id}(id=${request.apartment.id})}" th:text="'кв. ' + ${request.apartment.number} + ', ' + ${request.apartment.building.name}"></a></td>
                                             <td><a th:href="@{/admin/owners/{id}(id=${request.apartment.owner.id})}" th:text="${request.apartment.owner.getFullName()}"></a></td>
                                             <td th:text="${request.apartment.owner.phone_number}"></td>
-                                            <td><a th:href="@{/admin/admins/{id}(id=${request.master.id})}" th:text="${request.master.getFullName()}"></a></td>
+                                            <td th:if="${request.master != null}"><a th:href="@{/admin/admins/{id}(id=${request.master.id})}" th:text="${request.master.getFullName()}"></a></td>
+                                            <td th:if="${request.master == null}"></td>
                                             <td><small class="label"
                                                        th:classappend="${request.status == T(com.example.myhome.home.model.RepairStatus).ACCEPTED ?
                                                        'label-primary' : request.status == T(com.example.myhome.home.model.RepairStatus).IN_WORK ?

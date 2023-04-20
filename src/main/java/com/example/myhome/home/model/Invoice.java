@@ -62,7 +62,7 @@ public class Invoice {
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "invoice")
-    private List<InvoiceComponents> components;
+    private List<InvoiceComponents> components = new ArrayList<>();
 
     private double total_price;
 
