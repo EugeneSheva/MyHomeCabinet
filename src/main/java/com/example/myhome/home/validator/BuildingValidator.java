@@ -20,8 +20,8 @@ public class BuildingValidator implements Validator {
         Building building = (Building) obj;
         if (building.getName() == null ||  building.getName().isEmpty()) {
             e.rejectValue("name", "name.empty", "Заполните поле");
-        } else if  (building.getName().length()<10) {
-            e.rejectValue("name", "name.empty", "Поле должно быть минимум 10 символов");
+        } else if  (building.getName().length()<5) {
+            e.rejectValue("name", "name.empty", "Поле должно быть минимум 5 символов");
         }
         if (building.getAddress() == null ||  building.getAddress().isEmpty()) {
             e.rejectValue("address", "address.empty", "Заполните поле");

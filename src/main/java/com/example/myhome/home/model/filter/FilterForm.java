@@ -1,8 +1,13 @@
 package com.example.myhome.home.model.filter;
 
+import com.example.myhome.home.model.OwnerDTO;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 
 @Data
 public class FilterForm {
@@ -16,6 +21,8 @@ public class FilterForm {
 
     private Long id;
     private String date;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate localDate;
     private String month;
     private String datetime;
     private String description;
@@ -24,6 +31,8 @@ public class FilterForm {
     private Long master;
 
     private Long owner;
+    private OwnerDTO ownerEntity;
+    private String ownerName;
     private String phone;
 
     private String status;
@@ -35,6 +44,17 @@ public class FilterForm {
     private String name;
     private String role;
     private String email;
+    private String phonenumber;
+
+    private String address;
+
+    private Long number;
+    private String floor;
+    private String buildingName;
+    private String debtSting;
+    private String isCompleted;
+    private String incomeExpenseItem;
+    private String incomeExpenseType;
 
     public FilterForm() {
     }

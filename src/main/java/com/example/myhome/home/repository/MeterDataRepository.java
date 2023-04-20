@@ -25,4 +25,6 @@ public interface MeterDataRepository extends JpaRepository<MeterData, Long>, Jpa
     @Query("SELECT MAX(m.id) FROM MeterData m")
     Optional<Long> getMaxId();
 
+    List<MeterData>findAllByApartmentId(Long id);
+
 }

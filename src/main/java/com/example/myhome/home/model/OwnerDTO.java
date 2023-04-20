@@ -20,10 +20,8 @@ public class OwnerDTO {
     private String text;
 
     private String first_name, last_name, fathers_name;
+    private String fullName;
 
-    public String getFullName() {
-        return this.first_name + ' ' + this.fathers_name + ' ' + this.last_name;
-    }
 
     public OwnerDTO() {
     }

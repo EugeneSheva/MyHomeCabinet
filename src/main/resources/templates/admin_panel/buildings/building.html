@@ -45,10 +45,11 @@
             <div class="container-fluid">
 
                 <div class="card" style="padding: 10px">
-                    <div class="form-group">
+                    <div class="form-group" style="margin-bottom: 0px">
                         <a th:href="@{/admin/buildings/edit/{id}(id=${id})}" class="btn btn-primary btn-sm float-right">Редактировать
                             дом</a>
                     </div>
+                    <hr>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="card">
@@ -73,11 +74,12 @@
                                             <td>Этажей</td>
                                             <td th:text="${building.floors.size()}">?</td>
                                         </tr>
-                                        <tr th:each="admin : ${building.getAdmins()}">
+                                        <tr>
                                             <td>Пользователи</td>
                                             <td>
-                                                <div><a th:text="${admin.role}+${admin.name}"
-                                                        th:href="@{users/{id}(id=${admin.id})}"></a></div>
+                                                <div th:each="admin : ${building.getAdmins()}"><a th:text="${admin.role+' '+admin.first_name+' '+admin.last_name}"
+                                                        ></a></div>
+<!--                                                th:href="@{users/{id}(id=${admin.id})}"-->
                                             </td>
                                         </tr>
                                         </tbody>

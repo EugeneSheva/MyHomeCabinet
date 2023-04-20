@@ -38,7 +38,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
-                            <li class="breadcrumb-item"><a th:href="@{/admin/owers/}">Владельцы квартир</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/admin/owners/}">Владельцы квартир</a></li>
                             <li class="breadcrumb-item active"
                                 th:text="'Новый владелец'"></li>
                         </ol>
@@ -78,7 +78,7 @@
                                            th:field="*{last_name}" placeholder="">
                                     <div style="color: #d80450" th:if="${#fields.hasErrors('last_name')}" th:errors="*{last_name}"></div>
 
-                                    <label for="fathers_name">Отчесво</label>
+                                    <label for="fathers_name">Отчество</label>
                                     <input type="text" id="fathers_name" class="form-control" name="fathers_name"
                                            th:field="*{fathers_name}" placeholder="">
 

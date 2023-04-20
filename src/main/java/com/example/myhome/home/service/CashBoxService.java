@@ -1,10 +1,13 @@
 package com.example.myhome.home.service;
 
 import com.example.myhome.home.exception.NotFoundException;
+import com.example.myhome.home.model.Building;
 import com.example.myhome.home.model.CashBox;
 import com.example.myhome.home.model.IncomeExpenseType;
 import com.example.myhome.home.repository.CashBoxRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,7 +23,7 @@ public class CashBoxService {
     public CashBox findById (Long id) { return cashBoxRepository.findById(id).orElseThrow(() -> new NotFoundException());}
 
     public List<CashBox> findAll() { return cashBoxRepository.findAll(); }
-
+    public Page<CashBox> findAll(Pageable pageable) { return cashBoxRepository.findAll(pageable); }
     public CashBox save(CashBox cashBox) { return cashBoxRepository.save(cashBox); }
 
     public void deleteById(Long id) { cashBoxRepository.deleteById(id); }
@@ -66,5 +69,23 @@ public class CashBoxService {
         return doubleList;
     }
 
+    public IncomeExpenseType getIncomeExpenseTypeFromString(String incomeExpenseTypeString) {
+        IncomeExpenseType incomeExpenseType = null;
+        if (incomeExpenseTypeString.equalsIgnoreCase("income")) {
+            incomeExpenseType = IncomeExpenseType.INCOME;
+        } else if (incomeExpenseTypeString.equalsIgnoreCase("expense")) {
+            incomeExpenseType = IncomeExpenseType.EXPENSE;
+        }
+        return incomeExpenseType;
+    }
 
+    public Boolean getIsCompleteFromString(String isCopmlete) {
+        Boolean isCom = null;
+        if (isCopmlete.equalsIgnoreCase("сompleted")) {
+            isCom = true;
+        } else if (isCopmlete.equalsIgnoreCase("notComplete")) {
+            isCom = false;
+        }
+        return isCom;
+    }
 }

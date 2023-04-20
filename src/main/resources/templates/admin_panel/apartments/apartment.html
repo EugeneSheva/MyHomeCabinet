@@ -26,15 +26,14 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                    <h1 class="m-0" th:text="'Квартира '+${apartment.number} + ', '  + '.'"></h1>
-<!--                                                            +${apartment.building.name}-->
+                    <h1 class="m-0" th:text="${apartment.id != null? ('Квартира '+ apartment.number + ', ' + apartment.building.name): 'Новая квартира'}"></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
                             <li class="breadcrumb-item"><a th:href="@{/admin/apartments/}">Квартиры</a></li>
-                            <!--                            <li class="breadcrumb-item active"-->
-                            <!--                                th:text="'Квартира '+${apartment.number} + ', ' +${apartment.building.name} + '.'"></li>-->
+                            <li class="breadcrumb-item active"
+                                th:text="${apartment.id != null? ('Квартира '+ apartment.number + ', ' + apartment.building.name): 'Новая квартира'}"></li>
                         </ol>
                     </div>
                 </div>
@@ -46,12 +45,12 @@
         <section class="content">
             <div class="container-fluid">
 
-                <div class="card" style="padding: 10px">
+                <div class="card card card-primary card-outline" style="padding: 10px; border-top-color: #bbbbbb;">
                     <div class="form-group">
                         <a th:href="@{edit/{id}(id=${id})}" class="btn btn-primary btn-sm float-right" style="margin-left: 2px">Редактировать
                             квартиру</a>
-                        <a  class="btn btn-secondary btn-sm float-right" style="margin-left: 2px">Оформить квитанцию</a>
-                        <a  class="btn btn-secondary btn-sm float-right" style="margin-left: 2px">Принять платеж</a>
+                        <a th:href="@{/admin/apartments/NewInvoiceByApartment/{id}(id=${apartment.id})}" class="btn btn-secondary btn-sm float-right" style="margin-left: 2px">Оформить квитанцию</a>
+                        <a th:href="@{/admin/apartments/NewIncomesByApartment/{id}(id=${apartment.id})}" class="btn btn-secondary btn-sm float-right" style="margin-left: 2px">Принять платеж</a>
                         <h4 class="float-left">Просмотр квартиры</h4>
                     </div>
 
@@ -63,7 +62,7 @@
                                 <tbody>
                                 <tr>
                                     <td>Лицевой счет</td>
-                                    <td>?</td>
+                                    <td th:text="${T(java.lang.String).format('%010d',apartment.account.id)}">?</td>
                                 </tr>
                                 <tr>
                                     <td>Номер квартиры</td>
@@ -75,7 +74,7 @@
                                 </tr>
                                 <tr>
                                     <td>Дом</td>
-                                    <td>?</td>
+                                    <td th:text="${apartment.building.name}"></td>
                                 </tr>
                                 <tr>
                                     <td>Секция</td>
@@ -87,18 +86,18 @@
                                 </tr>
                                 <tr>
                                     <td>Владелец</td>
-                                    <td>?</td>
+                                    <td th:text="${apartment.owner.first_name}+ ' '+${apartment.owner.last_name}+' '+${apartment.owner.fathers_name}">?</td>
                                 </tr>
                                 <tr>
                                     <td>Тариф</td>
-                                    <td>?</td>
+                                    <td th:text="${apartment.tariff.name}">?</td>
                                 </tr>
                                 </tbody>
                             </table>
                             <div style="margin: 10px">
-                                <a href="#">Посмотреть показания счетчиков</a><br>
-                                <a href="#">Посмотреть приходы</a><br>
-                                <a href="#">Посмотреть увитанции</a><br>
+                                <a th:href="@{/admin/apartments/metersDataByApartment/{id}(id=${id})}">Посмотреть показания счетчиков</a><br>
+                                <a th:href="@{/admin/apartments/incomesByApartmentAccount/{id}(id=${apartment.account.id})}">Посмотреть приходы</a><br>
+                                <a th:href="@{/admin/apartments/invoicesByApartment/{id}(id=${id})}">Посмотреть квитанции</a><br>
                             </div>
                         </div>
                         <!-- /.card-body -->

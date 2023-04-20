@@ -22,6 +22,7 @@ public class StatisticsController {
     private final RepairRequestRepository repairRequestRepository;
     private final OwnerService ownerService;
     private final BuildingService buildingService;
+    private final BuildingRepository buildingRepository;
     private final ApartmentService apartmentService;
     private final AccountService accountService;
     private final CashBoxRepository cashBoxRepository;
@@ -29,8 +30,8 @@ public class StatisticsController {
     private final AccountRepository accountRepository;
     private final ApartmentRepository apartmentRepository;
     private final InvoiceService invoiceService;
-
-    @GetMapping
+    private final OwnerRepository ownerRepository;
+    @GetMapping("/")
     public String getOwners(Model model) {
         model.addAttribute("newRepairRequestQuant", repairRequestRepository.countRepairRequestsByStatus(RepairStatus.ACCEPTED));
         model.addAttribute("inworkRepairRequestQuant", repairRequestRepository.countRepairRequestsByStatus(RepairStatus.IN_WORK));

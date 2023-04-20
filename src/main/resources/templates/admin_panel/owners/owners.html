@@ -1,127 +1,335 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>МойДом24</title>
-  <link rel="stylesheet"
-        th:href="@{https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback}">
-  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
-  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
-  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>МойДом24</title>
+    <link rel="stylesheet"
+          th:href="@{https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback}">
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
 
 
-  <!-- navbar header/sidebar -->
-  <div th:insert="~{main-template :: loading}"></div>
-  <nav th:insert="~{main-template :: header}"></nav>
-  <aside th:insert="~{main-template :: sidebar}"></aside>
-  <!-- /.navbar header/sidebar -->
+    <!-- navbar header/sidebar -->
+    <div th:insert="~{main-template :: loading}"></div>
+    <nav th:insert="~{main-template :: header}"></nav>
+    <aside th:insert="~{main-template :: sidebar}"></aside>
+    <!-- /.navbar header/sidebar -->
 
-  <!--content-header -->
-  <div class="content-wrapper">
-      <div class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1 class="m-0">Владельцы</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
-              <li class="breadcrumb-item active">Владельцы</li>
-            </ol>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- /.content-header -->
-
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-
-        <div class="card" style="padding: 10px">
-          <div class="form-group">
-            <div class="dropdown">
-              <button class="btn btn-success btn-sm float-right dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                Выберите действие
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li><a class="dropdown-item" th:href="@{/admin/owners/new}">Добавить владельца квартиры</a></li>
-                <li><a class="dropdown-item" href="#">Отправить сообщение должникам</a></li>
-                <li><a class="dropdown-item" href="#">Отправить приглашение</a></li>
-              </ul>
+    <!--content-header -->
+    <div class="content-wrapper">
+        <div class="content-header" style="padding-bottom: 0">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Владельцы</h1>
+                    </div>
+                    <div class="col-sm-6" style="margin-top: 15px">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
+                            <li class="breadcrumb-item active">Владельцы</li>
+                        </ol>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <div class="dropdown">
+                            <button class="btn btn-success btn-sm float-right dropdown-toggle" type="button"
+                                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                Выберите действие
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li><a class="dropdown-item" th:href="@{/admin/owners/new}">Добавить владельца
+                                    квартиры</a></li>
+                                <li><a class="dropdown-item" th:href="@{/admin/owners/newMessage}">Отправить сообщение
+                                    должникам</a></li>
+                                <li><a class="dropdown-item" href="#">Отправить приглашение</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="card-body">
-            <table id="example2" class="table table-bordered table-hover" width="100%">
-              <col style="width:7%">
-              <col style="width:25%">
-              <col style="width:10%">
-              <col style="width:15%">
-              <col style="width:10%">
-              <col style="width:9%">
-              <col style="width:7%">
-              <col style="width:5%">
-              <col style="width:5%">
-              <col style="width:7%">
-              <thead>
-              <tr>
-                <th>ID</th>
-                <th>ФИО</th>
-                <th>Телефон</th>
-                <th>Email</th>
-                <th>Дом</th>
-                <th>Квартира</th>
-                <th>Добавлен</th>
-                <th>Статус</th>
-                <th>Есть долг</th>
-                <th></th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr th:each="owner : ${owners}">
-                <td ><a style="display: block; color: black;" th:text="${owner.id}" th:href="@{{id}(id=${owner.id})}"></a></td>
-                <td ><a style="display: block; color: black;" th:text="${owner.first_name}+' '+${owner.last_name}+' '+${owner.fathers_name}" th:href="@{{id}(id=${owner.id})}"></a></td>
-                <td ><a style="display: block; color: black;" th:text="${owner.phone_number}" th:href="@{{id}(id=${owner.id})}" ></a></td>
-            <td ><a style="display: block; color: black;" th:text="${owner.email}" th:href="@{{id}(id=${owner.id})}" ></a></td>
-            <td ><a style="display: block; color: black;"  ></a></td>
-            <td ><a style="display: block; color: black;"  ></a></td>
-            <td ><a style="display: block; color: black;" th:text="${owner.added_at}" th:href="@{{id}(id=${owner.id})}" ></a></td>
-            <td ><a style="display: block; color: black;" th:text="${owner.status}" th:href="@{{id}(id=${owner.id})}" ></a></td>
-            <td ><a style="display: block; color: black;" th:text="${owner.has_debt}" th:href="@{{id}(id=${owner.id})}" ></a></td>
-
-
-                <td><div class="btn-group" role="group" aria-label="Basic outlined button group">
-                  <a href="#" class="btn btn-secondary btn-sm"><i class="fa fa-envelope" aria-hidden="true"></i></a>
-                  <a th:href="@{edit/{id}(id=${owner.id})}" class="btn btn-secondary btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>
-                  <a th:href="@{delete/{id}(id=${owner.id})}" class="btn btn-secondary btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></i></a>
-                </div></td>
-              </tr>
-              </tbody>
-              <tfoot>
-              </tfoot>
-            </table>
-          </div>
-          <!-- /.card-body -->
         </div>
-        <!-- /.card -->
+        <!-- /.content-header -->
 
-      </div>
-    </section>
-  </div>
-  <!-- /.Main content -->
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="card card card-primary card-outline" style="padding: 0px; border-top-color: #bbbbbb;">
+                    <div class="card-header" style="background-color: transparent;">
+                        <div class="form-group">
+                            <a th:href="@{/admin/owners/}" class="btn btn-light btn-sm float-right">
+                                Очистить</span><i class="fa fa-eraser visible-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body " style="padding: 0">
+                        <form method="POST" id="1" th:action="@{/admin/owners/filter}" th:object="${filterForm}"
+                              enctype="multipart/form-data">
+                            <table id="example2" class="table table-bordered table-hover table-striped linkedRow"
+                                   width="100%">
+                                <col style="width:7%">
+                                <col style="width:25%">
+                                <col style="width:10%">
+                                <col style="width:15%">
+                                <col style="width:10%">
+                                <col style="width:9%">
+                                <col style="width:7%">
+                                <col style="width:5%">
+                                <col style="width:5%">
+                                <col style="width:7%">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ФИО</th>
+                                    <th>Телефон</th>
+                                    <th>Email</th>
+                                    <th>Дом</th>
+                                    <th>Квартира</th>
+                                    <th>Добавлен</th>
+                                    <th>Статус</th>
+                                    <th>Есть долг</th>
+                                    <th></th>
+                                </tr>
+                                <tr>
+                                    <th><input type="text" class="form-control" name="id"
+                                               th:field="${filterForm.id}" id="id"></th>
+                                    <th><input type="text" class="form-control" name="ownerName"
+                                               th:field="${filterForm.ownerName}" id="ownerName"></th>
+                                    <th><input type="text" class="form-control" name="phonenumber"
+                                               th:field="${filterForm.phonenumber}" id="phonenumber"></th>
+                                    <th><input type="text" class="form-control" name="email"
+                                               th:field="${filterForm.email}" id="email"></th>
+                                    <th><select class="form-select" id="buildingName" name="buildingName">
+                                        <option value="-"
+                                                th:selected="${filterForm.buildingName == null}"></option>
+                                        <option th:each="building : ${buildings}"
+                                                th:text="${building.name}"
+                                                th:value="${building.name}"
+                                                th:selected="${#strings.containsIgnoreCase((building.name),((filterForm.buildingName != null) ? (filterForm.buildingName ): ('empty') ))}"></option>
+                                    </select></th>
+
+                                    <th><input type="number" class="form-control" name="apartment"
+                                               th:field="${filterForm.apartment}" id="number"></th>
+
+                                    <th>
+                                        <div class="md-form md-outline input-with-post-icon datepicker"
+                                             style="padding: 0; margin-bottom: 0px">
+                                            <input placeholder="Select date" th:value="${localDate}" type="date"
+                                                   id="localDate" name="localDate" class="form-control">
+                                        </div>
+                                    </th>
+
+                                    <th><select class="form-select" id="status" name="status">
+                                        <option th:selected="${filterForm.debtSting == null}" value="-"></option>
+                                        <option value="active"
+                                                th:selected="${#strings.containsIgnoreCase(('active'),((filterForm.status != null) ? (filterForm.status ): ('emp') ))}"
+                                        >Активный
+                                        </option>
+                                        <option value="new"
+                                                th:selected="${#strings.containsIgnoreCase(('new'),((filterForm.status != null) ? (filterForm.status ): ('emp') ))}"
+                                        >Новый
+                                        </option>
+                                        <option value="disabled"
+                                                th:selected="${#strings.containsIgnoreCase(('disabled'),((filterForm.status != null) ? (filterForm.status ): ('emp') ))}"
+                                        >Отключенный
+                                        </option>
+                                    </select></th>
+
+                                    <th><select class="form-select" id="debt" name="debtSting">
+                                        <option th:selected="${filterForm.debtSting == null}" value="-"></option>
+                                        <option value="haveDebt"
+                                                th:selected="${#strings.containsIgnoreCase(('haveDebt'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}"
+                                        >Есть долг
+                                        </option>
+                                        <option value="noDebt"
+                                                th:selected="${#strings.containsIgnoreCase(('noDebt'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}"
+                                        >Нет долга
+                                        </option>
+                                    </select></th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="owner : ${owners}">
+                                    <td><a style="display: block; color: black; text-decoration: none;"
+                                           th:text="${owner.id}"
+                                           th:href="@{{id}(id=${owner.id})}"></a></td>
+
+                                    <td><a style="display: block; color: black; text-decoration: none;"
+                                           th:text="${owner.first_name}+' '+${owner.last_name}+' '+${owner.fathers_name}"
+                                           th:href="@{{id}(id=${owner.id})}"></a></td>
+
+                                    <td><a style="display: block; color: black; text-decoration: none;"
+                                           th:text="${owner.phone_number}"
+                                           th:href="@{{id}(id=${owner.id})}"></a></td>
+
+                                    <td><a style="display: block; color: black; text-decoration: none;"
+                                           th:text="${owner.email}"
+                                           th:href="@{{id}(id=${owner.id})}"></a></td>
+
+                                    <td><a style="display: block; color: black; text-decoration: none;"
+                                           th:each="apartment : ${owner.apartments}"
+                                           th:text="${apartment.building.name}"
+                                           th:href="@{{id}(id=${owner.id})}"></a></td>
+
+                                    <td><a style="display: block; color: black; text-decoration: none;"
+                                           th:each="apartment : ${owner.apartments}" th:text="${apartment.number}"
+                                           th:href="@{{id}(id=${owner.id})}"></a></td>
+
+                                    <td><a style="display: block; color: black; text-decoration: none;"
+                                           th:text="${owner.added_at}"
+                                           th:href="@{{id}(id=${owner.id})}"></a></td>
+
+                                    <td><a style="display: block; color: black; text-decoration: none;"
+                                           th:text="${owner.status}"
+                                           th:href="@{{id}(id=${owner.id})}"></a></td>
+
+                                    <td><a style="display: block; color: black; text-decoration: none;"
+                                           th:text="${owner.has_debt}"
+                                           th:href="@{{id}(id=${owner.id})}"></a></td>
 
 
-  <!-- Footer -->
-  <footer th:insert="~{main-template :: footer}"></footer>
-  <!-- /.Footer -->
+                                    <td>
+                                        <div class="btn-group" role="group" aria-label="Basic outlined button group">
+                                            <a href="#" class="btn btn-secondary btn-sm"><i class="fa fa-envelope"
+                                                                                            aria-hidden="true"></i></a>
+                                            <a th:href="@{edit/{id}(id=${owner.id})}"
+                                               class="btn btn-secondary btn-sm"><i
+                                                    class="fa fa-pencil" aria-hidden="true"></i></i></a>
+                                            <a th:href="@{delete/{id}(id=${owner.id})}"
+                                               class="btn btn-secondary btn-sm"><i
+                                                    class="fa fa-trash-o" aria-hidden="true"></i></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                                <tfoot>
+                                </tfoot>
+                            </table>
+                            <nav aria-label="Page navigation " th:if="${owners.totalPages gt 0}">
+                                <ul class="pagination justify-content-center font-weight-medium">
+                                    <li class="page-item" th:classappend="${owners.number eq 0} ? 'disabled'">
+                                        <a class="page-link"
+                                           th:href="@{/admin/owners/?page={id}&size={sz} (id=${owners.number eq 0 ? owners.number : 0},sz=${owners.getSize})}"
+                                           aria-label="Previous">
+                                            <span aria-hidden="true">«</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item" th:classappend="${owners.number le 0} ? 'disabled'">
+                                        <a class="page-link"
+                                           th:href="@{/admin/owners/?page={id}&size={sz} (id=${owners.number - 2},sz=${owners.getSize})}"
+                                           aria-label="Next">
+                                            <span aria-hidden="true">‹</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item disabled" th:if="${owners.number > 3 }">
+                                        <a class="page-link" href="#">...
+                                        </a>
+                                    </li>
+                                    <li class="page-item" th:classappend="${i eq owners.number + 1} ? 'active'"
+                                        th:each="i : ${#numbers.sequence(( owners.number > 2 ? owners.number - 2: owners.number - (owners.number - 1) ), (owners.number + 4 < owners.totalPages   ? owners.number + 4 : owners.totalPages), 1)}">
+                                        <a class="page-link"
+                                           th:href="@{/admin/owners/?page={id}&size={sz} (id=${i-1},sz=${owners.getSize})}"
+                                           th:text="${i}"
+                                           th:title="${'Page '+ i}"
+                                           rel="tooltip"></a></li>
+                                    <li class="page-item disabled"
+                                        th:if="${owners.number + 4 < owners.totalPages}">
+                                        <a class="page-link" href="#">...
+                                        </a>
+                                    </li>
+                                    <!--                                <li class="page-item" th:classappend="${user.number + 1 eq user.totalPages} ? 'disabled'"><a class="page-link" href="#">...</a></li>-->
+                                    <li class="page-item"
+                                        th:classappend="${owners.number ge owners.totalPages - 2} ? 'disabled'">
+                                        <a class="page-link"
+                                           th:href="@{/admin/owners/?page={id}&size={sz}(id=${owners.number + 2},sz=${owners.getSize})}"
+                                           aria-label="Next">
+                                            <span aria-hidden="true">›</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item"
+                                        th:classappend="${owners.number eq owners.totalPages - 1} ? 'disabled'">
+                                        <a class="page-link"
+                                           th:href="@{/admin/owners/?page={id}&size={sz}(id=${owners.totalPages - 1},sz=${owners.getSize})}"
+                                           aria-label="Next">
+                                            <span aria-hidden="true">»</span>
+                                        </a>
+                                    </li>
+                                    <div class="btn-group">
+                                        <button type="button" th:text="${owners.getSize}"
+                                                class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a class="dropdown-item"
+                                                   th:href="@{/admin/owners/?page={id}&size={sz}(id=${owners.getNumber},sz=5)}">5</a>
+                                            </li>
+                                            <li><a class="dropdown-item"
+                                                   th:href="@{/admin/owners/?page={id}&size=10(id=${owners.getNumber})}">10</a>
+                                            </li>
+                                            <li><a class="dropdown-item"
+                                                   th:href="@{/admin/owners/?page={id}&size=25(id=${owners.getNumber})}">25</a>
+                                            </li>
+                                            <li><a class="dropdown-item"
+                                                   th:href="@{/admin/owners/?page={id}&size=50(id=${owners.getNumber})}">50</a>
+                                            </li>
+                                            <li><a class="dropdown-item"
+                                                   th:href="@{/admin/owners/?page={id}&size=100(id=${owners.getNumber})}">100</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </section>
+    </div>
+    <!-- /.Main content -->
+
+
+    <!-- Footer -->
+    <footer th:insert="~{main-template :: footer}"></footer>
+    <!-- /.Footer -->
 </div>
+<script>
+    let timeoutId;
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    function handleFormSubmit() {
+        const form = document.getElementById('1');
+        form.submit();
+        console.log("Форма отправлена!");
+    }
+
+    function handleInputChange() {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(handleFormSubmit, 3000);
+    }
+
+    // event listener on field
+    const input = document.querySelector('input[type="text"]');
+    input.addEventListener('input', handleInputChange);
+
+    // event on Enter
+    document.addEventListener('keydown', function (event) {
+        if (event.key === "Enter") {
+            handleFormSubmit();
+        }
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 
 <!-- REQUIRED SCRIPTS -->
 <!-- Icons -->
@@ -133,36 +341,6 @@
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
 
-<!-- DataTables  & Plugins -->
-<script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-<script src="../../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-<script src="../../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-<script src="../../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-<script src="../../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-<script src="../../plugins/jszip/jszip.min.js"></script>
-<script src="../../plugins/pdfmake/pdfmake.min.js"></script>
-<script src="../../plugins/pdfmake/vfs_fonts.js"></script>
-<script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-<script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
-<script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
-<script>
-  $(function () {
-    $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
-    });
-  });
-</script>
 </body>
 </html>

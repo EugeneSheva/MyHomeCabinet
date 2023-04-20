@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,4 +24,5 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>, JpaSpec
     @Query("SELECT SUM(i.total_price) FROM Invoice i WHERE MONTH(i.date) = :month AND YEAR(i.date) = :year AND i.completed=true AND i.status= :invoiceStatus")
     Double getSumPaidIvoice(@Param("month") int month, @Param("year") int year, @Param("invoiceStatus") InvoiceStatus invoiceStatus);
 
+    List<Invoice>findAllByApartmentId(Long id);
 }
