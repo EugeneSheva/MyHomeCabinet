@@ -11,10 +11,7 @@ import com.example.myhome.util.UserRole;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,17 +43,18 @@ public class CashBoxController {
     private final IncomeExpenseItemService incomeExpenseItemService;
     private final IncomeExpenseRepository incomeExpenseRepository;
     private final AccountRepository accountRepository;
+    private final AccountService accountService;
     private final CashBoxRepository cashBoxRepository;
     private final CashBoxtValidator cashBoxtValidator;
 
 
-    @GetMapping("/")
+    @GetMapping
     public String getCashBox(Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) {
         Page<CashBox> cashBoxList = cashBoxService.findAll(pageable);
         model.addAttribute("cashBoxList", cashBoxList);
         model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount());
-        model.addAttribute("accountBalance", accountRepository.getSumOfAccountBalances());
-        model.addAttribute("sumDebt", accountRepository.getSumOfAccountDebts());
+        model.addAttribute("accountBalance", accountService.getSumOfAccountBalances());
+        model.addAttribute("sumDebt", accountService.getSumOfAccountDebts());
         model.addAttribute("filterForm", new FilterForm());
         int pageNumber = 0;
         int pageSize = 2;
@@ -70,6 +68,36 @@ public class CashBoxController {
 
         return "admin_panel/cash_box/cashboxes";
     }
+
+    @GetMapping("/show-incomes")
+    public String showAccountIncomePage(@RequestParam Long account_id, Model model) {
+        List<CashBox> cashBoxList;
+        cashBoxList = apartmentAccountService.findById(account_id).getTransactions();
+
+        // -- перегоняю List в Page для того , чтобы в html-страничке ничего не ломалось --
+        Pageable pageable = PageRequest.of(0, 5);
+        final int start = (int)pageable.getOffset();
+        final int end = Math.min((start + pageable.getPageSize()), cashBoxList.size());
+        final Page<CashBox> cashBoxPage = new PageImpl<>(cashBoxList.subList(start, end), pageable, cashBoxList.size());
+        // -- перегоняю List в Page для того , чтобы в html-страничке ничего не ломалось --
+
+        model.addAttribute("cashBoxList", cashBoxPage);
+        model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount());
+        model.addAttribute("accountBalance", accountService.getSumOfAccountBalances());
+        model.addAttribute("sumDebt", accountService.getSumOfAccountDebts());
+        model.addAttribute("filterForm", new FilterForm());
+        int pageNumber = 0;
+        int pageSize = 2;
+        Sort sort = Sort.by("fieldName").ascending(); // Сортировка по полю fieldName в порядке возрастания
+        Page<Owner>ownerDTOList=ownerService.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("id").ascending()));
+        model.addAttribute("owners", ownerDTOList);
+
+        List<IncomeExpenseItems>incomeExpenseItems=incomeExpenseItemService.findAll();
+        model.addAttribute("incomeExpenseItems", incomeExpenseItems);
+
+        return "admin_panel/cash_box/cashboxes";
+    }
+
     @PostMapping("/filter")
     public String filterApartments(Model model, @ModelAttribute FilterForm filterForm, @RequestParam(name = "id",required = false) Long id, @RequestParam(name = "date",required = false) String date,
                                    @RequestParam(name = "isCompleted",required = false) String isCompleted, @RequestParam(name = "incomeExpenseItem",required = false) String incomeExpenseItem,
@@ -108,7 +136,7 @@ public class CashBoxController {
     }
 
     @GetMapping("/newIncome")
-    public String createCashBoxIn(Model model) {
+    public String createCashBoxIn(@RequestParam(required = false) Long account_id, Model model) {
         List<IncomeExpenseItems>incomeItemsList=incomeExpenseRepository.findAllByIncomeExpenseType(IncomeExpenseType.INCOME);
         model.addAttribute("incomeItemsList", incomeItemsList);
 
@@ -129,15 +157,29 @@ public class CashBoxController {
         List<ApartmentAccountDTO> apartmentAccountDTOS = apartmentAccountService.findDtoApartmentAccounts();
         model.addAttribute("accounts", apartmentAccountDTOS);
 
+        model.addAttribute("nextId", cashBoxService.getMaxId()+1);
+
         CashBox cashBox = new CashBox();
+
+        if(account_id != null) {
+            System.out.println("if block, id is not null");
+            ApartmentAccount account = apartmentAccountService.findById(account_id);
+            cashBox.setApartmentAccount(account);
+            cashBox.setOwner(account.getOwner());
+            System.out.println(account.getApartment().getOwner().toString());
+        }
+
         cashBox.setIncomeExpenseType(IncomeExpenseType.INCOME);
         model.addAttribute("cashBoxItem", cashBox);
         return "admin_panel/cash_box/cashbox_edit";
     }
+
     @GetMapping("/newExpense")
     public String createCashBoxEx(Model model) {
         List<IncomeExpenseItems>expenseItemsList=incomeExpenseRepository.findAllByIncomeExpenseType(IncomeExpenseType.EXPENSE);
         model.addAttribute("expenseItemsList", expenseItemsList);
+
+        model.addAttribute("nextId", cashBoxService.getMaxId()+1);
 
         List<AdminDTO>adminDTOList = adminService.findAllDTO();
         adminDTOList = adminDTOList.stream()
@@ -153,6 +195,7 @@ public class CashBoxController {
         model.addAttribute("cashBoxItem", cashBox);
         return "admin_panel/cash_box/cashbox_edit";
     }
+
     @GetMapping("edit/{id}")
     public String editeCashBox(@PathVariable("id") Long id, Model model) {
         CashBox cashBox = cashBoxService.findById(id);
@@ -172,6 +215,7 @@ public class CashBoxController {
             model.addAttribute("expenseItemsList", expenseItemsList);
         }
 
+        model.addAttribute("nextId", cashBoxService.getMaxId()+1);
 
         List<AdminDTO>adminDTOList = adminService.findAllDTO();
 
@@ -184,8 +228,8 @@ public class CashBoxController {
                 .collect(Collectors.toList());
         model.addAttribute("admins", adminDTOList);
 
-
         model.addAttribute("cashBoxItem", cashBox);
+
         return "admin_panel/cash_box/cashbox_edit";
     }
 

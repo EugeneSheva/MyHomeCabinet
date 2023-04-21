@@ -50,7 +50,7 @@ public class BuildingController {
     private final AdminService adminService;
 
     private final BuildingValidator buildingValidator;
-    @GetMapping("/")
+    @GetMapping
     public String getBuildigs(Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) {
         Page<Building> buildingList = buildingService.findAll(pageable);
         model.addAttribute("buildings", buildingList);

@@ -31,7 +31,8 @@ public class StatisticsController {
     private final ApartmentRepository apartmentRepository;
     private final InvoiceService invoiceService;
     private final OwnerRepository ownerRepository;
-    @GetMapping("/")
+
+    @GetMapping
     public String getOwners(Model model) {
         model.addAttribute("newRepairRequestQuant", repairRequestRepository.countRepairRequestsByStatus(RepairStatus.ACCEPTED));
         model.addAttribute("inworkRepairRequestQuant", repairRequestRepository.countRepairRequestsByStatus(RepairStatus.IN_WORK));

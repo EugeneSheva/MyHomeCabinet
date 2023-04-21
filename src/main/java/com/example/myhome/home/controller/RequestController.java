@@ -61,6 +61,7 @@ public class RequestController {
         log.info(filterForm.toString());
 
         model.addAttribute("filter_form", filterForm);
+        model.addAttribute("page", filterForm.getPage());
         return "admin_panel/requests/requests";
     }
 

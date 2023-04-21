@@ -20,7 +20,7 @@ public class MainController {
 
     @Autowired private WebsiteService websiteService;
 
-    @GetMapping("/")
+    @GetMapping
     public String showMainPage(Model model) {
         model.addAttribute("page", websiteService.getMainPage());
         model.addAttribute("contacts", websiteService.getContactsPage());

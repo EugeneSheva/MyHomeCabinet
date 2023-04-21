@@ -26,6 +26,7 @@
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
 
+    <div th:if="${page == 1}" th:insert="~{main-template :: loading}"></div>
   <nav th:insert="~{main-template :: header}"></nav>
   <aside th:insert="~{main-template :: sidebar}"></aside>
 
@@ -96,7 +97,7 @@
                         Выберите действие <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a th:href="@{/admin/invoices/create}" style="padding-inline:15px;">Создать новую квитанцию</a></li>
+                        <li><a th:href="@{/admin/invoices/create}" style="padding-inline:15px; color:black">Создать новую квитанцию</a></li>
                         <li onclick="deleteChosen()"><a>Удалить</a></li>
                     </ul>
                 </div>

@@ -28,6 +28,8 @@ public class CashBoxService {
 
     public void deleteById(Long id) { cashBoxRepository.deleteById(id); }
 
+    public Long getMaxId() {return cashBoxRepository.getMaxId();}
+
     public Double calculateBalance() {return cashBoxRepository.sumAmount();}
 
     public List<Double> getListSumIncomeByMonth() {

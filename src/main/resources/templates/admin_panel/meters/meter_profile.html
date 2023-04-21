@@ -49,20 +49,20 @@
 
         <div class="row">
           <div class="col-md-3">
-            <div class="input-group-addon">
+            <div class="input-group-addon" style="display:inline-block">
               №
             </div>
             <input type="hidden" disabled id="id">
-            <h3 style="width: 90%; caret-color:transparent;" class="form-control"
+            <h3 style="width: 90%; caret-color:transparent; display:inline-block" class="form-control"
                 th:text="${T(java.lang.String).format('%010d',meter.id)}"></h3>
           </div>
           <div class="col-md-3">
-            <span>от</span>
-            <div class="input-group">
+            <span style="display:inline-block">от</span>
+            <div class="input-group" style="display:inline-block">
                 <span class="input-group-addon kv-date-calendar" title="Выбрать дату">
                   <i class="glyphicon glyphicon-calendar"></i>
                 </span>
-              <h3 style="width: 90%; caret-color:transparent;" class="form-control" th:text="${meter.date}"></h3>
+              <h3 style="width: 90%; caret-color:transparent; display:inline-block" class="form-control" th:text="${meter.date}"></h3>
             </div>
           </div>
           <div class="col-md-6"></div>
@@ -81,7 +81,7 @@
               </div>
               <div class="box-body">
                 <div class="row">
-                  <div class="col-xs-12 col-lg-4">
+                  <div class="col-xs-12 col-lg-12">
                     <table class="table table-bordered table-striped table-view">
                       <tbody>
                       <tr>

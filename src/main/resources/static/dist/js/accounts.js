@@ -24,7 +24,7 @@ function downloadExcelTable() {
 function insertPreviousNumbers(page_number) {
         if(page_number-1 <= 1 || page_number === 1) return;
 
-        if(page_number == pages_count) {
+        if(page_number == pages_count && pages_count != 3) {
             btn = document.createElement("a");
             btn.classList.add("btn", "btn-default");
             url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber-2));
@@ -53,7 +53,7 @@ function insertNextNumbers(page_number) {
     btn.innerText = pageNumber+1;
     page_buttons_container.appendChild(btn);
 
-    if(page_number == 1) {
+    if(page_number == 1 && pages_count > 3) {
         btn = document.createElement("a");
         btn.classList.add("btn", "btn-default");
         url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber+2));

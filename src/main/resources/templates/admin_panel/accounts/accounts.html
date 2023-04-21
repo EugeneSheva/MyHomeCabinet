@@ -10,6 +10,8 @@
     <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
     <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
     <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+    <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
     <!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
     <!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
 
@@ -17,7 +19,7 @@
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-
+    <div th:if="${page == 1}" th:insert="~{main-template :: loading}"></div>
     <nav th:insert="~{main-template :: header}"></nav>
     <aside th:insert="~{main-template :: sidebar}"></aside>
 
@@ -92,7 +94,7 @@
                             Выберите действие <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" style="width:230px;">
-                            <li><a th:href="@{/admin/accounts/create}" style="padding-inline:15px;">Добавить лицевой
+                            <li><a th:href="@{/admin/accounts/create}" style="padding-inline:15px; color:black">Добавить лицевой
                                 счет</a></li>
                             <li onclick="downloadExcelTable()"><a>Выгрузить в Excel</a></li>
                         </ul>
@@ -110,6 +112,7 @@
                   <a th:href="@{/admin/accounts}" class="btn btn-default btn-sm">
                     <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                   </a>
+                    <div id="page_button_container_top" class="mb-4" style="display: flex; justify-content: center;"></div>
                 </div>
               </div>
               <div class="box-body table-responsive">
@@ -205,6 +208,9 @@
                   </tr>
                   </tbody>
                 </table>
+                  <div id="page_button_container" class="mb-4" style="display: flex; justify-content: center;">
+
+                  </div>
                   </form>
               </div>
               <div class="box-footer clearfix"></div>
@@ -236,7 +242,7 @@
 <script th:src="@{/dist/js/accounts.js}"></script>
 
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
 
 <script th:inline="javascript">
 
@@ -318,7 +324,7 @@
 
     // ФИЛЬТРЫ
     $(document).ready(function(){
-        $("#active, #debt").select2({placeholder: 'Выберите...'});
+        $("#active, #debt, #section").select2({placeholder: 'Выберите...', minimumResultsForSearch:Infinity});
         $("#owner").select2({
             ajax: {
                 url: '/admin/owners/get-all-owners',

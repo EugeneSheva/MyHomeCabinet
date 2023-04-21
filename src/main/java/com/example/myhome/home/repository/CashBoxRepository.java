@@ -25,6 +25,9 @@ public interface CashBoxRepository extends JpaRepository<CashBox, Long>, JpaSpec
     @Query("SELECT SUM(cb.amount) FROM CashBox cb WHERE MONTH(cb.date) = :month AND YEAR(cb.date) = :year AND (cb.incomeExpenseType) = :incomeExpenseType AND cb.completed=true")
     Double getSumByMonth(@Param("month") int month, @Param("year") int year, @Param("incomeExpenseType") IncomeExpenseType incomeExpenseType);
 
+    @Query("SELECT max(c.id) FROM CashBox c")
+    Long getMaxId();
+
     List<CashBox>findAllByApartmentAccountId(Long id);
     default Page<CashBox> findByFilters(Long id, LocalDate from, LocalDate to, Boolean isCompleted, String incomeExpenseItem, Long ownerId, Long accountNumber, IncomeExpenseType incomeExpenseType, Pageable pageable) {
         Specification<CashBox> spec = Specification.where(null);

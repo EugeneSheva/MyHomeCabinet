@@ -68,7 +68,7 @@
               </div>
               <div class="box-body">
                 <div class="row">
-                  <div class="col-xs-12 col-lg-4">
+                  <div class="col-xs-12 col-lg-12">
                     <table class="table table-bordered table-striped table-view">
                       <tbody>
                       <tr>
@@ -100,7 +100,7 @@
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Описание</td>
-                        <td style="overflow-wrap: anywhere; overflow: hidden; max-width:400px" th:text="${request.description}"></td>
+                        <td style="overflow-wrap: anywhere; overflow: hidden; max-width:400px" th:text="${request.description.equals('') ? '--отсутствует--' : request.description}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Добавлено</td>

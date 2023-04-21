@@ -95,6 +95,7 @@ public class InvoiceController {
         model.addAttribute("account_debt", apartmentAccountService.getSumOfAccountDebts());
 
         model.addAttribute("filter_form", form);
+        model.addAttribute("page", form.getPage());
         return "admin_panel/invoices/invoices";
     }
 
@@ -151,13 +152,18 @@ public class InvoiceController {
                                 @RequestParam String date,
                                 @RequestParam String[] services,
                                 @RequestParam String[] unit_prices,
-                                @RequestParam String[] unit_amounts) {
+                                @RequestParam String[] unit_amounts,
+                                Model model) {
         log.info(invoice.toString());
 
         validator.validate(invoice, bindingResult);
         if(bindingResult.hasErrors()) {
             log.info("Errors found");
             log.info(bindingResult.getAllErrors().toString());
+            model.addAttribute("id", invoiceService.getMaxInvoiceId()+1L);
+            model.addAttribute("meters",  meterDataService.findAllMeters());
+            model.addAttribute("current_date", LocalDate.now());
+
             return "admin_panel/invoices/invoice_card";
         }
         invoiceService.buildAndSaveInvoice(invoice, date, services, unit_prices, unit_amounts);
@@ -165,13 +171,17 @@ public class InvoiceController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateInvoice(@PathVariable long id, @ModelAttribute Invoice invoice, BindingResult bindingResult) {
+    public String updateInvoice(@PathVariable long id, @ModelAttribute Invoice invoice, BindingResult bindingResult, Model model) {
         log.info(invoice.toString());
 
         validator.validate(invoice, bindingResult);
         if(bindingResult.hasErrors()) {
             log.info("Errors found");
             log.info(bindingResult.getAllErrors().toString());
+            model.addAttribute("flat", invoice.getApartment());
+            model.addAttribute("id", id);
+            model.addAttribute("meters", meterDataService.findSingleMeterData(id, null));
+            model.addAttribute("current_date", LocalDate.now());
             return "admin_panel/invoices/invoice_card";
         }
         invoice.getComponents().forEach(comp -> comp.setInvoice(invoice));

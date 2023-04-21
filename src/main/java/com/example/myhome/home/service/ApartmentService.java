@@ -31,6 +31,8 @@ public class ApartmentService {
 
     public void deleteById(Long id) { apartmentRepository.deleteById(id); }
 
+    public Long getNumberById(Long id) {return apartmentRepository.findById(id).orElseThrow().getNumber();}
+
     public List<Apartment> findAll() { return apartmentRepository.findAll(); }
 
     public Page<Apartment> findAll(Pageable pageable) { return apartmentRepository.findAll(pageable); }

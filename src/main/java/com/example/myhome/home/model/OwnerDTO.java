@@ -2,6 +2,7 @@ package com.example.myhome.home.model;
 
 import com.example.myhome.util.UserStatus;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class OwnerDTO {
 
     private Long id;
@@ -31,6 +33,6 @@ public class OwnerDTO {
         this.first_name = first_name;
         this.last_name = last_name;
         this.fathers_name = fathers_name;
-        this.text = getFullName();
+        this.text = this.first_name + " " + this.fathers_name + " " + this.last_name;
     }
 }

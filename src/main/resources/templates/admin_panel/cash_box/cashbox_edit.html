@@ -11,12 +11,12 @@
     <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
     <link rel="stylesheet" th:href="@{/dist/css/website.css}">
     <!--    navigation card bootstrap-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <!-- Select2 -->
-    <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
-    <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -29,15 +29,15 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-<!--                                    <h1 class="m-0" th:text="(${cashBoxItem.id == null} ? (${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')} ? 'Новая приходная ведомость'  : 'Новая расходная ведомость'  ):-->
-<!--                                        (${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')} ? 'Приходная ведомость'  : 'Расходная ведомость'))"></h1>-->
+                                    <h1 class="m-0" th:text="(${cashBoxItem.id == null} ? (${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')} ? 'Новая приходная ведомость'  : 'Новая расходная ведомость'  ):
+                                        (${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')} ? 'Приходная ведомость'  : 'Расходная ведомость'))"></h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/}"><i class="fa fa-home"></i> Главная</a></li>
                             <li class="breadcrumb-item"><a th:href="@{/admin/cashbox/}">Касса</a></li>
-<!--                                          <li class="breadcrumb-item active" th:text="${cashBoxItem.id == null} ? (${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')} ?-->
-<!--                                           'Новая приходная ведомость'  : 'Новая расходная ведомость'  ): 'Редактирование'"></li>-->
+                                          <li class="breadcrumb-item active" th:text="${cashBoxItem.id == null} ? (${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')} ?
+                                           'Новая приходная ведомость'  : 'Новая расходная ведомость'  ): 'Редактирование'"></li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -49,19 +49,19 @@
         <section class="page_content">
             <form method="post" th:action="@{/admin/cashbox/save}" th:object="${cashBoxItem}">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <input type="hidden" id="apartment_exists" th:field="*{id}">
+                <input type="hidden" th:field="*{id}">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-3">
                             <span style="display:inline;">№ </span>
                             <input style="width: 90%; display:inline;"
-                                   th:field="*{number}"
+                                   th:value="${T(java.lang.String).format('%010d', nextId)}"
                                    disabled
                                    class="form-control">
                         </div>
                         <div class="col-md-3">
                             <span style="display:inline;">от </span>
-                            <input id="date" style="width: 90%; display:inline;" type="date" th:field="*{date}"
+                            <input id="date" style="width: 90%; display:inline-block;" type="date" th:field="*{date}"
                                    class="form-control">
                             <script th:if="${cashBoxItem.id == null}">
                                 document.getElementById('date').value = new Date().toISOString().substring(0, 10);
@@ -83,9 +83,9 @@
                                             <input type="hidden" id="incomeExpenseType" class="form-control" th:field="*{incomeExpenseType}" name="incomeExpenseType">
 
                                             <!--                      <div class="form-group">-->
-                                            <div th:if="${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')}">
+                                            <div th:if="${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')}" class="mb-2">
                                                 <label style="margin-top:6px ">Владелец квартиры</label>
-                                                <select class="form-control select2bs4" name="owner" id="owner_select" style="width: 100%;">
+                                                <select class="form-control" name="owner" id="owner_select" style="width: 100%;">
                                                     <option selected="" disabled="" value="">Choose...</option>
                                                     <option th:each="owner : ${owners}"
                                                             th:text="${owner.getFullName() + '(ID: ' + owner.id + ')'}"
@@ -95,9 +95,10 @@
                                                 </select>
                                                 <div style="color: #d80450" th:if="${#fields.hasErrors('owner')}" th:errors="*{owner}"></div>
                                             </div>
-                                            <div th:if="${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')}">
+                                            <div th:if="${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')}" class="mb-2">
                                                 <label>Лицевой счет</label>
-                                                <select class="form-control select2bs4" name="apartmentAccount" id="account_select" style="width: 100%;">
+                                                <input type="hidden" th:value="${cashBoxItem.owner == null}">
+                                                <select class="form-control" th:disabled="${cashBoxItem.owner == null}" name="apartmentAccount" id="account_select" style="width: 100%;">
                                                     <option selected="" disabled="" value="">Choose...</option>
                                                     <option th:each="account : ${accounts}"
                                                             th:text="${T(java.lang.String).format('%010d',account.id)}"
@@ -107,7 +108,7 @@
                                                 </select>
                                                 <div style="color: #d80450" th:if="${#fields.hasErrors('apartmentAccount')}" th:errors="*{apartmentAccount}"></div>
                                             </div>
-                                            <div th:if="${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')}" style="margin-top: 6px;">
+                                            <div th:if="${#strings.contains(cashBoxItem.incomeExpenseType,'INCOME')}" style="margin-top: 6px;" class="mb-2">
                                                 <label for="incomeExpenseItem" class="form-label">Статья</label>
                                                 <select class="form-select" id="incomeExpenseItem"
                                                         name="incomeExpenseItems">
@@ -185,17 +186,54 @@
 <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
 <!-- Select2 -->
-<script src="../../plugins/select2/js/select2.full.min.js"></script>
+<script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
 
 <script>
     $(function () {
         //Initialize Select2 Elements
-        $('.select2').select2()
+        $('#admin, #incomeExpenseItem, #account_select').select2({placeholder: 'Выберите...', minimumResultsForSearch: Infinity});
 
-        //Initialize Select2 Elements
-        $('.select2bs4').select2({
-            theme: 'bootstrap4'
-        })
+        let $owner_select = $("#owner_select");
+
+        $owner_select.select2({
+            ajax: {
+                url: '/admin/owners/get-all-owners',
+                data: function(params){
+                    console.log(params.page);
+                    return {
+                        search: params.term || "",
+                        page: params.page || 1
+                    }
+                },
+
+            },
+            placeholder: 'Выберите...'
+        });
+
+        let urlParams = new URL(window.location.href).searchParams;
+        let account_id = urlParams.get('account_id');
+        console.log(account_id);
+
+        if(account_id != null && !isNaN(account_id) && account_id != '') {
+            $.ajax({
+                type: 'GET',
+                url: '/admin/owners/get-account-owner/' + account_id
+                })
+              .then(function (data) {
+                    // create the option and append to Select2
+                    var option = new Option(data.text, data.id, true, true);
+                    $owner_select.append(option).trigger('change');
+
+                    // manually trigger the `select2:select` event
+                    $owner_select.trigger({
+                        type: 'select2:select',
+                        params: {
+                            data: data
+                        }
+               });
+            });
+        }
+
 
     })
 
@@ -203,11 +241,11 @@
         $("#owner_select").change(function(){
             let owner_id = $(this).val();
             $.get("/admin/owners/get-apartment-accounts", {owner_id:owner_id}, function(data){
-                alert("получил список лицевых счетов пользователя");
                 console.log(data);
 
                 let $account_select = $("#account_select");
                 $account_select.html('');
+                $account_select.prop('disabled', false);
 
                 for(const account_id of data) {
                     let option = document.createElement("option");

@@ -65,7 +65,7 @@ public class AccountController {
             model.addAttribute("sections", buildingService.findById(filterForm.getBuilding()).getSections());
 
         model.addAttribute("filter_form", filterForm);
-
+        model.addAttribute("page", filterForm.getPage());
 
         return "admin_panel/accounts/accounts";
     }
@@ -91,6 +91,7 @@ public class AccountController {
     @PostMapping("/create")
     public String createAccount(@ModelAttribute ApartmentAccount account,
                                 BindingResult bindingResult,
+                                Model model,
                                 RedirectAttributes redirectAttributes) {
 
         log.info(account.toString());
@@ -100,6 +101,8 @@ public class AccountController {
         if(bindingResult.hasErrors()) {
             log.info("Errors found");
             log.info(bindingResult.getAllErrors().toString());
+            model.addAttribute("buildings", buildingService.findAllDTO());
+            log.info(buildingService.findAllDTO().toString());
             return "admin_panel/accounts/account_card";
         } else {
             accountService.save(account);
@@ -119,11 +122,16 @@ public class AccountController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateAccount(@PathVariable long id, @ModelAttribute ApartmentAccount account, BindingResult bindingResult) {
+    public String updateAccount(@PathVariable long id,
+                                @ModelAttribute ApartmentAccount account,
+                                BindingResult bindingResult,
+                                Model model) {
         validator.validate(account, bindingResult);
         if(bindingResult.hasErrors()) {
-            log.info("errors found");
+            log.info("Errors found");
             log.info(bindingResult.getAllErrors().toString());
+            model.addAttribute("buildings", buildingService.findAllDTO());
+            log.info(buildingService.findAllDTO().toString());
             return "admin_panel/accounts/account_card";
         }
         accountService.save(account);

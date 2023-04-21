@@ -25,6 +25,9 @@ public class ApartmentAccount {
 
     private Boolean isActive;
 
+    @Transient
+    private Boolean changedState = false;
+
     @ToString.Exclude
     @JsonIgnore
     @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

@@ -68,6 +68,7 @@ public class MeterController {
         if(building != null) model.addAttribute("sections", buildingService.findById(building).getSections());
         model.addAttribute("services", serviceService.findAllServices());
         model.addAttribute("now", LocalDate.now());
+        model.addAttribute("page", page);
 
         FilterForm form = new FilterForm();
         form.setBuilding(building);
@@ -99,6 +100,8 @@ public class MeterController {
         model.addAttribute("flat_id", flat_id);
         model.addAttribute("service_id", service_id);
 
+        model.addAttribute("apart_number", apartmentService.getNumberById(flat_id));
+
         return "admin_panel/meters/meter_flat_data";
     }
 
@@ -120,8 +123,8 @@ public class MeterController {
     public String showCreateAdditionalMeterPage(@RequestParam long flat_id, @RequestParam long service_id, Model model) {
         List<MeterData> meterDataList = meterDataService.findSingleMeterData(flat_id, service_id);
         MeterData meter = (meterDataList.isEmpty()) ? new MeterData() : meterDataList.get(meterDataList.size()-1);
-        meter.setId(meterDataService.getMaxIdPlusOne());
-        model.addAttribute("id",meter.getId());
+        meter.setId(null);
+        model.addAttribute("id",meterDataService.getMaxIdPlusOne());
         model.addAttribute("meterData", meter);
         model.addAttribute("services", serviceService.findAllServices());
         model.addAttribute("buildings", buildingService.findAll());
@@ -135,57 +138,36 @@ public class MeterController {
         return "redirect:/admin/meters/data?flat_id="+savedMeter.getApartment().getId()+"&service_id="+savedMeter.getService().getId();
     }
 
-//    @PostMapping("/save-meter")
-//    public @ResponseBody List<String> saveMeter(@RequestParam(required = false) Long id,    // <-- если хочешь обновить существующий
-//                                          @RequestParam String building,
-//                                          @RequestParam String section,
-//                                          @RequestParam String apartment,
-//                                          @RequestParam String currentReadings,
-//                                          @RequestParam String status,
-//                                          @RequestParam String service,
-//                                          @RequestParam String date) {
-//
-//        MeterData meterToSave = meterDataService.saveMeterDataAJAX(id, building, section,
-//                apartment, currentReadings, status, service, date);
-//        log.info(meterToSave.toString());
-//        DataBinder binder = new DataBinder(meterToSave);
-//        binder.setValidator(validator);
-//        binder.validate();
-//        if(binder.getBindingResult().hasErrors()) {
-//            List<ObjectError> messages = binder.getBindingResult().getAllErrors();
-//            List<String> msgs =
-//                    messages.stream()
-//                            .map(ObjectError::getDefaultMessage)
-//                            .filter(Objects::nonNull)
-//                            .toList();
-//            log.info(msgs.toString());
-//            log.info(String.valueOf(msgs.size()));
-//            return msgs;
-//        }
-//        meterDataService.saveMeterData(meterToSave);
-//        return null;
-//    }
+    @PostMapping("/save-meter")
+    public @ResponseBody List<String> saveMeter(@RequestParam(required = false) Long id,    // <-- если хочешь обновить существующий
+                                          @RequestParam String building,
+                                          @RequestParam String section,
+                                          @RequestParam String apartment,
+                                          @RequestParam String currentReadings,
+                                          @RequestParam String status,
+                                          @RequestParam String service,
+                                          @RequestParam String date) {
 
-//    @PostMapping("/save-meter")
-//    public String saveMeter(@RequestBody MeterData meterData,
-//                          BindingResult bindingResult,
-//                          Model model) {
-//        log.info("Пришедший счетчик: ");
-//        log.info(meterData.toString());
-//        log.info("Валидируем");
-//        validator.validate(meterData, bindingResult);
-//        log.info("Валидация окончена");
-//        if(bindingResult.hasErrors()){
-//            log.info("Errors found");
-//            log.info(bindingResult.getAllErrors().toString());
-//            return "admin_panel/meters/meter_card";
-//        }
-//        log.info("Ошибок нет");
-//        MeterData savedMeter = meterDataService.saveMeterData(meterData);
-//        log.info("Сохранили");
-//
-//        return "redirect:/admin/meters/create-add?flat_id="+savedMeter.getApartment().getId()+"&service_id="+savedMeter.getService().getId();
-//    }
+        MeterData meterToSave = meterDataService.saveMeterDataAJAX(id, building, section,
+                apartment, currentReadings, status, service, date);
+        log.info(meterToSave.toString());
+        DataBinder binder = new DataBinder(meterToSave);
+        binder.setValidator(validator);
+        binder.validate();
+        if(binder.getBindingResult().hasErrors()) {
+            List<ObjectError> messages = binder.getBindingResult().getAllErrors();
+            List<String> msgs =
+                    messages.stream()
+                            .map(ObjectError::getDefaultMessage)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toList());
+            log.info(msgs.toString());
+            log.info(String.valueOf(msgs.size()));
+            return msgs;
+        }
+        meterDataService.saveMeterData(meterToSave);
+        return null;
+    }
 
     @PostMapping("/create")
     public String createMeter(@ModelAttribute MeterData meterData, BindingResult bindingResult, Model model) {

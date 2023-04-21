@@ -33,7 +33,7 @@ public class AccountValidator implements Validator {
             System.out.println("Error found(apartment)");
             errors.rejectValue(ApartmentAccount_.APARTMENT, "apartment.empty", "Укажите квартиру!");
         } else if(accountService.apartmentHasAccount(account.getApartment().getId())) {
-            errors.rejectValue(ApartmentAccount_.APARTMENT, "apartment.has_account", "К этой квартире уже привязан лицевой счёт!");
+            if(!account.getChangedState()) errors.rejectValue(ApartmentAccount_.APARTMENT, "apartment.has_account", "К этой квартире уже привязан лицевой счёт!");
         }
 //        else if(repository.findById(account.getApartment().getId()).orElseThrow().getAccount() != null) {
 //            errors.rejectValue(ApartmentAccount_.APARTMENT, "apartment.empty", "К этой квартире уже привязан лицевой счет!");

@@ -5,24 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>МойДом24</title>
     <link rel="stylesheet"
-          th:href="@{https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback}">
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
     <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/website.css}">
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
 
 
     <!-- navbar header/sidebar -->
-    <div th:insert="~{main-template :: loading}"></div>
     <nav th:insert="~{main-template :: header}"></nav>
     <aside th:insert="~{main-template :: sidebar}"></aside>
     <!-- /.navbar header/sidebar -->
 
     <!--content-header -->
     <div class="content-wrapper">
-        <div class="content-header">
+        <div class="content-header mb-3">
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
@@ -30,7 +30,7 @@
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/}"><i class="fa fa-home"></i> Главная</a></li>
                             <li class="breadcrumb-item"><a th:href="@{/admin/apartments/}">Квартиры</a></li>
                             <li class="breadcrumb-item active"
                                 th:text="${apartment.id != null? ('Квартира '+ apartment.number + ', ' + apartment.building.name): 'Новая квартира'}"></li>
@@ -48,49 +48,50 @@
                 <div class="card card card-primary card-outline" style="padding: 10px; border-top-color: #bbbbbb;">
                     <div class="form-group">
                         <a th:href="@{edit/{id}(id=${id})}" class="btn btn-primary btn-sm float-right" style="margin-left: 2px">Редактировать
-                            квартиру</a>
-                        <a th:href="@{/admin/apartments/NewInvoiceByApartment/{id}(id=${apartment.id})}" class="btn btn-secondary btn-sm float-right" style="margin-left: 2px">Оформить квитанцию</a>
-                        <a th:href="@{/admin/apartments/NewIncomesByApartment/{id}(id=${apartment.id})}" class="btn btn-secondary btn-sm float-right" style="margin-left: 2px">Принять платеж</a>
+                            квартиру <i class="fa fa-pencil visible-xs" aria-hidden="true"></i></a>
+                        <a th:href="@{/admin/apartments/NewInvoiceByApartment/{id}(id=${apartment.id})}" class="btn btn-default btn-sm float-right" style="margin-left: 2px">Оформить квитанцию</a>
+                        <a th:href="@{/admin/apartments/NewIncomesByApartment/{id}(id=${apartment.id})}" class="btn btn-default btn-sm float-right" style="margin-left: 2px">Принять платеж</a>
                         <h4 class="float-left">Просмотр квартиры</h4>
                     </div>
 
                     <div class="card">
                         <div class="card-body p-0">
-                            <table class="table table-striped" width="100%">
+                            <table class="table table-bordered table-striped" width="100%">
                                 <col style="width:40%">
                                 <col style="width:60%">
                                 <tbody>
                                 <tr>
-                                    <td>Лицевой счет</td>
+                                    <td><b>Лицевой счет</td>
                                     <td th:text="${T(java.lang.String).format('%010d',apartment.account.id)}">?</td>
                                 </tr>
                                 <tr>
-                                    <td>Номер квартиры</td>
+                                    <td><b>Номер квартиры</b></td>
                                     <td th:text="${apartment.number}">?</td>
                                 </tr>
                                 <tr>
-                                    <td>Площадь</td>
+                                    <td><b>Площадь</b></td>
                                     <td th:text="${apartment.square}">?</td>
                                 </tr>
                                 <tr>
-                                    <td>Дом</td>
+                                    <td><b>Дом</b></td>
                                     <td th:text="${apartment.building.name}"></td>
                                 </tr>
                                 <tr>
-                                    <td>Секция</td>
+                                    <td><b>Секция</b></td>
                                     <td th:text="${apartment.section}">?</td>
                                 </tr>
                                 <tr>
-                                    <td>Этаж</td>
+                                    <td><b>Этаж</b></td>
                                     <td th:text="${apartment.floor}">?</td>
                                 </tr>
                                 <tr>
-                                    <td>Владелец</td>
+                                    <td><b>Владелец</b></td>
                                     <td th:text="${apartment.owner.first_name}+ ' '+${apartment.owner.last_name}+' '+${apartment.owner.fathers_name}">?</td>
                                 </tr>
                                 <tr>
-                                    <td>Тариф</td>
-                                    <td th:text="${apartment.tariff.name}">?</td>
+                                    <td><b>Тариф</b></td>
+                                    <td th:if="${apartment.tariff != null}" th:text="${apartment.tariff.name}">?</td>
+                                    <td th:if="${apartment.tariff == null}">--отсутствует--</td>
                                 </tr>
                                 </tbody>
                             </table>

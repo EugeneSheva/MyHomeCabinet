@@ -39,8 +39,16 @@ public class OwnerService {
 
     public OwnerDTO findByIdDTO (Long id) {
         Owner owner = ownerRepository.findById(id).orElseThrow(() -> new NotFoundException());
-    return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()));}
+        return OwnerDTO.builder()
+                .id(owner.getId())
+                .first_name(owner.getFirst_name())
+                .last_name(owner.getLast_name())
+                .fullName(owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name())
+                .build();
+    }
+
     public Owner findById (Long id) { return ownerRepository.findById(id).orElseThrow(NotFoundException::new);}
+
     public Owner findByLogin(String login) {return ownerRepository.findByEmail(login).orElseThrow(NotFoundException::new);}
 
     public List<Owner> findAll() { return ownerRepository.findAll(); }
@@ -49,7 +57,13 @@ public class OwnerService {
     public List<OwnerDTO> findAllDTO() {
         List<OwnerDTO>ownerDTOList=new ArrayList<>();
         for (Owner owner : ownerRepository.findAll()) {
-            ownerDTOList.add(new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name())));
+            OwnerDTO newDTO = OwnerDTO.builder()
+                                                .id(owner.getId())
+                                                .first_name(owner.getFirst_name())
+                                                .last_name(owner.getLast_name())
+                                                .fullName(owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name())
+                                                .build();
+            ownerDTOList.add(newDTO);
         }
         return ownerDTOList;
     }
@@ -66,14 +80,20 @@ public class OwnerService {
                             owner.getFathers_name()
                         )
                 )
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public Page<OwnerDTO> findAllDTO(Pageable pageable) {
         List<OwnerDTO> ownerDTOList = new ArrayList<>();
         Page<Owner> ownerPage = ownerRepository.findAll(pageable);
         for (Owner owner : ownerPage) {
-            ownerDTOList.add(new OwnerDTO(owner.getId(), owner.getFirst_name(), owner.getLast_name(), owner.getFathers_name(), (owner.getFirst_name() + " " + owner.getLast_name() + " " + owner.getFathers_name())));
+            OwnerDTO newDTO = OwnerDTO.builder()
+                    .id(owner.getId())
+                    .first_name(owner.getFirst_name())
+                    .last_name(owner.getLast_name())
+                    .fullName(owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name())
+                    .build();
+            ownerDTOList.add(newDTO);
         }
         return new PageImpl<>(ownerDTOList, pageable, ownerPage.getTotalElements());
     }
@@ -83,7 +103,13 @@ public class OwnerService {
         List<OwnerDTO> ownerDTOList = new ArrayList<>();
         Page<Owner> ownerPage = ownerRepository.findByNameFragment(name, pageable);
         for (Owner owner : ownerPage) {
-            ownerDTOList.add(new OwnerDTO(owner.getId(), owner.getFirst_name(), owner.getLast_name(), owner.getFathers_name(), (owner.getFirst_name() + " " + owner.getLast_name() + " " + owner.getFathers_name())));
+            OwnerDTO newDTO = OwnerDTO.builder()
+                    .id(owner.getId())
+                    .first_name(owner.getFirst_name())
+                    .last_name(owner.getLast_name())
+                    .fullName(owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name())
+                    .build();
+            ownerDTOList.add(newDTO);
         }
         return new PageImpl<>(ownerDTOList, pageable, ownerPage.getTotalElements());
     }

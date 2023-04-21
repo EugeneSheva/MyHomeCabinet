@@ -91,5 +91,15 @@ public class Owner {
 
     public boolean isEnabled() {return this.enabled;}
 
+    public OwnerDTO transformIntoDTO() {
+        return OwnerDTO.builder()
+                .id(this.id)
+                .first_name(this.first_name)
+                .last_name(this.last_name)
+                .fathers_name(this.fathers_name)
+                .text(this.first_name + " " + this.last_name + " " + this.fathers_name)
+                .build();
+    }
+
 
 }

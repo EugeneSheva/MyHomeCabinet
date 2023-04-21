@@ -259,7 +259,8 @@ public class InvoiceService {
                         switch(param) {
                             case "%paymentDetails%": cell.setCellValue(paymentDetails); break;
                             case "%invoiceOwnerName%": cell.setCellValue(invoiceOwnerName); break;
-                            case "%invoiceTotalPrice%", "%total%": cell.setCellValue(invoiceTotalPrice); break;
+                            case "%invoiceTotalPrice%":
+                            case "%total%": cell.setCellValue(invoiceTotalPrice); break;
                             case "%invoiceAccountNumber%": cell.setCellValue(invoiceAccountNumber); break;
                             case "%invoiceAccountBalance%": cell.setCellValue(invoiceAccountBalance); break;
                             case "%invoiceID%": cell.setCellValue(invoiceID); break;

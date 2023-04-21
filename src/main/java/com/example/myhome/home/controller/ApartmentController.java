@@ -51,7 +51,7 @@ public class ApartmentController {
     private  final MeterDataService meterDataService;
 
 
-    @GetMapping("/")
+    @GetMapping
     public String getApartment(Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) {
         List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
         model.addAttribute("owners", ownerDTOList);

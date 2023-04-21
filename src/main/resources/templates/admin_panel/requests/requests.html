@@ -21,7 +21,7 @@
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-
+    <div th:if="${page == 1}" th:insert="~{main-template :: loading}"></div>
   <nav th:insert="~{main-template :: header}"></nav>
   <aside th:insert="~{main-template :: sidebar}"></aside>
 
@@ -62,6 +62,7 @@
                                     <a th:href="@{/admin/requests}" class="btn btn-default btn-sm">
                                         <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                                     </a>
+                                    <div id="page_button_container_top" class="mb-4" style="display: flex; justify-content: center;"></div>
                                 </div>
                             </div>
                             <div class="box-body table-responsive">

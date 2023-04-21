@@ -10,6 +10,7 @@
   <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
   <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
   <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+  <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
   <!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
   <!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
 
@@ -46,6 +47,7 @@
     <!-- Main content -->
     <section class="page_content">
         <input type="hidden" id="apartment_exists" th:value="*{apartment != null} ? 1 : 0">
+        <input type="hidden" th:field="*{changedState}">
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-3">
@@ -167,6 +169,7 @@
 <!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
+<script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
 
 <script th:inline="javascript">
   $(document).ready(function(){
@@ -275,13 +278,16 @@
 
         console.log(data);
 
+        $("#owner_name").html('<b>Владелец: </b>');
+        $("#owner_phone").html('<b>Телефон: </b>');
+
         let name = document.createElement("a");
         name.href = '/admin/owners/'+data.id;
-        name.text = data.first_name + ' ' + data.last_name;
+        name.text = data.fullName;
 
         let phone = document.createElement("a");
-        phone.href = 'tel:' + data.phone_number;
-        phone.text = data.phone_number;
+        phone.href = (data.phone_number != null) ? 'tel:' + data.phone_number : '#';
+        phone.text = (data.phone_number != null) ? data.phone_number : '--отсутствует--';
 
         $("#owner_name").append(name);
         $("#owner_phone").append(phone);
@@ -294,28 +300,53 @@
 
   $(document).ready(function(){
 
+        $("#isActive, #section_select, #apartment_select").select2({placeholder:'Выберите...', minimumResultsForSearch:Infinity});
+        $("#house_select").select2({
+            ajax: {
+                url: '/admin/buildings/get-buildings',
+                data: function(params){
+                    console.log(params.page);
+                    return {
+                        search: params.term || "",
+                        page: params.page || 1
+                    }
+                },
+            },
+            placeholder: 'Выберите...'
+        });
+
         if($("#apartment_select").val() != null) {
 
-          let apartment;
-          $.get("/admin/apartments/get-owner", {flat_id:$("#apartment_select").val()}, function(data){
-            owner = data;
-            console.log(data);
-            console.log(owner);
+          if($("#apartment_select").val() == 0 || $("#apartment_select").val() == '') {
+            $("#owner_name").html('<b>Владелец: </b>');
+            $("#owner_phone").html('<b>Телефон: </b>');
+          } else {
+            let apartment;
+            $.get("/admin/apartments/get-owner", {flat_id:$("#apartment_select").val()}, function(data){
+              owner = data;
+              console.log(data);
+              console.log(owner);
 
-            let owner_name = document.createElement("a");
-            owner_name.href = '/admin/owners/' + owner.id;
-            owner_name.innerText = owner.fullName;
+              $("#owner_name").html('<b>Владелец: </b>');
+              $("#owner_phone").html('<b>Телефон: </b>');
 
-            $("#owner_name").append(owner_name);
+              let name = document.createElement("a");
+              name.href = '/admin/owners/'+data.id;
+              name.text = data.fullName;
 
-            let owner_phone = document.createElement("a");
-            owner_phone.href = 'tel:' + owner.phone_number;
-            owner_phone.innerText = owner.phone_number;
+              let phone = document.createElement("a");
+              phone.href = (data.phone_number != null) ? 'tel:' + data.phone_number : '#';
+              phone.text = (data.phone_number != null) ? data.phone_number : '--отсутствует--';
 
-            $("#owner_phone").append(owner_phone);
-          });
-
+              $("#owner_name").append(name);
+              $("#owner_phone").append(phone);
+            })
+          }
         }
+
+        $("#isActive").change(function(){
+          $("#changedState").val(true);
+        });
     });
 </script>
 

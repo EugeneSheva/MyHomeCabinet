@@ -5,32 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>МойДом24</title>
     <link rel="stylesheet"
-          th:href="@{https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback}">
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
     <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/website.css}">
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
 
 
     <!-- navbar header/sidebar -->
-    <div th:insert="~{main-template :: loading}"></div>
     <nav th:insert="~{main-template :: header}"></nav>
     <aside th:insert="~{main-template :: sidebar}"></aside>
     <!-- /.navbar header/sidebar -->
 
     <!--content-header -->
     <div class="content-wrapper">
-        <div class="content-header">
+        <div class="content-header mb-3">
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0" th:text="'Дом '+${building.name}"></h1>
+                        <h1 class="m-0" th:text="${building.name}"></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a th:href="@{home}">Home</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/}"><i class="fa fa-home"></i> Главная</a></li>
                             <li class="breadcrumb-item"><a th:href="@{/admin/buildings/}">Дома</a></li>
                             <li class="breadcrumb-item active" th:text="'Дом '+${building.name}"></li>
                         </ol>
@@ -59,26 +59,28 @@
                                         <col style="width:50%">
                                         <tbody>
                                         <tr>
-                                            <td>Название</td>
+                                            <td><b>Название</b></td>
                                             <td th:text="${building.name}">?</td>
                                         </tr>
                                         <tr>
-                                            <td>Адрес</td>
+                                            <td><b>Адрес</b></td>
                                             <td th:text="${building.address}">?</td>
                                         </tr>
                                         <tr>
-                                            <td>Секций</td>
+                                            <td><b>Секций</b></td>
                                             <td th:text="${building.sections.size()}">?</td>
                                         </tr>
                                         <tr>
-                                            <td>Этажей</td>
+                                            <td><b>Этажей</b></td>
                                             <td th:text="${building.floors.size()}">?</td>
                                         </tr>
                                         <tr>
-                                            <td>Пользователи</td>
+                                            <td><b>Пользователи</b></td>
                                             <td>
-                                                <div th:each="admin : ${building.getAdmins()}"><a th:text="${admin.role+' '+admin.first_name+' '+admin.last_name}"
-                                                        ></a></div>
+                                                <div th:each="admin : ${building.getAdmins()}">
+                                                    <a th:text="${admin.role+' '+admin.first_name+' '+admin.last_name}"></a>
+                                                </div>
+                                                <span th:if="${building.getAdmins().size() == 0}">--отсутствуют--</span>
 <!--                                                th:href="@{users/{id}(id=${admin.id})}"-->
                                             </td>
                                         </tr>
