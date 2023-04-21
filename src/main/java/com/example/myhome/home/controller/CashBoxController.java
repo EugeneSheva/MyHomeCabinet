@@ -52,7 +52,7 @@ public class CashBoxController {
     public String getCashBox(Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) {
         Page<CashBox> cashBoxList = cashBoxService.findAll(pageable);
         model.addAttribute("cashBoxList", cashBoxList);
-        model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount());
+        model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount().orElse(0.0));
         model.addAttribute("accountBalance", accountService.getSumOfAccountBalances());
         model.addAttribute("sumDebt", accountService.getSumOfAccountDebts());
         model.addAttribute("filterForm", new FilterForm());
@@ -82,7 +82,7 @@ public class CashBoxController {
         // -- перегоняю List в Page для того , чтобы в html-страничке ничего не ломалось --
 
         model.addAttribute("cashBoxList", cashBoxPage);
-        model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount());
+        model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount().orElse(0.0));
         model.addAttribute("accountBalance", accountService.getSumOfAccountBalances());
         model.addAttribute("sumDebt", accountService.getSumOfAccountDebts());
         model.addAttribute("filterForm", new FilterForm());
@@ -165,7 +165,6 @@ public class CashBoxController {
             System.out.println("if block, id is not null");
             ApartmentAccount account = apartmentAccountService.findById(account_id);
             cashBox.setApartmentAccount(account);
-            cashBox.setOwner(account.getOwner());
             System.out.println(account.getApartment().getOwner().toString());
         }
 
@@ -299,14 +298,12 @@ public class CashBoxController {
             if (cashbox.getIncomeExpenseType() == IncomeExpenseType.EXPENSE) {
                 if (amount > 0) cashbox.setAmount(amount * (-1));
             } else {
-                if (id>0) cashbox.setId(id);
                 cashbox.setOwner(ownerService.findById(ownerId));
                 ApartmentAccount account = apartmentAccountService.findById(accountId);
                 account.getTransactions().add(cashbox);
                 account.addToBalance(cashbox.getAmount());
                 cashbox.setApartmentAccount(account);
             }
-            if (id>0) cashbox.setId(id);
             cashbox.setIncomeExpenseItems(incomeExpenseItemService.findById(incomeExpenseItemId));
             cashbox.setManager(adminService.findAdminById(adminId));
             cashBoxService.save(cashbox);

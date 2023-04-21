@@ -20,7 +20,7 @@ public class CashBoxService {
     private final CashBoxRepository cashBoxRepository;
 
 
-    public CashBox findById (Long id) { return cashBoxRepository.findById(id).orElseThrow(() -> new NotFoundException());}
+    public CashBox findById (Long id) { return cashBoxRepository.findById(id).orElseThrow(NotFoundException::new);}
 
     public List<CashBox> findAll() { return cashBoxRepository.findAll(); }
     public Page<CashBox> findAll(Pageable pageable) { return cashBoxRepository.findAll(pageable); }
@@ -28,9 +28,9 @@ public class CashBoxService {
 
     public void deleteById(Long id) { cashBoxRepository.deleteById(id); }
 
-    public Long getMaxId() {return cashBoxRepository.getMaxId();}
+    public Long getMaxId() {return cashBoxRepository.getMaxId().orElse(0L);}
 
-    public Double calculateBalance() {return cashBoxRepository.sumAmount();}
+    public Double calculateBalance() {return cashBoxRepository.sumAmount().orElse(0.0);}
 
     public List<Double> getListSumIncomeByMonth() {
         List<Double>doubleList = new ArrayList<>();

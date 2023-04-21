@@ -7,6 +7,7 @@ import com.example.myhome.home.repository.InvoiceRepository;
 import com.example.myhome.home.repository.InvoiceTemplateRepository;
 import com.example.myhome.home.repository.PaymentDetailsRepository;
 import com.example.myhome.home.repository.specifications.InvoiceSpecifications;
+import com.example.myhome.util.ExcelHelper;
 import lombok.extern.java.Log;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -47,6 +48,8 @@ public class InvoiceService {
     @Autowired private ApartmentService apartmentService;
     @Autowired private OwnerService ownerService;
     @Autowired private EmailService emailService;
+
+    @Autowired private ExcelHelper excelHelper;
 
     private static final String FILE_PATH = "C:\\Users\\OneSmiLe\\IdeaProjects\\MyHome\\src\\main\\resources\\static\\files\\";
 
@@ -253,56 +256,8 @@ public class InvoiceService {
 
     public String turnInvoiceIntoExcel(Invoice invoice, InvoiceTemplate template) throws IOException {
 
-        log.info(invoice.toString());
+        return excelHelper.turnInvoiceIntoExcel(invoice, template);
 
-        PaymentDetails pd = paymentDetailsRepository.findById(1L).orElse(null);
-        String paymentDetails = (pd != null) ? pd.getName() + ", " + pd.getDescription() : "N/A";
-        String invoiceOwnerName = (invoice.getApartment() != null && invoice.getApartment().getOwner() != null) ?
-                invoice.getApartment().getOwner().getFullName() : "N/A";
-        String invoiceTotalPrice = String.valueOf(invoice.getTotal_price());
-        String invoiceAccountNumber = (invoice.getAccount() != null) ? String.format("%010d", invoice.getAccount().getId()) : "N/A";
-        String invoiceAccountBalance = (invoice.getAccount() != null) ? String.valueOf(invoice.getAccount().getBalance()) : "N/A";
-        String invoiceID = String.valueOf(invoice.getId());
-        String invoiceDate = invoice.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-        String invoiceMonth = invoice.getDate().format(DateTimeFormatter.ofPattern("MMMM yyyy"));
-
-        try(InputStream in = new FileInputStream(FILE_PATH+template.getFile())){
-            Workbook workbook = WorkbookFactory.create(in);
-            log.info(workbook.toString());
-            Sheet sheet = workbook.getSheetAt(0);
-            log.info(sheet.getSheetName());
-            log.info(sheet.toString());
-
-            for(Row row : sheet) {
-                for(Cell cell : row) {
-                    if(cell.getCellType().equals(CellType.STRING)) {
-                        String param = cell.getStringCellValue();
-                        switch(param) {
-                            case "%paymentDetails%": cell.setCellValue(paymentDetails); break;
-                            case "%invoiceOwnerName%": cell.setCellValue(invoiceOwnerName); break;
-                            case "%invoiceTotalPrice%":
-                            case "%total%": cell.setCellValue(invoiceTotalPrice); break;
-                            case "%invoiceAccountNumber%": cell.setCellValue(invoiceAccountNumber); break;
-                            case "%invoiceAccountBalance%": cell.setCellValue(invoiceAccountBalance); break;
-                            case "%invoiceID%": cell.setCellValue(invoiceID); break;
-                            case "%invoiceDate%": cell.setCellValue(invoiceDate); break;
-                            case "%invoiceMonth%": cell.setCellValue(invoiceMonth); break;
-//                            case "%services%": insertService(invoice, sheet, row); break;
-                            default:
-                        }
-                    }
-                }
-            }
-            try (OutputStream fileOut = new FileOutputStream(FILE_PATH+template.getFile())){
-                workbook.write(fileOut);
-            }
-            log.info("Workbook closed");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        log.info("try block over");
-        return template.getFile();
     }
 
     public void insertService(Invoice invoice, Sheet sheet, Row row) {

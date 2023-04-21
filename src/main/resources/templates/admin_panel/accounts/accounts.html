@@ -306,13 +306,15 @@
     }
 
     //last button
-    btn = document.createElement("a");
-    btn.classList.add("btn", "btn-default");
-    if(pageNumber == pages_count) btn.classList.add("selected");
-    url.searchParams.delete('page'); url.searchParams.append('page', pages_count);
-    btn.href = url.toString();
-    btn.innerText = pages_count;
-    page_buttons_container.appendChild(btn);
+    if(pages_count > 1) {
+        btn = document.createElement("a");
+        btn.classList.add("btn", "btn-default");
+        if(pageNumber == pages_count) btn.classList.add("selected");
+        url.searchParams.delete('page'); url.searchParams.append('page', pages_count);
+        btn.href = url.toString();
+        btn.innerText = pages_count;
+        page_buttons_container.appendChild(btn);
+    }
 
     let fwd_btn = document.createElement("a");
     fwd_btn.classList.add("btn");

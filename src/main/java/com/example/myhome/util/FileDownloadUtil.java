@@ -22,6 +22,18 @@ public class FileDownloadUtil {
     private FileDownloadUtil() {
     }
 
+    public static void downloadInvoice(HttpServletResponse response, String fileName) throws IOException {
+
+        downloadFile(response, fileName);
+
+        File file = new File(FILE_PATH + fileName);
+        if(file.exists()) {
+            boolean delete = file.delete();
+            if(delete) log.info("File successfully deleted");
+            else log.info("Something went wrong with deletion");
+        }
+    }
+
     public static void downloadFile(HttpServletResponse response, String fileName) throws IOException {
         File file = new File(FILE_PATH + fileName);
         if(file.exists()) {

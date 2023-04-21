@@ -240,6 +240,10 @@
         if(datetime.split(' to ').length > 1) checkFilters();
     });
 
+    $("#datetime").prop('readonly', false);
+    document.getElementById('datetime').style.cursor = 'pointer';
+    document.getElementById('datetime').style.caretColor = 'transparent';
+
   })
 </script>
 

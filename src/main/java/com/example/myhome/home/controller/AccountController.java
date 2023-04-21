@@ -82,7 +82,7 @@ public class AccountController {
     public String showCreateAccountPage(Model model) {
         model.addAttribute("apartmentAccount", new ApartmentAccount());
         model.addAttribute("buildings", buildingService.findAll());
-        model.addAttribute("id", accountService.getMaxId());
+        model.addAttribute("id", accountService.getMaxId()+1);
 
         return "admin_panel/accounts/account_card";
     }
