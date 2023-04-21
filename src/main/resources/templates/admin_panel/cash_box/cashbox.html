@@ -90,27 +90,27 @@
                                         <tbody>
                                         <tr>
                                             <td><b>Владелец квартиры</b></td>
-                                            <td th:text="${cashBoxItem.owner != null} ? ${cashBoxItem.owner.first_name}+' '+${cashBoxItem.owner.last_name}+' '+${cashBoxItem.owner.fathers_name} : 'не указано'"></td>
+                                            <td th:text="${cashBoxItem.owner != null} ? ${cashBoxItem.owner.first_name}+' '+${cashBoxItem.owner.last_name}+' '+${cashBoxItem.owner.fathers_name} : '--отсутствует--'"></td>
                                         </tr>
                                         <tr>
                                             <td><b>Лицевой счет</b></td>
-                                            <td th:text="${cashBoxItem.apartmentAccount != null} ? ${cashBoxItem.apartmentAccount.id} : 'не указано'">?</td>
+                                            <td th:text="${cashBoxItem.apartmentAccount != null} ? ${cashBoxItem.apartmentAccount.id} : '--отсутствует--'">?</td>
                                         </tr>
                                         <tr>
                                             <td><b>Статья</b></td>
-                                            <td th:text="${cashBoxItem.incomeExpenseItems.name}">?</td>
+                                            <td th:text="${cashBoxItem.incomeExpenseItems != null} ? ${cashBoxItem.incomeExpenseItems.name} : '--отсутствует--'">?</td>
                                         </tr>
-                                        <tr>
-                                            <td><b>Квитанция</b></td>
-                                            <td>не указано</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Услуга</b></td>
-                                            <td></td>
-                                        </tr>
+<!--                                        <tr>-->
+<!--                                            <td><b>Квитанция</b></td>-->
+<!--                                            <td>не указано</td>-->
+<!--                                        </tr>-->
+<!--                                        <tr>-->
+<!--                                            <td><b>Услуга</b></td>-->
+<!--                                            <td></td>-->
+<!--                                        </tr>-->
                                         <tr>
                                             <td><b>Менеджер</b></td>
-                                            <td th:text="${cashBoxItem.manager.first_name}+' '+${cashBoxItem.manager.last_name}"></td>
+                                            <td th:text="${cashBoxItem.incomeExpenseItems != null} ? ${cashBoxItem.manager.first_name}+' '+${cashBoxItem.manager.last_name} : '--отсутствует--'"></td>
                                         </tr>
                                         <tr>
                                             <td><b>Сумма</b></td>

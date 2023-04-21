@@ -209,7 +209,7 @@
                         <tr th:each="component, iter : *{components}">
                           <input type="hidden" th:field="*{components[__${iter.index}__].id}">
                           <td>
-                            <select class="selects services" onchange="setUnit(this)" th:field="*{components[__${iter.index}__].service.id}">
+                            <select class="selects services" onchange="setUnit(this)" th:field="*{components[__${iter.index}__].service.id}"  name="services">
                               <option value="0">Выберите...</option>
                               <option th:each="service : ${services}"
                                       th:value="${service.id}"
@@ -220,10 +220,10 @@
                             <input style="width:100%;" class="unit" th:field="*{components[__${iter.index}__].service.unit.name}" disabled type="text">
                           </td>
                           <td>
-                            <input style="width:100%;" class="unit_prices" th:field="*{components[__${iter.index}__].unit_price}" onchange="count(this)" type="number" step="0.1">
+                            <input style="width:100%;" class="unit_prices" th:field="*{components[__${iter.index}__].unit_price}" name="unit_prices"  onchange="count(this)"  type="number" step="0.1">
                           </td>
                           <td>
-                            <input style="width:100%;" class="unit_amounts" th:field="*{components[__${iter.index}__].unit_amount}" onchange="count(this)" name="unit_amounts" value="0" type="number" step="0.1">
+                            <input style="width:100%;" class="unit_amounts"  th:field="*{components[__${iter.index}__].unit_amount}" name="unit_amounts" onchange="count(this)" value="0" type="number" step="0.1">
                           </td>
                           <td>
                             <input style="width:100%;" class="total_price" th:value="*{components[__${iter.index}__].unit_price * components[__${iter.index}__].unit_amount}" type="text" disabled>
@@ -460,6 +460,10 @@
 
     $(document).ready(function(){
 
+        $(".unit_prices").attr("name", "unit_prices");
+        $(".unit_amounts").attr("name", "unit_amounts");
+        $(".services").attr("name", "services");
+
         $("#house_select").select2({
             ajax: {
                 url: '/admin/buildings/get-buildings',
@@ -486,17 +490,20 @@
             console.log(data);
             console.log(owner);
 
-            let owner_name = document.createElement("a");
-            owner_name.href = '/admin/owners/' + owner.id;
-            owner_name.innerText = owner.fullName;
+            $("#owner_name").html('<b>Владелец: </b>');
+            $("#owner_phone").html('<b>Телефон: </b>');
 
-            $("#owner_name").append(owner_name);
+            let name = document.createElement("a");
+            name.href = '/admin/owners/'+data.id;
+            name.text = data.fullName;
 
-            let owner_phone = document.createElement("a");
-            owner_phone.href = 'tel:' + owner.phone_number;
-            owner_phone.innerText = owner.phone_number;
+            let phone = document.createElement("a");
+            phone.href = (data.phone_number != null) ? 'tel:' + data.phone_number : '#';
+            phone.text = (data.phone_number != null) ? data.phone_number : '--отсутствует--';
 
-            $("#owner_phone").append(owner_phone);
+            $("#owner_name").append(name);
+            $("#owner_phone").append(phone);
+
           });
 
         }

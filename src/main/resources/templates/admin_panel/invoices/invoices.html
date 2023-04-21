@@ -202,7 +202,10 @@
                           <td th:text="${#temporals.format(invoice.date, 'MMM yyyy')}"></td>
                           <td th:text="${invoice.apartment.number} + ', ' + ${invoice.apartment.building.name}"></td>
                           <td th:text="${invoice.apartment.owner.getFullName()}"></td>
-                          <td><span th:text="${invoice.completed} ? 'Проведена' : 'Не проведена'"></span></td>
+                          <td>
+                              <small th:class="'label ' + ${invoice.completed ? 'label-success' : 'label-danger'}"
+                                     th:text="${invoice.completed} ? 'Проведена' : 'Не проведена'"></small>
+                          </td>
                           <td><span th:text="${invoice.total_price}"></span></td>
                           <td>
                               <div class="btn-group pull-right">
@@ -213,7 +216,7 @@
                               </div>
                           </td>
                       </tr>
-                  <tr th:if="${invoices.size() == 0}">
+                  <tr th:if="${invoices.getTotalElements    () == 0}">
                       <td colspan="10">Ничего не найдено...</td>
                   </tr>
                   </tbody>
@@ -257,9 +260,9 @@
 
 <script>
     let current_page_number = 0;
-    let invoices_amount = [[${amount}]];
+    let invoices_amount = [[${invoices.getTotalElements()}]];
     const invoices_on_page = 5;
-    const pages_count = Math.floor(invoices_amount / invoices_on_page);
+    const pages_count = [[${invoices.getTotalPages()}]];
 
     let page_buttons_container = document.getElementById("page_button_container");
 
@@ -410,6 +413,14 @@
             console.log(datetime.split(' to '));
             if(datetime.split(' to ').length > 1) checkFilters();
         });
+
+        $("#datetime").prop('readonly', false);
+        document.getElementById('datetime').style.cursor = 'pointer';
+        document.getElementById('datetime').style.caretColor = 'transparent';
+
+        $("#month").prop('readonly', false);
+        document.getElementById('month').style.cursor = 'pointer';
+        document.getElementById('month').style.caretColor = 'transparent';
 
     });
 

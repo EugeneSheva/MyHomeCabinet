@@ -103,27 +103,39 @@
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Владелец</td>
-                        <td ><a th:href="@{/admin/owners/{id}(id=${invoice.apartment.owner.id})}"
-                                th:text="${invoice.apartment.owner.getFullName()}"></a></td>
+                        <td th:if="${invoice.apartment.owner != null}"><a th:href="@{/admin/owners/{id}(id=${invoice.apartment.owner.id})}"
+                            th:text="${invoice.apartment.owner.getFullName()}"></a></td>
+                        <td th:if="${invoice.apartment.owner == null}"
+                            th:text="--отсутствует--"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Лицевой счёт</td>
-                        <td ><a th:if="${invoice.apartment.account != null}"
-                                th:href="@{/admin/accounts/{id}(id=${invoice.apartment.account.id})}"
-                                th:text="${T(java.lang.String).format('%010d', invoice.apartment.account.id)}"></a>
+                        <td th:if="${invoice.apartment.account != null}">
+                          <a  th:href="@{/admin/accounts/{id}(id=${invoice.apartment.account.id})}"
+                              th:text="${T(java.lang.String).format('%010d', invoice.apartment.account.id)}"></a>
                         </td>
+                        <td th:if="${invoice.apartment.account == null}"
+                            th:text="--отсутствует--"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Телефон</td>
-                        <td th:text="${invoice.apartment.owner.phone_number}"></td>
+                        <td th:text="${invoice.apartment.owner.phone_number == null || invoice.apartment.owner.phone_number.isEmpty()} ? '--не указан--' : ${invoice.apartment.owner.phone_number}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Дом</td>
-                        <td><a th:href="@{/admin/buildings/{id}(id=${invoice.apartment.building.id})}" th:text="${invoice.apartment.building.name}"></a></td>
+                        <td th:if="${invoice.apartment.building != null}">
+                          <a th:href="@{/admin/buildings/{id}(id=${invoice.apartment.building.id})}"
+                             th:text="${invoice.apartment.building.name}"></a>
+                        </td>
+                        <td th:if="${invoice.apartment.building == null}"
+                            th:text="--не указан--"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Секция</td>
-                        <td th:text="${invoice.apartment.section}"></td>
+                        <td th:if="${invoice.apartment.building != null}"
+                            th:text="${invoice.apartment.section}"></td>
+                        <td th:if="${invoice.apartment.building == null}"
+                            th:text="--не указана--"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Квартира</td>
@@ -131,9 +143,12 @@
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Тариф</td>
-                        <td><a th:if="${invoice.tariff != null}"
-                               th:href="@{/admin/tariffs/{id}(id=${invoice.tariff.id})}"
-                               th:text="${invoice.tariff.name}"></a></td>
+                        <td th:if="${invoice.tariff != null}">
+                          <a th:href="@{/admin/tariffs/{id}(id=${invoice.tariff.id})}"
+                             th:text="${invoice.tariff.name}"></a>
+                        </td>
+                        <td th:if="${invoice.tariff == null}"
+                            th:text="--отсутствует--"></td>
                       </tr>
                       </tbody>
                     </table>

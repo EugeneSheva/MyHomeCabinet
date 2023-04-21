@@ -277,6 +277,9 @@
                                     </div>
                                 </td>
                             </tr>
+                            <tr th:if="${cashBoxList.totalElements == 0}">
+                                <td colspan="9">Ничего не найдено</td>
+                            </tr>
                             </tbody>
                             <tfoot>
                             </tfoot>

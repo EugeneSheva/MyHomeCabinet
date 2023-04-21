@@ -22,7 +22,6 @@ public class CustomAdminDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        log.info("Trying to load admin");
         Optional<Admin> admin = adminRepository.findByEmail(login);
         if(admin.isEmpty()) {
             throw new UsernameNotFoundException("No admin found with the given email");

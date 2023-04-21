@@ -401,6 +401,10 @@
         let clone = document.getElementById("page_button_container").cloneNode(true);
         $(".box-header").append(clone);
 
+        $("#datetime").prop('readonly', false);
+        document.getElementById('datetime').style.cursor = 'pointer';
+        document.getElementById('datetime').style.caretColor = 'transparent';
+
     });
 </script>
 

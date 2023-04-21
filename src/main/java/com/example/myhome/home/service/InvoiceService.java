@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -64,7 +65,7 @@ public class InvoiceService {
         return invoiceRepository.findAll(specification);
     }
 
-    public List<Invoice> findAllBySpecificationAndPage(FilterForm filters, Integer page, Integer page_size) {
+    public Page<Invoice> findAllBySpecificationAndPage(FilterForm filters, Integer page, Integer page_size) {
         log.info("Filters found!");
         log.info(filters.toString());
 
@@ -72,7 +73,7 @@ public class InvoiceService {
 
         Pageable pageable = PageRequest.of(page, page_size);
 
-        return invoiceRepository.findAll(specification, pageable).toList();
+        return invoiceRepository.findAll(specification, pageable);
     }
 
     public Long count() {return invoiceRepository.count();}
@@ -159,17 +160,22 @@ public class InvoiceService {
 
     // ====
 
-    public Invoice buildAndSaveInvoice(Invoice invoice,
-                                       String date,
-                                       String[] services,
-                                       String[] unit_prices,
-                                       String[] unit_amounts) {
+    public Invoice buildInvoice(Invoice invoice,
+                               String date,
+                               String[] services,
+                               String[] unit_prices,
+                               String[] unit_amounts) {
+        log.info("Building invoice!");
         invoice.setDate(LocalDate.parse(date));
-        Invoice savedInvoice = saveInvoice(invoice);
+        log.info("Set date " + LocalDate.parse(date));
+        log.info("Adding components");
+        invoice = buildComponents(invoice, services, unit_prices, unit_amounts);
+        log.info("Built invoice!");
+        log.info(invoice.toString());
 
-        savedInvoice = buildComponents(savedInvoice, services, unit_prices, unit_amounts);
+//        savedInvoice = buildComponents(savedInvoice, services, unit_prices, unit_amounts);
 
-        return saveInvoice(savedInvoice);
+        return invoice;
     }
 
     public Invoice buildComponents(Invoice invoice,
@@ -177,8 +183,22 @@ public class InvoiceService {
                                    String[] unit_prices,
                                    String[] unit_amounts) {
 
+        log.info("Clearing old components list, if present");
+        invoice.getComponents().clear();
+        log.info("Old components cleared");
 
         for (int i = 1; i < services.length; i++) {
+
+            //checking component integrity
+            if(services[i].isEmpty() || unit_amounts[i].isEmpty() || unit_prices[i].isEmpty()) continue;
+            try {
+                Double.parseDouble(unit_prices[i]);
+                Double.parseDouble(unit_amounts[i]);
+            } catch (NumberFormatException e) {
+                log.info("Incorrect component found, skipping");
+                continue;
+            }
+
             InvoiceComponents component = new InvoiceComponents();
             component.setInvoice(invoice);
             component.setService(serviceService.findServiceById(Long.parseLong(services[i])));
@@ -186,9 +206,10 @@ public class InvoiceService {
             component.setUnit_amount(Double.parseDouble(unit_amounts[i]));
             invoice.getComponents().add(component);
         }
+        log.info("New components set!");
         Double total_price = invoice.getComponents().stream().map(InvoiceComponents::getTotalPrice).reduce(Double::sum).orElse(0.0);
         invoice.setTotal_price(total_price);
-
+        log.info("Total price of an invoice: " + total_price);
         return invoice;
     }
 

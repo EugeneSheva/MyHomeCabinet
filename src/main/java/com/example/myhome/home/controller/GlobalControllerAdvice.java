@@ -55,11 +55,8 @@ public class GlobalControllerAdvice {
 
         Object principal = auth.getPrincipal();
         if(principal instanceof CustomUserDetails) {
-            log.info("User details found!");
             CustomUserDetails details = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Owner owner = ownerService.fromCustomUserDetailsToOwner(details);
-            log.info(details.toString());
-            log.info(owner.toString());
             model.addAttribute("auth_owner", owner);
         }
         else {
@@ -82,11 +79,8 @@ public class GlobalControllerAdvice {
 
         Object principal = auth.getPrincipal();
         if(principal instanceof CustomAdminDetails) {
-            log.info("Admin details found!");
             CustomAdminDetails details = (CustomAdminDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Admin admin = adminService.fromCustomAdminDetailsToAdmin(details);
-            log.info(details.toString());
-            log.info(admin.toString());
             model.addAttribute("auth_admin", admin);
         }
         else {

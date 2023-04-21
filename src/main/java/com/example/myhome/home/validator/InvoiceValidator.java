@@ -36,8 +36,8 @@ public class InvoiceValidator implements Validator {
         } else if(invoice.getDateFrom().isAfter(invoice.getDateTo())) {
             e.rejectValue(Invoice_.DATE_TO, "date_to.incorrect", "Неправильный период квитанции!");
         }
-//        if(invoice.getComponents() == null || invoice.getComponents().size() == 0) {
-//            e.rejectValue(Invoice_.COMPONENTS, "components.empty", "Нельзя создать пустую услугу!");
-//        }
+        if(invoice.getComponents() == null || invoice.getComponents().size() == 0) {
+            e.rejectValue(Invoice_.COMPONENTS, "components.empty", "Нельзя создать пустую квитанцию!");
+        }
     }
 }

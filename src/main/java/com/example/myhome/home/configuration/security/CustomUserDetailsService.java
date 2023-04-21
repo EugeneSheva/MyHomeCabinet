@@ -21,7 +21,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        log.info("Trying to load owner");
         Optional<Owner> owner = ownerRepository.findByEmail(login);
         if(owner.isEmpty()) {
             throw new UsernameNotFoundException("No user found with the given email");

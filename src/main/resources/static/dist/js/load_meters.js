@@ -103,30 +103,26 @@ $(document).ready(function(){
       // Получение данных о владельце
       $.get('/admin/apartments/get-owner', {flat_id:flat_id}, function(data){
 
-        alert('получил владельцa');
         console.log(data);
 
-        $("#owner_name").empty();
-        $("#owner_phone").empty();
+        $("#owner_name").html('<b>Владелец: </b>');
+        $("#owner_phone").html('<b>Телефон: </b>');
 
         let name = document.createElement("a");
         name.href = '/admin/owners/'+data.id;
-        name.text = data.first_name + ' ' + data.last_name;
+        name.text = data.fullName;
 
         let phone = document.createElement("a");
-        phone.href = 'tel:' + data.phone_number;
-        phone.text = data.phone_number;
+        phone.href = (data.phone_number != null) ? 'tel:' + data.phone_number : '#';
+        phone.text = (data.phone_number != null) ? data.phone_number : '--отсутствует--';
 
-        $("#owner_name").append('<b>Владелец: </b>');
         $("#owner_name").append(name);
-        $("#owner_phone").append('<b>Телефон: </b>');
         $("#owner_phone").append(phone);
 
       });
 
       // Получение номера лицевого счета
       $.get('/admin/accounts/get-flat-account',{flat_id:flat_id}, function(data){
-          alert('получил лицевой счёт');
           console.log(data);
 
           document.getElementById("account").value = data;
@@ -136,7 +132,6 @@ $(document).ready(function(){
       // Получение счетчиков для выбранной квартиры
       $.get('/admin/apartments/get-meters', {flat_id:flat_id}, function(data){
 
-        alert('получил счётчики');
         console.log(data);
 
         let $table_body = $('#meter_table tbody');

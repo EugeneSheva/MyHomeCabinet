@@ -16,6 +16,7 @@ import lombok.extern.java.Log;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -80,10 +81,9 @@ public class InvoiceController {
 
         if(form.getPage() == null) return "redirect:/admin/invoices?page=1";
 
-        List<Invoice> invoices;
+        Page<Invoice> invoices;
 
-        if(!form.filtersPresent()) invoices = invoiceService.findAllInvoices();
-        else invoices = invoiceService.findAllBySpecificationAndPage(form, form.getPage()-1, 5);
+        invoices = invoiceService.findAllBySpecificationAndPage(form, form.getPage()-1, 5);
 
         log.info(invoices.toString());
 
@@ -141,7 +141,7 @@ public class InvoiceController {
         model.addAttribute("flat", invoice.getApartment());
         model.addAttribute("id", id);
         model.addAttribute("invoice", invoice);
-        model.addAttribute("meters", meterDataService.findSingleMeterData(id, null));
+        model.addAttribute("meters", meterDataService.findSingleMeterData(invoice.getApartment().getId(), null));
         model.addAttribute("current_date", LocalDate.now());
         return "admin_panel/invoices/invoice_card";
     }
@@ -156,6 +156,8 @@ public class InvoiceController {
                                 Model model) {
         log.info(invoice.toString());
 
+        invoice = invoiceService.buildInvoice(invoice, date, services, unit_prices, unit_amounts);
+
         validator.validate(invoice, bindingResult);
         if(bindingResult.hasErrors()) {
             log.info("Errors found");
@@ -166,13 +168,25 @@ public class InvoiceController {
 
             return "admin_panel/invoices/invoice_card";
         }
-        invoiceService.buildAndSaveInvoice(invoice, date, services, unit_prices, unit_amounts);
+
+        invoiceService.saveInvoice(invoice);
+
         return "redirect:/admin/invoices";
     }
 
     @PostMapping("/update/{id}")
-    public String updateInvoice(@PathVariable long id, @ModelAttribute Invoice invoice, BindingResult bindingResult, Model model) {
+    public String updateInvoice(@PathVariable long id,
+                                @ModelAttribute Invoice invoice,
+                                BindingResult bindingResult,
+                                @RequestParam String date,
+                                @RequestParam String[] services,
+                                @RequestParam String[] unit_prices,
+                                @RequestParam String[] unit_amounts,
+                                Model model) {
+
         log.info(invoice.toString());
+
+        invoice = invoiceService.buildInvoice(invoice, date, services, unit_prices, unit_amounts);
 
         validator.validate(invoice, bindingResult);
         if(bindingResult.hasErrors()) {
@@ -184,9 +198,9 @@ public class InvoiceController {
             model.addAttribute("current_date", LocalDate.now());
             return "admin_panel/invoices/invoice_card";
         }
-        invoice.getComponents().forEach(comp -> comp.setInvoice(invoice));
+
         invoiceService.saveInvoice(invoice);
-        invoiceService.saveAllInvoicesComponents(invoice.getComponents());
+
         return "redirect:/admin/invoices";
     }
 
@@ -279,7 +293,7 @@ public class InvoiceController {
 
         ObjectMapper mapper = new ObjectMapper();
         FilterForm filters = mapper.readValue(f_string, FilterForm.class);
-        return invoiceService.findAllBySpecificationAndPage(filters, page, page_size);
+        return invoiceService.findAllBySpecificationAndPage(filters, page, page_size).toList();
     }
 
     @GetMapping("/get-filtered-invoice-count")
