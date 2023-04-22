@@ -140,13 +140,13 @@ public class MeterController {
 
     @PostMapping("/save-meter")
     public @ResponseBody List<String> saveMeter(@RequestParam(required = false) Long id,    // <-- если хочешь обновить существующий
-                                          @RequestParam String building,
-                                          @RequestParam String section,
-                                          @RequestParam String apartment,
-                                          @RequestParam String currentReadings,
-                                          @RequestParam String status,
-                                          @RequestParam String service,
-                                          @RequestParam String date) {
+                                              @RequestParam String building,
+                                              @RequestParam String section,
+                                              @RequestParam String apartment,
+                                              @RequestParam String currentReadings,
+                                              @RequestParam String status,
+                                              @RequestParam String service,
+                                              @RequestParam String date) {
 
         MeterData meterToSave = meterDataService.saveMeterDataAJAX(id, building, section,
                 apartment, currentReadings, status, service, date);
@@ -158,8 +158,11 @@ public class MeterController {
             List<ObjectError> messages = binder.getBindingResult().getAllErrors();
             List<String> msgs =
                     messages.stream()
-                            .map(ObjectError::getDefaultMessage)
-                            .filter(Objects::nonNull)
+                            .map(ObjectError::getDefaultMessage).filter(Objects::nonNull)
+                            .map(str -> {
+                                byte[] utf8bytes = str.getBytes(StandardCharsets.UTF_8);
+                                return new String(utf8bytes, StandardCharsets.UTF_8);
+                            })
                             .collect(Collectors.toList());
             log.info(msgs.toString());
             log.info(String.valueOf(msgs.size()));

@@ -41,7 +41,7 @@ public class StatisticsController {
         model.addAttribute("apartmentsQuant", apartmentService.getQuantity());
         model.addAttribute("accountsQuant", accountService.getQuantity());
 
-        model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount());
+        model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount().orElse(0.0));
         model.addAttribute("accountBalance", accountRepository.getSumOfAccountBalances());
         model.addAttribute("sumDebt", accountRepository.getSumOfAccountDebts());
 

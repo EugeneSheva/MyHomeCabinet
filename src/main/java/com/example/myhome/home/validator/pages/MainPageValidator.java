@@ -33,7 +33,7 @@ public class MainPageValidator implements Validator {
         MainPage page = (MainPage) target;
         MultipartFile img1 = page.getImg1();
 
-        if(img1 != null) {
+        if(img1 != null && img1.getSize() > 0) {
             log.info("Checking img1...");
             try {
                 InputStream stream = new ByteArrayInputStream(img1.getBytes());

@@ -33,6 +33,6 @@ public class OwnerDTO {
         this.first_name = first_name;
         this.last_name = last_name;
         this.fathers_name = fathers_name;
-        this.text = this.first_name + " " + this.fathers_name + " " + this.last_name;
+        this.text = this.first_name + " " + this.fathers_name + " " + this.last_name + "(ID:"+this.id+")";
     }
 }

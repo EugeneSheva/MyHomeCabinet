@@ -91,7 +91,7 @@ public class WebsiteController {
     // =========================
 
     @PostMapping("/home")
-    public String editHomePage(@Valid @ModelAttribute MainPage page,
+    public String editHomePage(@Valid @ModelAttribute MainPage mainPage,
                                BindingResult bindingResult,
                                @RequestPart(required = false) MultipartFile page_slide1,
                                @RequestPart(required = false) MultipartFile page_slide2,
@@ -103,7 +103,7 @@ public class WebsiteController {
                                @RequestPart(required = false) MultipartFile page_block_5_img,
                                @RequestPart(required = false) MultipartFile page_block_6_img) throws IOException {
 
-        validator.validate(page, bindingResult);
+        validator.validate(mainPage, bindingResult);
 
         if(bindingResult.hasErrors()) {
             log.info("Errors found");
@@ -111,10 +111,10 @@ public class WebsiteController {
             return "admin_panel/website_settings/website_home";
         }
 
-        page.setId(1);
-        page = websiteService.saveMainPageImages(page, page_slide1, page_slide2, page_slide3, page_block_1_img,
+        mainPage.setId(1);
+        mainPage = websiteService.saveMainPageImages(mainPage, page_slide1, page_slide2, page_slide3, page_block_1_img,
                 page_block_2_img, page_block_3_img, page_block_4_img, page_block_5_img, page_block_6_img);
-        websiteService.savePage(page);
+        websiteService.savePage(mainPage);
 
         return "redirect:/admin/website/home";
     }

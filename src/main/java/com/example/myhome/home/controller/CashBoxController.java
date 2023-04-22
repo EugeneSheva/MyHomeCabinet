@@ -195,7 +195,7 @@ public class CashBoxController {
         return "admin_panel/cash_box/cashbox_edit";
     }
 
-    @GetMapping("edit/{id}")
+    @GetMapping("/edit/{id}")
     public String editeCashBox(@PathVariable("id") Long id, Model model) {
         CashBox cashBox = cashBoxService.findById(id);
         if(cashBox.getIncomeExpenseType().equals(IncomeExpenseType.INCOME)) {
@@ -232,7 +232,7 @@ public class CashBoxController {
         return "admin_panel/cash_box/cashbox_edit";
     }
 
-    @GetMapping("copy/{id}")
+    @GetMapping("/copy/{id}")
     public String copyCashBox(@PathVariable("id") Long id, Model model) {
         CashBox cashBox = cashBoxService.findById(id);
         if(cashBox.getIncomeExpenseType().equals(IncomeExpenseType.INCOME)) {
@@ -269,15 +269,15 @@ public class CashBoxController {
     }
 
     @PostMapping("/save")
-    public String saveCashBox(@Valid @ModelAttribute("cashBoxItem") CashBox cashbox, BindingResult bindingResult, @RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam(name = "owner", defaultValue = "0") Long ownerId,
+    public String saveCashBox(@Valid @ModelAttribute("cashBoxItem") CashBox cashBoxItem, BindingResult bindingResult, @RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam(name = "owner", defaultValue = "0") Long ownerId,
                               @RequestParam(name = "manager", defaultValue = "0") Long adminId, @RequestParam(name = "apartmentAccount", defaultValue = "0") Long accountId,
                               @RequestParam(name = "amount", defaultValue = "0D") Double amount, @RequestParam(name = "incomeExpenseItems", defaultValue = "0") Long incomeExpenseItemId, Model model) throws IOException {
-        cashBoxtValidator.validate(cashbox, bindingResult);
+        cashBoxtValidator.validate(cashBoxItem, bindingResult);
 
-        System.out.println(cashbox);
+        System.out.println(cashBoxItem);
         System.out.println("bindingResult"+ bindingResult);
         if (bindingResult.hasErrors()) {
-            if(cashbox.getIncomeExpenseType().equals(IncomeExpenseType.INCOME)){
+            if(cashBoxItem.getIncomeExpenseType().equals(IncomeExpenseType.INCOME)){
                 List<IncomeExpenseItems>incomeItemsList=incomeExpenseRepository.findAllByIncomeExpenseType(IncomeExpenseType.INCOME);
                 model.addAttribute("incomeItemsList", incomeItemsList);
 
@@ -286,31 +286,65 @@ public class CashBoxController {
 
                 List<ApartmentAccountDTO> apartmentAccountDTOS = apartmentAccountService.findDtoApartmentAccounts();
                 model.addAttribute("accounts", apartmentAccountDTOS);
-            } else if (cashbox.getIncomeExpenseType().equals(IncomeExpenseType.EXPENSE)){
+            } else if (cashBoxItem.getIncomeExpenseType().equals(IncomeExpenseType.EXPENSE)){
                 List<IncomeExpenseItems>expenseItemsList=incomeExpenseRepository.findAllByIncomeExpenseType(IncomeExpenseType.EXPENSE);
                 model.addAttribute("expenseItemsList", expenseItemsList);
             }
             List<AdminDTO>adminDTOList = adminService.findAllDTO();
             model.addAttribute("admins", adminDTOList);
 
-            return "admin_panel/cash_box/cashbox_edit";
+            return "admin_panel/cash_box/cashBoxItem_edit";
         } else {
-            if (cashbox.getIncomeExpenseType() == IncomeExpenseType.EXPENSE) {
-                if (amount > 0) cashbox.setAmount(amount * (-1));
+            if (cashBoxItem.getIncomeExpenseType() == IncomeExpenseType.EXPENSE) {
+                if (amount > 0) cashBoxItem.setAmount(amount * (-1));
             } else {
-                cashbox.setOwner(ownerService.findById(ownerId));
+                cashBoxItem.setOwner(ownerService.findById(ownerId));
                 ApartmentAccount account = apartmentAccountService.findById(accountId);
-                account.getTransactions().add(cashbox);
-                account.addToBalance(cashbox.getAmount());
-                cashbox.setApartmentAccount(account);
+                if(!account.getTransactions().contains(cashBoxItem)) {
+                    account.getTransactions().add(cashBoxItem);
+                    account.addToBalance(cashBoxItem.getAmount());
+                    cashBoxItem.setApartmentAccount(account);
+                }
             }
-            cashbox.setIncomeExpenseItems(incomeExpenseItemService.findById(incomeExpenseItemId));
-            cashbox.setManager(adminService.findAdminById(adminId));
-            cashBoxService.save(cashbox);
+            cashBoxItem.setIncomeExpenseItems(incomeExpenseItemService.findById(incomeExpenseItemId));
+            cashBoxItem.setManager(adminService.findAdminById(adminId));
+            cashBoxService.save(cashBoxItem);
             return "redirect:/admin/cashbox/";
         }
     }
 //
+
+    @PostMapping("/newIncome")
+    public String saveNewIncome(@ModelAttribute CashBox cashBoxItem, BindingResult bindingResult, Model model) {
+        cashBoxtValidator.validate(cashBoxItem, bindingResult);
+        if(bindingResult.hasErrors()) {
+            return "admin_panel/cash_box/cashbox_edit";
+        }
+        cashBoxService.save(cashBoxItem);
+        return "redirect:/admin/cashbox";
+    }
+
+    @PostMapping("/newExpense")
+    public String saveNewExpense(@ModelAttribute CashBox cashBoxItem, BindingResult bindingResult, Model model) {
+        cashBoxItem.setAmount(cashBoxItem.getAmount()*-1);
+        cashBoxtValidator.validate(cashBoxItem, bindingResult);
+        if(bindingResult.hasErrors()) {
+            return "admin_panel/cash_box/cashbox_edit";
+        }
+        cashBoxService.save(cashBoxItem);
+        return "redirect:/admin/cashbox";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String editCashBox(@ModelAttribute CashBox cashBoxItem, BindingResult bindingResult, Model model) {
+        cashBoxtValidator.validate(cashBoxItem, bindingResult);
+        if(bindingResult.hasErrors()) {
+            return "admin_panel/cash_box/cashbox_edit";
+        }
+        cashBoxService.save(cashBoxItem);
+        return "redirect:/admin/cashbox";
+    }
+
     @GetMapping("/delete/{id}")
     public String dellete(@PathVariable("id") Long id) {
         cashBoxService.deleteById(id);

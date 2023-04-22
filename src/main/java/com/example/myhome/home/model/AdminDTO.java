@@ -32,7 +32,7 @@ public class AdminDTO {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
-        this.text = getFullName();
+        this.text = getFullName() + "(ID:"+this.id+")";
     }
 
     public AdminDTO(Long id, String first_name, String last_name, String phone_number, String email, boolean active, UserRole role) {

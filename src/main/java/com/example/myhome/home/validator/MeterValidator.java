@@ -20,34 +20,34 @@ public class MeterValidator implements Validator {
         MeterData meter = (MeterData) target;
 
         if(meter.getDate().isAfter(LocalDate.now())) {
-            e.rejectValue(MeterData_.DATE, "date.incorrect", "Date can't be in the future");
+            e.rejectValue(MeterData_.DATE, "date.incorrect", "Дата не может быть в будущем");
         }
 
         if(meter.getBuilding() == null) {
             System.out.println("Error found(building)");
-            e.rejectValue(MeterData_.BUILDING, "building.empty", "Select house");
+            e.rejectValue(MeterData_.BUILDING, "building.empty", "Выберите дом!");
         } else if(meter.getSection() == null || meter.getSection().equals("")) {
             System.out.println("Error found(section)");
-            e.rejectValue(MeterData_.SECTION, "section.empty", "Select section");
+            e.rejectValue(MeterData_.SECTION, "section.empty", "Выберите секцию!");
         } else if(meter.getApartment() == null) {
             System.out.println("Error found(apartment)");
-            e.rejectValue(MeterData_.APARTMENT, "apartment.empty", "Select apartment");
+            e.rejectValue(MeterData_.APARTMENT, "apartment.empty", "Выберите квартиру!");
         }
 
         if(meter.getService() == null) {
             System.out.println("Error found(service)");
-            e.rejectValue(MeterData_.SERVICE, "service.empty", "Select service");
+            e.rejectValue(MeterData_.SERVICE, "service.empty", "Выберите счётчик!");
         }
         if(meter.getStatus() == null) {
             System.out.println("Error found(status)");
-            e.rejectValue(MeterData_.STATUS, "status.empty", "Select status");
+            e.rejectValue(MeterData_.STATUS, "status.empty", "Выберите статус!");
         }
         if(meter.getCurrentReadings() == null) {
             System.out.println("Error found(readings)");
-            e.rejectValue(MeterData_.CURRENT_READINGS, "currentReadings.empty", "Select readings");
+            e.rejectValue(MeterData_.CURRENT_READINGS, "currentReadings.empty", "Укажите показания счётчика!");
         }
         else if(meter.getCurrentReadings() < 0) {
-            e.rejectValue(MeterData_.CURRENT_READINGS, "currentReadings.empty", "Readings can't be negative");
+            e.rejectValue(MeterData_.CURRENT_READINGS, "currentReadings.empty", "Показания не могут быть отрицательными");
         }
     }
 }

@@ -60,6 +60,7 @@
                   <div class="row">
                     <div class="col-md-4">
                       <h4>Слайд 1</h4>
+                      <input type="hidden" th:field="*{slide1}">
                       <img th:src="*{slide1 != null && !slide1.isEmpty()} ?
                                    @{/images/{url}(url=${mainPage.slide1})} :
                                    @{/images/placeholder.jpg}"
@@ -73,7 +74,8 @@
                     </div>
                     <div class="col-md-4">
                       <h4>Слайд 2</h4>
-                      <img th:src="${mainPage.slide2 != null && !mainPage.slide2.isEmpty()} ?
+                      <input type="hidden" th:field="*{slide2}">
+                      <img th:src="*{slide2 != null && !slide2.isEmpty()} ?
                                    @{/images/{url}(url=${mainPage.slide2})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                       <div class="form-group mb-30">
@@ -84,7 +86,8 @@
                     </div>
                     <div class="col-md-4">
                       <h4>Слайд 3</h4>
-                      <img th:src="${mainPage.slide3 != null && !mainPage.slide3.isEmpty()} ?
+                      <input type="hidden" th:field="*{slide3}">
+                      <img th:src="*{slide3 != null && !slide3.isEmpty()} ?
                                    @{/images/{url}(url=${mainPage.slide3})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                       <div class="form-group mb-30">
@@ -120,7 +123,8 @@
                     <div class="row">
                       <div class="col-md-4">
                         <h4>Блок 1</h4>
-                        <img th:src="${mainPage.block_1_img != null && !mainPage.block_1_img.isEmpty()} ?
+                        <input type="hidden" th:field="*{block_1_img}">
+                        <img th:src="*{block_1_img != null && !block_1_img.isEmpty()} ?
                                    @{/images/{url}(url=${mainPage.block_1_img})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
@@ -141,7 +145,8 @@
                       </div>
                       <div class="col-md-4">
                         <h4>Блок 2</h4>
-                        <img th:src="${mainPage.block_2_img != null && !mainPage.block_2_img.isEmpty()} ?
+                        <input type="hidden" th:field="*{block_2_img}">
+                        <img th:src="*{block_2_img != null && !block_2_img.isEmpty()} ?
                                    @{/images/{url}(url=${mainPage.block_2_img})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
@@ -163,7 +168,8 @@
                       </div>
                       <div class="col-md-4">
                         <h4>Блок 3</h4>
-                        <img th:src="${mainPage.block_3_img != null && !mainPage.block_3_img.isEmpty()} ?
+                        <input type="hidden" th:field="*{block_3_img}">
+                        <img th:src="*{block_3_img != null && !block_3_img.isEmpty()} ?
                                    @{/images/{url}(url=${mainPage.block_3_img})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
@@ -185,7 +191,8 @@
                       </div>
                       <div class="col-md-4">
                         <h4>Блок 4</h4>
-                        <img th:src="${mainPage.block_4_img != null && !mainPage.block_4_img.isEmpty()} ?
+                        <input type="hidden" th:field="*{block_4_img}">
+                        <img th:src="*{block_4_img != null && !block_4_img.isEmpty()} ?
                                    @{/images/{url}(url=${mainPage.block_4_img})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
@@ -207,7 +214,8 @@
                       </div>
                       <div class="col-md-4">
                         <h4>Блок 5</h4>
-                        <img th:src="${mainPage.block_5_img != null && !mainPage.block_5_img.isEmpty()} ?
+                        <input type="hidden" th:field="*{block_5_img}">
+                        <img th:src="*{block_5_img != null && !block_5_img.isEmpty()} ?
                                    @{/images/{url}(url=${mainPage.block_5_img})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
@@ -229,7 +237,8 @@
                       </div>
                       <div class="col-md-4">
                         <h4>Блок 6</h4>
-                        <img th:src="${mainPage.block_6_img != null && !mainPage.block_6_img.isEmpty()} ?
+                        <input type="hidden" th:field="*{block_6_img}">
+                        <img th:src="*{block_6_img != null && !block_6_img.isEmpty()} ?
                                    @{/images/{url}(url=${mainPage.block_6_img})} :
                                    @{/images/placeholder.jpg}" class="page_image" alt="">
                         <div class="form-group mb-30">
