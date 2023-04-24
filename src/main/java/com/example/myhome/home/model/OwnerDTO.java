@@ -24,6 +24,21 @@ public class OwnerDTO {
     private String first_name, last_name, fathers_name;
     private String fullName;
 
+    private String phone_number;
+    private String email;
+
+    private List<BuildingDTO> buildings;
+    private List<ApartmentDTO> apartments;
+
+    private String apartmentNumbers;
+    private String apartmentNames;
+
+    private String date;
+
+    private String status;
+
+    private Boolean hasDebt;
+
 
     public OwnerDTO() {
     }

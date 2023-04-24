@@ -26,7 +26,7 @@ public class ApartmentAccountService {
     public List<ApartmentAccountDTO> findDtoApartmentAccounts() {
         List<ApartmentAccountDTO>apartmentAccountDTOS= new ArrayList<>();
         for (ApartmentAccount apartmentAccount : accountRepository.findAll()) {
-            apartmentAccountDTOS.add(new ApartmentAccountDTO(apartmentAccount.getId(), apartmentAccount.getIsActive(),apartmentAccount.getNumber(),apartmentAccount.getApartment().getId(),apartmentAccount.getBalance()));
+//            apartmentAccountDTOS.add(new ApartmentAccountDTO(apartmentAccount.getId(), apartmentAccount.getIsActive(),apartmentAccount.getNumber(),apartmentAccount.getApartment().getId(),apartmentAccount.getBalance()));
         }
         return apartmentAccountDTOS; }
 

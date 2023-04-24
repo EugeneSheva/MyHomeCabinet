@@ -9,6 +9,8 @@ import java.util.List;
 // --- ДОМА ---
 
 @Data
+@Builder
+@AllArgsConstructor
 public class BuildingDTO {
 
     private Long id;
@@ -34,6 +36,10 @@ public class BuildingDTO {
         this.sections = sections;
         this.address = address;
         this.floors = floors;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override

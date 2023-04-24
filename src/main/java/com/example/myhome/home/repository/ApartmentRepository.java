@@ -15,7 +15,7 @@ public interface ApartmentRepository extends JpaRepository<Apartment, Long>, Jpa
 
     Page<Apartment> findAll(Pageable pageable);
     List<Apartment>findApartmentsByBuildingIdAndSection(Long id, String section);
-    List<ApartmentDTO> findAllProjectedBy();
+//    List<ApartmentDTO> findAllProjectedBy();
 
     List<Apartment>findApartmentsByBalanceBefore(Double balance);
     List<Apartment>findApartmentsByBuildingId(Long id);

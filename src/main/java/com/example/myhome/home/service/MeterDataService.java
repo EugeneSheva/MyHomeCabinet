@@ -1,9 +1,6 @@
 package com.example.myhome.home.service;
 
-import com.example.myhome.home.model.Apartment;
-import com.example.myhome.home.model.Building;
-import com.example.myhome.home.model.MeterData;
-import com.example.myhome.home.model.MeterPaymentStatus;
+import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.MeterDataRepository;
 import com.example.myhome.home.repository.specifications.MeterSpecifications;
@@ -11,6 +8,7 @@ import com.example.myhome.home.validator.MeterValidator;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -67,15 +65,48 @@ public class MeterDataService {
         Apartment apartment = (form.getApartment() != null) ? apartmentService.findById(form.getApartment()) : null;
         com.example.myhome.home.model.Service service = (form.getService() != null) ? serviceService.findServiceById(form.getService()) : null;
 
-        Specification<MeterData> spec = Specification.where(MeterSpecifications.hasId(id)
-                                                        .and(MeterSpecifications.hasStatus(status))
-                                                        .and(MeterSpecifications.datesBetween(date_from, date_to))
-                                                        .and(MeterSpecifications.hasBuilding(building))
-                                                        .and(MeterSpecifications.hasSection(section))
-                                                        .and(MeterSpecifications.hasApartment(apartment))
-                                                        .and(MeterSpecifications.hasService(service)));
+        return Specification.where(MeterSpecifications.hasId(id)
+                            .and(MeterSpecifications.hasStatus(status))
+                            .and(MeterSpecifications.datesBetween(date_from, date_to))
+                            .and(MeterSpecifications.hasBuilding(building))
+                            .and(MeterSpecifications.hasSection(section))
+                            .and(MeterSpecifications.hasApartment(apartment))
+                            .and(MeterSpecifications.hasService(service))
+                            .and(MeterSpecifications.groupTest()));
+    }
 
-        return spec;
+    public Page<MeterDataDTO> findAllBySpecification(FilterForm filters, Integer page, Integer size) {
+
+        Specification<MeterData> spec = buildSpecFromFilters(filters);
+        Pageable pageable = PageRequest.of(page-1, size);
+
+        Page<MeterData> initialPage = meterDataRepository.findAll(spec, pageable);
+
+        List<MeterDataDTO> listDTO = initialPage.getContent().stream()
+                .map(meter -> {
+                    Long buildingID = (meter.getBuilding() != null) ? meter.getBuilding().getId() : null;
+                    String buildingName = (meter.getBuilding() != null) ? meter.getBuilding().getName() : "";
+                    Long apartmentID = (meter.getApartment() != null) ? meter.getApartment().getId() : null;
+                    Long apartmentNumber = (meter.getApartment() != null) ? meter.getApartment().getNumber() : null;
+                    String serviceName = (meter.getService() != null) ? meter.getService().getName() : "";
+                    String serviceUnitName = (meter.getService() != null && meter.getService().getUnit() != null) ? meter.getService().getUnit().getName() : "";
+                    Long serviceID = (meter.getService() != null) ? meter.getService().getId() : null;
+                    return MeterDataDTO.builder()
+                            .id(meter.getId())
+                            .section(meter.getSection())
+                            .buildingID(buildingID)
+                            .buildingName(buildingName)
+                            .apartmentID(apartmentID)
+                            .apartmentNumber(apartmentNumber)
+                            .serviceID(serviceID)
+                            .serviceName(serviceName)
+                            .serviceUnitName(serviceUnitName)
+                            .readings(meter.getCurrentReadings())
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(listDTO, pageable, initialPage.getTotalElements());
     }
 
     public List<MeterData> findAllBySpecification(Long building_id, String section_name, Long apartment_number, Long service_id) {

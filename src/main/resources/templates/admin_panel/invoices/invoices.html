@@ -26,7 +26,7 @@
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
 
-    <div th:if="${page == 1}" th:insert="~{main-template :: loading}"></div>
+  <div th:insert="~{main-template :: loading}"></div>
   <nav th:insert="~{main-template :: header}"></nav>
   <aside th:insert="~{main-template :: sidebar}"></aside>
 
@@ -117,113 +117,80 @@
                     <span class="hidden-xs">Очистить </span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                   </a>
                 </div>
-                  <div id="page_button_container_top" class="mb-4" style="display: flex; justify-content: center;"></div>
               </div>
               <div class="box-body table-responsive">
                   <form action="" method="get" th:object="${filter_form}">
-                    <table class="table table-bordered table-hover table-striped linkedRow" id="invoices_table">
-                  <thead>
-                      <tr>
-                        <th><input type="checkbox" name="" id="check_all"></th>
-                          <th>№ квитанции</th>
-                          <th style="min-width:180px;">Статус</th>
-                          <th>Дата</th>
-                          <th>Месяц</th>
-                          <th>Квартира</th>
-                          <th style="min-width:250px;">Владелец</th>
-                          <th style="min-width:150px;">Проведена</th>
-                          <th>Сумма(грн)</th>
-                          <th></th>
-                      </tr>
-                      <tr>
-                          <td></td>
-                          <td style="padding:10px">
-                              <input type="text" th:field="*{id}" data-name="id" class="my_filters" style="width: 100%; padding-block: 9px; border: 0.5px solid silver;">
-                          </td>
-                          <td style="padding:10px">
-                              <select th:field="*{status}" data-name="status" class="my_filters" style="width: 100%; padding-block: 10px">
-                                  <option value=""></option>
-                                  <option th:each="status : ${T(com.example.myhome.home.model.InvoiceStatus).values()}"
-                                          th:value="${status}"
-                                          th:text="${status.getName()}"></option>
-                              </select>
-                          </td>
-                          <td style="padding:10px">
-                              <div class="input-group" id="date_picker" data-td-target-input="nearest" data-td-target-toggle="nearest">
-                                  <input id="datetime" style="padding-block: 21px" type="text" data-name="date" th:field="*{date}" value="2023-01-01" class="form-control datetime_filter" data-td-target="#datetimepicker1">
-                                  <span class="input-group-text" data-td-target="#datetimepicker1" data-td-toggle="datetimepicker">
-                                    <i class="fa fa-calendar"></i>
-                                  </span>
-                              </div>
-                          </td>
-                          <td style="padding:10px">
-                              <div class="input-group" id="date_picker2" data-td-target-input="nearest" data-td-target-toggle="nearest">
-                                  <input id="month" style="padding-block: 21px" type="text" data-name="month" th:field="*{month}" value="2023-01-01" class="form-control my_filters" data-td-target="#datetimepicker1">
-                                  <span class="input-group-text" data-td-target="#datetimepicker1" data-td-toggle="datetimepicker">
-                                    <i class="fa fa-calendar"></i>
-                                  </span>
-                              </div>
-                          </td>
-                          <td style="padding:10px">
-                              <input type="text" th:field="*{apartment}" data-name="apartment" class="my_filters" style="width: 100%; padding-block: 9px; border: 0.5px solid silver;">
-                          </td>
-                          <td style="padding:10px">
-                              <select th:field="*{owner}" data-name="owner" class="my_filters" style="width: 100%; padding-block: 10px">
-                                  <option value=""></option>
-                                  <option th:each="owner : ${owners}"
-                                          th:value="${owner.id}"
-                                          th:text="${owner.getFullName()}"></option>
-                              </select>
-                          </td>
-                          <td style="padding:10px">
-                              <select th:field="*{completed}" data-name="completed" class="my_filters" style="width: 100%; padding-block: 10px">
-                                  <option value=""></option>
-                                  <option value="true">Проведена</option>
-                                  <option value="false">Не проведена</option>
-                              </select>
-                          </td>
-                          <td></td>
-                          <td></td>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <tr style="cursor: pointer;" class="invoice_row" th:each="invoice : ${invoices}">
-                          <input type="hidden" th:value="${invoice.id}">
-                          <td><input type="checkbox" name="" id=""></td>
-                          <td th:text="${T(java.lang.String).format('%010d',invoice.id)}"></td>
-                          <td>
-                              <small th:class="'label ' +
-                              ${invoice.status == T(com.example.myhome.home.model.InvoiceStatus).PAID ? 'label-success' :
-                              (invoice.status == T(com.example.myhome.home.model.InvoiceStatus).UNPAID) ? 'label-danger' : 'label-warning'}"
-                                     th:text="${invoice.status.getName()}">
-                              </small>
-                          </td>
-                          <td th:text="${invoice.date}"></td>
-                          <td th:text="${#temporals.format(invoice.date, 'MMM yyyy')}"></td>
-                          <td th:text="${invoice.apartment.number} + ', ' + ${invoice.apartment.building.name}"></td>
-                          <td th:text="${invoice.apartment.owner.getFullName()}"></td>
-                          <td>
-                              <small th:class="'label ' + ${invoice.completed ? 'label-success' : 'label-danger'}"
-                                     th:text="${invoice.completed} ? 'Проведена' : 'Не проведена'"></small>
-                          </td>
-                          <td><span th:text="${invoice.total_price}"></span></td>
-                          <td>
-                              <div class="btn-group pull-right">
-                                  <a class="btn btn-default btn-sm" th:href="@{/admin/invoices/update/{id}(id=${invoice.id})}"><i class="fa fa-pencil"></i></a>
-                                  <a class="btn btn-default btn-sm"
-                                     th:attr="data-url='/admin/invoices/delete/'+${invoice.id}"
-                                     th:onclick="if(confirm('Удалить квитанцию?')) window.location.href=this.dataset.url"><i class="fa fa-trash"></i></a>
-                              </div>
-                          </td>
-                      </tr>
-                  <tr th:if="${invoices.getTotalElements    () == 0}">
-                      <td colspan="10">Ничего не найдено...</td>
-                  </tr>
-                  </tbody>
-                </table>
-                  <div id="page_button_container" class="mb-4" style="display: flex; justify-content: center;">
+                    <nav aria-label="Page navigation " class="pagination_container mt-3"></nav>
+                    <table class="table table-bordered table-hover table-striped linkedRow" id="invoicesTable">
+                      <thead>
+                          <tr>
+                            <th><input type="checkbox" name="" id="check_all"></th>
+                              <th>№ квитанции</th>
+                              <th style="min-width:180px;">Статус</th>
+                              <th>Дата</th>
+                              <th>Месяц</th>
+                              <th>Квартира</th>
+                              <th style="min-width:250px;">Владелец</th>
+                              <th style="min-width:150px;">Проведена</th>
+                              <th>Сумма(грн)</th>
+                              <th></th>
+                          </tr>
+                          <tr>
+                              <td></td>
+                              <td style="padding:10px">
+                                  <input type="text" th:field="*{id}" data-name="id" class="my_filters" style="width: 100%; padding-block: 9px; border: 0.5px solid silver;">
+                              </td>
+                              <td style="padding:10px">
+                                  <select th:field="*{status}" data-name="status" class="my_filters" style="width: 100%; padding-block: 10px">
+                                      <option value=""></option>
+                                      <option th:each="status : ${T(com.example.myhome.home.model.InvoiceStatus).values()}"
+                                              th:value="${status}"
+                                              th:text="${status.getName()}"></option>
+                                  </select>
+                              </td>
+                              <td style="padding:10px">
+                                  <div class="input-group" id="date_picker" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                      <input id="datetime" style="padding-block: 21px" type="text" data-name="date" th:field="*{date}" value="2023-01-01" class="form-control datetime_filter" data-td-target="#datetimepicker1">
+                                      <span class="input-group-text" data-td-target="#datetimepicker1" data-td-toggle="datetimepicker">
+                                        <i class="fa fa-calendar"></i>
+                                      </span>
+                                  </div>
+                              </td>
+                              <td style="padding:10px">
+                                  <div class="input-group" id="date_picker2" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                      <input id="month" style="padding-block: 21px" type="text" data-name="month" th:field="*{month}" value="2023-01-01" class="form-control my_filters" data-td-target="#datetimepicker1">
+                                      <span class="input-group-text" data-td-target="#datetimepicker1" data-td-toggle="datetimepicker">
+                                        <i class="fa fa-calendar"></i>
+                                      </span>
+                                  </div>
+                              </td>
+                              <td style="padding:10px">
+                                  <input type="text" th:field="*{apartment}" data-name="apartment" class="my_filters" style="width: 100%; padding-block: 9px; border: 0.5px solid silver;">
+                              </td>
+                              <td style="padding:10px">
+                                  <select th:field="*{owner}" data-name="owner" class="my_filters" style="width: 100%; padding-block: 10px">
+                                      <option value=""></option>
+                                      <option th:each="owner : ${owners}"
+                                              th:value="${owner.id}"
+                                              th:text="${owner.getFullName()}"></option>
+                                  </select>
+                              </td>
+                              <td style="padding:10px">
+                                  <select th:field="*{completed}" data-name="completed" class="my_filters" style="width: 100%; padding-block: 10px">
+                                      <option value=""></option>
+                                      <option value="true">Проведена</option>
+                                      <option value="false">Не проведена</option>
+                                  </select>
+                              </td>
+                              <td></td>
+                              <td></td>
+                          </tr>
+                      </thead>
+                      <tbody>
 
-                  </div>
+                      </tbody>
+                    </table>
+                    <nav aria-label="Page navigation " class="pagination_container"></nav>
                   </form>
               </div>
               <div class="box-footer clearfix"></div>
@@ -240,16 +207,13 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- REQUIRED SCRIPTS -->
-<!-- Icons -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
 <script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
-<!-- jQuery -->
 <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
-<!-- Bootstrap -->
 <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
-<!-- overlayScrollbars -->
-<!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
-<!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
 <script th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -258,13 +222,24 @@
 <script th:src="@{/dist/js/invoices.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<script>
-    let current_page_number = 0;
-    let invoices_amount = [[${invoices.getTotalElements()}]];
-    const invoices_on_page = 5;
-    const pages_count = [[${invoices.getTotalPages()}]];
+<script th:src="@{/dist/js/pagination.js}"></script>
 
-    let page_buttons_container = document.getElementById("page_button_container");
+<script>
+    let tableData;
+    let totalPagesCount = [[${totalPagesCount}]];
+    let currentPageNumber = 1;
+    let currentPageSize = 10;
+
+    let globalTableName = 'invoices';
+
+    $(document).ready(function(){
+
+        drawTable();
+
+    });
+</script>
+
+<script>
 
     document.getElementById("check_all").addEventListener('click', function(){
         console.log(this.checked);
@@ -282,94 +257,7 @@
 
     });
 
-    let rows = document.getElementsByClassName("invoice_row");
-    for(let i = 0; i < rows.length; i++) {
-        let row_children = rows[i].children;
-        let invoice_id = row_children[0].value;
-        for(let j = 2; j < row_children.length - 1; j++) {
-            row_children[j].addEventListener('click', () => {window.location.href = '/admin/invoices/' + invoice_id});
-        }
-    }
-
-    const queryParams = window.location.search;
-    console.log(queryParams);
-
-    const urlParams = new URLSearchParams(queryParams);
-
-    let pageNumber = parseInt(urlParams.get('page'));
-    console.log('page number ' +pageNumber);
-
-    console.log('total pages count : ' + pages_count);
-
-    let url = new URL(window.location.href)
-    url.searchParams.delete('page');
-    let url_without_page = url.toString();
-
-    let back_btn = document.createElement("a");
-    back_btn.classList.add("btn");
-    if(pageNumber > 1) {back_btn.classList.add("btn-primary"); url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber-1)); back_btn.href = url.toString();}
-    else {back_btn.classList.add("btn-default"); back_btn.style.opacity = 0.6; back_btn.href = '#'}
-    back_btn.innerText = ' < ';
-
-    page_buttons_container.appendChild(back_btn);
-
-    //first button (1)
-    let btn = document.createElement("a");
-    btn.classList.add("btn", "btn-default");
-    if(pageNumber == 1) btn.classList.add("selected");
-    url.searchParams.delete('page'); url.searchParams.append('page', 1);
-    btn.href = url.toString();
-    btn.innerText = 1;
-    page_buttons_container.appendChild(btn);
-
-    // ... block
-    if(pageNumber >= 4 && pages_count > 4) {
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default");
-        btn.style.opacity = 0.6;
-        btn.href = '#';
-        btn.innerText = '...';
-        page_buttons_container.appendChild(btn);
-    }
-
-    // prev.page number, current page number, next page number
-    insertPreviousNumbers(pageNumber);
-    if(pageNumber != 1 && pageNumber != pages_count) insertNumber(pageNumber);
-    insertNextNumbers(pageNumber);
-
-    // ... block
-    if(pageNumber < pages_count-2 && pages_count > 4) {
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default");
-        btn.style.opacity = 0.6;
-        btn.href = '#';
-        btn.innerText = '...';
-        page_buttons_container.appendChild(btn);
-    }
-
-    //last button
-    if(pages_count > 1) {
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default");
-        if(pageNumber == pages_count) btn.classList.add("selected");
-        url.searchParams.delete('page'); url.searchParams.append('page', pages_count);
-        btn.href = url.toString();
-        btn.innerText = pages_count;
-        page_buttons_container.appendChild(btn);
-    }
-
-    let fwd_btn = document.createElement("a");
-    fwd_btn.classList.add("btn");
-    if(pageNumber < pages_count) {fwd_btn.classList.add("btn-primary"); url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber+1)); fwd_btn.href = url.toString();}
-    else {fwd_btn.classList.add("btn-default"); fwd_btn.style.opacity = 0.6; fwd_btn.href = '#'}
-    fwd_btn.innerText = ' > ';
-
-    page_buttons_container.appendChild(fwd_btn);
-
     $(document).ready(function(){
-
-        let clone = document.getElementById("page_button_container").cloneNode(true);
-        $(".box-header").append(clone);
 
         let config = {
             enableTime: false,
@@ -437,6 +325,11 @@
         a.selected:hover {
             background-color: rgba(0, 179, 255, 0.4);
             color: white;
+        }
+
+        a.page-link {
+            width: 42px;
+            text-align: center;
         }
 </style>
 

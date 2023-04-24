@@ -17,10 +17,12 @@ import java.time.LocalTime;
 public class OwnerSpecification {
 
     public static Specification<Owner> idContains(Long id) {
+        if(id == null) return (root, query, criteriaBuilder) -> null;
         return (root, query, builder) -> builder.equal(root.get("id"), id);
     }
 
     public static Specification<Owner> nameContains(String name) {
+        if(name == null) return (root, query, criteriaBuilder) -> null;
         return (root, query, builder) -> {
             String[] names = name.split("\\s+");
             Predicate[] predicates = new Predicate[names.length];
@@ -36,14 +38,17 @@ public class OwnerSpecification {
     }
 
     public static Specification<Owner> phonenumberContains(String phoneNumber) {
+        if(phoneNumber == null) return (root, query, criteriaBuilder) -> null;
         return (root, query, builder) -> builder.like(root.get("phone_number"), "%" + phoneNumber + "%");
     }
 
     public static Specification<Owner> emailContains(String email) {
+        if(email == null) return (root, query, criteriaBuilder) -> null;
         return (root, query, builder) -> builder.like(root.get("email"), "%" + email + "%");
     }
 
     public static Specification<Owner> buildingContains(String name) {
+        if(name == null) return (root, query, criteriaBuilder) -> null;
         return (root, query, builder) -> {
             Join<Owner, Apartment> ownerJoin = root.join("apartments", JoinType.INNER);
             Join<Owner, Building> thirdTableJoin = ownerJoin.join("building", JoinType.INNER);
@@ -51,13 +56,24 @@ public class OwnerSpecification {
         };
     }
 
+    public static Specification<Owner> hasBuilding(Long building_id) {
+        if(building_id == null) return (root, query, criteriaBuilder) -> null;
+        return (root, query, cb) -> {
+            Join<Owner, Apartment> ownerJoin = root.join("apartments", JoinType.INNER);
+            Join<Owner, Building> thirdTableJoin = ownerJoin.join("building", JoinType.INNER);
+            return cb.equal(thirdTableJoin.get("building_id"), building_id);
+        };
+    }
+
     public static Specification<Owner> apartmentContains(Long number) {
+        if(number == null) return (root, query, criteriaBuilder) -> null;
         return (root, query, builder) -> {
             Join<Owner, Apartment> apartmentJoin = root.join("apartments", JoinType.INNER);
             return builder.equal(apartmentJoin.get("id"), number);
         };
     }
     public static Specification<Owner> dateContains(LocalDate date) {
+        if(date == null) return (root, query, criteriaBuilder) -> null;
         return (root, query, builder) -> {
             LocalDateTime startOfDay = date.atStartOfDay();
             LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
@@ -65,8 +81,15 @@ public class OwnerSpecification {
         };
     }
     public static Specification<Owner> statusContains(UserStatus userStatus) {
+        if(userStatus == null) return (root, query, criteriaBuilder) -> null;
         return (root, query, builder) -> builder.equal(root.get("status"), userStatus);
     }
+
+    public static Specification<Owner> hasDebt(Boolean hasDebt) {
+        if(hasDebt == null) return (root, query, criteriaBuilder) -> null;
+        return (root, query, cb) -> cb.equal(root.get("has_debt"), hasDebt);
+    }
+
     public static Specification<Owner> hasDebtContains() {
         return (root, query, builder) -> builder.equal(root.get("has_debt"), true);
     }

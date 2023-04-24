@@ -16,7 +16,7 @@ function downloadExcelTable() {
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
 
-    let table = document.getElementById("table_to_excel");
+    let table = document.getElementById("accountsTable");
     let excel_file = XLSX.utils.table_to_book(table);
     XLSX.writeFile(excel_file, "Лицевые счета " + `${day}-${month}-${year}` + ".xlsx");
 }

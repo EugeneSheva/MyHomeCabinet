@@ -1,6 +1,7 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.ApartmentAccount;
+import com.example.myhome.home.model.ApartmentAccountDTO;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.AccountRepository;
 import com.example.myhome.home.repository.ApartmentRepository;
@@ -10,6 +11,8 @@ import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.CashBoxService;
 import com.example.myhome.home.service.OwnerService;
 import com.example.myhome.home.validator.AccountValidator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -53,7 +56,7 @@ public class AccountController {
         accountList = accountService.findAllBySpecification(filterForm);
 
         model.addAttribute("accounts", accountList.getContent());
-        model.addAttribute("pages_count", accountList.getTotalPages());
+        model.addAttribute("totalPagesCount", accountList.getTotalPages());
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
         model.addAttribute("account_balance", accountService.getSumOfAccountBalances());
         model.addAttribute("account_debt", accountService.getSumOfAccountDebts());
@@ -148,6 +151,17 @@ public class AccountController {
     @GetMapping("/get-flat-account")
     public @ResponseBody String getAccountNumberFromFlat(@RequestParam long flat_id) {
         return String.format("%010d", accountService.getAccountNumberFromFlat(flat_id).getId());
+    }
+
+    @GetMapping("/get-accounts")
+    public @ResponseBody Page<ApartmentAccountDTO> getAccounts(@RequestParam Integer page,
+                                                               @RequestParam Integer size,
+                                                               @RequestParam String filters) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        FilterForm form = mapper.readValue(filters, FilterForm.class);
+        Page<ApartmentAccountDTO> p = accountService.findAllBySpecification(form, page, size);
+        log.info("PAGES COUNT : " + p.getTotalPages());
+        return p;
     }
 
     @ModelAttribute

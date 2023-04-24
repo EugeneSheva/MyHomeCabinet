@@ -117,7 +117,8 @@
               </div>
               <div class="box-body table-responsive">
                   <form action="" method="get" th:object="${filter_form}">
-                    <table id="table_to_excel" class="table table-bordered table-hover table-striped linkedRow">
+                    <nav aria-label="Page navigation " class="pagination_container mt-3"></nav>
+                    <table id="accountsTable" class="table table-bordered table-hover table-striped linkedRow">
                   <thead>
                       <tr>
                         <th>№</th>
@@ -182,35 +183,10 @@
                       </tr>
                   </thead>
                   <tbody>
-                    <tr style="cursor: pointer;" class="account_row" th:each="account : ${accounts}">
-                        <td th:text="${T(java.lang.String).format('%010d',account.id)}"></td>
-                        <td>
-                            <small class="label label-success" th:if="${account.isActive}">Активен</small>
-                            <small class="label label-danger" th:if="${!account.isActive}">Неактивен</small>
-                        </td>
-                        <td th:text="${account.apartment.number}"></td>
-                        <td th:text="${account.apartment.building.name}"></td>
-                        <td th:text="${account.apartment.section}"></td>
-                        <td th:text="${account.apartment.owner.getFullName()}"></td>
-                        <td th:text="${account.getBalance()}" th:style="${'color: ' + (__${account.getBalance()}__ > 0 ? 'green' : 'red')}"></td>
-                        <td>
-                            <div class="btn-group pull-right">
-                                <a class="btn btn-default btn-sm" th:href="@{/admin/accounts/update/{id}(id=${account.id})}"><i class="fa fa-pencil"></i></a>
-                                <a class="btn btn-default btn-sm"
-                                   th:attr="data-url='/admin/accounts/delete/'+${account.id}"
-                                   th:onclick="if(confirm('Удалить лицевой счёт?')) window.location.href=this.dataset.url"><i class="fa fa-trash"></i></a>
-                            </div>
-                        </td>
-                        <input type="hidden" th:value="${account.id}">
-                    </tr>
-                  <tr th:if="${accounts.size() == 0}">
-                      <td colspan="8">Ничего не найдено...</td>
-                  </tr>
+
                   </tbody>
                 </table>
-                  <div id="page_button_container" class="mb-4" style="display: flex; justify-content: center;">
-
-                  </div>
+                  <nav aria-label="Page navigation " class="pagination_container"></nav>
                   </form>
               </div>
               <div class="box-footer clearfix"></div>
@@ -241,88 +217,33 @@
 <script th:src="@{/dist/js/filter.js}"></script>
 <script th:src="@{/dist/js/accounts.js}"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
 <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
 
+<script th:src="@{/dist/js/pagination.js}"></script>
+
 <script th:inline="javascript">
 
-    const queryParams = window.location.search;
-    console.log(queryParams);
+    let globalTableName = 'accounts';
+    let totalPagesCount = [[${totalPagesCount}]];
+    let tableData;
+    let currentPageNumber = 1;
+    let currentPageSize = 5;
 
-    const urlParams = new URLSearchParams(queryParams);
+    $(document).ready(function(){
 
-    let pageNumber = parseInt(urlParams.get('page'));
-    console.log('page number ' +pageNumber);
+        drawTable();
 
-    const accounts = [[${accounts}]];
-    const pages_count = [[${pages_count}]];
+    });
 
-    let page_buttons_container = document.getElementById("page_button_container");
+</script>
 
-    let url = new URL(window.location.href)
-    url.searchParams.delete('page');
-    let url_without_page = url.toString();
+<script th:inline="javascript">
 
-    let back_btn = document.createElement("a");
-    back_btn.classList.add("btn");
-    if(pageNumber > 1) {back_btn.classList.add("btn-primary"); url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber-1)); back_btn.href = url.toString();}
-    else {back_btn.classList.add("btn-default"); back_btn.style.opacity = 0.6; back_btn.href = '#'}
-    back_btn.innerText = ' < ';
-
-    page_buttons_container.appendChild(back_btn);
-
-    //first button (1)
-    let btn = document.createElement("a");
-    btn.classList.add("btn", "btn-default");
-    if(pageNumber == 1) btn.classList.add("selected");
-    url.searchParams.delete('page'); url.searchParams.append('page', 1);
-    btn.href = url.toString();
-    btn.innerText = 1;
-    page_buttons_container.appendChild(btn);
-
-    // ... block
-    if(pageNumber >= 4 && pages_count > 4) {
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default");
-        btn.style.opacity = 0.6;
-        btn.href = '#';
-        btn.innerText = '...';
-        page_buttons_container.appendChild(btn);
-    }
-
-    // prev.page number, current page number, next page number
-    insertPreviousNumbers(pageNumber);
-    if(pageNumber != 1 && pageNumber != pages_count) insertNumber(pageNumber);
-    insertNextNumbers(pageNumber);
-
-    // ... block
-    if(pageNumber < pages_count-2 && pages_count > 4) {
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default");
-        btn.style.opacity = 0.6;
-        btn.href = '#';
-        btn.innerText = '...';
-        page_buttons_container.appendChild(btn);
-    }
-
-    //last button
-    if(pages_count > 1) {
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default");
-        if(pageNumber == pages_count) btn.classList.add("selected");
-        url.searchParams.delete('page'); url.searchParams.append('page', pages_count);
-        btn.href = url.toString();
-        btn.innerText = pages_count;
-        page_buttons_container.appendChild(btn);
-    }
-
-    let fwd_btn = document.createElement("a");
-    fwd_btn.classList.add("btn");
-    if(pageNumber < pages_count) {fwd_btn.classList.add("btn-primary"); url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber+1)); fwd_btn.href = url.toString();}
-    else {fwd_btn.classList.add("btn-default"); fwd_btn.style.opacity = 0.6; fwd_btn.href = '#'}
-    fwd_btn.innerText = ' > ';
-
-    page_buttons_container.appendChild(fwd_btn);
 
     // ФИЛЬТРЫ
     $(document).ready(function(){
@@ -356,10 +277,6 @@
             },
             placeholder: 'Выберите...'
         });
-
-        let clone = document.getElementById("page_button_container").cloneNode(true);
-        $(".box-header").append(clone);
-
     });
 </script>
 
@@ -374,6 +291,11 @@
         a.selected:hover {
             background-color: rgba(0, 179, 255, 0.4);
             color: white;
+        }
+
+        a.page-link {
+            width: 42px;
+            text-align: center;
         }
 </style>
 <!-- PAGE PLUGINS -->

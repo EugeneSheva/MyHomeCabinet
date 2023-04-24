@@ -3,9 +3,10 @@ package com.example.myhome.home.service;
 import com.example.myhome.home.configuration.security.CustomUserDetails;
 import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.*;
+import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.AccountRepository;
 import com.example.myhome.home.repository.OwnerRepository;
-import com.example.myhome.home.specification.Specification;
+import com.example.myhome.home.specification.OwnerSpecification;
 import com.example.myhome.util.FileUploadUtil;
 import com.example.myhome.util.UserStatus;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +16,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -96,6 +100,62 @@ public class OwnerService {
             ownerDTOList.add(newDTO);
         }
         return new PageImpl<>(ownerDTOList, pageable, ownerPage.getTotalElements());
+    }
+
+    public Page<OwnerDTO> findAllBySpecification(FilterForm filters, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page-1, size);
+
+        Page<Owner> initialPage = ownerRepository.findAll(buildSpecFromFilters(filters), pageable);
+
+        List<OwnerDTO> listDTO = initialPage.getContent().stream()
+                .map(owner -> {
+                    List<BuildingDTO> buildings = new ArrayList<>();
+                    List<ApartmentDTO> apartments = new ArrayList<>();
+                    String date = (owner.getAdded_at() != null) ? owner.getAdded_at().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : "";
+                    String status = (owner.getStatus() != null) ? owner.getStatus().getName() : "";
+                    owner.getApartments().forEach(
+                            apart -> {
+                                buildings.add(BuildingDTO.builder().id(apart.getBuilding().getId()).name(apart.getBuilding().getName()).build());
+                                apartments.add(ApartmentDTO.builder().id(apart.getId()).fullName("№"+apart.getNumber()+", " + apart.getBuilding().getName()).build());
+                            }
+                    );
+                    return OwnerDTO.builder()
+                            .id(owner.getId())
+                            .fullName(owner.getFullName())
+                            .phone_number(owner.getPhone_number())
+                            .email(owner.getEmail())
+                            .buildings(buildings)
+                            .apartments(apartments)
+                            .date(date)
+                            .status(status)
+                            .hasDebt(owner.isHas_debt())
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(listDTO, pageable, initialPage.getTotalElements());
+    }
+
+    public Specification<Owner> buildSpecFromFilters(FilterForm filters) {
+        Long id = filters.getId();
+        String ownerName = filters.getOwnerName();
+        String ownerPhoneNumber = filters.getPhone();
+        String email = filters.getEmail();
+        Long building = filters.getBuilding();
+        Long apartmentNumber = filters.getApartment();
+        LocalDate date = (filters.getDate() != null) ? LocalDate.parse(filters.getDate()) : null;
+        UserStatus status = (filters.getStatus() != null) ? UserStatus.valueOf(filters.getStatus()) : null;
+        Boolean has_debt = filters.getDebt();
+
+        return Specification.where(OwnerSpecification.idContains(id)
+                .and(OwnerSpecification.nameContains(ownerName))
+                .and(OwnerSpecification.phonenumberContains(ownerPhoneNumber))
+                .and(OwnerSpecification.emailContains(email))
+                .and(OwnerSpecification.hasBuilding(building))
+                .and(OwnerSpecification.apartmentContains(apartmentNumber))
+                .and(OwnerSpecification.dateContains(date))
+                .and(OwnerSpecification.statusContains(status))
+                .and(OwnerSpecification.hasDebt(has_debt)));
     }
 
 

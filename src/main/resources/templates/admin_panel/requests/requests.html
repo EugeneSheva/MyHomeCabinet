@@ -67,7 +67,8 @@
                             </div>
                             <div class="box-body table-responsive">
                                 <form action="" autocomplete="off" method="get" th:object="${filter_form}">
-                                    <table class="table table-bordered table-hover table-striped linkedRow">
+                                    <nav aria-label="Page navigation " class="pagination_container"></nav>
+                                    <table id="requestsTable" class="table table-bordered table-hover table-striped linkedRow">
                                     <thead>
                                     <tr>
                                         <th style="width: 100px; min-width: 100px">
@@ -145,36 +146,9 @@
                                         <td></td>
                                     </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr style="cursor: pointer;" class="request" th:each="request : ${requests}">
-                                            <td th:text="${request.id}"></td>
-                                            <td th:text="${#temporals.format(request.best_time_request, 'yyyy-MM-dd - HH:mm')}"></td>
-                                            <td th:text="${request.master_type.getName()}"></td>
-                                            <td style="max-width: 200px; text-overflow: ellipsis; white-space: nowrap; overflow:hidden" th:text="${request.description}"></td>
-                                            <td><a th:href="@{/admin/apartments/{id}(id=${request.apartment.id})}" th:text="'кв. ' + ${request.apartment.number} + ', ' + ${request.apartment.building.name}"></a></td>
-                                            <td><a th:href="@{/admin/owners/{id}(id=${request.apartment.owner.id})}" th:text="${request.apartment.owner.getFullName()}"></a></td>
-                                            <td th:text="${request.apartment.owner.phone_number}"></td>
-                                            <td th:if="${request.master != null}"><a th:href="@{/admin/admins/{id}(id=${request.master.id})}" th:text="${request.master.getFullName()}"></a></td>
-                                            <td th:if="${request.master == null}"></td>
-                                            <td><small class="label"
-                                                       th:classappend="${request.status == T(com.example.myhome.home.model.RepairStatus).ACCEPTED ?
-                                                       'label-primary' : request.status == T(com.example.myhome.home.model.RepairStatus).IN_WORK ?
-                                                       'label-warning' : 'label-success'}" th:text="${request.status.getName()}"></small></td>
-                                            <td>
-                                                <div class="btn-group pull-right">
-                                                    <a class="btn btn-default btn-sm" th:href="@{/admin/requests/update/{id}(id=${request.id})}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-                                                    <a class="btn btn-default btn-sm" th:href="@{/admin/requests/delete/{id}(id=${request.id})}"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr th:if="${requests.getTotalElements() == 0}">
-                                            <td colspan="10">Ничего не найдено...</td>
-                                        </tr>
-                                    </tbody>
+                                    <tbody></tbody>
                                 </table>
-                                    <div id="page_button_container" class="mb-4" style="display: flex; justify-content: center;">
-
-                                    </div>
+                                    <nav aria-label="Page navigation " class="pagination_container"></nav>
                                 </form>
                             </div>
                             <div class="box-footer clearfix"></div>
@@ -191,37 +165,40 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- REQUIRED SCRIPTS -->
-<!-- Icons -->
 <script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
-<!-- jQuery -->
 <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
-<!-- Bootstrap -->
 <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
-<!-- overlayScrollbars -->
-<!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
-<!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
 <script th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
-<script th:src="@{/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js}"></script>
+<script th:src="@{/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script th:src="@{/dist/js/filter.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+<script th:src="@{/dist/js/pagination.js}"></script>
+
 <script th:inline="javascript">
-    let request_rows = document.getElementsByClassName("request");
-    for(let i = 0; i < request_rows.length; i++) {
-        let request_row_cells = request_rows[i].children;
-        let request_id = request_rows[i].children[0].innerText;
-        console.log(request_rows[i].children[0]);
-        console.log(request_id);
-        for(let j = 0; j < request_row_cells.length-1; j++) {
-            request_row_cells[j].addEventListener('click', function(){
-                window.location.href = '/admin/requests/info/' + request_id;
-            });
-        }
-    }
+
+    let globalTableName = 'requests';
+    let totalPagesCount = [[${totalPagesCount}]];
+    let tableData;
+    let currentPageNumber = 1;
+    let currentPageSize = 10;
+
+    $(document).ready(function(){
+
+        drawTable();
+
+    });
+
+</script>
+
+<script th:inline="javascript">
 
     let config = {
         enableTime: true,
@@ -235,133 +212,6 @@
 
     document.getElementById('datetime').readonly = false;
     document.getElementById('datetime').disabled = false;
-
-    const queryParams = window.location.search;
-    console.log(queryParams);
-
-    const urlParams = new URLSearchParams(queryParams);
-
-    let pageNumber = parseInt(urlParams.get('page'));
-    console.log('page number ' +pageNumber);
-
-    const requests = [[${requests}]];
-    const pages_count = [[${pages_count}]];
-    console.log('total pages count : ' + pages_count);
-    let page_buttons_container = document.getElementById("page_button_container");
-
-    let url = new URL(window.location.href)
-    url.searchParams.delete('page');
-    let url_without_page = url.toString();
-
-    let back_btn = document.createElement("a");
-    back_btn.classList.add("btn");
-    if(pageNumber > 1) {back_btn.classList.add("btn-primary"); url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber-1)); back_btn.href = url.toString();}
-    else {back_btn.classList.add("btn-default"); back_btn.style.opacity = 0.6; back_btn.href = '#'}
-    back_btn.innerText = ' < ';
-
-    page_buttons_container.appendChild(back_btn);
-
-    function insertPreviousNumbers(page_number) {
-        if(page_number-1 <= 1 || page_number === 1) return;
-
-        if(page_number == pages_count) {
-            btn = document.createElement("a");
-            btn.classList.add("btn", "btn-default");
-            url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber-2));
-            btn.href = url.toString();
-            console.log(btn.href);
-            btn.innerText = pageNumber-2;
-            page_buttons_container.appendChild(btn);
-        }
-
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default");
-        url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber-1));
-        btn.href = url.toString();
-        console.log(btn.href);
-        btn.innerText = pageNumber-1;
-        page_buttons_container.appendChild(btn);
-    }
-
-    function insertNextNumbers(page_number) {
-        if(page_number+1 >= pages_count || page_number === pages_count) return;
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default");
-        url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber+1));
-        btn.href = url.toString();
-        console.log(btn.href);
-        btn.innerText = pageNumber+1;
-        page_buttons_container.appendChild(btn);
-
-        if(page_number == 1) {
-            btn = document.createElement("a");
-            btn.classList.add("btn", "btn-default");
-            url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber+2));
-            btn.href = url.toString();
-            btn.innerText = pageNumber+2;
-            page_buttons_container.appendChild(btn);
-        }
-    }
-
-    function insertNumber(page_number) {
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default", "selected");
-        url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber));
-        btn.href = url.toString();
-        btn.innerText = pageNumber;
-        page_buttons_container.appendChild(btn);
-    }
-
-    //first button (1)
-    let btn = document.createElement("a");
-    btn.classList.add("btn", "btn-default");
-    if(pageNumber == 1) btn.classList.add("selected");
-    url.searchParams.delete('page'); url.searchParams.append('page', 1);
-    btn.href = url.toString();
-    btn.innerText = 1;
-    page_buttons_container.appendChild(btn);
-
-    // ... block
-    if(pageNumber >= 4 && pages_count > 4) {
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default");
-        btn.style.opacity = 0.6;
-        btn.href = '#';
-        btn.innerText = '...';
-        page_buttons_container.appendChild(btn);
-    }
-
-    // prev.page number, current page number, next page number
-    insertPreviousNumbers(pageNumber);
-    if(pageNumber != 1 && pageNumber != pages_count) insertNumber(pageNumber);
-    insertNextNumbers(pageNumber);
-
-    // ... block
-    if(pageNumber < pages_count-2 && pages_count > 4) {
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default");
-        btn.style.opacity = 0.6;
-        btn.href = '#';
-        btn.innerText = '...';
-        page_buttons_container.appendChild(btn);
-    }
-
-    //last button
-    btn = document.createElement("a");
-    btn.classList.add("btn", "btn-default");
-    if(pageNumber == pages_count) btn.classList.add("selected");
-    url.searchParams.delete('page'); url.searchParams.append('page', pages_count);
-    btn.href = url.toString();
-    btn.innerText = pages_count;
-    page_buttons_container.appendChild(btn);
-
-    let fwd_btn = document.createElement("a");
-    fwd_btn.classList.add("btn");
-    if(pageNumber < pages_count) {fwd_btn.classList.add("btn-primary"); url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber+1)); fwd_btn.href = url.toString();}
-    else {fwd_btn.classList.add("btn-default"); fwd_btn.style.opacity = 0.6; fwd_btn.href = '#'}
-    fwd_btn.innerText = ' > ';
-
-    page_buttons_container.appendChild(fwd_btn);
 
     $(document).ready(function(){
         $("#master_type, #status").select2({placeholder: 'Выберите...', minimumResultsForSearch:Infinity});
@@ -397,9 +247,6 @@
             placeholder: 'Выберите...'
         });
 
-        let clone = document.getElementById("page_button_container").cloneNode(true);
-        $(".box-header").append(clone);
-
         $("#datetime").prop('readonly', false);
         document.getElementById('datetime').style.cursor = 'pointer';
         document.getElementById('datetime').style.caretColor = 'transparent';
@@ -419,20 +266,12 @@
             background-color: rgba(0, 179, 255, 0.4);
             color: white;
         }
+
+        a.page-link {
+            width: 42px;
+            text-align: center;
+        }
 </style>
 
-<!-- PAGE PLUGINS -->
-<!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->
-<!--<script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>-->
-<!--<script src="plugins/raphael/raphael.min.js"></script>-->
-<!--<script src="plugins/jquery-mapael/jquery.mapael.min.js"></script>-->
-<!--<script src="plugins/jquery-mapael/maps/usa_states.min.js"></script>-->
-<!--&lt;!&ndash; ChartJS &ndash;&gt;-->
-<!--<script src="plugins/chart.js/Chart.min.js"></script>-->
-
-<!--&lt;!&ndash; AdminLTE for demo purposes &ndash;&gt;-->
-<!--<script th:src="@{/dist/js/demo.js}"></script>-->
-<!--&lt;!&ndash; AdminLTE dashboard demo (This is only for demo purposes) &ndash;&gt;-->
-<!--<script th:src="@{/dist/js/pages/dashboard2.js}"></script>-->
 </body>
 </html>

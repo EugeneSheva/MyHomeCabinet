@@ -1,12 +1,16 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.model.ApartmentAccountDTO;
 import com.example.myhome.home.model.MeterData;
+import com.example.myhome.home.model.MeterDataDTO;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.MeterDataService;
 import com.example.myhome.home.service.ServiceService;
 import com.example.myhome.home.validator.MeterValidator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -62,7 +66,7 @@ public class MeterController {
         log.info(meterDataList.toString());
 
         model.addAttribute("meter_data_rows", meterDataList.getContent());
-        model.addAttribute("pages_count", meterDataList.getTotalPages());
+        model.addAttribute("totalPagesCount", meterDataList.getTotalPages());
 
         model.addAttribute("buildings", buildingService.findAllDTO());
         if(building != null) model.addAttribute("sections", buildingService.findById(building).getSections());
@@ -233,6 +237,15 @@ public class MeterController {
     public String showInfo(@PathVariable long id, Model model) {
         model.addAttribute("meter", meterDataService.findMeterData(id));
         return "admin_panel/meters/meter_profile";
+    }
+
+    @GetMapping("/get-meters")
+    public @ResponseBody Page<MeterDataDTO> getMeters(@RequestParam Integer page,
+                                                      @RequestParam Integer size,
+                                                      @RequestParam String filters) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        FilterForm form = mapper.readValue(filters, FilterForm.class);
+        return meterDataService.findAllBySpecification(form, page, size);
     }
 
     @ModelAttribute

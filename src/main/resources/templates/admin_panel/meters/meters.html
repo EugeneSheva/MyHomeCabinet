@@ -62,7 +62,8 @@
                 </div>
               </div>
               <div class="box-body table-responsive">
-                <table class="table table-bordered table-hover table-striped linkedRow">
+                <nav aria-label="Page navigation " class="pagination_container mt-3"></nav>
+                <table id="metersTable" class="table table-bordered table-hover table-striped linkedRow">
                   <thead>
                   <tr>
                     <th style="min-width: 200px">Дом</th>
@@ -77,7 +78,7 @@
                       <tr>
                           <td style="padding: 10px">
                               <select style="width: 100%; padding-block: 10px" th:field="*{building}" class="my_filters" name="building_filter" id="building">
-                                  <option value="0"></option>
+                                  <option value=""></option>
                                   <option th:each="building : ${buildings}"
                                           th:value="${building.id}"
                                           th:text="${building.name}"></option>
@@ -109,31 +110,11 @@
                   </form>
                   </thead>
                   <tbody>
-                  <tr th:each="row : ${meter_data_rows}" style="cursor: pointer;" class="meter_data_row">
-                      <input type="hidden" class="row_ids" th:value="${row.apartment.id}">
-                      <input type="hidden" class="row_ids" th:value="${row.service.id}">
-                      <td><a th:href="@{/admin/meters/data?flat_id={flat_id}&service_id={service_id}(flat_id=${row.apartment.id}, service_id=${row.service.id})}" th:text="${row.apartment.building.name}"></a></td>
-                      <td th:text="${row.apartment.section}"></td>
-                      <td th:text="${row.apartment.number}"></td>
-                      <td th:text="${row.service.name}"></td>
-                      <td th:text="${row.currentReadings}" style="background-color: #DFD5; font-weight:bold; text-decoration:underline"></td>
-                      <td th:text="${row.service.unit.name}" style="background-color: #DFD5; font-weight:bold; text-decoration:underline"></td>
-                      <td>
-                          <div class="btn-group pull-right">
-                              <a class="btn btn-default btn-sm" th:href="@{/admin/meters/create-add?flat_id={flat_id}&service_id={service_id}(flat_id=${row.apartment.id}, service_id=${row.service.id})}" title="Снять новое показание счетчика" target="_blank" data-toggle="tooltip"><i class="fa fa-dashboard"></i></a>
-                              <a class="btn btn-default btn-sm" th:href="@{/admin/meters/data?flat_id={flat_id}&service_id={service_id}(flat_id=${row.apartment.id}, service_id=${row.service.id})}" title="Открыть историю показаний для счетчика" data-toggle="tooltip"><i class="fa fa-eye"></i></a>
-                          </div>
-                      </td>
-                  </tr>
-                  <tr th:if="${meter_data_rows.size() == 0}">
-                      <td colspan="7">Ничего не найдено</td>
-                  </tr>
+
                   </tbody>
 
                 </table>
-                  <div id="page_button_container" class="mb-4" style="display: flex; justify-content: center;">
-
-                  </div>
+                  <nav aria-label="Page navigation " class="pagination_container"></nav>
               </div>
               <div class="box-footer clearfix"></div>
             </div>
@@ -156,6 +137,11 @@
             background-color: rgba(0, 179, 255, 0.4);
             color: white;
         }
+
+        a.page-link {
+            width: 42px;
+            text-align: center;
+        }
     </style>
 
   <!-- Main Footer -->
@@ -163,170 +149,38 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- REQUIRED SCRIPTS -->
-<!-- Icons -->
 <script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
-<!-- jQuery -->
 <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
-<!-- Bootstrap -->
 <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
-<!-- overlayScrollbars -->
-<!--<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>-->
-<!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+<script th:src="@{/dist/js/pagination.js}"></script>
+
 <script th:inline="javascript">
 
-    let rows = document.getElementsByClassName("meter_data_row");
-    for(let i = 0; i < rows.length; i++) {
-        let flat_id = rows[i].getElementsByClassName('row_ids')[0].value;
-        let service_id = rows[i].getElementsByClassName('row_ids')[1].value;
-        console.log(flat_id);
-        console.log(service_id);
-        let row_children = rows[i].children;
-        for(let j = 0; j < row_children.length - 1; j++) {
-            row_children[j].addEventListener('click', function(){
-                window.location.href = '/admin/meters/data?flat_id='+flat_id+'&service_id='+service_id;
-            });
-        }
-    }
+    let globalTableName = 'meters';
+    let totalPagesCount = [[${totalPagesCount}]];
+    let tableData;
+    let currentPageNumber = 1;
+    let currentPageSize = 10;
 
-    const queryParams = window.location.search;
-    console.log(queryParams);
+    $(document).ready(function(){
 
-    const urlParams = new URLSearchParams(queryParams);
+        drawTable();
 
-    let pageNumber = parseInt(urlParams.get('page'));
-    console.log('page number ' +pageNumber);
+    });
 
-    const meters = [[${meter_data_rows}]];
-    const pages_count = [[${pages_count}]];
-    console.log('total pages count : ' + pages_count);
-    let page_buttons_container = document.getElementById("page_button_container");
+</script>
 
-    let url = new URL(window.location.href)
-    url.searchParams.delete('page');
-    let url_without_page = url.toString();
-
-    let back_btn = document.createElement("a");
-    back_btn.classList.add("btn");
-    if(pageNumber > 1) {back_btn.classList.add("btn-primary"); url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber-1)); back_btn.href = url.toString();}
-    else {back_btn.classList.add("btn-default"); back_btn.style.opacity = 0.6; back_btn.href = '#'}
-    back_btn.innerText = ' < ';
-
-    page_buttons_container.appendChild(back_btn);
-
-    function insertPreviousNumbers(page_number) {
-        if(page_number-1 <= 1 || page_number === 1) return;
-
-        if(page_number == pages_count) {
-            btn = document.createElement("a");
-            btn.classList.add("btn", "btn-default");
-            url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber-2));
-            btn.href = url.toString();
-            console.log(btn.href);
-            btn.innerText = pageNumber-2;
-            page_buttons_container.appendChild(btn);
-        }
-
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default");
-        url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber-1));
-        btn.href = url.toString();
-        console.log(btn.href);
-        btn.innerText = pageNumber-1;
-        page_buttons_container.appendChild(btn);
-    }
-
-    function insertNextNumbers(page_number) {
-        if(page_number+1 >= pages_count || page_number === pages_count) return;
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default");
-        url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber+1));
-        btn.href = url.toString();
-        console.log(btn.href);
-        btn.innerText = pageNumber+1;
-        page_buttons_container.appendChild(btn);
-
-        if(page_number == 1) {
-            btn = document.createElement("a");
-            btn.classList.add("btn", "btn-default");
-            url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber+2));
-            btn.href = url.toString();
-            btn.innerText = pageNumber+2;
-            page_buttons_container.appendChild(btn);
-        }
-    }
-
-    function insertNumber(page_number) {
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default", "selected");
-        url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber));
-        btn.href = url.toString();
-        btn.innerText = pageNumber;
-        page_buttons_container.appendChild(btn);
-    }
-
-    //first button (1)
-    let btn = document.createElement("a");
-    btn.classList.add("btn", "btn-default");
-    if(pageNumber == 1) btn.classList.add("selected");
-    url.searchParams.delete('page'); url.searchParams.append('page', 1);
-    btn.href = url.toString();
-    btn.innerText = 1;
-    page_buttons_container.appendChild(btn);
-
-    // ... block
-    if(pageNumber >= 4 && pages_count > 4) {
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default");
-        btn.style.opacity = 0.6;
-        btn.href = '#';
-        btn.innerText = '...';
-        page_buttons_container.appendChild(btn);
-    }
-
-    // prev.page number, current page number, next page number
-    insertPreviousNumbers(pageNumber);
-    if(pageNumber != 1 && pageNumber != pages_count) insertNumber(pageNumber);
-    insertNextNumbers(pageNumber);
-
-    // ... block
-    if(pageNumber < pages_count-2 && pages_count > 4) {
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default");
-        btn.style.opacity = 0.6;
-        btn.href = '#';
-        btn.innerText = '...';
-        page_buttons_container.appendChild(btn);
-    }
-
-    //last button
-    if(pages_count > 1) {
-        btn = document.createElement("a");
-        btn.classList.add("btn", "btn-default");
-        if(pageNumber == pages_count) btn.classList.add("selected");
-        url.searchParams.delete('page'); url.searchParams.append('page', pages_count);
-        btn.href = url.toString();
-        btn.innerText = pages_count;
-        page_buttons_container.appendChild(btn);
-    }
-
-
-    let fwd_btn = document.createElement("a");
-    fwd_btn.classList.add("btn");
-    if(pageNumber < pages_count) {fwd_btn.classList.add("btn-primary"); url.searchParams.delete('page'); url.searchParams.append('page', (pageNumber+1)); fwd_btn.href = url.toString();}
-    else {fwd_btn.classList.add("btn-default"); fwd_btn.style.opacity = 0.6; fwd_btn.href = '#'}
-    fwd_btn.innerText = ' > ';
-
-    page_buttons_container.appendChild(fwd_btn);
+<script th:inline="javascript">
 
     // ФИЛЬТРЫ
     $(document).ready(function(){
-
-        let clone = document.getElementById("page_button_container").cloneNode(true);
-        $(".box-header").append(clone);
 
         $("#section, #service").select2({placeholder: 'Выберите...', minimumResultsForSearch:Infinity});
 
@@ -344,63 +198,8 @@
             placeholder: 'Выберите...'
         });
 
-        $(".my_filters").change(function(){
-            let building_id = $("#building").val();
-            let service_id = $("#service").val();
-            let apartment_number = $("#apartment").val();
-            let section_name = $("#section").val();
-
-            let id = $("#id").val();
-            let datetime = $("#datetime").val();
-            let description = $("#description").val();
-            let master_type = $("#master_type").val();
-            let master_id = $("#master").val();
-            let owner_id = $("#owner").val();
-            let phone = $("#phone").val();
-            let status = $("#status").val();
-
-            const link_elements = [];
-
-            if(building_id != null && building_id != 0) link_elements.push('building='+building_id);
-            if(service_id != null && service_id != 0) link_elements.push('service='+service_id);
-            if(apartment_number != null && apartment_number != 0) link_elements.push('apartment='+apartment_number);
-            if(section_name != null && section_name != '') link_elements.push('section='+section_name);
-
-            if(id != null && id != 0) link_elements.push('id='+id);
-            if(datetime != null && datetime != '') link_elements.push('datetime='+datetime);
-            if(description != null && description != '') link_elements.push('description='+description);
-            if(master_type != null && master_type != '') link_elements.push('master_type='+master_type);
-            if(master_id != null && master_id != 0) link_elements.push('master_id='+master_id);
-            if(owner_id != null && owner_id != 0) link_elements.push('owner_id='+owner_id);
-            if(phone != null && phone != '') link_elements.push('phone='+phone);
-            if(status != null && status != '') link_elements.push('status='+status);
-
-            pageNumber = 1;
-
-            link_elements.push('page='+pageNumber);
-
-            let final_link = (link_elements.length > 0) ? ('?' + link_elements.join('&')) : '';
-
-            window.location.href = '/admin/meters'+final_link;
-        });
-
-
     });
 </script>
 
-
-<!-- PAGE PLUGINS -->
-<!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->
-<!--<script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>-->
-<!--<script src="plugins/raphael/raphael.min.js"></script>-->
-<!--<script src="plugins/jquery-mapael/jquery.mapael.min.js"></script>-->
-<!--<script src="plugins/jquery-mapael/maps/usa_states.min.js"></script>-->
-<!--&lt;!&ndash; ChartJS &ndash;&gt;-->
-<!--<script src="plugins/chart.js/Chart.min.js"></script>-->
-
-<!--&lt;!&ndash; AdminLTE for demo purposes &ndash;&gt;-->
-<!--<script th:src="@{/dist/js/demo.js}"></script>-->
-<!--&lt;!&ndash; AdminLTE dashboard demo (This is only for demo purposes) &ndash;&gt;-->
-<!--<script th:src="@{/dist/js/pages/dashboard2.js}"></script>-->
 </body>
 </html>

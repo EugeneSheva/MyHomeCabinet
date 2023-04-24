@@ -1,6 +1,7 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.RepairRequest;
+import com.example.myhome.home.model.RepairRequestDTO;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.AdminRepository;
 import com.example.myhome.home.repository.OwnerRepository;
@@ -10,6 +11,8 @@ import com.example.myhome.home.service.OwnerService;
 import com.example.myhome.home.service.RepairRequestService;
 import com.example.myhome.home.validator.RequestValidator;
 import com.example.myhome.util.UserRole;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.java.Log;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +57,7 @@ public class RequestController {
         requestList = repairRequestService.findAllBySpecification(filterForm);
 
         model.addAttribute("requests", requestList);
-        model.addAttribute("pages_count", requestList.getTotalPages());
+        model.addAttribute("totalPagesCount", requestList.getTotalPages());
         model.addAttribute("owners", ownerService.findAllDTO());
         model.addAttribute("masters", adminService.findAllDTO());
 
@@ -163,6 +166,15 @@ public class RequestController {
     public String deleteRequest(@PathVariable long id) {
         repairRequestService.deleteRequestById(id);
         return "redirect:/admin/requests";
+    }
+
+    @GetMapping("/get-requests")
+    public @ResponseBody Page<RepairRequestDTO> getRequests(@RequestParam Integer page,
+                                                            @RequestParam Integer size,
+                                                            @RequestParam String filters) throws JsonProcessingException, IllegalAccessException {
+        ObjectMapper mapper = new ObjectMapper();
+        FilterForm form = mapper.readValue(filters, FilterForm.class);
+        return repairRequestService.findAllBySpecification(form, page, size);
     }
 
     @ModelAttribute

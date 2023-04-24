@@ -10,6 +10,8 @@ import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.model.OwnerDTO;
 import com.example.myhome.home.service.OwnerService;
 import com.example.myhome.home.validator.OwnerValidator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,6 +57,7 @@ public class OwnerController {
         model.addAttribute("buildings", buildingDTOList);
         Page<Owner> ownerList = ownerService.findAll(pageable);
         model.addAttribute("owners", ownerList);
+        model.addAttribute("totalPagesCount", ownerList.getTotalPages());
         model.addAttribute("filterForm", new FilterForm());
         return "admin_panel/owners/owners";
     }
@@ -133,6 +136,15 @@ public class OwnerController {
         ApartmentAccount account = accountService.findById(account_id);
         Owner owner = account.getApartment().getOwner();
         return owner.transformIntoDTO();
+    }
+
+    @GetMapping("/get-owners")
+    public @ResponseBody Page<OwnerDTO> getOwners(@RequestParam Integer page,
+                                                  @RequestParam Integer size,
+                                                  @RequestParam String filters) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        FilterForm form = mapper.readValue(filters, FilterForm.class);
+        return ownerService.findAllBySpecification(form, page, size);
     }
 
     @GetMapping("/get-all-owners")

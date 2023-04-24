@@ -1,8 +1,18 @@
 package com.example.myhome.util;
 
 public enum UserStatus {
-    ACTIVE,
-    NEW,
-    DISABLED,
-    INACTIVE
+    ACTIVE("Активен"),
+    NEW("Новый"),
+    DISABLED("Отключен"),
+    INACTIVE("Неактивен");
+
+    private final String name;
+
+    UserStatus(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

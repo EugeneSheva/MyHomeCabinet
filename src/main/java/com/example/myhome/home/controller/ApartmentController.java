@@ -7,6 +7,7 @@ import com.example.myhome.home.service.*;
 import com.example.myhome.home.validator.ApartmentValidator;
 import com.example.myhome.util.UserRole;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -65,6 +66,10 @@ public class ApartmentController {
 
         Page<Apartment> apartmentList = apartmentService.findAll(pageable);
         model.addAttribute("apartments", apartmentList);
+
+        //
+        model.addAttribute("paginatedList", apartmentList);
+        model.addAttribute("totalPagesCount", apartmentList.getTotalPages());
 
         FilterForm filterForm = new FilterForm();
         System.out.println(filterForm.getBuildingName());
@@ -261,5 +266,17 @@ public class ApartmentController {
         Page<OwnerDTO> ownerPage = ownerService.findByNameFragmentDTO(searchQuerie, pageable);
 
         return ownerPage;
+    }
+
+    @GetMapping("/get-apartments-page")
+    @ResponseBody
+    public Page<Apartment> getApartmentsByPage(@RequestParam Integer page,
+                                               @RequestParam Integer size,
+                                               @RequestParam String filters) throws JsonProcessingException {
+//        ObjectMapper mapper = new ObjectMapper();
+//        FilterForm form = mapper.readValue(filters, FilterForm.class);
+
+//        return apartmentService.findBySpecificationAndPage(page, size, filters);
+        return apartmentService.findAll(PageRequest.of(page-1, size));
     }
 }

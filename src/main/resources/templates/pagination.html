@@ -1,0 +1,84 @@
+<nav th:fragment="pageSelect" aria-label="Page navigation" th:if="${paginatedList.totalPages > 0}">
+  <ul class="pagination justify-content-center font-weight-medium">
+    <li class="page-item" th:classappend="${paginatedList.number == 0} ? 'disabled'">
+      <a class="page-link"
+         href="#"
+         aria-label="Previous">
+        <span aria-hidden="true">«</span>
+      </a>
+    </li>
+    <li class="page-item" th:classappend="${paginatedList.number == 0} ? 'disabled'">
+      <a class="page-link"
+         href="#"
+         aria-label="Next">
+        <span aria-hidden="true">‹</span>
+      </a>
+    </li>
+    <!-- первый номер(всегда виден) -->
+    <li class="page-item" th:classappend="${paginatedList.number == 0} ? 'active'">
+      <a class="page-link"
+         href="#"
+         aria-label="Next">
+        <span aria-hidden="true">1</span>
+      </a>
+    </li>
+    <!-- ... (скрывает лишние страницы) -->
+    <li class="page-item disabled" th:if="${paginatedList.number > 3 }">
+      <a class="page-link" href="#">...
+      </a>
+    </li>
+    <!-- основные страницы -->
+    <li class="page-item" th:classappend="${i == paginatedList.number + 1} ? 'active'"
+        th:each="i : ${#numbers.sequence((paginatedList.number > 2 ? paginatedList.number - 1 : 2), (paginatedList.number + 4 < paginatedList.totalPages ? paginatedList.number + 3 : paginatedList.totalPages-1), 1)}">
+      <a class="page-link"
+         href="#"
+         th:text="${i}"
+         th:title="${'Page '+ i}"
+         rel="tooltip"></a></li>
+    <!-- ... (скрывает лишние страницы) -->
+    <li class="page-item disabled"
+        th:if="${paginatedList.number + 4 < paginatedList.totalPages}">
+      <a class="page-link" href="#">...
+      </a>
+    </li>
+    <!-- последний номер(всегда виден) -->
+    <li class="page-item" th:classappend="${paginatedList.number == paginatedList.getTotalPages()-1} ? 'active'">
+      <a class="page-link"
+         href="#"
+         aria-label="Next">
+        <span aria-hidden="true" th:text="${paginatedList.getTotalPages()}">1</span>
+      </a>
+    </li>
+    <!--                                <li class="page-item" th:classappend="${user.number + 1 eq user.totalPages} ? 'disabled'"><a class="page-link" href="#">...</a></li>-->
+    <li class="page-item"
+        th:classappend="${paginatedList.number >= paginatedList.totalPages - 2} ? 'disabled'">
+      <a class="page-link"
+         href="#"
+         aria-label="Next">
+        <span aria-hidden="true">›</span>
+      </a>
+    </li>
+    <li class="page-item"
+        th:classappend="${paginatedList.number eq paginatedList.totalPages - 1} ? 'disabled'">
+      <a class="page-link"
+         href="#"
+         aria-label="Next">
+        <span aria-hidden="true">»</span>
+      </a>
+    </li>
+    <div class="btn-group">
+      <button type="button" th:text="${paginatedList.getSize}"
+              class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown"
+              aria-expanded="false">
+
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item">5</a></li>
+        <li><a class="dropdown-item">10</a></li>
+        <li><a class="dropdown-item">25</a></li>
+        <li><a class="dropdown-item">50</a></li>
+        <li><a class="dropdown-item">100</a></li>
+      </ul>
+    </div>
+  </ul>
+</nav>

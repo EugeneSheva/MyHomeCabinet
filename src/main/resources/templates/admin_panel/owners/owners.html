@@ -70,10 +70,11 @@
                             </a>
                         </div>
                     </div>
-                    <div class="card-body " style="padding: 0">
+                    <div class="card-body mt-3" style="padding: 0">
                         <form method="POST" id="1" th:action="@{/admin/owners/filter}" th:object="${filterForm}"
                               enctype="multipart/form-data">
-                            <table id="example2" class="table table-bordered table-hover table-striped linkedRow"
+                            <nav aria-label="Page navigation " class="pagination_container"></nav>
+                            <table id="ownersTable" class="table table-bordered table-hover table-striped linkedRow"
                                    width="100%">
                                 <col style="width:7%">
                                 <col style="width:25%">
@@ -92,7 +93,7 @@
                                     <th>Телефон</th>
                                     <th>Email</th>
                                     <th style="min-width:200px">Дом</th>
-                                    <th>Квартира</th>
+                                    <th style="min-width:150px">Квартира</th>
                                     <th>Добавлен</th>
                                     <th style="min-width:150px">Статус</th>
                                     <th style="min-width:150px">Есть долг</th>
@@ -108,7 +109,7 @@
                                     <th><input type="text" class="form-control" name="email"
                                                th:field="${filterForm.email}" id="email"></th>
                                     <th><select class="form-select" id="buildingName" name="buildingName">
-                                        <option value="-"
+                                        <option value=""
                                                 th:selected="${filterForm.buildingName == null}"></option>
                                         <option th:each="building : ${buildings}"
                                                 th:text="${building.name}"
@@ -128,7 +129,7 @@
                                     </th>
 
                                     <th><select class="form-select" id="status" name="status">
-                                        <option th:selected="${filterForm.debtSting == null}" value="-"></option>
+                                        <option th:selected="${filterForm.debtSting == null}" value=""></option>
                                         <option value="active"
                                                 th:selected="${#strings.containsIgnoreCase(('active'),((filterForm.status != null) ? (filterForm.status ): ('emp') ))}"
                                         >Активный
@@ -144,7 +145,7 @@
                                     </select></th>
 
                                     <th><select class="form-select" id="debt" name="debtSting">
-                                        <option th:selected="${filterForm.debtSting == null}" value="-"></option>
+                                        <option th:selected="${filterForm.debtSting == null}" value=""></option>
                                         <option value="haveDebt"
                                                 th:selected="${#strings.containsIgnoreCase(('haveDebt'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}"
                                         >Есть долг
@@ -158,137 +159,12 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="owner : ${owners}">
-                                    <td><a style="display: block; color: black; text-decoration: none;"
-                                           th:text="${owner.id}"
-                                           th:href="@{{id}(id=${owner.id})}"></a></td>
 
-                                    <td><a style="display: block; color: black; text-decoration: none;"
-                                           th:text="${owner.first_name}+' '+${owner.last_name}+' '+${owner.fathers_name}"
-                                           th:href="@{{id}(id=${owner.id})}"></a></td>
-
-                                    <td><a style="display: block; color: black; text-decoration: none;"
-                                           th:text="${owner.phone_number}"
-                                           th:href="@{{id}(id=${owner.id})}"></a></td>
-
-                                    <td><a style="display: block; color: black; text-decoration: none;"
-                                           th:text="${owner.email}"
-                                           th:href="@{{id}(id=${owner.id})}"></a></td>
-
-                                    <td><a style="display: block; color: black; text-decoration: none;"
-                                           th:each="apartment : ${owner.apartments}"
-                                           th:text="${apartment.building.name}"
-                                           th:href="@{{id}(id=${owner.id})}"></a></td>
-
-                                    <td><a style="display: block; color: black; text-decoration: none;"
-                                           th:each="apartment : ${owner.apartments}" th:text="${apartment.number}"
-                                           th:href="@{{id}(id=${owner.id})}"></a></td>
-
-                                    <td><a style="display: block; color: black; text-decoration: none;"
-                                           th:text="${owner.added_at}"
-                                           th:href="@{{id}(id=${owner.id})}"></a></td>
-
-                                    <td><a style="display: block; color: black; text-decoration: none;"
-                                           th:text="${owner.status}"
-                                           th:href="@{{id}(id=${owner.id})}"></a></td>
-
-                                    <td><a style="display: block; color: black; text-decoration: none;"
-                                           th:text="${owner.has_debt}"
-                                           th:href="@{{id}(id=${owner.id})}"></a></td>
-
-
-                                    <td>
-                                        <div class="btn-group" role="group" aria-label="Basic outlined button group">
-                                            <a href="#" class="btn btn-default btn-sm"><i class="fa fa-envelope"
-                                                                                            aria-hidden="true"></i></a>
-                                            <a th:href="@{edit/{id}(id=${owner.id})}"
-                                               class="btn btn-default btn-sm"><i
-                                                    class="fa fa-pencil" aria-hidden="true"></i></i></a>
-                                            <a th:href="@{delete/{id}(id=${owner.id})}"
-                                               class="btn btn-default btn-sm"><i
-                                                    class="fa fa-trash-o" aria-hidden="true"></i></i></a>
-                                        </div>
-                                    </td>
-                                </tr>
                                 </tbody>
                                 <tfoot>
                                 </tfoot>
                             </table>
-                            <nav aria-label="Page navigation " th:if="${owners.totalPages gt 0}">
-                                <ul class="pagination justify-content-center font-weight-medium">
-                                    <li class="page-item" th:classappend="${owners.number eq 0} ? 'disabled'">
-                                        <a class="page-link"
-                                           th:href="@{/admin/owners/?page={id}&size={sz} (id=${owners.number eq 0 ? owners.number : 0},sz=${owners.getSize})}"
-                                           aria-label="Previous">
-                                            <span aria-hidden="true">«</span>
-                                        </a>
-                                    </li>
-                                    <li class="page-item" th:classappend="${owners.number le 0} ? 'disabled'">
-                                        <a class="page-link"
-                                           th:href="@{/admin/owners/?page={id}&size={sz} (id=${owners.number - 2},sz=${owners.getSize})}"
-                                           aria-label="Next">
-                                            <span aria-hidden="true">‹</span>
-                                        </a>
-                                    </li>
-                                    <li class="page-item disabled" th:if="${owners.number > 3 }">
-                                        <a class="page-link" href="#">...
-                                        </a>
-                                    </li>
-                                    <li class="page-item" th:classappend="${i eq owners.number + 1} ? 'active'"
-                                        th:each="i : ${#numbers.sequence(( owners.number > 2 ? owners.number - 2: owners.number - (owners.number - 1) ), (owners.number + 4 < owners.totalPages   ? owners.number + 4 : owners.totalPages), 1)}">
-                                        <a class="page-link"
-                                           th:href="@{/admin/owners/?page={id}&size={sz} (id=${i-1},sz=${owners.getSize})}"
-                                           th:text="${i}"
-                                           th:title="${'Page '+ i}"
-                                           rel="tooltip"></a></li>
-                                    <li class="page-item disabled"
-                                        th:if="${owners.number + 4 < owners.totalPages}">
-                                        <a class="page-link" href="#">...
-                                        </a>
-                                    </li>
-                                    <!--                                <li class="page-item" th:classappend="${user.number + 1 eq user.totalPages} ? 'disabled'"><a class="page-link" href="#">...</a></li>-->
-                                    <li class="page-item"
-                                        th:classappend="${owners.number ge owners.totalPages - 2} ? 'disabled'">
-                                        <a class="page-link"
-                                           th:href="@{/admin/owners/?page={id}&size={sz}(id=${owners.number + 2},sz=${owners.getSize})}"
-                                           aria-label="Next">
-                                            <span aria-hidden="true">›</span>
-                                        </a>
-                                    </li>
-                                    <li class="page-item"
-                                        th:classappend="${owners.number eq owners.totalPages - 1} ? 'disabled'">
-                                        <a class="page-link"
-                                           th:href="@{/admin/owners/?page={id}&size={sz}(id=${owners.totalPages - 1},sz=${owners.getSize})}"
-                                           aria-label="Next">
-                                            <span aria-hidden="true">»</span>
-                                        </a>
-                                    </li>
-                                    <div class="btn-group">
-                                        <button type="button" th:text="${owners.getSize}"
-                                                class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown"
-                                                aria-expanded="false">
-
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a class="dropdown-item"
-                                                   th:href="@{/admin/owners/?page={id}&size={sz}(id=${owners.getNumber},sz=5)}">5</a>
-                                            </li>
-                                            <li><a class="dropdown-item"
-                                                   th:href="@{/admin/owners/?page={id}&size=10(id=${owners.getNumber})}">10</a>
-                                            </li>
-                                            <li><a class="dropdown-item"
-                                                   th:href="@{/admin/owners/?page={id}&size=25(id=${owners.getNumber})}">25</a>
-                                            </li>
-                                            <li><a class="dropdown-item"
-                                                   th:href="@{/admin/owners/?page={id}&size=50(id=${owners.getNumber})}">50</a>
-                                            </li>
-                                            <li><a class="dropdown-item"
-                                                   th:href="@{/admin/owners/?page={id}&size=100(id=${owners.getNumber})}">100</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </ul>
-                            </nav>
+                            <nav aria-label="Page navigation " class="pagination_container"></nav>
                         </div>
                     </div>
                     <!-- /.card-body -->
@@ -305,20 +181,33 @@
     <!-- /.Footer -->
 </div>
 
+<script th:src="@{https://kit.fontawesome.com/41663a8b50.js}" crossorigin="anonymous"></script>
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dist/js/adminlte.js}"></script>
+<script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 
-<!-- REQUIRED SCRIPTS -->
-<!-- Icons -->
-<script th:src="@{https://kit.fontawesome.com/41663a8b50.js}" crossorigin="anonymous"></script>
-<!-- jQuery -->
-<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
-<!-- Bootstrap -->
-<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
-<!-- AdminLTE App -->
-<script th:src="@{/dist/js/adminlte.js}"></script>
-<script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
+<script th:src="@{/dist/js/pagination.js}"></script>
+
+<script th:inline="javascript">
+
+    let globalTableName = 'owners';
+    let totalPagesCount = [[${totalPagesCount}]];
+    let tableData;
+    let currentPageNumber = 1;
+    let currentPageSize = 10;
+
+    $(document).ready(function(){
+
+        drawTable();
+
+    });
+
+</script>
 
 
 <script>
@@ -350,6 +239,25 @@
         $("#buildingName, #status, #debt").select2({placeholder: 'Выберите...', minimumResultsForSearch:Infinity});
     });
 </script>
+
+<style>
+        a.selected {
+            background-color: rgba(0, 179, 255, 0.4);
+            color: white;
+            cursor: initial;
+            caret-color:transparent;
+        }
+
+        a.selected:hover {
+            background-color: rgba(0, 179, 255, 0.4);
+            color: white;
+        }
+
+        a.page-link {
+            width: 42px;
+            text-align: center;
+        }
+</style>
 
 
 

@@ -87,15 +87,14 @@ public class InvoiceController {
 
         log.info(invoices.toString());
 
-        model.addAttribute("invoices", invoices);
-        model.addAttribute("amount", invoiceService.getFilteredInvoiceCount(form));
         model.addAttribute("owners", ownerService.findAllDTO());
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
         model.addAttribute("account_balance", apartmentAccountService.getSumOfAccountBalances());
         model.addAttribute("account_debt", apartmentAccountService.getSumOfAccountDebts());
 
+        model.addAttribute("totalPagesCount", invoices.getTotalPages());
+
         model.addAttribute("filter_form", form);
-        model.addAttribute("page", form.getPage());
         return "admin_panel/invoices/invoices";
     }
 
@@ -287,13 +286,13 @@ public class InvoiceController {
     }
 
     @GetMapping(value="/get-invoices")
-    public @ResponseBody List<Invoice> getInvoices(@RequestParam Integer page,
-                                                   @RequestParam Integer page_size,
-                                                   @RequestParam String f_string) throws JsonProcessingException {
+    public @ResponseBody Page<Invoice> getInvoices(@RequestParam Integer page,
+                                                   @RequestParam Integer size,
+                                                   @RequestParam String filters) throws JsonProcessingException {
 
         ObjectMapper mapper = new ObjectMapper();
-        FilterForm filters = mapper.readValue(f_string, FilterForm.class);
-        return invoiceService.findAllBySpecificationAndPage(filters, page, page_size).toList();
+        FilterForm form = mapper.readValue(filters, FilterForm.class);
+        return invoiceService.findAllBySpecificationAndPage(form, page-1, size);
     }
 
     @GetMapping("/get-filtered-invoice-count")
