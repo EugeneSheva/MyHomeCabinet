@@ -1,5 +1,6 @@
 package com.example.myhome.home.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -19,11 +20,13 @@ public class Message {
     private Long id;
 
     //отправитель
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "sender_id")
     private Admin sender;
 
     //получатель(-и)
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "messages_users",

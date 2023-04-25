@@ -24,7 +24,7 @@
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-
+  <div th:insert="~{cabinet-template :: loading}"></div>
   <nav th:insert="~{cabinet-template :: header}"></nav>
   <aside th:insert="~{cabinet-template :: sidebar}"></aside>
 
@@ -52,7 +52,7 @@
         <section class="content">
             <div class="container-fluid">
                 <form class="row g-3 needs-validation" novalidate th:method="POST"
-                      th:action="@{/admin/owners/save}" th:object="${owner}" enctype="multipart/form-data">
+                      th:action="@{/cabinet/user/save}" th:object="${owner}" enctype="multipart/form-data">
                     <div class="card" style="padding:30px">
                         <div class="row">
                             <div class="col-md-6">
@@ -139,6 +139,9 @@
                                 <textarea class="form-control" th:field="*{description}" id="description"  rows="10"></textarea ><br>
 
                                 <h4>Изменить пароль</h4>
+
+                                <input type="hidden" id="enabled" class="form-control" name="enabled"
+                                       placeholder="" th:field="*{enabled}">
 
                                 <input type="hidden" id="pass" class="form-control" name="pass"
                                        placeholder="" th:field="*{password}">

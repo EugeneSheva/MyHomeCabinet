@@ -92,23 +92,23 @@
                                     <th>ФИО</th>
                                     <th>Телефон</th>
                                     <th>Email</th>
-                                    <th style="min-width:200px">Дом</th>
-                                    <th style="min-width:150px">Квартира</th>
+                                    <th >Дом</th>
+                                    <th >Квартира</th>
                                     <th>Добавлен</th>
-                                    <th style="min-width:150px">Статус</th>
-                                    <th style="min-width:150px">Есть долг</th>
+                                    <th >Статус</th>
+                                    <th >Есть долг</th>
                                     <th></th>
                                 </tr>
                                 <tr>
-                                    <th><input type="text" autocomplete="off" class="form-control" name="id"
+                                    <th><input type="text" autocomplete="off" class="form-control my_filters" name="id"
                                                th:field="${filterForm.id}" id="id"></th>
-                                    <th><input type="text" autocomplete="off" class="form-control" name="ownerName"
+                                    <th><input type="text" autocomplete="off" class="form-control my_filters" name="ownerName"
                                                th:field="${filterForm.ownerName}" id="ownerName"></th>
-                                    <th><input type="text" autocomplete="off" class="form-control" name="phone"
+                                    <th><input type="text" autocomplete="off" class="form-control my_filters" name="phone"
                                                th:field="${filterForm.phone}" id="phone"></th>
-                                    <th><input type="text" autocomplete="off" class="form-control" name="email"
+                                    <th><input type="text" autocomplete="off" class="form-control my_filters" dname="email"
                                                th:field="${filterForm.email}" id="email"></th>
-                                    <th><select autocomplete="off" class="form-select" id="buildingName" name="buildingName">
+                                    <th><select autocomplete="off" class="form-select my_filters" id="buildingName" name="buildingName">
                                         <option value=""
                                                 th:selected="${filterForm.buildingName == null}"></option>
                                         <option th:each="building : ${buildings}"
@@ -117,40 +117,40 @@
                                                 th:selected="${#strings.containsIgnoreCase((building.name),((filterForm.buildingName != null) ? (filterForm.buildingName ): ('empty') ))}"></option>
                                     </select></th>
 
-                                    <th><input autocomplete="off" type="number" class="form-control" name="apartment"
+                                    <th><input autocomplete="off" type="number" class="form-control my_filters" name="apartment"
                                                th:field="${filterForm.apartment}" id="number"></th>
 
                                     <th>
                                         <div class="md-form md-outline input-with-post-icon datepicker"
                                              style="padding: 0; margin-bottom: 0px">
                                             <input autocomplete="off" placeholder="Select date" th:value="${localDate}" type="date"
-                                                   id="localDate" name="localDate" class="form-control">
+                                                   id="localDate" name="localDate" class="form-control my_filters">
                                         </div>
                                     </th>
 
-                                    <th><select autocomplete="off" class="form-select" id="status" name="status">
+                                    <th><select autocomplete="off" class="form-select my_filters" id="status" name="status">
                                         <option th:selected="${filterForm.debtSting == null}" value=""></option>
-                                        <option value="active"
+                                        <option value="ACTIVE"
                                                 th:selected="${#strings.containsIgnoreCase(('active'),((filterForm.status != null) ? (filterForm.status ): ('emp') ))}"
                                         >Активный
                                         </option>
-                                        <option value="new"
+                                        <option value="NEW"
                                                 th:selected="${#strings.containsIgnoreCase(('new'),((filterForm.status != null) ? (filterForm.status ): ('emp') ))}"
                                         >Новый
                                         </option>
-                                        <option value="disabled"
+                                        <option value="DISABLED"
                                                 th:selected="${#strings.containsIgnoreCase(('disabled'),((filterForm.status != null) ? (filterForm.status ): ('emp') ))}"
                                         >Отключенный
                                         </option>
                                     </select></th>
 
-                                    <th><select autocomplete="off" class="form-select" id="debt" name="debtSting">
-                                        <option th:selected="${filterForm.debtSting == null}" value=""></option>
-                                        <option value="haveDebt"
+                                    <th><select autocomplete="off" class="form-select my_filters" id="debt" name="debtSting">
+                                        <option th:selected="${filterForm.debtSting == null}" th:value="null"></option>
+                                        <option th:value="true"
                                                 th:selected="${#strings.containsIgnoreCase(('haveDebt'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}"
                                         >Есть долг
                                         </option>
-                                        <option value="noDebt"
+                                        <option th:value="false"
                                                 th:selected="${#strings.containsIgnoreCase(('noDebt'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}"
                                         >Нет долга
                                         </option>
@@ -208,35 +208,35 @@
 </script>
 
 
-<script>
-    let timeoutId;
+<!--<script>-->
+<!--    let timeoutId;-->
 
-    function handleFormSubmit() {
-        const form = document.getElementById('1');
-        form.submit();
-        console.log("Форма отправлена!");
-    }
+<!--    function handleFormSubmit() {-->
+<!--        const form = document.getElementById('1');-->
+<!--        form.submit();-->
+<!--        console.log("Форма отправлена!");-->
+<!--    }-->
 
-    function handleInputChange() {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(handleFormSubmit, 3000);
-    }
+<!--    function handleInputChange() {-->
+<!--        clearTimeout(timeoutId);-->
+<!--        timeoutId = setTimeout(changeFilterData, 3000);-->
+<!--    }-->
 
-    // event listener on field
-    const input = document.querySelector('input[type="text"]');
-    input.addEventListener('input', handleInputChange);
+<!--    // event listener on field-->
+<!--    const input = document.querySelector('input[type="text"]');-->
+<!--    input.addEventListener('input', handleInputChange);-->
 
-    // event on Enter
-    document.addEventListener('keydown', function (event) {
-        if (event.key === "Enter") {
-            handleFormSubmit();
-        }
-    });
+<!--    // event on Enter-->
+<!--    document.addEventListener('keydown', function (event) {-->
+<!--        if (event.key === "Enter") {-->
+<!--            changeFilterData();-->
+<!--        }-->
+<!--    });-->
 
-    $(document).ready(function(){
-        $("#buildingName, #status, #debt").select2({placeholder: 'Выберите...', minimumResultsForSearch:Infinity});
-    });
-</script>
+<!--    $(document).ready(function(){-->
+<!--        $("#buildingName, #status, #debt").select2({placeholder: 'Выберите...', minimumResultsForSearch:Infinity});-->
+<!--    });-->
+<!--</script>-->
 
 <style>
         a.selected {

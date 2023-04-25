@@ -144,6 +144,7 @@ public class OwnerController {
                                                   @RequestParam String filters) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);
+        System.out.println(form);
         return ownerService.findAllBySpecification(form, page, size);
     }
 

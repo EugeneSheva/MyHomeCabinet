@@ -6,6 +6,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 import com.example.myhome.util.UserRole;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -47,6 +48,7 @@ public class Admin {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "receivers")
     private List<Message> messageList;
 
@@ -57,7 +59,7 @@ public class Admin {
     @OneToMany
     @JoinColumn(name = "manager")
     private List<CashBox> cashBoxListManager;
-
+    @JsonIgnore
     @ManyToMany(mappedBy = "admins")
     List<Building> buildings;
 

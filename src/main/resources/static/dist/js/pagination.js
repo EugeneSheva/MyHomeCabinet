@@ -41,6 +41,7 @@ function gatherFilters() {
     let service_id = $("#service").val();
     let status = $("#status").val();
     let role = $("#role").val();
+    let ownerName = $("#ownerName").val();
 
     let filterForm = {
         active: (active != null) ? active : null,
@@ -66,11 +67,12 @@ function gatherFilters() {
         address: (address) ? address : null,
         number: (number) ? number : null,
         floor: (floor) ? floor: null,
-        account : (account) ? account : null
+        account : (account) ? account : null,
+        ownerName : (ownerName) ? ownerName : null
     };
 
     console.log('gathered filters: ');
-    console.log(filterForm);
+    console.log('filterForm  gatherFilters() '+  filterForm);
 
     return filterForm;
 }
@@ -102,6 +104,7 @@ function setFilters(filters) {
         $("#status").val('').trigger('change');
         $("#completed").val('').trigger('change');
         $("#active").val('').trigger('change');
+        $("#ownerName").val('');
         return;
     }
     else {
@@ -129,6 +132,7 @@ function setFilters(filters) {
         $("#status").val(filters.status);
         $("#completed").val(filters.completed);
         $("#active").val(filters.active);
+        $("#ownerName").val(filters.ownerName);
     }
 
 }
@@ -155,7 +159,7 @@ function drawApartmentsTable() {
 
     let pageFiltersString = JSON.stringify(gatherFilters());
     let data = getTableData('/admin/apartments/get-apartments-page', currentPageNumber, currentPageSize, pageFiltersString);
-    console.log(data);
+    console.log("data" + data);
     let $apartmentsTable = $("#apartmentsTable tbody");
     $apartmentsTable.html('');
     for(const apartment of data.content) {
@@ -524,7 +528,7 @@ function drawTable() {
 //Функции, перерисовывающие таблицы после изменений фильтров/номера страниц/размера страниц
 function changeFilterData() {
     pageFiltersString = gatherFilters();
-    console.log(pageFiltersString);
+    console.log('pageFiltersString' + pageFiltersString);
     setFilters(pageFiltersString);
     saveState();
     drawTable();

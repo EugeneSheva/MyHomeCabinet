@@ -47,6 +47,13 @@ public class BuildingService {
         }
         return buildingDTOList; }
 
+
+    public BuildingDTO findBuildingDTObyId(Long id) {
+        Building building = buildingRepository.findById(id).orElseThrow();
+        return new BuildingDTO(building.getId(), building.getName(), building.getSections(), building.getAddress(), building.getFloors());
+    }
+
+
     public Building save(Building building) { return buildingRepository.save(building); }
 
     public Page<BuildingDTO> findAllBySpecification(FilterForm filters, Integer page, Integer size) {

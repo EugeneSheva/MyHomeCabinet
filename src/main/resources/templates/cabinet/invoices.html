@@ -21,7 +21,7 @@
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-
+  <div th:insert="~{cabinet-template :: loading}"></div>
   <nav th:insert="~{cabinet-template :: header}"></nav>
   <aside th:insert="~{cabinet-template :: sidebar}"></aside>
 
@@ -30,7 +30,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Квитанции на оплату</h1>
+            <h1 class="m-0" th:text="${apart != null ? 'Квитанции на оплату '+apart.building.name+' кв. ' + apart.number :'Квитанции на оплату'}"></h1>
           </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -70,22 +70,31 @@
                                       </tr>
                                       <tr class="filters">
                                           <td></td>
-                                          <td><input type="text" name="" id="date_picker" style="width:100%; padding-block: 10px;"></td>
+                                          <td><input type="text" name="" id="date_picker" name="date" style="width:100%; padding-block: 10px;"></td>
                                           <td>
-                                              <select name="" id="my_select">
-                                                  <option value="">Оплачена</option>
-                                                  <option value="">Частично оплачена</option>
-                                                  <option value="">Не оплачена</option>
+                                              <select th:field="*{status}" id="my_select" name>
+                                                  <option th:each="status : ${T(com.example.myhome.home.model.InvoiceStatus).values()}"
+                                                          th:value="${status}"
+                                                          th:text="${status.getName()}"></option>
                                               </select>
                                           </td>
                                           <td></td>
                                       </tr>
                                       </thead>
                                   <tbody>
-                                      <tr class="invoice_row" data-href="/cabinet/invoice/734" data-key="734"><td>30032300734</td><td>30.03.2023</td><td><small class="label label-danger">Неоплачена</small></td><td>0.00</td></tr>
-                                      <tr class="invoice_row" data-href="/cabinet/invoice/734" data-key="734"><td>30032300734</td><td>30.03.2023</td><td><small class="label label-danger">Неоплачена</small></td><td>0.00</td></tr>
-                                      <tr class="invoice_row" data-href="/cabinet/invoice/734" data-key="734"><td>30032300734</td><td>30.03.2023</td><td><small class="label label-danger">Неоплачена</small></td><td>0.00</td></tr>
-                                  </tbody>
+                                      <tr class="invoice_row" data-href="/cabinet/invoice/734" data-key="734" th:each="invoice : ${invoiceList}">
+
+                                          <td><a style="display: block; color: black; text-decoration: none;" th:text="${T(java.lang.String).format('%010d',invoice.id)}"
+                                          th:href="@{/cabinet/invoice/{id}(id=${invoice.id})}"></a></td>
+
+                                          <td><a style="display: block; color: black; text-decoration: none;" th:text="${invoice.date}"
+                                              th:href="@{/cabinet/invoice/{id}(id=${invoice.id})}"></a></td>
+
+                                          <td th:text="${invoice.status}"><small class="label label-danger"></small></td>
+
+                                          <td><a style="display: block; color: black; text-decoration: none;" th:text="${invoice.total_price}"
+                                              th:href="@{/cabinet/invoice/{id}(id=${invoice.id})}"></a></td></tr>
+                                      </tbody>
                               </table>
                           </form>
                       </div>

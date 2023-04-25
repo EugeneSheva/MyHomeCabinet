@@ -5,6 +5,8 @@ import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Join;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class InvoiceSpecifications {
 
@@ -49,4 +51,11 @@ public class InvoiceSpecifications {
         return (root, query, cb) -> cb.between(root.get(Invoice_.DATE), from, to);
     }
 
+    public static Specification<Invoice> dateContains(LocalDate date) {
+        return (root, query, builder) -> {
+            LocalDateTime startOfDay = date.atStartOfDay();
+            LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+            return builder.between(root.get("added_at"), startOfDay, endOfDay);
+        };
+    }
 }

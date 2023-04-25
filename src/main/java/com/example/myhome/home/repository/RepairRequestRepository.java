@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -15,4 +16,6 @@ public interface RepairRequestRepository extends JpaRepository<RepairRequest, Lo
 
     @Query("SELECT MAX(r.id) FROM RepairRequest r")
     Optional<Long> getMaxId();
+
+    public List<RepairRequest>findAllByOwnerId(Long id);
 }

@@ -21,7 +21,7 @@
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-
+  <div th:insert="~{cabinet-template :: loading}"></div>
   <nav th:insert="~{cabinet-template :: header}"></nav>
   <aside th:insert="~{cabinet-template :: sidebar}"></aside>
 
@@ -73,10 +73,15 @@
                                       </tr>
                                   </thead>
                                   <tbody>
-                                      <tr data-key="257"><td>257</td><td>Сантехник</td><td>по</td><td>13.03.2023 - 11:11</td><td><small class="label label-primary">Новое</small></td><td><div class="btn-group pull-right"><a class="btn btn-default btn-sm" href="/cabinet/master-request/delete/257" data-pjax="0" data-method="post" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash"></i></a></div></td></tr>
-                                      <tr data-key="257"><td>257</td><td>Сантехник</td><td>по</td><td>13.03.2023 - 11:11</td><td><small class="label label-primary">Новое</small></td><td><div class="btn-group pull-right"><a class="btn btn-default btn-sm" href="/cabinet/master-request/delete/257" data-pjax="0" data-method="post" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash"></i></a></div></td></tr>
-                                      <tr data-key="257"><td>257</td><td>Сантехник</td><td>по</td><td>13.03.2023 - 11:11</td><td><small class="label label-primary">Новое</small></td><td><div class="btn-group pull-right"><a class="btn btn-default btn-sm" href="/cabinet/master-request/delete/257" data-pjax="0" data-method="post" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash"></i></a></div></td></tr>
-                                  </tbody>
+                                      <tr  th:each="request : ${repairRequests}">
+                                          <td th:text="${request.id}"></td>
+                                          <td th:text="${request.master_type.name}"></td>
+                                          <td th:text="${request.description}"></td>
+                                          <td th:text="${request.best_time_request}"></td>
+                                          <td th:text="${request.status.name}"><small class="label label-primary"></small></td>
+                                          <td><div class="btn-group pull-right">
+                                              <a th:href="@{/cabinet/request/delete/{id}(id=${request.id})}" class="btn btn-default btn-sm"  onclick="return confirm('Вы уверены, что хотите удалить эту запись?')"><i class="fa fa-trash"></i></a></div></td></tr>
+                                      </tbody>
                               </table>
                           </form>
                       </div>

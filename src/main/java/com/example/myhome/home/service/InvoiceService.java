@@ -112,6 +112,10 @@ public class InvoiceService {
     public List<Invoice> saveAllInvoices(List<Invoice> list) {return invoiceRepository.saveAll(list);}
     public List<InvoiceComponents> saveAllInvoicesComponents(List<InvoiceComponents> list) {return invoiceComponentRepository.saveAll(list);}
 
+    public List<Invoice>findAllByApartmentId(Long id) { return invoiceRepository.findAllByApartmentId(id);}
+    public List<Invoice>findAllByOwnerId(Long id){ return invoiceRepository.findAllByOwnerId(id);}
+
+
     public void deleteInvoiceById(long invoice_id) {
         Invoice invoice = findInvoiceById(invoice_id);
         invoice.getComponents().clear();
@@ -143,6 +147,19 @@ public class InvoiceService {
             Double tmp = invoiceRepository.getSumPaidIvoice(begin.getMonthValue(), begin.getYear(), InvoiceStatus.PAID);
             if (tmp == null) tmp=0D;
 //            if (tmp <0) tmp= tmp*-1;
+            doubleList.add(tmp);
+            begin = begin.plusMonths(1);
+        }
+        return doubleList;
+    }
+
+    public List<Double> getListExpenseByApartmentByMonth(Long id) {
+        List<Double>doubleList = new ArrayList<>();
+        LocalDate now = LocalDate.now();
+        LocalDate begin = now.minusMonths(11);
+        for (int i = 0; i < 12; i++) {
+            Double tmp = invoiceRepository.getTotalPriceByApartmentIdAndMonthAndYear(id, begin.getMonthValue(), begin.getYear());
+            if (tmp == null) tmp=0D;
             doubleList.add(tmp);
             begin = begin.plusMonths(1);
         }
@@ -252,6 +269,13 @@ public class InvoiceService {
 
         return invoiceRepository.count(spec);
     }
+
+    public Double getAverageTotalPriceForApartmentLastYear(Long apartment) {
+        LocalDate lastYear = LocalDate.now().minusYears(1);
+        LocalDate today = LocalDate.now();
+        return invoiceRepository.getAverageTotalPriceForApartmentBetwenDate(apartment, lastYear, today);
+    }
+
 
 
     public String turnInvoiceIntoExcel(Invoice invoice, InvoiceTemplate template) throws IOException {

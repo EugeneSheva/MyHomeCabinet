@@ -21,7 +21,7 @@
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-
+  <div th:insert="~{cabinet-template :: loading}"></div>
   <nav th:insert="~{cabinet-template :: header}"></nav>
   <aside th:insert="~{cabinet-template :: sidebar}"></aside>
 
@@ -30,7 +30,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Тарифы</h1>
+            <h1 class="m-0" th:text="${apart != null ? 'Тариф - '+apart.building.name+' кв. ' + apart.number :'Квитанции на оплату'}">Тарифы</h1>
           </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -61,20 +61,10 @@
                                       </tr>
                                   </thead>
                                   <tbody>
-                                  <tr>
-                                      <td></td>
-                                      <td>кв.м.к</td>
-                                      <td>10.00</td>
-                                  </tr>
-                                  <tr>
-                                      <td>Электроэнергия </td>
-                                      <td>-кВт.ч</td>
-                                      <td>15.00</td>
-                                  </tr>
-                                  <tr>
-                                      <td>за пивом !!!!!!!!!!!!!</td>
-                                      <td>км/час</td>
-                                      <td>100.00</td>
+                                  <tr th:each="tariffComponent : ${tariff.tariffComponents}">
+                                      <td th:text="${tariffComponent.key.name}"></td>
+                                      <td th:text="${tariffComponent.key.unit.name}"></td>
+                                      <td th:text="${tariffComponent.value}"></td>
                                   </tr>
                                   </tbody>
                               </table>

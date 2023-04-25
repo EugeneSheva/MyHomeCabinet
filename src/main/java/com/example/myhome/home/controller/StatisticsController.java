@@ -52,32 +52,6 @@ public class StatisticsController {
         model.addAttribute("diagramAllInvoices", invoiceService.getListSumInvoicesByMonth());
         model.addAttribute("diagramPaidInvoices", invoiceService.getListSumPaidInvoicesByMonth());
 
-//        List<Apartment>apartmentList = apartmentRepository.findByFilters(7L, null, null, null, null);
-//        System.out.println("no 7 "+ apartmentList);
-//
-//        List<Apartment>apartmentList2 = apartmentRepository.findByFilters(null, null, "2",null,null);
-//        System.out.println("секц 2 "+ apartmentList2);
-//
-//        List<Apartment>apartmentList3 = apartmentRepository.findByFilters(null, "ЖК Мир", null, null, null);
-//        System.out.println("Дом Мир "+ apartmentList3);
-//
-//        List<Apartment>apartmentList4 = apartmentRepository.findByFilters(null, "ЖК Престиж", null, null, null);
-//        System.out.println("Дом Прест "+ apartmentList4);
-
-//        List<Apartment>apartmentList5 = apartmentRepository.findByFilters(null, null, null, null, 1L,null);
-//        System.out.println("Владелец1  "+ apartmentList5);
-//
-//        List<Apartment>apartmentList6 = apartmentRepository.findByFilters(null, null, null, null, 2L,null);
-//        System.out.println("Владелец2  "+ apartmentList6);
-
-//        List<Apartment>apartmentList7 = apartmentRepository.findByFilters(null, null, null, null, null,"debt");
-//        System.out.println("Есть долг  "+ apartmentList7);
-//
-//        List<Apartment>apartmentList8 = apartmentRepository.findByFilters(null, null, null, null, null,"nodebt");
-//        System.out.println("Нет долга  "+ apartmentList8);
-
-;
-
         return "admin_panel/statistics/statistics";
     }
 }
