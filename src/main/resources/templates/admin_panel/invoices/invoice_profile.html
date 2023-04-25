@@ -216,6 +216,13 @@
 <!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.js}"></script>
 
+<script>
+  window.addEventListener("popstate", e => {
+        console.log(e);
+        alert(e.state);
+  });
+</script>
+
 <!-- PAGE PLUGINS -->
 <!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->
 <!--<script src="plugins/jquery-mousewheel/jquery.mousewheel.js"></script>-->

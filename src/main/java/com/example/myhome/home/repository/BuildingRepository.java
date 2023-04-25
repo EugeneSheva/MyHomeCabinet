@@ -41,13 +41,13 @@ public interface BuildingRepository extends JpaRepository<Building, Long>, JpaSp
         default Page<Building> findByFilters(String name, String address, Pageable pageable) {
                 Specification<Building> spec = Specification.where(null);
 
-                if (name != null && !name.isEmpty()) {
-                        spec = spec.and(BuildingSpecification.nameContains(name));
-                }
-
-                if (address != null && !address.isEmpty()) {
-                        spec = spec.and(BuildingSpecification.addressContains(address));
-                }
+//                if (name != null && !name.isEmpty()) {
+//                        spec = spec.and(BuildingSpecification.nameContains(name));
+//                }
+//
+//                if (address != null && !address.isEmpty()) {
+//                        spec = spec.and(BuildingSpecification.addressContains(address));
+//                }
                 return findAll(spec,pageable);
         }
 

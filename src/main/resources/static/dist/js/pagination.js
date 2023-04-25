@@ -1,35 +1,72 @@
+
+//Получение информации о текущем состоянии страницы - текущий номер, размер и фильтры
+//Если информация уже сохранялась в history.state (через функцию saveState), она берется оттуда, иначе дефолтная
+let currentPageNumber, currentPageSize, pageFiltersString;
+if(history.state != null) {
+    currentPageNumber = history.state.page;
+    currentPageSize = history.state.size;
+    pageFiltersString = history.state.filters;
+
+    setFilters(pageFiltersString);
+} else {
+    currentPageNumber = 1;
+    currentPageSize = 5;
+    pageFiltersString = '';
+}
+
+//сбор фильтров со страницы
 function gatherFilters() {
 
-    let building_id = $("#building").val();
-    let service_id = $("#service").val();
+    let active = $("#active").val();
+    let account = $("#account").val();
+    let address = $("#address").val();
     let apartment_number = $("#apartment").val();
-    let section_name = $("#section").val();
-
-    let id = $("#id").val();
+    let building_id = $("#building").val();
+    let completed = $("#completed").val();
+    let date = $("#date").val();
     let datetime = $("#datetime").val();
+    let debt = $("#debt").val();
     let description = $("#description").val();
-    let master_type = $("#master_type").val();
+    let email = $("#email").val();
+    let floor = $("#floor").val();
+    let id = $("#id").val();
+    let month = $("#month").val();
     let master_id = $("#master").val();
+    let master_type = $("#master_type").val();
+    let name = $("#name").val();
+    let number = $("#number").val();
     let owner_id = $("#owner").val();
     let phone = $("#phone").val();
+    let section_name = $("#section").val();
+    let service_id = $("#service").val();
     let status = $("#status").val();
-
-    let completed = $("#completed").val();
+    let role = $("#role").val();
 
     let filterForm = {
+        active: (active != null) ? active : null,
         building: (building_id) ? building_id : null,
         service: (service_id) ? service_id : null,
         apartment: (apartment_number) ? apartment_number : null,
         section: (section_name) ? section_name : null,
         id: (id) ? id : null,
         datetime: (datetime) ? datetime : null,
+        date: (date) ? date : null,
+        month: (month) ? month : null,
         description: (description) ? description : null,
         master_type: (master_type) ? master_type : null,
         master: (master_id) ? master_id : null,
         owner: (owner_id) ? owner_id : null,
         phone: (phone) ? phone : null,
         status: (status) ? status : null,
-        completed: (completed) ? completed : null
+        completed: (completed != null) ? completed : null,
+        debt: (debt != null) ? debt : null,
+        name: (name) ? name : null,
+        role: (role) ? role : null,
+        email: (email) ? email : null,
+        address: (address) ? address : null,
+        number: (number) ? number : null,
+        floor: (floor) ? floor: null,
+        account : (account) ? account : null
     };
 
     console.log('gathered filters: ');
@@ -38,6 +75,65 @@ function gatherFilters() {
     return filterForm;
 }
 
+function setFilters(filters) {
+
+    if(filters === null) {
+        $("#address").val(null);
+        $("#account").val(null);
+        $("#building").val('').trigger('change');
+        $("#service").val('').trigger('change');
+        $("#apartment").val(null);
+        $("#section").val('').trigger('change');
+        $("#id").val(null);
+        $("#month").val(null);
+        $("#datetime").val(null);
+        $("#date").val(null);
+        $("#debt").val('').trigger('change');
+        $("#email").val(null);
+        $("#floor").val(null);
+        $("#name").val(null);
+        $("#number").val(null);
+        $("#role").val(null);
+        $("#description").val(null);
+        $("#master_type").val('').trigger('change');
+        $("#master").val('').trigger('change');
+        $("#owner").val('').trigger('change');
+        $("#phone").val(null);
+        $("#status").val('').trigger('change');
+        $("#completed").val('').trigger('change');
+        $("#active").val('').trigger('change');
+        return;
+    }
+    else {
+        $("#address").val(filters.address);
+        $("#account").val(filters.account);
+        $("#date").val(filters.date);
+        $("#debt").val(filters.debt);
+        $("#email").val(filters.email);
+        $("#floor").val(filters.floor);
+        $("#name").val(filters.name);
+        $("#number").val(filters.number);
+        $("#role").val(filters.role);
+        $("#building").val(filters.building);
+        $("#service").val(filters.service);
+        $("#apartment").val(filters.apartment);
+        $("#section").val(filters.section);
+        $("#id").val(filters.id);
+        $("#datetime").val(filters.datetime);
+        $("#month").val(filters.month);
+        $("#description").val(filters.description);
+        $("#master_type").val(filters.master_type);
+        $("#master").val(filters.master);
+        $("#owner").val(filters.owner);
+        $("#phone").val(filters.phone);
+        $("#status").val(filters.status);
+        $("#completed").val(filters.completed);
+        $("#active").val(filters.active);
+    }
+
+}
+
+//AJAX-вызов и получение данных по url
 function getTableData(url, pageNumber, pageSize, pageFiltersString) {
     $.ajax(url, {
         async: false,
@@ -53,6 +149,8 @@ function getTableData(url, pageNumber, pageSize, pageFiltersString) {
     return tableData;
 }
 
+
+//Функции, рисующие таблицы в зависимости от выбранной страницы
 function drawApartmentsTable() {
 
     let pageFiltersString = JSON.stringify(gatherFilters());
@@ -83,6 +181,11 @@ function drawApartmentsTable() {
             });
         }
 
+        $apartmentsTable.append(newTableRow);
+    }
+    if(data.content.length === 0) {
+        let newTableRow = document.createElement('tr');
+        newTableRow.innerHTML = '<td colspan=7>Ничего не найдено...</td>';
         $apartmentsTable.append(newTableRow);
     }
 
@@ -138,6 +241,11 @@ function drawInvoicesTable(){
 
         $invoicesTableBody.append(newTableRow);
     }
+    if(data.content.length === 0) {
+        let newTableRow = document.createElement('tr');
+        newTableRow.innerHTML = '<td colspan=10>Ничего не найдено...</td>';
+        $invoicesTableBody.append(newTableRow);
+    }
 
     drawPagination();
 
@@ -180,6 +288,11 @@ function drawAccountsTable(){
 
         $accountsTableBody.append(newTableRow);
     }
+    if(data.content.length === 0) {
+        let newTableRow = document.createElement('tr');
+        newTableRow.innerHTML = '<td colspan=8>Ничего не найдено...</td>';
+        $accountsTableBody.append(newTableRow);
+    }
 
     drawPagination();
 }
@@ -214,7 +327,11 @@ function drawMetersTable(){
 
         $metersTable.append(newTableRow);
     }
-
+    if(data.content.length === 0) {
+        let newTableRow = document.createElement('tr');
+        newTableRow.innerHTML = '<td colspan=7>Ничего не найдено...</td>';
+        $metersTable.append(newTableRow);
+    }
     drawPagination();
 }
 function drawRequestsTable() {
@@ -251,7 +368,11 @@ function drawRequestsTable() {
 
         $requestsTable.append(newTableRow);
     }
-
+    if(data.content.length === 0) {
+        let newTableRow = document.createElement('tr');
+        newTableRow.innerHTML = '<td colspan=10>Ничего не найдено...</td>';
+        $requestsTable.append(newTableRow);
+    }
     drawPagination();
 }
 function drawOwnersTable(){
@@ -296,8 +417,91 @@ function drawOwnersTable(){
 
         $ownersTable.append(newTableRow);
     }
-
+    if(data.content.length === 0) {
+        let newTableRow = document.createElement('tr');
+        newTableRow.innerHTML = '<td colspan=10>Ничего не найдено...</td>';
+        $ownersTable.append(newTableRow);
+    }
     drawPagination();
+}
+function drawBuildingsTable() {
+
+    let pageFiltersString = JSON.stringify(gatherFilters());
+    let data = getTableData('/admin/buildings/get-buildings-page', currentPageNumber, currentPageSize, pageFiltersString);
+    console.log(data);
+    let $buildingsTable = $("#buildingsTable tbody");
+    $buildingsTable.html('');
+    for(const building of data.content) {
+        let newTableRow = document.createElement('tr');
+        newTableRow.style.cursor = 'pointer';
+        newTableRow.class = 'building_row';
+        newTableRow.innerHTML =   '<td>' + building.id + '</td>' +
+                                  '<td>' + building.name + '</td>' +
+                                  '<td>' + building.address + '</td>' +
+                                  '<td>' +
+                                      '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
+                                          '<a href="edit/' + building.id +'" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>' +
+                                          '<a href="delete/' + building.id +'" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>' +
+                                      '</div>' +
+                                  '</td>';
+        let row_children = newTableRow.children;
+        for(let j = 0; j < row_children.length - 1; j++) {
+            row_children[j].addEventListener('click', function(){
+                window.location.href = '/admin/buildings/' + building.id;
+            });
+        }
+
+        $buildingsTable.append(newTableRow);
+    }
+    if(data.content.length === 0) {
+        let newTableRow = document.createElement('tr');
+        newTableRow.innerHTML = '<td colspan=4>Ничего не найдено...</td>';
+        $buildingsTable.append(newTableRow);
+    }
+    drawPagination();
+
+}
+function drawTransactionsTable() {
+
+    let pageFiltersString = JSON.stringify(gatherFilters());
+    let data = getTableData('/admin/cashbox/get-cashbox-page', currentPageNumber, currentPageSize, pageFiltersString);
+    console.log(data);
+    let $cashboxTable = $("#cashboxTable tbody");
+    $cashboxTable.html('');
+    for(const cashbox of data.content) {
+        let newTableRow = document.createElement('tr');
+        newTableRow.style.cursor = 'pointer';
+        newTableRow.class = 'cashbox_row';
+        newTableRow.innerHTML =   '<td>' + cashbox.id + '</td>' +
+                                  '<td>' + cashbox.date + '</td>' +
+                                  '<td>' + ((cashbox.completed) ? 'Проведен' : 'Не проведен') + '</td>' +
+                                  '<td>' + cashbox.transactionItemName + '</td>' +
+                                  '<td>' + cashbox.ownerFullName + '</td>' +
+                                  '<td>' + cashbox.accountNumber + '</td>' +
+                                  '<td>' + cashbox.transactionType + '</td>' +
+                                  '<td>' + cashbox.amount + '</td>' +
+                                  '<td>' +
+                                      '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
+                                          '<a href="/admin/cashbox/edit/' + cashbox.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></a>' +
+                                          '<a href="/admin/cashbox/delete/' + cashbox.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></a>' +
+                                      '</div>' +
+                                  '</td>';
+        let row_children = newTableRow.children;
+        for(let j = 0; j < row_children.length - 1; j++) {
+            row_children[j].addEventListener('click', function(){
+                window.location.href = '/admin/cashbox/' + cashbox.id;
+            });
+        }
+
+        $cashboxTable.append(newTableRow);
+    }
+    if(data.content.length === 0) {
+        let newTableRow = document.createElement('tr');
+        newTableRow.innerHTML = '<td colspan=9>Ничего не найдено...</td>';
+        $cashboxTable.append(newTableRow);
+    }
+    drawPagination();
+
 }
 
 function drawTable() {
@@ -310,22 +514,38 @@ function drawTable() {
     else if(tableType === 'meters') drawMetersTable();
     else if(tableType === 'requests') drawRequestsTable();
     else if(tableType === 'owners') drawOwnersTable();
+    else if(tableType === 'buildings') drawBuildingsTable();
+    else if(tableType === 'transactions') drawTransactionsTable();
 
 }
+//Функции, рисующие таблицы в зависимости от выбранной страницы
 
 
-
+//Функции, перерисовывающие таблицы после изменений фильтров/номера страниц/размера страниц
+function changeFilterData() {
+    pageFiltersString = gatherFilters();
+    console.log(pageFiltersString);
+    setFilters(pageFiltersString);
+    saveState();
+    drawTable();
+}
 
 function changePageNumber(newPageNumber) {
     currentPageNumber = newPageNumber;
+    saveState();
+    drawTable();
 }
 
 function increasePageByOne() {
     if(currentPageNumber < totalPagesCount) currentPageNumber++;
+    saveState();
+    drawTable();
 }
 
 function decreasePageByOne() {
     if(currentPageNumber > 0) currentPageNumber--;
+    saveState();
+    drawTable();
 }
 
 function changePageSize(newPageSize) {
@@ -335,8 +555,33 @@ function changePageSize(newPageSize) {
     console.log('current page number is ' + currentPageNumber);
     $(".page-size-display").text(newPageSize);
     drawPagination();
+
+    saveState();
+    drawTable();
 }
 
+function saveState() {
+    let pageState = {
+        page: currentPageNumber,
+        size: currentPageSize,
+        filters: pageFiltersString
+    };
+
+    history.replaceState(pageState, null, window.location.href);
+    console.log(pageState);
+}
+
+function reset() {
+    setFilters(null);
+    currentPageNumber = 1;
+    currentPageSize = 10;
+    saveState();
+    drawTable();
+}
+//Функции, перерисовывающие таблицы после изменений фильтров/номера страниц/размера страниц
+
+
+//Отрисовка пагинации
 function drawPagination() {
 
     let pageOffset = 2; // 1 ... 3 4 -5- 6 7 ... 10 -  current page 5 , offset 2
@@ -346,7 +591,7 @@ function drawPagination() {
 
     let $pagination = $(".pagination_container");
     $pagination.html('');
-    if(totalPagesCount < 1) return;
+//    if(totalPagesCount < 1) return;
 
     let ul = document.createElement('ul');
     ul.classList.add('pagination', 'justify-content-center', 'font-weight-medium');
@@ -355,21 +600,21 @@ function drawPagination() {
     let li = document.createElement('li');
     li.classList.add('page-item');
     if(currentPageNumber === 1) li.classList.add('disabled');
-    li.innerHTML = '<a class="page-link" href="#" onclick="changePageNumber(1); drawTable()" aria-label="Previous"> <span aria-hidden="true">«</span></a>';
+    li.innerHTML = '<a class="page-link" href="#" onclick="changePageNumber(1)" aria-label="Previous"> <span aria-hidden="true">«</span></a>';
     ul.appendChild(li);
 
     //backward navigation buttons (-1)
     li = document.createElement('li');
     li.classList.add('page-item');
     if(currentPageNumber === 1) li.classList.add('disabled');
-    li.innerHTML = '<a class="page-link" href="#" onclick="decreasePageByOne(); drawTable()" aria-label="Previous"> <span aria-hidden="true">‹</span></a>';
+    li.innerHTML = '<a class="page-link" href="#" onclick="decreasePageByOne()" aria-label="Previous"> <span aria-hidden="true">‹</span></a>';
     ul.appendChild(li);
 
     //first page
     li = document.createElement('li');
     li.classList.add('page-item');
     if(currentPageNumber === 1) li.classList.add('active');
-    li.innerHTML = '<a class="page-link" href="#" onclick="changePageNumber(1); drawTable()" aria-label="Previous"> <span aria-hidden="true">1</span></a>';
+    li.innerHTML = '<a class="page-link" href="#" onclick="changePageNumber(1)" aria-label="Previous"> <span aria-hidden="true">1</span></a>';
     ul.appendChild(li);
 
     // ... block
@@ -399,7 +644,7 @@ function drawPagination() {
         li = document.createElement('li');
         li.classList.add('page-item');
         if(currentPageNumber === page) li.classList.add('active');
-        li.innerHTML = '<a class="page-link" href="#" onclick="changePageNumber('+page+'); drawTable()" aria-label="Previous"> <span aria-hidden="true">'+page+'</span></a>';
+        li.innerHTML = '<a class="page-link" href="#" onclick="changePageNumber('+page+')" aria-label="Previous"> <span aria-hidden="true">'+page+'</span></a>';
         ul.appendChild(li);
     }
 
@@ -425,15 +670,15 @@ function drawPagination() {
     //forward navigation buttons (+1)
     li = document.createElement('li');
     li.classList.add('page-item');
-    if(currentPageNumber === totalPagesCount) li.classList.add('disabled');
-    li.innerHTML = '<a class="page-link" href="#" onclick="increasePageByOne(); drawTable()" aria-label="Previous"> <span aria-hidden="true">›</span></a>';
+    if(currentPageNumber === totalPagesCount || totalPagesCount === 0) li.classList.add('disabled');
+    li.innerHTML = '<a class="page-link" href="#" onclick="increasePageByOne()" aria-label="Previous"> <span aria-hidden="true">›</span></a>';
     ul.appendChild(li);
 
     //forward navigation buttons (to last page)
     li = document.createElement('li');
     li.classList.add('page-item');
-    if(currentPageNumber === totalPagesCount) li.classList.add('disabled');
-    li.innerHTML = '<a class="page-link" href="#" onclick="changePageNumber(totalPagesCount); drawTable()" aria-label="Previous"> <span aria-hidden="true">››</span></a>';
+    if(currentPageNumber === totalPagesCount || totalPagesCount === 0) li.classList.add('disabled');
+    li.innerHTML = '<a class="page-link" href="#" onclick="changePageNumber(totalPagesCount)" aria-label="Previous"> <span aria-hidden="true">››</span></a>';
     ul.appendChild(li);
 
     //page size changer
@@ -444,13 +689,27 @@ function drawPagination() {
                                     'aria-expanded="false">' + currentPageSize +
                             '</button>' +
                             '<ul class="dropdown-menu dropdown-menu-end">' +
-                                '<li><a class="dropdown-item" href="#" onclick="changePageSize(1); drawTable()">1</a></li>' +
-                                '<li><a class="dropdown-item" href="#" onclick="changePageSize(10); drawTable()">10</a></li>' +
-                                '<li><a class="dropdown-item" href="#" onclick="changePageSize(25); drawTable()">25</a></li>' +
-                                '<li><a class="dropdown-item" href="#" onclick="changePageSize(50); drawTable()">50</a></li>' +
-                                '<li><a class="dropdown-item" href="#" onclick="changePageSize(100); drawTable()">100</a></li>' +
+                                '<li><a class="dropdown-item" href="#" onclick="changePageSize(1)">1</a></li>' +
+                                '<li><a class="dropdown-item" href="#" onclick="changePageSize(10)">10</a></li>' +
+                                '<li><a class="dropdown-item" href="#" onclick="changePageSize(25)">25</a></li>' +
+                                '<li><a class="dropdown-item" href="#" onclick="changePageSize(50)">50</a></li>' +
+                                '<li><a class="dropdown-item" href="#" onclick="changePageSize(100)">100</a></li>' +
                             '</ul>'
     ul.appendChild(sizeChanger);
 
     $pagination.append(ul);
 }
+
+
+//Установка слушателей на фильтры
+$(document).ready(function(){
+
+    $(".my_filters").change(() => changeFilterData());
+    $(".datetime_filter").change(function(){
+        let datetime = this.value;
+        console.log(datetime);
+        console.log(datetime.split(' to '));
+        if(datetime.split(' to ').length > 1) changeFilterData();
+    });
+
+});

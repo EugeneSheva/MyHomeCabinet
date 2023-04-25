@@ -56,7 +56,7 @@
               <div class="box-header with-border" >
                 <h3 class="box-title"></h3>
                 <div class="box-tools">
-                  <a th:href="@{/admin/meters}" class="btn btn-default btn-sm">
+                  <a href="#" onclick="reset()" class="btn btn-default btn-sm">
                     <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                   </a>
                 </div>
@@ -77,7 +77,7 @@
                   <form action="" th:object="${filter_form}">
                       <tr>
                           <td style="padding: 10px">
-                              <select style="width: 100%; padding-block: 10px" th:field="*{building}" class="my_filters" name="building_filter" id="building">
+                              <select style="width: 100%; padding-block: 10px" autocomplete="off" th:field="*{building}" class="my_filters" name="building_filter" id="building">
                                   <option value=""></option>
                                   <option th:each="building : ${buildings}"
                                           th:value="${building.id}"
@@ -85,19 +85,19 @@
                               </select>
                           </td>
                           <td style="padding: 10px">
-                              <select th:if="*{building == 0}" disabled style="width: 100%; padding-block: 10px" class="my_filters" th:field="*{section}" name="section_filter" id="section">
+                              <select th:if="*{building == 0}" autocomplete="off" disabled style="width: 100%; padding-block: 10px" class="my_filters" th:field="*{section}" name="section_filter" id="section">
                                   <option value="0" >Выберите дом...</option>
                               </select>
-                              <select th:if="*{building != 0}" style="width: 100%; padding-block: 10px" class="my_filters" th:field="*{section}" name="section_filter" id="section">
+                              <select th:if="*{building != 0}" autocomplete="off" style="width: 100%; padding-block: 10px" class="my_filters" th:field="*{section}" name="section_filter" id="section">
                                   <option value="">Выберите...</option>
                                   <option th:each="section : ${sections}" th:value="${section}" th:text="${section}"></option>
                               </select>
                           </td>
                           <td style="padding: 10px">
-                              <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" class="my_filters" th:field="*{apartment}" type="text" name="apartment_filter" id="apartment">
+                              <input autocomplete="off" style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" class="my_filters" th:field="*{apartment}" type="text" name="apartment_filter" id="apartment">
                           </td>
                           <td style="padding: 10px">
-                              <select style="width: 100%; padding-block: 10px" class="my_filters" th:field="*{service}" name="service_filter" id="service">
+                              <select style="width: 100%; padding-block: 10px" autocomplete="off" class="my_filters" th:field="*{service}" name="service_filter" id="service">
                                   <option value="0"></option>
                                   <option th:each="service : ${services}"
                                           th:value="${service.id}"
@@ -166,8 +166,6 @@
     let globalTableName = 'meters';
     let totalPagesCount = [[${totalPagesCount}]];
     let tableData;
-    let currentPageNumber = 1;
-    let currentPageSize = 10;
 
     $(document).ready(function(){
 

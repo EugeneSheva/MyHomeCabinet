@@ -44,7 +44,7 @@ public class LoginController {
 
     @Autowired private PersistentTokenRepository repository;
 
-    @Autowired private AuthenticationManager manager;
+//    @Autowired private AuthenticationManager manager;
 
     @GetMapping("/cabinet/site/login")
     public String showLoginPage(Model model) {

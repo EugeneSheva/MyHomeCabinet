@@ -113,7 +113,7 @@
                 <h3 class="box-title"></h3>
 
                 <div class="box-tools">
-                  <a th:href="@{/admin/invoices}" class="btn btn-default btn-sm">
+                  <a href="#" onclick="reset()" class="btn btn-default btn-sm">
                     <span class="hidden-xs">Очистить </span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                   </a>
                 </div>
@@ -138,7 +138,7 @@
                           <tr>
                               <td></td>
                               <td style="padding:10px">
-                                  <input type="text" th:field="*{id}" data-name="id" class="my_filters" style="width: 100%; padding-block: 9px; border: 0.5px solid silver;">
+                                  <input type="text" autocomplete="off" th:field="*{id}" data-name="id" class="my_filters" style="width: 100%; padding-block: 9px; border: 0.5px solid silver;">
                               </td>
                               <td style="padding:10px">
                                   <select th:field="*{status}" data-name="status" class="my_filters" style="width: 100%; padding-block: 10px">
@@ -150,7 +150,7 @@
                               </td>
                               <td style="padding:10px">
                                   <div class="input-group" id="date_picker" data-td-target-input="nearest" data-td-target-toggle="nearest">
-                                      <input id="datetime" style="padding-block: 21px" type="text" data-name="date" th:field="*{date}" value="2023-01-01" class="form-control datetime_filter" data-td-target="#datetimepicker1">
+                                      <input id="datetime" autocomplete="off" style="padding-block: 21px" type="text" data-name="date" th:field="*{date}" value="2023-01-01" class="form-control datetime_filter" data-td-target="#datetimepicker1">
                                       <span class="input-group-text" data-td-target="#datetimepicker1" data-td-toggle="datetimepicker">
                                         <i class="fa fa-calendar"></i>
                                       </span>
@@ -158,17 +158,17 @@
                               </td>
                               <td style="padding:10px">
                                   <div class="input-group" id="date_picker2" data-td-target-input="nearest" data-td-target-toggle="nearest">
-                                      <input id="month" style="padding-block: 21px" type="text" data-name="month" th:field="*{month}" value="2023-01-01" class="form-control my_filters" data-td-target="#datetimepicker1">
+                                      <input id="month" autocomplete="off" style="padding-block: 21px" type="text" data-name="month" th:field="*{month}" value="2023-01-01" class="form-control my_filters" data-td-target="#datetimepicker1">
                                       <span class="input-group-text" data-td-target="#datetimepicker1" data-td-toggle="datetimepicker">
                                         <i class="fa fa-calendar"></i>
                                       </span>
                                   </div>
                               </td>
                               <td style="padding:10px">
-                                  <input type="text" th:field="*{apartment}" data-name="apartment" class="my_filters" style="width: 100%; padding-block: 9px; border: 0.5px solid silver;">
+                                  <input type="text" autocomplete="off" th:field="*{apartment}" data-name="apartment" class="my_filters" style="width: 100%; padding-block: 9px; border: 0.5px solid silver;">
                               </td>
                               <td style="padding:10px">
-                                  <select th:field="*{owner}" data-name="owner" class="my_filters" style="width: 100%; padding-block: 10px">
+                                  <select th:field="*{owner}" autocomplete="off" data-name="owner" class="my_filters" style="width: 100%; padding-block: 10px">
                                       <option value=""></option>
                                       <option th:each="owner : ${owners}"
                                               th:value="${owner.id}"
@@ -176,7 +176,7 @@
                                   </select>
                               </td>
                               <td style="padding:10px">
-                                  <select th:field="*{completed}" data-name="completed" class="my_filters" style="width: 100%; padding-block: 10px">
+                                  <select th:field="*{completed}" autocomplete="off" data-name="completed" class="my_filters" style="width: 100%; padding-block: 10px">
                                       <option value=""></option>
                                       <option value="true">Проведена</option>
                                       <option value="false">Не проведена</option>
@@ -227,8 +227,6 @@
 <script>
     let tableData;
     let totalPagesCount = [[${totalPagesCount}]];
-    let currentPageNumber = 1;
-    let currentPageSize = 10;
 
     let globalTableName = 'invoices';
 
@@ -277,7 +275,7 @@
         flatpickr("#datetime", config);
         flatpickr("#month", config2);
 
-        $("#status, #completed").select2();
+        $("#status, #completed").select2({placeholder:'Выберите...',minimumResultsForSearch:Infinity});
         $("#owner").select2({
             ajax: {
                 url: '/admin/owners/get-all-owners',
@@ -292,14 +290,6 @@
             },
             placeholder: 'Выберите...',
             minimumInputLength: 2
-        });
-
-        $(".my_filters").change(() => checkFilters());
-        $(".datetime_filter").change(function(){
-            let datetime = this.value;
-            console.log(datetime);
-            console.log(datetime.split(' to '));
-            if(datetime.split(' to ').length > 1) checkFilters();
         });
 
         $("#datetime").prop('readonly', false);

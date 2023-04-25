@@ -62,7 +62,7 @@ public class MeterDataService {
         }
         Building building = (form.getBuilding() != null) ? buildingService.findById(form.getBuilding()) : null;
         String section = form.getSection();
-        Apartment apartment = (form.getApartment() != null) ? apartmentService.findById(form.getApartment()) : null;
+        Apartment apartment = (form.getApartment() != null) ? apartmentService.findByNumber(form.getApartment()) : null;
         com.example.myhome.home.model.Service service = (form.getService() != null) ? serviceService.findServiceById(form.getService()) : null;
 
         return Specification.where(MeterSpecifications.hasId(id)

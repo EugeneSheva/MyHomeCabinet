@@ -66,7 +66,7 @@
                 <div class="card card card-primary card-outline" style="padding: 0px; border-top-color: #bbbbbb;">
                     <div class="card-header" style="background-color: transparent;">
                         <div class="form-group">
-                            <a th:href="@{/admin/apartments/}" class="btn btn-default btn-sm float-right">
+                            <a href="#" onclick="reset()" class="btn btn-default btn-sm float-right">
                                 Очистить</span><i class="fa fa-eraser visible-xs"></i>
                             </a>
                         </div>
@@ -95,10 +95,10 @@
                                     <th></th>
                                 </tr>
                                 <tr>
-                                    <th style="border-bottom:none"><input type="text" class="form-control" name="number"
+                                    <th style="border-bottom:none"><input type="text" autocomplete="off" class="form-control" name="number"
                                                th:field="${filterForm.number}" id="number"></th>
 
-                                    <th style="border-bottom:none"><select class="form-select" id="building" name="buildingName">
+                                    <th style="border-bottom:none"><select autocomplete="off" class="form-select" id="building" name="buildingName">
                                         <option value="-"
                                                 th:selected="${filterForm.buildingName == null}"></option>
                                         <option th:each="building : ${buildings}"
@@ -107,7 +107,7 @@
                                                 th:selected="${#strings.containsIgnoreCase((building.name),((filterForm.buildingName != null) ? (filterForm.buildingName ): ('empty') ))}"></option>
                                     </select></th>
 
-                                    <th style="border-bottom:none"><select class="form-select" id="section" name="section">
+                                    <th style="border-bottom:none"><select autocomplete="off" class="form-select" id="section" name="section">
                                         <option value="-" th:selected="${filterForm.section == null}"></option>
                                         <option th:each="section: ${sections}" th:text="${section}"
                                                 th:value="${section}"
@@ -115,7 +115,7 @@
                                         ></option>
                                     </select></th>
                                     </select></th>
-                                    <th style="border-bottom:none"><select class="form-select" id="floor" name="floor">
+                                    <th style="border-bottom:none"><select autocomplete="off" class="form-select" id="floor" name="floor">
                                         <option value="-"
                                                 th:selected="${(filterForm.floor == null)or(filterForm.floor.isEmpty())}"></option>
                                         <option th:each="floor : ${floors}" th:text="${floor}" th:value="${floor}"
@@ -365,9 +365,6 @@
     let globalTableName = 'apartments';
 
     console.log('total page count for apartments is ' + totalPagesCount);
-    let currentPageNumber = 1;
-    let currentPageSize = 10;
-    let pageFiltersString = JSON.stringify(gatherFilters());
 
     $(document).ready(function(){
 

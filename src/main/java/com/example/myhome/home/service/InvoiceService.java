@@ -229,7 +229,7 @@ public class InvoiceService {
                 Integer.parseInt(month.split("-")[1]), 1) : null;
         LocalDate m2 = (m != null) ? m.plusMonths(1).minusDays(1) : null;
 
-        String date = filters.getDate();
+        String date = filters.getDatetime();
         LocalDate date_from = null;
         LocalDate date_to = null;
         if(date != null && !date.isEmpty()) {

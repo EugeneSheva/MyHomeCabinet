@@ -65,7 +65,7 @@
                 <div class="card card card-primary card-outline" style="padding: 0px; border-top-color: #bbbbbb;">
                     <div class="card-header" style="background-color: transparent;">
                         <div class="form-group">
-                            <a th:href="@{/admin/owners/}" class="btn btn-default btn-sm float-right">
+                            <a href="#" onclick="reset()" class="btn btn-default btn-sm float-right">
                                 Очистить </span><i class="fa fa-eraser visible-xs"></i>
                             </a>
                         </div>
@@ -100,15 +100,15 @@
                                     <th></th>
                                 </tr>
                                 <tr>
-                                    <th><input type="text" class="form-control" name="id"
+                                    <th><input type="text" autocomplete="off" class="form-control" name="id"
                                                th:field="${filterForm.id}" id="id"></th>
-                                    <th><input type="text" class="form-control" name="ownerName"
+                                    <th><input type="text" autocomplete="off" class="form-control" name="ownerName"
                                                th:field="${filterForm.ownerName}" id="ownerName"></th>
-                                    <th><input type="text" class="form-control" name="phonenumber"
-                                               th:field="${filterForm.phonenumber}" id="phonenumber"></th>
-                                    <th><input type="text" class="form-control" name="email"
+                                    <th><input type="text" autocomplete="off" class="form-control" name="phone"
+                                               th:field="${filterForm.phone}" id="phone"></th>
+                                    <th><input type="text" autocomplete="off" class="form-control" name="email"
                                                th:field="${filterForm.email}" id="email"></th>
-                                    <th><select class="form-select" id="buildingName" name="buildingName">
+                                    <th><select autocomplete="off" class="form-select" id="buildingName" name="buildingName">
                                         <option value=""
                                                 th:selected="${filterForm.buildingName == null}"></option>
                                         <option th:each="building : ${buildings}"
@@ -117,18 +117,18 @@
                                                 th:selected="${#strings.containsIgnoreCase((building.name),((filterForm.buildingName != null) ? (filterForm.buildingName ): ('empty') ))}"></option>
                                     </select></th>
 
-                                    <th><input type="number" class="form-control" name="apartment"
+                                    <th><input autocomplete="off" type="number" class="form-control" name="apartment"
                                                th:field="${filterForm.apartment}" id="number"></th>
 
                                     <th>
                                         <div class="md-form md-outline input-with-post-icon datepicker"
                                              style="padding: 0; margin-bottom: 0px">
-                                            <input placeholder="Select date" th:value="${localDate}" type="date"
+                                            <input autocomplete="off" placeholder="Select date" th:value="${localDate}" type="date"
                                                    id="localDate" name="localDate" class="form-control">
                                         </div>
                                     </th>
 
-                                    <th><select class="form-select" id="status" name="status">
+                                    <th><select autocomplete="off" class="form-select" id="status" name="status">
                                         <option th:selected="${filterForm.debtSting == null}" value=""></option>
                                         <option value="active"
                                                 th:selected="${#strings.containsIgnoreCase(('active'),((filterForm.status != null) ? (filterForm.status ): ('emp') ))}"
@@ -144,7 +144,7 @@
                                         </option>
                                     </select></th>
 
-                                    <th><select class="form-select" id="debt" name="debtSting">
+                                    <th><select autocomplete="off" class="form-select" id="debt" name="debtSting">
                                         <option th:selected="${filterForm.debtSting == null}" value=""></option>
                                         <option value="haveDebt"
                                                 th:selected="${#strings.containsIgnoreCase(('haveDebt'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}"
@@ -198,8 +198,6 @@
     let globalTableName = 'owners';
     let totalPagesCount = [[${totalPagesCount}]];
     let tableData;
-    let currentPageNumber = 1;
-    let currentPageSize = 10;
 
     $(document).ready(function(){
 

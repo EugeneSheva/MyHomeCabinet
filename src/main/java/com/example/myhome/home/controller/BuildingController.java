@@ -1,14 +1,13 @@
 package com.example.myhome.home.controller;
 
-import com.example.myhome.home.model.Admin;
-import com.example.myhome.home.model.AdminDTO;
-import com.example.myhome.home.model.Apartment;
-import com.example.myhome.home.model.Building;
+import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.BuildingRepository;
 import com.example.myhome.home.service.AdminService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.validator.BuildingValidator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +53,7 @@ public class BuildingController {
     public String getBuildigs(Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) {
         Page<Building> buildingList = buildingService.findAll(pageable);
         model.addAttribute("buildings", buildingList);
+        model.addAttribute("totalPagesCount", buildingList.getTotalPages());
         FilterForm filterForm = new FilterForm();
         model.addAttribute("filterForm", filterForm);
         return "admin_panel/buildings/buildings";
@@ -164,5 +164,14 @@ public class BuildingController {
         System.out.println(map.get("results").toString());
         System.out.println(map.get("pagination").toString());
         return map;
+    }
+
+    @GetMapping("/get-buildings-page")
+    public @ResponseBody Page<BuildingDTO> getBuildingsPage(@RequestParam Integer page,
+                                                            @RequestParam Integer size,
+                                                            @RequestParam String filters) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        FilterForm form = mapper.readValue(filters, FilterForm.class);
+        return buildingService.findAllBySpecification(form, page, size);
     }
 }

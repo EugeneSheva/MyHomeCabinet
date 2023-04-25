@@ -366,5 +366,14 @@ public class CashBoxController {
         return ownerPage;
     }
 
+    @GetMapping("/get-cashbox-page")
+    public @ResponseBody Page<CashBoxDTO> getCashbox(@RequestParam Integer page,
+                                                     @RequestParam Integer size,
+                                                     @RequestParam String filters) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        FilterForm form = mapper.readValue(filters, FilterForm.class);
+        return cashBoxService.findAllBySpecification(form, page, size);
+    }
+
 
 }

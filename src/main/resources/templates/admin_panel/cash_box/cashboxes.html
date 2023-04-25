@@ -137,7 +137,7 @@
             <div class="card card card-primary card-outline" style=" border-top-color: #bbbbbb;">
                 <div class="card-header" style="background-color: transparent;">
                     <div class="form-group">
-                        <a th:href="@{/admin/cashbox/}" class="btn btn-default btn-sm float-right">
+                        <a href="#" onclick="reset()" class="btn btn-default btn-sm float-right">
                             Очистить <i class="fa fa-eraser visible-xs"></i>
                         </a>
                     </div>
@@ -145,7 +145,8 @@
                 <div class="card-body " style="padding: 0;">
                     <form method="POST" id="1" th:action="@{/admin/cashbox/filter}" th:object="${filterForm}"
                           enctype="multipart/form-data">
-                        <table id="table" class="table table-bordered table-hover table-striped linkedRow"
+                        <nav aria-label="Page navigation " class="pagination_container mt-3"></nav>
+                        <table id="cashboxTable" class="table table-bordered table-hover table-striped linkedRow"
                                width="100%">
                             <col style="width:10%">
                             <col style="width:22%">
@@ -169,24 +170,25 @@
                                 <th></th>
                             </tr>
                             <tr>
-                                <th style="border-bottom:none"><input type="text" class="form-control" name="id"
-                                           id="id"></th>
+                                <td style="padding: 10px">
+                                    <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" autocomplete="off" th:field="*{id}" class="my_filters" data-name="id" type="text">
+                                </td>
 
                                 <th style="border-bottom:none">
-                                    <div class="form-group" style="margin: 0">
+                                    <div class="form-group" style="margin: 0; margin-top: -50px">
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                               <span class="input-group-text">
                                                 <i class="far fa-calendar-alt"></i>
                                               </span>
                                             </div>
-                                            <input type="text" class="form-control float-right" id="reservation"
+                                            <input type="text" autocomplete="off" class="form-control float-right" id="reservation"
                                                    name="date">
                                         </div>
                                     </div>
                                 </th>
 
-                                <th style="border-bottom:none"><select class="form-select" id="isCompleted" name="isCompleted">
+                                <th style="border-bottom:none"><select autocomplete="off" class="form-select" id="isCompleted" name="isCompleted">
                                     <option th:selected="${filterForm.debtSting == null}" value="-"></option>
                                     <option value="сompleted"
                                             th:selected="${#strings.containsIgnoreCase(('сompleted'),((filterForm.isCompleted != null) ? (filterForm.isCompleted ): ('emp') ))}"
@@ -198,7 +200,7 @@
                                     </option>
                                 </select></th>
 
-                                <th style="border-bottom:none"><select class="form-select" id="incomeExpenseItem" name="incomeExpenseItem">
+                                <th style="border-bottom:none"><select autocomplete="off" class="form-select" id="incomeExpenseItem" name="incomeExpenseItem">
                                     <option value="-"
                                             th:selected="${filterForm.incomeExpenseItem == null}"></option>
                                     <option th:each="incomeExpenseItem : ${incomeExpenseItems}"
@@ -217,17 +219,18 @@
 <!--                                        ></option>-->
 <!--                                    </select>-->
 
-                                    <select id="mySelect2" name="owner">
+                                    <select autocomplete="off" id="mySelect2" name="owner">
                                         <option th:if="${filterForm.owner == null}" value="" selected="selected">Выберите пользователя</option>
                                         <option th:if="${filterForm.owner != null}" th:value="${filterForm.ownerEntity.id}" th:text="${filterForm.ownerEntity.getFullName()}"></option>
 
                                     </select>
                                 </th>
 
-                                <th style="border-bottom:none"><input type="text" class="form-control" name="accountNumber"
-                                           id="accountNumber"></th>
+                                <td style="padding: 10px">
+                                    <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" autocomplete="off" th:field="*{account}" class="my_filters" data-name="id" type="text">
+                                </td>
 
-                                <th style="border-bottom:none"><select class="form-select" id="incomeExpenseType" name="incomeExpenseType">
+                                <th style="border-bottom:none"><select autocomplete="off" class="form-select" id="incomeExpenseType" name="incomeExpenseType">
                                     <option th:selected="${filterForm.incomeExpenseType == null}" value="-"></option>
                                     <option value="income"
                                             th:selected="${#strings.containsIgnoreCase(('income'),((filterForm.incomeExpenseType != null) ? (filterForm.incomeExpenseType ): ('emp') ))}"
@@ -243,122 +246,11 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="cashBox : ${cashBoxList}">
-                                <td><a style="display: block; color: black; text-decoration: none;"
-                                       th:text="${cashBox.id}" th:href="@{{id}(id=${cashBox.id})}"></a></td>
-                                <td><a style="display: block; color: black; text-decoration: none;"
-                                       th:text="${cashBox.date}" th:href="@{{id}(id=${cashBox.id})}"></a></td>
-                                <td><a style="display: block; color: black; text-decoration: none;"
-                                       th:text="${cashBox.completed == true} ? 'Проведен'  : 'Не проведен'"></a></td>
-
-                                <td><a style="display: block; color: black; text-decoration: none;"
-                                       th:text="${cashBox.incomeExpenseItems != null} ? ${cashBox.incomeExpenseItems.name} : '(Не задано)'"
-                                       th:href="@{{id}(id=${cashBox.id})}"></a></td>
-                                <!--                            th:text="${cashBox.incomeExpenseItems.name}"-->
-                                <td><a style="display: block; color: black; text-decoration: none;" th:text="${cashBox.owner == null} ? '(Не задано)':( ${cashBox.owner.first_name}+' '+${cashBox.owner.last_name}+
-                            ' '+${cashBox.owner.fathers_name})" th:href="@{{id}(id=${cashBox.id})}"></a></td>
-
-                                <td><a style="display: block; color: black; text-decoration: none;"
-                                       th:text="${cashBox.apartmentAccount == null} ? '(Не задано)':( ${T(java.lang.String).format('%010d',cashBox.apartmentAccount.id)})"
-                                       th:href="@{{id}(id=${cashBox.id})}"></a></td>
-                                <td><a style="display: block; text-decoration: none;"
-                                       th:text="${#strings.contains(cashBox.incomeExpenseType,'INCOME')} ? 'Приход'  : 'Расход'"
-                                       th:styleappend="${#strings.contains(cashBox.incomeExpenseType,'INCOME')} ? 'color:green'  : 'color:red'"
-                                       th:href="@{{id}(id=${cashBox.id})}"></a></td>
-                                <td><a style="display: block; text-decoration: none;" th:styleappend="${cashBox.amount > 0 ? 'color:green' : 'color:red'}"
-                                       th:text="${cashBox.amount}" th:href="@{{id}(id=${cashBox.id})}"></a></td>
-                                <td>
-                                    <div class="btn-group" role="group" aria-label="Basic outlined button group">
-                                        <a th:href="@{/admin/cashbox/edit/{id}(id=${cashBox.id})}" class="btn btn-default btn-sm"><i
-                                                class="fa fa-pencil" aria-hidden="true"></i></i></a>
-                                        <a th:href="@{/admin/cashbox/delete/{id}(id=${cashBox.id})}"
-                                           class="btn btn-default btn-sm"><i
-                                                class="fa fa-trash-o" aria-hidden="true"></i></i></a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr th:if="${cashBoxList.totalElements == 0}">
-                                <td colspan="9">Ничего не найдено</td>
-                            </tr>
                             </tbody>
                             <tfoot>
                             </tfoot>
                         </table>
-                        <nav aria-label="Page navigation " th:if="${cashBoxList.totalPages gt 1}">
-                            <ul class="pagination justify-content-center font-weight-medium">
-                                <li class="page-item" th:classappend="${cashBoxList.number eq 0} ? 'disabled'">
-                                    <a class="page-link"
-                                       th:href="@{/admin/cashbox/?page={id}&size={sz} (id=${cashBoxList.number eq 0 ? cashBoxList.number : 0},sz=${cashBoxList.getSize})}"
-                                       aria-label="Previous">
-                                        <span aria-hidden="true">«</span>
-                                    </a>
-                                </li>
-                                <li class="page-item" th:classappend="${cashBoxList.number le 0} ? 'disabled'">
-                                    <a class="page-link"
-                                       th:href="@{/admin/cashbox/?page={id}&size={sz} (id=${cashBoxList.number - 2},sz=${cashBoxList.getSize})}"
-                                       aria-label="Next">
-                                        <span aria-hidden="true">‹</span>
-                                    </a>
-                                </li>
-                                <li class="page-item disabled" th:if="${cashBoxList.number > 3 }">
-                                    <a class="page-link" href="#">...
-                                    </a>
-                                </li>
-                                <li class="page-item" th:classappend="${i eq cashBoxList.number + 1} ? 'active'"
-                                    th:each="i : ${#numbers.sequence(( cashBoxList.number > 2 ? cashBoxList.number - 2: cashBoxList.number - (cashBoxList.number - 1) ), (cashBoxList.number + 4 < cashBoxList.totalPages   ? cashBoxList.number + 4 : cashBoxList.totalPages), 1)}">
-                                    <a class="page-link"
-                                       th:href="@{/admin/cashbox/?page={id}&size={sz} (id=${i-1},sz=${cashBoxList.getSize})}"
-                                       th:text="${i}"
-                                       th:title="${'Page '+ i}"
-                                       rel="tooltip"></a></li>
-                                <li class="page-item disabled"
-                                    th:if="${cashBoxList.number + 4 < cashBoxList.totalPages}">
-                                    <a class="page-link" href="#">...
-                                    </a>
-                                </li>
-                                <!--                                <li class="page-item" th:classappend="${user.number + 1 eq user.totalPages} ? 'disabled'"><a class="page-link" href="#">...</a></li>-->
-                                <li class="page-item"
-                                    th:classappend="${cashBoxList.number ge cashBoxList.totalPages - 2} ? 'disabled'">
-                                    <a class="page-link"
-                                       th:href="@{/admin/cashbox/?page={id}&size={sz}(id=${cashBoxList.number + 2},sz=${cashBoxList.getSize})}"
-                                       aria-label="Next">
-                                        <span aria-hidden="true">›</span>
-                                    </a>
-                                </li>
-                                <li class="page-item"
-                                    th:classappend="${cashBoxList.number eq cashBoxList.totalPages - 1} ? 'disabled'">
-                                    <a class="page-link"
-                                       th:href="@{/admin/cashbox/?page={id}&size={sz}(id=${cashBoxList.totalPages - 1},sz=${cashBoxList.getSize})}"
-                                       aria-label="Next">
-                                        <span aria-hidden="true">»</span>
-                                    </a>
-                                </li>
-                                <div class="btn-group">
-                                    <button type="button" th:text="${cashBoxList.getSize}"
-                                            class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown"
-                                            aria-expanded="false">
-
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item"
-                                               th:href="@{/admin/cashbox/?page={id}&size={sz}(id=${cashBoxList.getNumber},sz=5)}">5</a>
-                                        </li>
-                                        <li><a class="dropdown-item"
-                                               th:href="@{/admin/cashbox/?page={id}&size=10(id=${cashBoxList.getNumber})}">10</a>
-                                        </li>
-                                        <li><a class="dropdown-item"
-                                               th:href="@{/admin/cashbox/?page={id}&size=25(id=${cashBoxList.getNumber})}">25</a>
-                                        </li>
-                                        <li><a class="dropdown-item"
-                                               th:href="@{/admin/cashbox/?page={id}&size=50(id=${cashBoxList.getNumber})}">50</a>
-                                        </li>
-                                        <li><a class="dropdown-item"
-                                               th:href="@{/admin/cashbox/?page={id}&size=100(id=${cashBoxList.getNumber})}">100</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </ul>
-                        </nav>
+                        <nav aria-label="Page navigation " class="pagination_container"></nav>
                     </form>
                 </div>
                 <!-- /.card-body -->
@@ -369,48 +261,43 @@
     <footer th:insert="~{main-template :: footer}"></footer>
 </div>
 
-<!-- ./wrapper -->
-<!-- jQuery -->
 <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
-<!-- Bootstrap 4 -->
 <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
-<!--&lt;!&ndash; Select2 &ndash;&gt;-->
-<!--<script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>-->
-<!-- Bootstrap4 Duallistbox -->
 <script th:src="@{/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js}"></script>
-<!-- InputMask -->
 <script th:src="@{/plugins/moment/moment.min.js}"></script>
 <script th:src="@{/plugins/inputmask/jquery.inputmask.min.js}"></script>
-<!-- date-range-picker -->
 <script th:src="@{/plugins/daterangepicker/daterangepicker.js}"></script>
-<!-- bootstrap color picker -->
 <script th:src="@{/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js}"></script>
-<!-- Tempusdominus Bootstrap 4 -->
 <script th:src="@{/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js}"></script>
-<!-- Bootstrap Switch -->
 <script th:src="@{/plugins/bootstrap-switch/js/bootstrap-switch.min.js}"></script>
-<!-- BS-Stepper -->
 <script th:src="@{/plugins/bs-stepper/js/bs-stepper.min.js}"></script>
-<!-- AdminLTE App -->
 <script th:src="@{/dist/js/adminlte.min.js}"></script>
-<!-- Icons -->
 <script th:src="@{https://kit.fontawesome.com/41663a8b50.js}" crossorigin="anonymous"></script>
-<!-- Select2 -->
 <script src="../../plugins/select2/js/select2.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.min.js"></script>
 
-<!--<script>-->
-<!--    $(function () {-->
-<!--        //Initialize Select2 Elements-->
-<!--        $('.select2').select2()-->
 
-<!--        //Initialize Select2 Elements-->
-<!--        $('.select2bs4').select2({-->
-<!--            theme: 'bootstrap4'-->
-<!--        })-->
-<!--    })-->
-<!--</script>-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+<script th:src="@{/dist/js/pagination.js}"></script>
+
+<script th:inline="javascript">
+
+    let globalTableName = 'transactions';
+    let totalPagesCount = [[${totalPagesCount}]];
+    let tableData;
+
+    $(document).ready(function(){
+
+        drawTable();
+
+    });
+
+</script>
+
 
 <script>
     $(function () {
@@ -543,6 +430,24 @@
     * {
         font-family: 'Source Sans Pro'
     }
+</style>
+<style>
+        a.selected {
+            background-color: rgba(0, 179, 255, 0.4);
+            color: white;
+            cursor: initial;
+            caret-color:transparent;
+        }
+
+        a.selected:hover {
+            background-color: rgba(0, 179, 255, 0.4);
+            color: white;
+        }
+
+        a.page-link {
+            width: 42px;
+            text-align: center;
+        }
 </style>
 </body>
 </html>

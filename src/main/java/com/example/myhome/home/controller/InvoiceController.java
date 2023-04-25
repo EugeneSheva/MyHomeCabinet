@@ -79,13 +79,10 @@ public class InvoiceController {
     public String showInvoicePage(Model model,
                                   FilterForm form) throws IllegalAccessException {
 
-        if(form.getPage() == null) return "redirect:/admin/invoices?page=1";
-
         Page<Invoice> invoices;
 
-        invoices = invoiceService.findAllBySpecificationAndPage(form, form.getPage()-1, 5);
-
-        log.info(invoices.toString());
+        if(form.getPage() == null) invoices = invoiceService.findAllBySpecificationAndPage(form, 1, 5);
+        else invoices = invoiceService.findAllBySpecificationAndPage(form, form.getPage()-1, 5);
 
         model.addAttribute("owners", ownerService.findAllDTO());
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());

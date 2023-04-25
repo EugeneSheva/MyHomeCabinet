@@ -5,15 +5,16 @@ import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Building;
 import com.example.myhome.home.model.BuildingDTO;
 
+import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.BuildingRepository;
+import com.example.myhome.home.specification.BuildingSpecification;
 import com.example.myhome.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.*;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,6 +48,33 @@ public class BuildingService {
         return buildingDTOList; }
 
     public Building save(Building building) { return buildingRepository.save(building); }
+
+    public Page<BuildingDTO> findAllBySpecification(FilterForm filters, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page-1, size);
+        Page<Building> initialPage = buildingRepository.findAll(buildSpecFromFilters(filters), pageable);
+
+        List<BuildingDTO> listDTO = initialPage.getContent().stream()
+                .map(
+                        building -> BuildingDTO.builder()
+                                .id(building.getId())
+                                .name(building.getName())
+                                .address(building.getAddress())
+                                .build()
+                )
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(listDTO, pageable, initialPage.getTotalElements());
+    }
+
+    private Specification<Building> buildSpecFromFilters(FilterForm filters) {
+        Long id = filters.getId();
+        String name = filters.getName();
+        String address = filters.getAddress();
+
+        return Specification.where(BuildingSpecification.hasId(id)
+                            .and(BuildingSpecification.hasNameLike(name))
+                            .and(BuildingSpecification.hasAddressLike(address)));
+    }
 
     public List<BuildingDTO> findByPage(String search, int page) {
         log.info(buildingRepository.findAll().toString());

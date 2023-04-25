@@ -33,30 +33,30 @@ public interface CashBoxRepository extends JpaRepository<CashBox, Long>, JpaSpec
     default Page<CashBox> findByFilters(Long id, LocalDate from, LocalDate to, Boolean isCompleted, String incomeExpenseItem, Long ownerId, Long accountNumber, IncomeExpenseType incomeExpenseType, Pageable pageable) {
         Specification<CashBox> spec = Specification.where(null);
 
-        if (id != null ) {
-            spec = spec.and(CashBoxSpecification.idContains(id));
-        }
-        if (from != null && to != null) {
-            spec = spec.and(CashBoxSpecification.dateBetwenContains(from, to));
-        }
-        if (from == null && to != null) {
-            spec = spec.and(CashBoxSpecification.dateBeforeContains(to));
-        }
-        if (from != null && to == null) {
-            spec = spec.and(CashBoxSpecification.dateAfterContains(from));
-        }
-        if (incomeExpenseItem != null && !incomeExpenseItem.isEmpty() && !incomeExpenseItem.equalsIgnoreCase("-")) {
-            spec = spec.and(CashBoxSpecification.incExpItemContains(incomeExpenseItem));
-        }
-        if (ownerId != null && ownerId>0) {
-            spec = spec.and(CashBoxSpecification.ownerContains(ownerId));
-        }
-        if (accountNumber != null ) {
-            spec = spec.and(CashBoxSpecification.accountContains(accountNumber));
-        }
-        if (incomeExpenseType != null) {
-            spec = spec.and(CashBoxSpecification.incomeExpenseTypeContains(incomeExpenseType));
-        }
+//        if (id != null ) {
+//            spec = spec.and(CashBoxSpecification.idContains(id));
+//        }
+//        if (from != null && to != null) {
+//            spec = spec.and(CashBoxSpecification.dateBetwenContains(from, to));
+//        }
+//        if (from == null && to != null) {
+//            spec = spec.and(CashBoxSpecification.dateBeforeContains(to));
+//        }
+//        if (from != null && to == null) {
+//            spec = spec.and(CashBoxSpecification.dateAfterContains(from));
+//        }
+//        if (incomeExpenseItem != null && !incomeExpenseItem.isEmpty() && !incomeExpenseItem.equalsIgnoreCase("-")) {
+//            spec = spec.and(CashBoxSpecification.incExpItemContains(incomeExpenseItem));
+//        }
+//        if (ownerId != null && ownerId>0) {
+//            spec = spec.and(CashBoxSpecification.ownerContains(ownerId));
+//        }
+//        if (accountNumber != null ) {
+//            spec = spec.and(CashBoxSpecification.accountContains(accountNumber));
+//        }
+//        if (incomeExpenseType != null) {
+//            spec = spec.and(CashBoxSpecification.incomeExpenseTypeContains(incomeExpenseType));
+//        }
 
         return findAll(spec, pageable);
     }

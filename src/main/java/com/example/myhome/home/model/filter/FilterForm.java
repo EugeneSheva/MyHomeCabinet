@@ -44,7 +44,6 @@ public class FilterForm {
     private String name;
     private String role;
     private String email;
-    private String phonenumber;
 
     private String address;
 
@@ -53,8 +52,10 @@ public class FilterForm {
     private String buildingName;
     private String debtSting;
     private String isCompleted;
-    private String incomeExpenseItem;
+    private Long incomeExpenseItem;
     private String incomeExpenseType;
+
+    private String account;
 
     public FilterForm() {
     }

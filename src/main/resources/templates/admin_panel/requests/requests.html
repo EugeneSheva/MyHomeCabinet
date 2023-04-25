@@ -59,7 +59,7 @@
                             <div class="box-header with-border" >
                                 <h3 class="box-title"></h3>
                                 <div class="box-tools">
-                                    <a th:href="@{/admin/requests}" class="btn btn-default btn-sm">
+                                    <a href="#" onclick="reset()" class="btn btn-default btn-sm">
                                         <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                                     </a>
                                     <div id="page_button_container_top" class="mb-4" style="display: flex; justify-content: center;"></div>
@@ -67,7 +67,7 @@
                             </div>
                             <div class="box-body table-responsive">
                                 <form action="" autocomplete="off" method="get" th:object="${filter_form}">
-                                    <nav aria-label="Page navigation " class="pagination_container"></nav>
+                                    <nav aria-label="Page navigation " class="pagination_container mt-3"></nav>
                                     <table id="requestsTable" class="table table-bordered table-hover table-striped linkedRow">
                                     <thead>
                                     <tr>
@@ -90,20 +90,20 @@
                                     </tr>
                                     <tr>
                                         <td style="padding: 10px">
-                                            <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" th:field="*{id}" class="my_filters" data-name="id" type="text">
+                                            <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" autocomplete="off" th:field="*{id}" class="my_filters" data-name="id" type="text">
                                         </td>
                                         <td style="padding: 10px;">
 <!--                                            <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" type="date">-->
 <!--                                            <input type="text" id="best_time_datepicker">-->
                                             <div class="input-group" id="datetimepicker1" data-td-target-input="nearest" data-td-target-toggle="nearest">
-                                                <input id="datetime" style="padding-block: 21px" type="text" data-name="datetime" th:field="*{datetime}" value="2023-01-01" class="form-control datetime_filter" data-td-target="#datetimepicker1">
+                                                <input autocomplete="off" id="datetime" style="padding-block: 21px" type="text" data-name="datetime" th:field="*{datetime}" value="2023-01-01" class="form-control datetime_filter" data-td-target="#datetimepicker1">
                                                 <span class="input-group-text" data-td-target="#datetimepicker1" data-td-toggle="datetimepicker">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
                                             </div>
                                         </td>
                                         <td style="padding: 10px">
-                                            <select style="width: 100%; padding-block: 10px" th:field="*{master_type}" data-name="master_type" class="my_filters">
+                                            <select autocomplete="off" style="width: 100%; padding-block: 10px" th:field="*{master_type}" data-name="master_type" class="my_filters">
                                                 <option value=""></option>
                                                 <option th:each="master_type : ${T(com.example.myhome.home.model.RepairMasterType).values()}"
                                                         th:value="${master_type}"
@@ -111,13 +111,13 @@
                                             </select>
                                         </td>
                                         <td style="padding: 10px">
-                                            <input th:field="*{description}" data-name="description" style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" class="my_filters" type="text">
+                                            <input autocomplete="off" th:field="*{description}" data-name="description" style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" class="my_filters" type="text">
                                         </td>
                                         <td style="padding: 10px">
-                                            <input th:field="*{apartment}" data-name="apartment" style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" class="my_filters" type="text">
+                                            <input autocomplete="off" th:field="*{apartment}" data-name="apartment" style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" class="my_filters" type="text">
                                         </td>
                                         <td style="padding: 10px">
-                                            <select style="width: 100%; padding-block: 10px" th:field="*{owner}" data-name="owner" class="my_filters">
+                                            <select autocomplete="off" style="width: 100%; padding-block: 10px" th:field="*{owner}" data-name="owner" class="my_filters">
                                                 <option value=""></option>
                                                 <option th:each="owner : ${owners}"
                                                         th:value="${owner.id}"
@@ -125,10 +125,10 @@
                                             </select>
                                         </td>
                                         <td style="padding: 10px">
-                                            <input th:field="*{phone}" data-name="phone" class="my_filters" style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" type="text">
+                                            <input autocomplete="off" th:field="*{phone}" data-name="phone" class="my_filters" style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" type="text">
                                         </td>
                                         <td style="padding: 10px">
-                                            <select th:field="*{master}" data-name="master" class="my_filters" style="width: 100%; padding-block: 10px">
+                                            <select autocomplete="off" th:field="*{master}" data-name="master" class="my_filters" style="width: 100%; padding-block: 10px">
                                                 <option value=""></option>
                                                 <option th:each="master : ${masters}"
                                                         th:value="${master.id}"
@@ -136,7 +136,7 @@
                                             </select>
                                         </td>
                                         <td style="padding: 10px">
-                                            <select th:field="*{status}" data-name="status" class="my_filters" style="width: 100%; padding-block: 10px">
+                                            <select autocomplete="off" th:field="*{status}" data-name="status" class="my_filters" style="width: 100%; padding-block: 10px">
                                                 <option value=""></option>
                                                 <option th:each="stat : ${T(com.example.myhome.home.model.RepairStatus).values()}"
                                                         th:value="${stat}"
@@ -187,8 +187,6 @@
     let globalTableName = 'requests';
     let totalPagesCount = [[${totalPagesCount}]];
     let tableData;
-    let currentPageNumber = 1;
-    let currentPageSize = 10;
 
     $(document).ready(function(){
 

@@ -49,8 +49,6 @@ public class AccountController {
     public String showAccountsPage(Model model,
                                    FilterForm filterForm) throws IllegalAccessException {
 
-        if(filterForm.getPage() == null) return "redirect:/admin/accounts?page=1";
-
         Page<ApartmentAccount> accountList;
 
         accountList = accountService.findAllBySpecification(filterForm);
