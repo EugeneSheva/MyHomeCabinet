@@ -5,8 +5,9 @@ import com.example.myhome.home.model.Invoice;
 import com.example.myhome.home.model.InvoiceComponents;
 import com.example.myhome.home.model.InvoiceTemplate;
 import com.example.myhome.home.model.filter.FilterForm;
-import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.*;
+import com.example.myhome.home.service.impl.InvoiceServiceImpl;
+import com.example.myhome.home.service.impl.TariffServiceImpl;
 import com.example.myhome.home.validator.InvoiceValidator;
 import com.example.myhome.util.FileDownloadUtil;
 import com.example.myhome.util.FileUploadUtil;
@@ -17,7 +18,8 @@ import lombok.extern.java.Log;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.MediaType;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,12 +29,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @SuppressWarnings("unused")
 @Controller
@@ -41,7 +39,7 @@ import java.util.List;
 public class InvoiceController {
 
     @Autowired
-    private InvoiceService invoiceService;
+    private InvoiceServiceImpl invoiceService;
 
     @Autowired
     private CashBoxService cashBoxService;
@@ -59,7 +57,7 @@ public class InvoiceController {
     private ServiceService serviceService;
 
     @Autowired
-    private TariffService tariffService;
+    private TariffServiceImpl tariffService;
 
     @Autowired
     private MeterDataService meterDataService;
@@ -77,12 +75,12 @@ public class InvoiceController {
 
     @GetMapping
     public String showInvoicePage(Model model,
-                                  FilterForm form) throws IllegalAccessException {
+                                  FilterForm form) {
 
         Page<Invoice> invoices;
+        Pageable pageable = PageRequest.of((form.getPage() == null) ? 1 : form.getPage()-1 ,5);
 
-        if(form.getPage() == null) invoices = invoiceService.findAllBySpecificationAndPage(form, 1, 5);
-        else invoices = invoiceService.findAllBySpecificationAndPage(form, form.getPage()-1, 5);
+        invoices = invoiceService.findAllInvoicesByFiltersAndPage(form, pageable);
 
         model.addAttribute("owners", ownerService.findAllDTO());
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
@@ -289,7 +287,7 @@ public class InvoiceController {
 
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);
-        return invoiceService.findAllBySpecificationAndPage(form, page-1, size);
+        return invoiceService.findAllInvoicesByFiltersAndPage(form, PageRequest.of(page-1, size));
     }
 
     @GetMapping("/get-filtered-invoice-count")

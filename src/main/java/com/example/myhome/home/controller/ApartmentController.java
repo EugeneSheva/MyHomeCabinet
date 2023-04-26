@@ -1,13 +1,17 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.dto.AdminDTO;
+import com.example.myhome.home.dto.ApartmentAccountDTO;
+import com.example.myhome.home.dto.BuildingDTO;
+import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.*;
+import com.example.myhome.home.service.impl.TariffServiceImpl;
 import com.example.myhome.home.validator.ApartmentValidator;
 import com.example.myhome.util.UserRole;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -40,7 +44,7 @@ public class ApartmentController {
     private final BuildingService buildingService;
     private final BuildingRepository buildingRepository;
     private final OwnerService ownerService;
-    private final TariffService tariffService;
+    private final TariffServiceImpl tariffService;
     private final CashBoxRepository cashBoxRepository;
     private final CashBoxService cashBoxService;
     private final InvoiceRepository invoiceRepository;

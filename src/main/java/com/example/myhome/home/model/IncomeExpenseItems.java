@@ -1,6 +1,8 @@
 package com.example.myhome.home.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -12,6 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "income_expense_items")
 public class IncomeExpenseItems {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,6 +25,8 @@ public class IncomeExpenseItems {
     @Enumerated(EnumType.STRING)
     private IncomeExpenseType incomeExpenseType;
 
+    @ToString.Exclude
+    @JsonIgnore
     @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "incomeExpenseItems")
     private List<CashBox> transactions;
 

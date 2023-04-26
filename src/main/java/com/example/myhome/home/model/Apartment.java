@@ -72,17 +72,6 @@ public class Apartment {
         this.owner = owner;
     }
 
-    //    public Apartment(Long id, Building building, BuildingSection section, BuildingFloor floor, Long number, Double balance, Double square, Owner owner) {
-//        this.id = id;
-//        this.building = building;
-//        this.section = section;
-//        this.floor = floor;
-//        this.number = number;
-//        this.balance = balance;
-//        this.square = square;
-//        this.owner = owner;
-//    }
-
     @Override
     public String toString() {
         return "Apartment{" +

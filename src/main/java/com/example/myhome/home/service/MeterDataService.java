@@ -1,9 +1,10 @@
 package com.example.myhome.home.service;
 
+import com.example.myhome.home.dto.MeterDataDTO;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.MeterDataRepository;
-import com.example.myhome.home.repository.specifications.MeterSpecifications;
+import com.example.myhome.home.specification.MeterSpecifications;
 import com.example.myhome.home.validator.MeterValidator;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.Arrays;

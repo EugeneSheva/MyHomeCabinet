@@ -1,6 +1,5 @@
 package com.example.myhome.home.repository;
 import com.example.myhome.home.model.Apartment;
-import com.example.myhome.home.model.ApartmentDTO;
 import com.example.myhome.home.specification.ApartmentSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

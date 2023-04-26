@@ -2,14 +2,9 @@ package com.example.myhome.home.repository;
 
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Building;
-import com.example.myhome.home.model.BuildingDTO;
-import com.example.myhome.home.model.RepairStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.example.myhome.home.specification.BuildingSpecification;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -19,7 +14,7 @@ import java.util.List;
 
 public interface BuildingRepository extends JpaRepository<Building, Long>, JpaSpecificationExecutor<Building> {
 
-//      @Query("SELECT new com.example.myhome.home.model.BuildingDTO(building.id, building.name,  building.address) FROM Building building")
+//      @Query("SELECT new com.example.myhome.home.dto.BuildingDTO(building.id, building.name,  building.address) FROM Building building")
 //      List<BuildingDTO>getBuildingsDTOselect();
 //        List<BuildingDTO> findAllProjectedBy();
 

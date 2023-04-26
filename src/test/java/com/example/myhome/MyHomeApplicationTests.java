@@ -1,8 +1,10 @@
 package com.example.myhome;
 
 import com.example.myhome.home.service.*;
+import com.example.myhome.home.service.impl.AccountServiceImpl;
+import com.example.myhome.home.service.impl.InvoiceServiceImpl;
+import com.example.myhome.home.service.impl.TariffServiceImpl;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -12,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MyHomeApplicationTests {
 
     @MockBean
-    private AccountService accountService;
+    private AccountServiceImpl accountServiceImpl;
     @MockBean
     private AdminService adminService;
     @MockBean
@@ -20,7 +22,7 @@ class MyHomeApplicationTests {
     @MockBean
     private BuildingService buildingService;
     @MockBean
-    private InvoiceService invoiceService;
+    private InvoiceServiceImpl invoiceServiceImpl;
     @MockBean
     private MessageService messageService;
     @MockBean
@@ -32,15 +34,15 @@ class MyHomeApplicationTests {
     @MockBean
     private ServiceService serviceService;
     @MockBean
-    private TariffService tariffService;
+    private TariffServiceImpl tariffService;
 
     @Test
     void contextLoads() {
-        assertThat(accountService).isNotNull();
+        assertThat(accountServiceImpl).isNotNull();
         assertThat(apartmentService).isNotNull();
         assertThat(adminService).isNotNull();
         assertThat(buildingService).isNotNull();
-        assertThat(invoiceService).isNotNull();
+        assertThat(invoiceServiceImpl).isNotNull();
         assertThat(messageService).isNotNull();
         assertThat(meterDataService).isNotNull();
         assertThat(ownerService).isNotNull();

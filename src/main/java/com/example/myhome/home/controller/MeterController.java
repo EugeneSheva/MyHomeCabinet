@@ -1,8 +1,7 @@
 package com.example.myhome.home.controller;
 
-import com.example.myhome.home.model.ApartmentAccountDTO;
 import com.example.myhome.home.model.MeterData;
-import com.example.myhome.home.model.MeterDataDTO;
+import com.example.myhome.home.dto.MeterDataDTO;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
@@ -23,7 +22,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;

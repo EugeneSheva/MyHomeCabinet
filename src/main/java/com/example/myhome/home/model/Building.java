@@ -2,6 +2,7 @@ package com.example.myhome.home.model;
 
 import javax.persistence.*;
 
+import com.example.myhome.home.dto.BuildingDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
@@ -46,6 +47,14 @@ public class Building {
     private List<Invoice> invoiceList;
 
     public Building() {
+    }
+
+    public Building(BuildingDTO dto) {
+        this.id = dto.getId();
+        this.name = dto.getName();
+        this.sections = dto.getSections();
+        this.address = dto.getAddress();
+        this.floors = dto.getFloors();
     }
 
     public Building(Long id, String name, String address, List<String> sections, List<String> floors) {

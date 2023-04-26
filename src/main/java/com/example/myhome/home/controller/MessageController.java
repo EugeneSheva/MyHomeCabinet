@@ -1,5 +1,7 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.dto.ApartmentDTO;
+import com.example.myhome.home.dto.BuildingDTO;
 import com.example.myhome.home.model.*;
 
 import com.example.myhome.home.repository.ApartmentRepository;

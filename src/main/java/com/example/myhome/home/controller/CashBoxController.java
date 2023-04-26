@@ -1,4 +1,8 @@
 package com.example.myhome.home.controller;
+import com.example.myhome.home.dto.AdminDTO;
+import com.example.myhome.home.dto.ApartmentAccountDTO;
+import com.example.myhome.home.dto.CashBoxDTO;
+import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.AccountRepository;
@@ -6,6 +10,7 @@ import com.example.myhome.home.repository.CashBoxRepository;
 import com.example.myhome.home.repository.IncomeExpenseRepository;
 import com.example.myhome.home.repository.OwnerRepository;
 import com.example.myhome.home.service.*;
+import com.example.myhome.home.service.impl.AccountServiceImpl;
 import com.example.myhome.home.validator.CashBoxtValidator;
 import com.example.myhome.util.UserRole;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,8 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -43,7 +46,7 @@ public class CashBoxController {
     private final IncomeExpenseItemService incomeExpenseItemService;
     private final IncomeExpenseRepository incomeExpenseRepository;
     private final AccountRepository accountRepository;
-    private final AccountService accountService;
+    private final AccountServiceImpl accountServiceImpl;
     private final CashBoxRepository cashBoxRepository;
     private final CashBoxtValidator cashBoxtValidator;
 
@@ -53,8 +56,8 @@ public class CashBoxController {
         Page<CashBox> cashBoxList = cashBoxService.findAll(pageable);
         model.addAttribute("cashBoxList", cashBoxList);
         model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount().orElse(0.0));
-        model.addAttribute("accountBalance", accountService.getSumOfAccountBalances());
-        model.addAttribute("sumDebt", accountService.getSumOfAccountDebts());
+        model.addAttribute("accountBalance", accountServiceImpl.getSumOfAccountBalances());
+        model.addAttribute("sumDebt", accountServiceImpl.getSumOfAccountDebts());
         model.addAttribute("filterForm", new FilterForm());
         int pageNumber = 0;
         int pageSize = 2;
@@ -83,8 +86,8 @@ public class CashBoxController {
 
         model.addAttribute("cashBoxList", cashBoxPage);
         model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount().orElse(0.0));
-        model.addAttribute("accountBalance", accountService.getSumOfAccountBalances());
-        model.addAttribute("sumDebt", accountService.getSumOfAccountDebts());
+        model.addAttribute("accountBalance", accountServiceImpl.getSumOfAccountBalances());
+        model.addAttribute("sumDebt", accountServiceImpl.getSumOfAccountDebts());
         model.addAttribute("filterForm", new FilterForm());
         int pageNumber = 0;
         int pageSize = 2;

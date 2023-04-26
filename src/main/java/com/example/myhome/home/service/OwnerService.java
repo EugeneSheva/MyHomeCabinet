@@ -1,6 +1,9 @@
 package com.example.myhome.home.service;
 
 import com.example.myhome.home.configuration.security.CustomUserDetails;
+import com.example.myhome.home.dto.ApartmentDTO;
+import com.example.myhome.home.dto.BuildingDTO;
+import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
@@ -15,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

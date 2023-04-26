@@ -1,6 +1,6 @@
 package com.example.myhome.home.model;
 
-import com.example.myhome.home.service.registration.RegistrationRequest;
+import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.util.UserStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -67,12 +67,14 @@ public class Owner {
     public Owner() {
     }
 
-    public Owner(RegistrationRequest request) {
-        this.first_name = request.getFirst_name();
-        this.last_name = request.getLast_name();
-        this.fathers_name = request.getFathers_name();
-        this.email = request.getEmail();
-        this.password = request.getPassword();
+    public Owner(OwnerDTO dto) {
+        this.id = dto.getId();
+        this.first_name = dto.getFirst_name();
+        this.last_name = dto.getLast_name();
+        this.fathers_name = dto.getFathers_name();
+        this.email = dto.getEmail();
+        this.birthdate = LocalDate.parse(dto.getDate());
+        this.phone_number = dto.getPhone_number();
     }
 
     public Owner(Long id, String first_name, String last_name, String fathers_name, String phone_number, String email, String password) {

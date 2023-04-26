@@ -3,27 +3,24 @@ package com.example.myhome.home.service;
 import com.example.myhome.home.configuration.security.CustomAdminDetails;
 import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Admin;
-import com.example.myhome.home.model.AdminDTO;
+import com.example.myhome.home.dto.AdminDTO;
 
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.AdminRepository;
 
-import com.example.myhome.home.repository.specifications.AdminSpecifications;
+import com.example.myhome.home.specification.AdminSpecifications;
 import com.example.myhome.util.UserRole;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Filter;
 import java.util.stream.Collectors;
 
 @Service
