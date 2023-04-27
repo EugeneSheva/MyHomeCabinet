@@ -4,6 +4,7 @@ import com.example.myhome.home.dto.MeterDataDTO;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.MeterDataRepository;
+import com.example.myhome.home.service.impl.ServiceServiceImpl;
 import com.example.myhome.home.specification.MeterSpecifications;
 import com.example.myhome.home.validator.MeterValidator;
 import lombok.extern.java.Log;
@@ -30,7 +31,7 @@ public class MeterDataService {
     private MeterDataRepository meterDataRepository;
 
     @Autowired private ApartmentService apartmentService;
-    @Autowired private ServiceService serviceService;
+    @Autowired private ServiceServiceImpl serviceService;
     @Autowired private BuildingService buildingService;
 
     @Autowired private MeterValidator validator;

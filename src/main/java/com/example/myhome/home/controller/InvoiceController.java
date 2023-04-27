@@ -7,6 +7,7 @@ import com.example.myhome.home.model.InvoiceTemplate;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.service.*;
 import com.example.myhome.home.service.impl.InvoiceServiceImpl;
+import com.example.myhome.home.service.impl.ServiceServiceImpl;
 import com.example.myhome.home.service.impl.TariffServiceImpl;
 import com.example.myhome.home.validator.InvoiceValidator;
 import com.example.myhome.util.FileDownloadUtil;
@@ -54,7 +55,7 @@ public class InvoiceController {
     private BuildingService buildingService;
 
     @Autowired
-    private ServiceService serviceService;
+    private ServiceServiceImpl serviceService;
 
     @Autowired
     private TariffServiceImpl tariffService;
@@ -214,7 +215,7 @@ public class InvoiceController {
     public String getPrintPage(@PathVariable long id, Model model) {
         Invoice invoice = invoiceService.findInvoiceById(id);
         model.addAttribute("invoice", invoice);
-        model.addAttribute("default_template", invoiceService.findDefaultTemplate().orElse(null));
+        model.addAttribute("default_template", invoiceService.findDefaultTemplate());
         model.addAttribute("templates", invoiceService.findAllTemplates());
         return "admin_panel/invoices/invoice_print";
     }
@@ -257,7 +258,7 @@ public class InvoiceController {
             invoiceService.deleteTemplateById(delete_id);
             return "redirect:/admin/invoices/template";
         }
-        model.addAttribute("default_template", invoiceService.findDefaultTemplate().orElse(null));
+        model.addAttribute("default_template", invoiceService.findDefaultTemplate());
         model.addAttribute("templates", invoiceService.findAllTemplates());
         return "admin_panel/invoices/invoice_template_settings";
     }

@@ -34,9 +34,11 @@ public class AdminService {
 
 
     public Admin findAdminById (Long id) { return adminRepository.findById(id).orElseThrow(NotFoundException::new);}
+
     public Admin findAdminByLogin(String login) {return adminRepository.findByEmail(login).orElseThrow(NotFoundException::new);}
 
     public List<Admin> findAll() { return adminRepository.findAll(); }
+
     public List<Admin> findAll(int page_number) {return adminRepository.findAll(PageRequest.of(page_number, 5)).toList();}
 
     public List<Admin> findAllBySpecification(FilterForm filters) {
@@ -111,7 +113,6 @@ public class AdminService {
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         return adminRepository.save(admin);
     }
-
 
     public void deleteAdminById(Long id) { adminRepository.deleteById(id); }
 

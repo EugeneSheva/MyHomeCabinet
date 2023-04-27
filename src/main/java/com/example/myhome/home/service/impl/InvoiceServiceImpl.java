@@ -29,7 +29,7 @@ public class InvoiceServiceImpl implements InvoiceService, InvoiceTemplateServic
     @Autowired private ApartmentService apartmentService;
     @Autowired private EmailServiceImpl emailService;
     @Autowired private OwnerService ownerService;
-    @Autowired private ServiceService serviceService;
+    @Autowired private ServiceServiceImpl serviceService;
 
     @Autowired private ExcelHelper excelHelper;
 

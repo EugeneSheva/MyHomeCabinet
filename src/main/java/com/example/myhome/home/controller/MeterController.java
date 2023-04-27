@@ -6,7 +6,7 @@ import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.MeterDataService;
-import com.example.myhome.home.service.ServiceService;
+import com.example.myhome.home.service.impl.ServiceServiceImpl;
 import com.example.myhome.home.validator.MeterValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,7 +36,7 @@ public class MeterController {
     private MeterDataService meterDataService;
 
     @Autowired
-    private ServiceService serviceService;
+    private ServiceServiceImpl serviceService;
 
     @Autowired
     private BuildingService buildingService;

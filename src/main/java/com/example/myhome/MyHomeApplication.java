@@ -31,9 +31,6 @@ public class MyHomeApplication {
     @EventListener(ApplicationReadyEvent.class)
     @Transactional
     public void b() throws IOException {
-        log.info("NEW LOG MSG");
-        log.error("NEW ERROR MSG");
-        log.warn("NEW WARN MSG");
     }
 
 }

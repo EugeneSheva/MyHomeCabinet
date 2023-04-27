@@ -2,9 +2,8 @@ package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.Service;
 import com.example.myhome.home.model.Tariff;
-import com.example.myhome.home.service.ServiceService;
+import com.example.myhome.home.service.impl.ServiceServiceImpl;
 import com.example.myhome.home.service.TariffService;
-import com.example.myhome.home.service.impl.TariffServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.java.Log;
@@ -23,7 +22,7 @@ import java.util.*;
 @Log
 public class TariffController {
 
-    @Autowired private ServiceService serviceService;
+    @Autowired private ServiceServiceImpl serviceService;
     @Autowired private TariffService tariffService;
 
     @GetMapping

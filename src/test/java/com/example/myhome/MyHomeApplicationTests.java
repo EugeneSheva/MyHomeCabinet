@@ -3,6 +3,7 @@ package com.example.myhome;
 import com.example.myhome.home.service.*;
 import com.example.myhome.home.service.impl.AccountServiceImpl;
 import com.example.myhome.home.service.impl.InvoiceServiceImpl;
+import com.example.myhome.home.service.impl.ServiceServiceImpl;
 import com.example.myhome.home.service.impl.TariffServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,7 +33,7 @@ class MyHomeApplicationTests {
     @MockBean
     private RepairRequestService repairRequestService;
     @MockBean
-    private ServiceService serviceService;
+    private ServiceServiceImpl serviceService;
     @MockBean
     private TariffServiceImpl tariffService;
 

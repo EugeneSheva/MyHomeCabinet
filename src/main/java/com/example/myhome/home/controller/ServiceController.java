@@ -5,7 +5,7 @@ import com.example.myhome.home.model.ServiceForm;
 import com.example.myhome.home.model.Unit;
 import com.example.myhome.home.repository.ServiceRepository;
 import com.example.myhome.home.repository.UnitRepository;
-import com.example.myhome.home.service.ServiceService;
+import com.example.myhome.home.service.impl.ServiceServiceImpl;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +30,7 @@ public class ServiceController {
     private UnitRepository unitRepository;
 
     @Autowired
-    private ServiceService serviceService;
+    private ServiceServiceImpl serviceService;
 
     @GetMapping
     public String showServicesPage(Model model){

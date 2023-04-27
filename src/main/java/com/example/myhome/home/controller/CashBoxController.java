@@ -1,4 +1,5 @@
 package com.example.myhome.home.controller;
+import com.example.myhome.home.controller.socket.WebsocketController;
 import com.example.myhome.home.dto.AdminDTO;
 import com.example.myhome.home.dto.ApartmentAccountDTO;
 import com.example.myhome.home.dto.CashBoxDTO;
@@ -11,6 +12,7 @@ import com.example.myhome.home.repository.IncomeExpenseRepository;
 import com.example.myhome.home.repository.OwnerRepository;
 import com.example.myhome.home.service.*;
 import com.example.myhome.home.service.impl.AccountServiceImpl;
+import com.example.myhome.home.service.impl.IncomeExpenseItemServiceImpl;
 import com.example.myhome.home.validator.CashBoxtValidator;
 import com.example.myhome.util.UserRole;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -43,12 +45,14 @@ public class CashBoxController {
     private final OwnerRepository ownerRepository;
     private final AdminService adminService;
     private final ApartmentAccountService apartmentAccountService;
-    private final IncomeExpenseItemService incomeExpenseItemService;
+    private final IncomeExpenseItemServiceImpl incomeExpenseItemService;
     private final IncomeExpenseRepository incomeExpenseRepository;
     private final AccountRepository accountRepository;
     private final AccountServiceImpl accountServiceImpl;
     private final CashBoxRepository cashBoxRepository;
     private final CashBoxtValidator cashBoxtValidator;
+
+    private final WebsocketController websocketController;
 
 
     @GetMapping
@@ -324,6 +328,9 @@ public class CashBoxController {
             return "admin_panel/cash_box/cashbox_edit";
         }
         cashBoxService.save(cashBoxItem);
+
+        websocketController.sendCashboxItem(cashBoxItem);
+
         return "redirect:/admin/cashbox";
     }
 
@@ -335,6 +342,9 @@ public class CashBoxController {
             return "admin_panel/cash_box/cashbox_edit";
         }
         cashBoxService.save(cashBoxItem);
+
+        websocketController.sendCashboxItem(cashBoxItem);
+
         return "redirect:/admin/cashbox";
     }
 
@@ -345,6 +355,9 @@ public class CashBoxController {
             return "admin_panel/cash_box/cashbox_edit";
         }
         cashBoxService.save(cashBoxItem);
+
+        websocketController.sendCashboxItem(cashBoxItem);
+
         return "redirect:/admin/cashbox";
     }
 
@@ -376,6 +389,21 @@ public class CashBoxController {
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);
         return cashBoxService.findAllBySpecification(form, page, size);
+    }
+
+    @GetMapping("/get-cashbox-balance")
+    public @ResponseBody Double getCashboxBalance() {
+        return cashBoxService.calculateBalance();
+    }
+
+    @GetMapping("/get-account-balance")
+    public @ResponseBody Double getAccountBalance() {
+        return accountServiceImpl.getSumOfAccountBalances();
+    }
+
+    @GetMapping("/get-account-debts")
+    public @ResponseBody Double getAccountDebts() {
+        return accountServiceImpl.getSumOfAccountDebts();
     }
 
 

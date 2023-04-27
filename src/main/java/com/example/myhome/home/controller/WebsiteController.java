@@ -2,6 +2,7 @@ package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.pages.*;
 import com.example.myhome.home.service.WebsiteService;
+import com.example.myhome.home.service.impl.WebsiteServiceImpl;
 import com.example.myhome.home.validator.MainPageValidator;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 @Log
 public class WebsiteController {
 
-    @Autowired private WebsiteService websiteService;
+    @Autowired private WebsiteServiceImpl websiteService;
     @Autowired private MainPageValidator validator;
 
     @GetMapping("/home")
