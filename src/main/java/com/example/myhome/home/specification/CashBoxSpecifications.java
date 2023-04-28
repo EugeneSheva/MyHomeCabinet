@@ -1,18 +1,14 @@
 package com.example.myhome.home.specification;
 
 import com.example.myhome.home.model.*;
-import com.example.myhome.util.UserStatus;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 
-public class CashBoxSpecification {
+public class CashBoxSpecifications {
 
     public static Specification<CashBox> hasId(Long id) {
         if(id == null) return (root, query, criteriaBuilder) -> null;

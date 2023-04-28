@@ -1,6 +1,7 @@
 package com.example.myhome.util;
 
 import com.example.myhome.home.dto.*;
+import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.model.*;
 
 import java.util.List;

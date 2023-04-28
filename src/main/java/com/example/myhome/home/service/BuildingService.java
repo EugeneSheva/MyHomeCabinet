@@ -1,20 +1,20 @@
 package com.example.myhome.home.service;
 
+import com.example.myhome.home.dto.BuildingDTO;
 import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Apartment;
-import com.example.myhome.home.model.ApartmentDTO;
 import com.example.myhome.home.model.Building;
-import com.example.myhome.home.dto.BuildingDTO;
-
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.BuildingRepository;
-import com.example.myhome.home.specification.BuildingSpecification;
+import com.example.myhome.home.specification.BuildingSpecifications;
 import com.example.myhome.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.*;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -90,9 +90,9 @@ public class BuildingService {
         String name = filters.getName();
         String address = filters.getAddress();
 
-        return Specification.where(BuildingSpecification.hasId(id)
-                .and(BuildingSpecification.hasNameLike(name))
-                .and(BuildingSpecification.hasAddressLike(address)));
+        return Specification.where(BuildingSpecifications.hasId(id)
+                .and(BuildingSpecifications.hasNameLike(name))
+                .and(BuildingSpecifications.hasAddressLike(address)));
     }
 
     public List<BuildingDTO> findByPage(String search, int page) {

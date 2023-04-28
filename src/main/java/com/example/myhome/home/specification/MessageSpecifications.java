@@ -1,21 +1,12 @@
 package com.example.myhome.home.specification;
 
-import com.example.myhome.home.model.Apartment;
-import com.example.myhome.home.model.Building;
 import com.example.myhome.home.model.Message;
-import com.example.myhome.home.model.Owner;
-import com.example.myhome.util.UserStatus;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 
-public class MessageSpecification {
+public class MessageSpecifications {
 
 
     public static Specification<Message> textContains(String text) {

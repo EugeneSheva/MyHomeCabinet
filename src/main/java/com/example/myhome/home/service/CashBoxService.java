@@ -5,7 +5,7 @@ import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.CashBoxRepository;
-import com.example.myhome.home.specification.CashBoxSpecification;
+import com.example.myhome.home.specification.CashBoxSpecifications;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -77,13 +77,13 @@ public class CashBoxService {
                     LocalDate.parse(date_to);
         }
 
-        return Specification.where(CashBoxSpecification.hasId(id)
-                .and(CashBoxSpecification.hasDatesBetween(from, to))
-                .and(CashBoxSpecification.isCompletedContains(completed))
-                .and(CashBoxSpecification.hasTransactionItemID(transactionItemID))
-                .and(CashBoxSpecification.hasOwnerID(ownerID))
-                .and(CashBoxSpecification.hasAccountID(accountID))
-                .and(CashBoxSpecification.hasTransactionType(transactionType)));
+        return Specification.where(CashBoxSpecifications.hasId(id)
+                .and(CashBoxSpecifications.hasDatesBetween(from, to))
+                .and(CashBoxSpecifications.isCompletedContains(completed))
+                .and(CashBoxSpecifications.hasTransactionItemID(transactionItemID))
+                .and(CashBoxSpecifications.hasOwnerID(ownerID))
+                .and(CashBoxSpecifications.hasAccountID(accountID))
+                .and(CashBoxSpecifications.hasTransactionType(transactionType)));
 
     }
 

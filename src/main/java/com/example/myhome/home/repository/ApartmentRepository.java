@@ -1,6 +1,6 @@
 package com.example.myhome.home.repository;
 import com.example.myhome.home.model.Apartment;
-import com.example.myhome.home.specification.ApartmentSpecification;
+import com.example.myhome.home.specification.ApartmentSpecifications;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -37,30 +37,30 @@ public interface ApartmentRepository extends JpaRepository<Apartment, Long>, Jpa
         Specification<Apartment> spec = Specification.where(null);
 
         if (number != null) {
-            spec = spec.and(ApartmentSpecification.numberContains(number));
+            spec = spec.and(ApartmentSpecifications.numberContains(number));
         }
 
         if (building != null && !building.isEmpty() && !building.equalsIgnoreCase("-")) {
-            spec = spec.and(ApartmentSpecification.buildingContains(building));
+            spec = spec.and(ApartmentSpecifications.buildingContains(building));
         }
 
         if (section != null && !section.isEmpty() && !section.equalsIgnoreCase("-")) {
-            spec = spec.and(ApartmentSpecification.sectionContains(section));
+            spec = spec.and(ApartmentSpecifications.sectionContains(section));
         }
 
         if (floor != null && !floor.isEmpty() && !floor.equalsIgnoreCase("-")) {
-            spec = spec.and(ApartmentSpecification.floorContains(floor));
+            spec = spec.and(ApartmentSpecifications.floorContains(floor));
         }
 
         if (ownerId != null && ownerId>0) {
-            spec = spec.and(ApartmentSpecification.ownerContains(ownerId));
+            spec = spec.and(ApartmentSpecifications.ownerContains(ownerId));
         }
 
         if (debt != null && !debt.equalsIgnoreCase("-")) {
             if( debt.equalsIgnoreCase("true")) {
-            spec = spec.and(ApartmentSpecification.hasdebtContains());
+            spec = spec.and(ApartmentSpecifications.hasdebtContains());
             } else if ( debt.equalsIgnoreCase("false")) {
-                spec = spec.and(ApartmentSpecification.hasNodebtContains());
+                spec = spec.and(ApartmentSpecifications.hasNodebtContains());
             }
         }
         return findAll(spec,pageable);

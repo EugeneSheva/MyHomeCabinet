@@ -1,8 +1,6 @@
 package com.example.myhome.home.controller;
 
-import com.example.myhome.home.dto.AdminDTO;
-import com.example.myhome.home.dto.ApartmentAccountDTO;
-import com.example.myhome.home.dto.BuildingDTO;
+import com.example.myhome.home.dto.*;
 import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
@@ -15,6 +13,7 @@ import com.example.myhome.home.validator.ApartmentValidator;
 import com.example.myhome.util.MappingUtils;
 import com.example.myhome.util.UserRole;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -41,6 +40,7 @@ public class ApartmentController {
 
     @Value("${upload.path}")
     private String uploadPath;
+
     private final ApartmentService apartmentService;
     private final ApartmentRepository apartmentRepository;
     private final AccountService accountService;
@@ -287,8 +287,8 @@ public class ApartmentController {
     @GetMapping("/get-apartments-page")
     @ResponseBody
     public Page<ApartmentDTO> getApartmentsByPage(@RequestParam Integer page,
-                                               @RequestParam Integer size,
-                                               @RequestParam String filters) throws JsonProcessingException {
+                                                  @RequestParam Integer size,
+                                                  @RequestParam String filters) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);
         return apartmentService.findBySpecificationAndPage(page, size, form);

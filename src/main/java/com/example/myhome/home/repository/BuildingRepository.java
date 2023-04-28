@@ -37,11 +37,11 @@ public interface BuildingRepository extends JpaRepository<Building, Long>, JpaSp
                 Specification<Building> spec = Specification.where(null);
 
 //                if (name != null && !name.isEmpty()) {
-//                        spec = spec.and(BuildingSpecification.nameContains(name));
+//                        spec = spec.and(BuildingSpecifications.nameContains(name));
 //                }
 //
 //                if (address != null && !address.isEmpty()) {
-//                        spec = spec.and(BuildingSpecification.addressContains(address));
+//                        spec = spec.and(BuildingSpecifications.addressContains(address));
 //                }
                 return findAll(spec,pageable);
         }

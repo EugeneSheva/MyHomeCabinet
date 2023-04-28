@@ -6,7 +6,7 @@ import com.example.myhome.home.model.Building_;
 import org.springframework.data.jpa.domain.Specification;
 
 
-public class BuildingSpecification {
+public class BuildingSpecifications {
 
     public static Specification<Building> hasId(Long id) {
         if(id == null) return (root, query, criteriaBuilder) -> null;

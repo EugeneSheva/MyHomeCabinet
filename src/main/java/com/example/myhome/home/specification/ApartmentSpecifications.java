@@ -5,7 +5,7 @@ import com.example.myhome.home.model.Owner;
 import org.springframework.data.jpa.domain.Specification;
 import javax.persistence.criteria.*;
 
-public class ApartmentSpecification {
+public class ApartmentSpecifications {
 
     public static Specification<Apartment> numberContains(Long number) {
         return (root, query, builder) -> builder.equal(root.get("number"), number);

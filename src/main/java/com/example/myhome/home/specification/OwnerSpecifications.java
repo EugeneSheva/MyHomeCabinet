@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 
-public class OwnerSpecification {
+public class OwnerSpecifications {
 
     public static Specification<Owner> idContains(Long id) {
         if(id == null) return (root, query, criteriaBuilder) -> null;

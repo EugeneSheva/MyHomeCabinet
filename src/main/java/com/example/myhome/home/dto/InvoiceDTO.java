@@ -1,5 +1,12 @@
-package com.example.myhome.home.model;
+package com.example.myhome.home.dto;
 
+import com.example.myhome.home.dto.ApartmentAccountDTO;
+import com.example.myhome.home.dto.ApartmentDTO;
+import com.example.myhome.home.dto.BuildingDTO;
+import com.example.myhome.home.dto.OwnerDTO;
+import com.example.myhome.home.model.InvoiceComponents;
+import com.example.myhome.home.model.InvoiceStatus;
+import com.example.myhome.home.model.Tariff;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +22,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class InvoiceDTO {
+
     private Long id;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
