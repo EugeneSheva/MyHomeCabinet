@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>МойДом24</title>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/bootstrap-datepicker/css/datepicker.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/css/tempus-dominus.min.css"
+          crossorigin="anonymous">
+    <!-- Popperjs -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+            crossorigin="anonymous"></script>
+    <!-- Tempus Dominus JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/js/tempus-dominus.min.js"
+            crossorigin="anonymous"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <style>
+        chart {
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</head>
+
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+    <div th:insert="~{cabinet-template :: loading}"></div>
+    <nav th:insert="~{cabinet-template :: header}"></nav>
+    <aside th:insert="~{cabinet-template :: sidebar}"></aside>
+
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0" th:text="${apartment.building.name + ' кв. '+ apartment.number}"></h1>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="page_content">
+            <div class="row">
+                <div class="col-xs-12 col-lg-12">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-4">
+                            <div class="small-box bg-green overflow-hidden" style="margin-bottom: 0px">
+                                <div class="inner">
+                                    <h3 th:text="${(apartment.balance != null ? apartment.balance : 'Не задан')+ ' грн.'}">
+
+                                    </h3>
+                                    <p>Баланс по квартире</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-dollar"></i>
+                                </div>
+                                <span class="small-box-footer">&nbsp;</span>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-lg-4">
+                            <div class="small-box bg-blue overflow-hidden" style="margin-bottom: 0px">
+                                <div class="inner">
+                                    <h3 th:text="${apartment.account != null ? T(java.lang.String).format('%010d',apartment.account) : 'Не задан'}  "></h3>
+                                    <!--                                th:text="${T(java.lang.String).format('%010d', account.id)}"-->
+                                    <p>Лицевой счёт</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-user"></i>
+                                </div>
+                                <span class="small-box-footer">&nbsp;</span>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-lg-4">
+                            <div class="small-box bg-red overflow-hidden" style="margin-bottom: 0px">
+                                <div class="inner">
+                                    <h3 th:text="${(avgInvoicePriceInMonth != null ? avgInvoicePriceInMonth : 'Не задан')+ ' грн.'}">
+                                        avgInvoicePriceInMonth</h3>
+                                    <p>Средний расход за месяц</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-pie-chart"></i>
+                                </div>
+                                <span class="small-box-footer">&nbsp;</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card card-primary card-outline" style="padding: 0px; border-top-color: #bbbbbb;">
+                <div class="card-header" style="background-color: transparent;">
+                    <h3 class="card-title">Диаграмма расходов</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-6">
+                            <label for="donutChart1" style="display: block; text-align: center;">за предыдущий
+                                месяц</label>
+                            <canvas id="donutChart1"
+                                    style="min-height: 250px; height: 450px; max-height: 450px; max-width: 100%;"></canvas>
+                        </div>
+                        <div class="col-xs-12 col-lg-6">
+                            <label for="donutChart2" style="display: block; text-align: center;">за текущий год</label>
+                            <canvas id="donutChart2"
+                                    style="min-height: 250px; height: 450px; max-height: 450px; max-width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card card card-primary card-outline" style="padding: 0px; border-top-color: #bbbbbb;">
+                <div class="card-header" style="background-color: transparent;">
+                    <h3 class="card-title">Диаграмма расходов</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body" style="padding-top: 0; padding-left: 12px; padding-right: 12px;">
+                    <div class="row">
+                        <!-- BAR CHART -->
+                        <div class="card card-success">
+                            <div class="card-body" >
+                                <div class="chart">
+                                    <canvas id="barChart"
+                                            style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </section>
+    </div>
+    <footer th:insert="~{cabinet-template :: footer}"></footer>
+</div>
+
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dist/js/adminlte.js}"></script>
+<script th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script th:src="@{/plugins/chart.js/Chart.min.js}"></script>
+<script th:src="@{/plugins/flot/plugins/jquery.flot.pie.js}"></script>
+<script th:src="@{/plugins/chart.js/Chart.min.js}"></script>
+<script th:inline="javascript">
+    $(function () {
+        //- DONUT CHART -
+        // Get context with jQuery - using jQuery's .get() method.
+        console.log()
+        var donutChartCanvas = $('#donutChart1').get(0).getContext('2d')
+        var arrnames = [[${byMonthNames}]];
+        var arrvalue = [[${byMonthValues}]];
+        console.log(arrnames);
+        console.log(arrvalue);
+
+        var donutData = {
+            labels: arrnames,
+            datasets: [
+                {
+                    data: arrvalue,
+                    backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+                }
+            ]
+        }
+        var donutOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+                display: true,
+                position: 'bottom'
+            }
+        }
+
+
+        //Create pie or douhnut chart        // You can switch between pie and douhnut using the method below.
+        new Chart(donutChartCanvas, {
+            type: 'doughnut',
+            data: donutData,
+            options: donutOptions
+        })
+    })
+</script>
+
+<script th:inline="javascript">
+    $(function () {
+        //- DONUT CHART -
+        // Get context with jQuery - using jQuery's .get() method.
+        var donutChartCanvas = $('#donutChart2').get(0).getContext('2d')
+        var arrnames = [[${byYearName}]];
+        var arrvalue = [[${byYearValue}]];
+        console.log(arrnames);
+        console.log(arrvalue);
+        var donutData = {
+            labels: arrnames,
+            datasets: [
+                {
+                    data: arrvalue,
+                    backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+                }
+            ]
+        }
+        var donutOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+                display: true,
+                position: 'bottom'
+            }
+        }
+        //Create pie or douhnut chart        // You can switch between pie and douhnut using the method below.
+        new Chart(donutChartCanvas, {
+            type: 'doughnut',
+            data: donutData,
+            options: donutOptions
+        })
+    })
+</script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var months = /*[[${monthsName}]]*/ [];
+    var dataExpense = /*[[${apartExpenseEachMonthByYear}]]*/ [];
+
+
+    console.log(months)
+    console.log(dataExpense)
+
+    $(function () {
+        var areaChartData = {
+            labels: months,
+            datasets: [
+                {
+                    label: 'Диаграмма расходов по месяцам за год',
+                    backgroundColor: 'rgb(33,88,194)',
+                    borderColor: 'rgba(60,141,188,0.8)',
+                    pointRadius: false,
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: dataExpense
+                }
+            ]
+        }
+
+        var barChartCanvas = $('#barChart').get(0).getContext('2d')
+        var barChartData = $.extend(true, {}, areaChartData)
+        var temp0 = areaChartData.datasets[0]
+        barChartData.datasets[0] = temp0
+
+        var barChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            datasetFill: false
+        }
+
+        new Chart(barChartCanvas, {
+            type: 'bar',
+            data: barChartData,
+            options: barChartOptions
+        })
+    })
+</script>
+
+</body>
+</html>

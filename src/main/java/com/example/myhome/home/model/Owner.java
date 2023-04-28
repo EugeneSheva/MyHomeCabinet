@@ -46,7 +46,7 @@ public class Owner {
     @JsonIgnore
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private List<Apartment> apartments;
-
+    @JsonIgnore
     @ToString.Exclude
     @ManyToMany(mappedBy = "receivers")
     private List<Message> messages;

@@ -4,6 +4,7 @@ import com.example.myhome.home.configuration.security.CustomAdminDetails;
 import com.example.myhome.home.configuration.security.CustomUserDetails;
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.model.Owner;
+import com.example.myhome.home.model.OwnerDTO;
 import com.example.myhome.home.model.PageRoleDisplay;
 import com.example.myhome.home.repository.PageRoleDisplayRepository;
 import com.example.myhome.home.service.impl.AdminServiceImpl;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.security.Principal;
 import java.util.List;
 
 @ControllerAdvice

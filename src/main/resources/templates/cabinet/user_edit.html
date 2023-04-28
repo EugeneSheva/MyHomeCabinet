@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>МойДом24</title>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
+  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+  <link rel="stylesheet" th:href="@{/plugins/bootstrap-datepicker/css/datepicker.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+  <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/css/tempus-dominus.min.css" crossorigin="anonymous">
+    <!-- Popperjs -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <!-- Tempus Dominus JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/js/tempus-dominus.min.js" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/dayjs.min.js" integrity="sha512-hcV6DX35BKgiTiWYrJgPbu3FxS6CsCjKgmrsPRpUPkXWbvPiKxvSVSdhWX0yXcPctOI2FJ4WP6N1zH+17B/sAA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+<body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<div class="wrapper">
+  <div th:insert="~{cabinet-template :: loading}"></div>
+  <nav th:insert="~{cabinet-template :: header}"></nav>
+  <aside th:insert="~{cabinet-template :: sidebar}"></aside>
+
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0" th:text="'Новый владелец'"></h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a th:href="@{/}"><i class="fa fa-home"></i> Главная</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/admin/owers/}">Владельцы квартир</a></li>
+                            <li class="breadcrumb-item active"
+                                th:text="'Новый владелец'"></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <form class="row g-3 needs-validation" novalidate th:method="POST"
+                      th:action="@{/cabinet/user/save}" th:object="${owner}" enctype="multipart/form-data">
+                    <div class="card" style="padding:30px">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-3" style="margin-bottom: 10px">
+                                        <img th:src="${owner.profile_picture != null && !owner.profile_picture.isEmpty()} ?
+                                   @{${owner.profile_picture}} :  @{/images/placeholder.jpg}" alt="user-avatar"
+                                             class="img-circle img-fluid">
+                                    </div>
+                                    <div class="col-md-9" style="margin-bottom: 10px">
+                                        <label class="control-label" for="img1">Сменить изображение</label>
+                                        <input type="file"  id="img1" name="img1"
+                                               accept="image/*">
+                                    </div>
+
+                                    <label for="first_name">Фамилия</label>
+                                    <input type="text" id="first_name" class="form-control" name="first_name"
+                                           th:field="*{first_name}" placeholder="">
+                                    <div style="color: #d80450" th:if="${#fields.hasErrors('first_name')}" th:errors="*{first_name}"></div>
+
+                                    <label for="last_name">Имя</label>
+                                    <input type="text" id="last_name" class="form-control" name="last_name"
+                                           th:field="*{last_name}" placeholder="">
+                                    <div style="color: #d80450" th:if="${#fields.hasErrors('last_name')}" th:errors="*{last_name}"></div>
+
+                                    <label for="fathers_name">Отчесво</label>
+                                    <input type="text" id="fathers_name" class="form-control" name="fathers_name"
+                                           th:field="*{fathers_name}" placeholder="">
+
+
+                                    <div class="md-form md-outline input-with-post-icon datepicker" style="padding: 0; margin-bottom: 25px">
+                                        <label for="birthdate">Дата рождения</label>
+                                        <input placeholder="Select date" th:field="*{birthdate}" type="date" id="birthdate" name="birthdate" class="form-control">
+                                    </div>
+                                    <div style="color: #d80450" th:if="${#fields.hasErrors('birthdate')}" th:errors="*{birthdate}"></div>
+
+                                    <h4>Контактные даные</h4>
+
+                                    <label for="phone_number">Телефон</label>
+                                    <input type="number" id="phone_number" class="form-control" name="phone_number"
+                                           th:field="*{phone_number}" placeholder="">
+                                    <div style="color: #d80450" th:if="${#fields.hasErrors('phone_number')}" th:errors="*{phone_number}"></div>
+
+                                    <label for="viber">Viber</label>
+                                    <input type="number" id="viber" class="form-control" name="viber"
+                                           th:field="*{viber}" placeholder="">
+
+                                    <label for="telegram">Telegram</label>
+                                    <input type="number" id="telegram" class="form-control" name="telegram"
+                                           th:field="*{telegram}" placeholder="">
+
+                                    <label for="email">Email</label>
+                                    <input type="text" id="email" class="form-control" name="email"
+                                           th:field="*{email}" placeholder="">
+                                    <div style="color: #d80450" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+
+                                    <label for="added_at"></label>
+                                    <input type="hidden" id="added_at" class="form-control" th:field="*{added_at}"
+                                           placeholder="">
+                                    <script>
+                                        var today = new Date();
+                                        var dateTime = today.getFullYear()+'-'+(today.getMonth()+1).toString().padStart(2, "0")+'-'+
+                                            today.getDate().toString().padStart(2, "0")+' '+today.getHours().toString().padStart(2, "0")+':'+
+                                            today.getMinutes().toString().padStart(2, "0");
+                                        document.getElementById("added_at").value = dateTime;
+                                    </script>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+
+                                <label for="status" th:field="*{status}"  class="form-label" >Статус</label>
+                                <select class="form-select" id="status" name="status">
+                                    <option selected=""  value="ACTIVE">Новый</option>
+                                    <option value="NEW">Активен</option>
+                                    <option value="DISABLED">Отключен</option>
+                                </select>
+
+                                <label for="id">ID</label>
+                                <input readonly type="text" id="id" class="form-control" name="id"
+                                       th:field="*{id}" placeholder="">
+
+                                <label for="description">О владельце (заметки)</label>
+                                <textarea class="form-control" th:field="*{description}" id="description"  rows="10"></textarea ><br>
+
+                                <h4>Изменить пароль</h4>
+
+                                <input type="hidden" id="enabled" class="form-control" name="enabled"
+                                       placeholder="" th:field="*{enabled}">
+
+                                <input type="hidden" id="pass" class="form-control" name="pass"
+                                       placeholder="" th:field="*{password}">
+
+                                <label for="new_pass">Пароль</label>
+                                <input type="text" id="new_pass" class="form-control" name="new_pass"
+                                       placeholder="">
+
+
+                                <label for="new_re_pass">Повторите пароль</label>
+                                <input type="text" id="new_re_pass" class="form-control" name="new_re_pass"
+                                       placeholder="">
+
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Сохранить</button>
+                </form>
+            </div>
+        </section>
+</div>
+
+  <footer th:insert="~{cabinet-template :: footer}"></footer>
+</div>
+
+
+<script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dist/js/adminlte.js}"></script>
+<script th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script th:src="@{/plugins/bootstrap-timepicker/src/timepicker-bs4.js}"></script>
+
+
+<script>
+    $(document).ready(function(){
+        $("#master_select").select2({width: '100%'});
+        $("#apartment_select").select2({width: '100%'});
+        $("#date_picker").datepicker();
+        $("#time_picker").timepicker();
+    });
+</script>
+
+</body>
+</html>

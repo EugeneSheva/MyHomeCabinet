@@ -283,6 +283,7 @@ public class ApartmentController {
 //        FilterForm form = mapper.readValue(filters, FilterForm.class);
 
 //        return apartmentService.findBySpecificationAndPage(page, size, filters);
+        System.out.println( "123" + apartmentService.findAll(PageRequest.of(page-1, size)));
         return apartmentService.findAll(PageRequest.of(page-1, size));
     }
 }

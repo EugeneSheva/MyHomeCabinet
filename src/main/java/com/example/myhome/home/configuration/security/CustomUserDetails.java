@@ -57,10 +57,10 @@ public class CustomUserDetails implements UserDetails {
         return this.owner.isEnabled();
     }
 
-    @Override
-    public String toString() {
-        return "CustomUserDetails{" +
-                "owner=" + owner +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "CustomUserDetails{" +
+//                "owner=" + owner +
+//                '}';
+//    }
 }

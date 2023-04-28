@@ -22,7 +22,7 @@ public class CustomAdminDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        System.out.println(admin.getRole().name());
+//        System.out.println(admin.getRole().name());
         return Collections.singletonList(new SimpleGrantedAuthority(admin.getRole().name()));
     }
 

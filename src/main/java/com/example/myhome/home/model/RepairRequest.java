@@ -34,7 +34,7 @@ public class RepairRequest implements Cloneable{
     private String phone_number;
 
     @ManyToOne
-    @JoinColumn(name = "apartment_owner_id")
+    @JoinColumn(name = "owner_id")
     private Owner owner;
 
     @ManyToOne

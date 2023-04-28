@@ -80,9 +80,9 @@
                                 </tr>
                                 <tr>
                                     <th></th>
-                                    <th><input type="text" autocomplete="off" class="form-control" th:field="${filterForm.name}"
+                                    <th><input type="text" autocomplete="off" class="form-control my_filters" th:field="${filterForm.name}"
                                                name="name" id="name"></th>
-                                    <th><input type="text" autocomplete="off" class="form-control" th:field="${filterForm.address}"
+                                    <th><input type="text" autocomplete="off" class="form-control my_filters" th:field="${filterForm.address}"
                                                name="address" id="address"></th>
                                     <th></th>
                                 </tr>
@@ -109,31 +109,31 @@
     <footer th:insert="~{main-template :: footer}"></footer>
     <!-- /.Footer -->
 </div>
-<script>
-    let timeoutId;
+<!--<script>-->
+<!--    let timeoutId;-->
 
-    function handleFormSubmit() {
-        const form = document.getElementById('1');
-        form.submit();
-        console.log("Форма отправлена!");
-    }
+<!--    function handleFormSubmit() {-->
+<!--        const form = document.getElementById('1');-->
+<!--        form.submit();-->
+<!--        console.log("Форма отправлена!");-->
+<!--    }-->
 
-    function handleInputChange() {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(handleFormSubmit, 3000);
-    }
+<!--    function handleInputChange() {-->
+<!--        clearTimeout(timeoutId);-->
+<!--        timeoutId = setTimeout(handleFormSubmit, 3000);-->
+<!--    }-->
 
-    // event listener on field
-    const input = document.querySelector('input[type="text"]');
-    input.addEventListener('input', handleInputChange);
+<!--    // event listener on field-->
+<!--    const input = document.querySelector('input[type="text"]');-->
+<!--    input.addEventListener('input', handleInputChange);-->
 
-    // event on Enter
-    document.addEventListener('keydown', function (event) {
-        if (event.key === "Enter") {
-            handleFormSubmit();
-        }
-    });
-</script>
+<!--    // event on Enter-->
+<!--    document.addEventListener('keydown', function (event) {-->
+<!--        if (event.key === "Enter") {-->
+<!--            handleFormSubmit();-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
