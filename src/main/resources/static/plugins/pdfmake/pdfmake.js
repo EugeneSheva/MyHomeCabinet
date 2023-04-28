@@ -15799,7 +15799,7 @@ var PDFSecurity = /*#__PURE__*/function () {
     _classCallCheck(this, PDFSecurity);
 
     if (!options.ownerPassword && !options.userPassword) {
-      throw new Error('None of owner password and user password is defined.');
+      throw new Error('None of ownerId password and user password is defined.');
     }
 
     this.document = document;

@@ -40,7 +40,7 @@ public class RequestSpecifications {
         if(phone == null) return (root, query, criteriaBuilder) -> null;
         return (root, query, cb) -> {
             Join<Apartment, RepairRequest> requestApartment = root.join("apartment");
-            Join<Owner, Apartment> apartmentOwner = requestApartment.join("owner");
+            Join<Owner, Apartment> apartmentOwner = requestApartment.join("ownerId");
             return cb.like(apartmentOwner.get(Owner_.PHONE_NUMBER), "%"+phone+"%");
         };
     }

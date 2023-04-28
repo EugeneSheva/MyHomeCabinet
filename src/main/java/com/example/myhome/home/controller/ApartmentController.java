@@ -258,26 +258,34 @@ public class ApartmentController {
     public Page<OwnerDTO> getOwners(@RequestParam(name = "searchQuerie", defaultValue = "") String searchQuerie,
                                     @RequestParam(name = "page", defaultValue = "0") int page,
                                     @RequestParam(name = "size", defaultValue = "2") int size) {
-
-        System.out.println("page" + page + "size" + size);
-        System.out.println("searchQuerie " + searchQuerie);
         Pageable pageable = PageRequest.of(page, size);
-
         Page<OwnerDTO> ownerPage = ownerService.findByNameFragmentDTO(searchQuerie, pageable);
-
         return ownerPage;
+    }
+
+    @GetMapping("/getSections")
+    @ResponseBody
+    public List<String> getSections(@RequestParam(name = "buildingName", defaultValue = "") String buildingName) {
+        List<String>sections = buildingRepository.findByName(buildingName).getSections();
+        return sections;
+    }
+
+    @GetMapping("/getFloors")
+    @ResponseBody
+    public List<String> getFloors(@RequestParam(name = "buildingName", defaultValue = "") String buildingName) {
+        List<String>floors = buildingRepository.findByName(buildingName).getFloors();
+        return floors;
     }
 
     @GetMapping("/get-apartments-page")
     @ResponseBody
-    public Page<Apartment> getApartmentsByPage(@RequestParam Integer page,
+    public Page<ApartmentDTO> getApartmentsByPage(@RequestParam Integer page,
                                                @RequestParam Integer size,
                                                @RequestParam String filters) throws JsonProcessingException {
-//        ObjectMapper mapper = new ObjectMapper();
-//        FilterForm form = mapper.readValue(filters, FilterForm.class);
+        ObjectMapper mapper = new ObjectMapper();
+        FilterForm form = mapper.readValue(filters, FilterForm.class);
+        return apartmentService.findBySpecificationAndPage(page, size, form);
 
-//        return apartmentService.findBySpecificationAndPage(page, size, filters);
-        System.out.println( "123" + apartmentService.findAll(PageRequest.of(page-1, size)));
-        return apartmentService.findAll(PageRequest.of(page-1, size));
+
     }
 }

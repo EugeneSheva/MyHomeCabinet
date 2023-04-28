@@ -57,10 +57,10 @@
                         <h3 class="card-title"></h3>
                         <div class="card-tools">
                             <div class="input-group input-group-sm">
-                                <input type="text" class="form-control" placeholder="Поиск">
+                                <input type="text" th:field="${filterForm.description}" id="description" class="form-control" placeholder="Поиск">
                                 <div class="input-group-append">
                                     <!--                        поиск-->
-                                    <div class="btn btn-primary">
+                                    <div class="btn btn-primary" onclick="changeFilterData()">
                                         <i class="fas fa-search"></i>
                                     </div>
                                 </div>
@@ -80,10 +80,10 @@
                             </div>
                         </div>
                         <div class="table-responsive mailbox-messages">
-                            <table class="table table-hover table-striped" width="100%">
-                                <col style="width:10%">
+                            <table class="table table-hover table-striped" id="messageTable" width="100%">
+                                <col style="width:5%">
                                 <col style="width:25%">
-                                <col style="width:45%">
+                                <col style="width:50%">
                                 <col style="width:20%">
                                 <thead>
                                 <tr>
@@ -94,32 +94,33 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="message : ${messages}" id="myList">
-                                    <td>
-                                        <div class="icheck-primary">
-                                            <input type="checkbox" th:value="${message.id}" name="check1" value=""
-                                                   id="check1">
-                                            <label for="check1"></label>
-                                        </div>
-                                    </td>
+<!--                                <tr th:each="message : ${messages}" id="myList">-->
+<!--                                    <td>-->
+<!--                                        <div class="icheck-primary">-->
+<!--                                            <input type="checkbox" th:value="${message.id}" name="check1" value=""-->
+<!--                                                   id="check1">-->
+<!--                                            <label for="check1"></label>-->
+<!--                                        </div>-->
+<!--                                    </td>-->
 
-                                    <td class="mailbox-name"><a style="display: block; color: black;"
-                                                                th:text="${message.sender.first_name+' '+message.sender.last_name}"
-                                                                th:href="@{{id}(id=${message.id})}"></a>
-                                    </td>
+<!--                                    <td class="mailbox-name"><a style="display: block; color: black;"-->
+<!--                                                                th:text="${message.sender.first_name+' '+message.sender.last_name}"-->
+<!--                                                                th:href="@{{id}(id=${message.id})}"></a>-->
+<!--                                    </td>-->
 
-                                    <td class="mailbox-subject"><b th:text="${message.subject}+' - '"></b><a
-                                            style="display: block; color: black;"
-                                            th:utext="${message.text}" th:href="@{{id}(id=${message.id})}"></a>
-                                    </td>
+<!--                                    <td class="mailbox-subject"><b th:text="${message.subject}+' - '"></b><a-->
+<!--                                            style="display: block; color: black;"-->
+<!--                                            th:utext="${message.text}" th:href="@{{id}(id=${message.id})}"></a>-->
+<!--                                    </td>-->
 
-                                    <td class="mailbox-date" th:text="${message.date}"
-                                        th:href="@{{id}(id=${message.id})}">
+<!--                                    <td class="mailbox-date" th:text="${message.date}"-->
+<!--                                        th:href="@{{id}(id=${message.id})}">-->
 
-                                    </td>
-                                </tr>
+<!--                                    </td>-->
+<!--                                </tr>-->
                                 </tbody>
                             </table>
+                            <nav aria-label="Page navigation " class="pagination_container"></nav>
                         </div>
                     </div>
                     <div class="card-footer p-0">
@@ -156,9 +157,10 @@
 <script src="../../dist/js/adminlte.min.js"></script>
 <script th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
@@ -225,6 +227,19 @@
         }
     }
 </script>
+<script th:src="@{/dist/js/pagination.js}"></script>
+<script th:inline="javascript">
 
+    let globalTableName = 'messages';
+    let totalPagesCount = [[${totalPagesCount}]];
+    let tableData;
+    console.log('pre draw table');
+    $(document).ready(function(){
+        console.log('pre draw table2');
+        drawTable();
+
+    });
+
+</script>
 </body>
 </html>

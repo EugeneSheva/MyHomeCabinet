@@ -8,12 +8,14 @@ import com.example.myhome.home.repository.InvoiceTemplateRepository;
 import com.example.myhome.home.repository.PaymentDetailsRepository;
 import com.example.myhome.home.repository.specifications.InvoiceSpecifications;
 import com.example.myhome.util.ExcelHelper;
+import com.example.myhome.util.UserStatus;
 import lombok.extern.java.Log;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -46,6 +48,8 @@ public class InvoiceService {
     @Autowired private PaymentDetailsRepository paymentDetailsRepository;
 
     @Autowired private ApartmentService apartmentService;
+    @Autowired private ApartmentAccountService apartmentAccountService;
+    @Autowired private BuildingService buildingService;
     @Autowired private OwnerService ownerService;
     @Autowired private EmailService emailService;
 
@@ -69,14 +73,27 @@ public class InvoiceService {
     }
 
     public Page<Invoice> findAllBySpecificationAndPage(FilterForm filters, Integer page, Integer page_size) {
-        log.info("Filters found!");
-        log.info(filters.toString());
+
+
 
         Specification<Invoice> specification = buildSpecFromFilters(filters);
 
         Pageable pageable = PageRequest.of(page, page_size);
 
         return invoiceRepository.findAll(specification, pageable);
+    }
+
+    public Page<InvoiceDTO> findAllBySpecificationAndPageCabinet(FilterForm filters, Integer page, Integer size) {
+        List<InvoiceDTO> listDTO = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page-1, size);
+        Page<Invoice>invoiceList = invoiceRepository.findByFilters(filters.getDate() != null ? LocalDate.parse(filters.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null, filters.getStatus() != null ? InvoiceStatus.valueOf(filters.getStatus()) : null, pageable);
+        for (Invoice invoice : invoiceList) {
+            listDTO.add(new InvoiceDTO(invoice.getId(), invoice.getDate(), apartmentService.convertApartmentsToApartmentsDTO(invoice.getApartment()),
+                    buildingService.convertBuildingToBuildingDTO(invoice.getBuilding()), apartmentAccountService.convertApartAccountToApartAccountDTO(invoice.getAccount()),
+                    ownerService.convertOwnerToOwnerDTO(invoice.getOwner()), invoice.getCompleted(), invoice.getStatus(), invoice.getDateFrom(), invoice.getDateTo(),
+                    invoice.getTotal_price(), invoice.getComponents(), invoice.getTariff()));
+        }
+        return new PageImpl<>(listDTO, pageable, invoiceList.getTotalElements());
     }
 
     public Long count() {return invoiceRepository.count();}

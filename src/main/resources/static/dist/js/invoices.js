@@ -76,7 +76,7 @@ function insertNumber(page_number) {
             let description = $("#description").val();
             let master_type = $("#master_type").val();
             let master_id = $("#master").val();
-            let owner_id = $("#owner").val();
+            let owner_id = $("#ownerId").val();
             let phone = $("#phone").val();
             let status = $("#status").val();
 

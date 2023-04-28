@@ -63,8 +63,7 @@
                         </div>
                     </div>
                     <div class="card-body" style="padding: 0">
-                        <form method="POST" id="1" th:action="@{/admin/buildings/filter}" th:object="${filterForm}"
-                              enctype="multipart/form-data">
+                        <div  th:object="${filterForm}">
                             <nav aria-label="Page navigation " class="pagination_container mt-3"></nav>
                             <table id="buildingsTable" class="table table-bordered table-hover table-striped linkedRow" width="100%">
                                 <col style="width:5%">
@@ -80,9 +79,9 @@
                                 </tr>
                                 <tr>
                                     <th></th>
-                                    <th><input type="text" autocomplete="off" class="form-control my_filters" th:field="${filterForm.name}"
+                                    <th><input style="height: 42px;" type="text" autocomplete="off" class="form-control my_filters" th:field="${filterForm.name}"
                                                name="name" id="name"></th>
-                                    <th><input type="text" autocomplete="off" class="form-control my_filters" th:field="${filterForm.address}"
+                                    <th><input style="height: 42px;" type="text" autocomplete="off" class="form-control my_filters" th:field="${filterForm.address}"
                                                name="address" id="address"></th>
                                     <th></th>
                                 </tr>
@@ -94,7 +93,7 @@
                                 </tfoot>
                             </table>
                             <nav aria-label="Page navigation " class="pagination_container"></nav>
-                        </form>
+                        </div>
                     </div>
                     <!-- /.card-body -->
                 </div>

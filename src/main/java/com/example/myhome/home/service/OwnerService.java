@@ -34,11 +34,12 @@ import java.util.stream.Collectors;
 public class OwnerService {
     @Value("${upload.path}")
     private String uploadPath;
-    private String localPath = "/img/owner/";
+    private String localPath = "/img/ownerId/";
     private final OwnerRepository ownerRepository;
-    private final AccountRepository accountRepository;
+    private final BuildingService buildingService;
+    private final ApartmentService apartmentService;
     private final FileUploadUtil fileUploadUtil;
-    private ApartmentService apartmentService;
+
 
 
     public OwnerDTO findByIdDTO (Long id) {
@@ -158,6 +159,25 @@ public class OwnerService {
                 .and(OwnerSpecification.hasDebt(has_debt)));
     }
 
+    public Page<OwnerDTO> findAllBySpecification2(FilterForm filters, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page-1, size);
+        List<OwnerDTO> listDTO = new ArrayList<>();
+        Page<Owner>ownerList = ownerRepository.findByFilters(filters.getId(),filters.getOwnerName(),filters.getPhone(),filters.getEmail(), filters.getBuildingName(),filters.getApartment(), filters.getDate() != null ? LocalDate.parse(filters.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null, filters.getStatus()!=null? UserStatus.valueOf(filters.getStatus()) : null, String.valueOf(filters.getDebtSting()), pageable);
+        for (Owner owner : ownerList) {
+            List<ApartmentDTO> apartments = new ArrayList<>();
+            List<BuildingDTO> buildings = new ArrayList<>();
+            owner.getApartments().forEach(
+                    apart -> {
+                        buildings.add(BuildingDTO.builder().id(apart.getBuilding().getId()).name(apart.getBuilding().getName()).build());
+                        apartments.add(ApartmentDTO.builder().id(apart.getId()).fullName("№"+apart.getNumber()+", " + apart.getBuilding().getName()).build());
+                    }
+            );
+            listDTO.add(new OwnerDTO(owner.getId(), owner.getFirst_name(), owner.getLast_name(), owner.getFathers_name(), owner.getFullName(),
+                    owner.getPhone_number(), owner.getEmail(), owner.getViber(), owner.getTelegram(), owner.getDescription(), apartments, buildings,
+                    owner.getAdded_at().toString(), owner.getStatus().toString(),owner.isHas_debt()));
+        }
+        return new PageImpl<>(listDTO, pageable, ownerList.getTotalElements());
+    }
 
     public Page<OwnerDTO> findByNameFragmentDTO(String name, Pageable pageable) {
         List<OwnerDTO> ownerDTOList = new ArrayList<>();
@@ -167,6 +187,7 @@ public class OwnerService {
                     .id(owner.getId())
                     .first_name(owner.getFirst_name())
                     .last_name(owner.getLast_name())
+                    .fathers_name(owner.getFathers_name())
                     .fullName(owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name())
                     .build();
             ownerDTOList.add(newDTO);
@@ -238,17 +259,21 @@ public class OwnerService {
 
     public OwnerDTO findOwnerDTObyEmail(String mail) {
         Owner owner = ownerRepository.findByEmail(mail).orElseThrow();
-        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.apartmentsToApartmentsDTO(owner.getApartments()));
+        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.convertApartmentsToApartmentsDTO(owner.getApartments()));
     }
 
     public OwnerDTO findOwnerDTObyEmailWithMessages(String mail) {
         Owner owner = ownerRepository.findByEmail(mail).orElseThrow();
-        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.apartmentsToApartmentsDTO(owner.getApartments()), owner.getMessages(), owner.getPhone_number(), owner.getEmail(), owner.getViber(), owner.getTelegram(), owner.getDescription(), owner.getProfile_picture());
+        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.convertApartmentsToApartmentsDTO(owner.getApartments()), owner.getMessages(), owner.getPhone_number(), owner.getEmail(), owner.getViber(), owner.getTelegram(), owner.getDescription(), owner.getProfile_picture());
     }
 
     public OwnerDTO findOwnerDTObyEmailFull(String mail) {
         Owner owner = ownerRepository.findByEmail(mail).orElseThrow();
-        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.apartmentsToApartmentsDTO(owner.getApartments()), owner.getMessages(), owner.getPhone_number(),owner.getEmail(),owner.getViber(),owner.getTelegram(), owner.getDescription(), owner.getProfile_picture());
+        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.convertApartmentsToApartmentsDTO(owner.getApartments()), owner.getMessages(), owner.getPhone_number(),owner.getEmail(),owner.getViber(),owner.getTelegram(), owner.getDescription(), owner.getProfile_picture());
+    }
+
+    public OwnerDTO convertOwnerToOwnerDTO(Owner owner) {
+        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.convertApartmentsToApartmentsDTO(owner.getApartments()));
     }
 
 

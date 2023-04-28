@@ -241,7 +241,7 @@
                                                                         th:text="${adminL.first_name}+ ' '+${adminL.last_name}"
                                                                         th:value="${adminL.id}"
                                                                 ></option>
-                                                                <!--                                                                th:selected="${admin.id == (apartment.admin != null ? apartment.owner.id:0)}"-->
+                                                                <!--                                                                th:selected="${admin.id == (apartment.admin != null ? apartment.ownerId.id:0)}"-->
                                                             </select>
                                                             <label for="adminrole" class="form-label"> </label>
                                                             <input type="text" id="adminrole-1" class="form-control"

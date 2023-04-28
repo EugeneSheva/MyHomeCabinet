@@ -10,6 +10,9 @@
     <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
     <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
     <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>-->
+    <!--    add & del input field in navigation card bootstrap-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <!-- Select2 -->
     <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
@@ -66,13 +69,13 @@
                 <div class="card card card-primary card-outline" style="padding: 0px; border-top-color: #bbbbbb;">
                     <div class="card-header" style="background-color: transparent;">
                         <div class="form-group">
-                            <a href="#" onclick="reset()" class="btn btn-default btn-sm float-right">
+                            <a href="#" onclick="resetAll()" class="btn btn-default btn-sm float-right">
                                 Очистить</span><i class="fa fa-eraser visible-xs"></i>
                             </a>
                         </div>
                     </div>
                     <div class="card-body mt-3" style="padding: 0">
-                        <form method="POST" id="1" th:action="@{/admin/apartments/filter}" th:object="${filterForm}"
+                        <div id="1" th:object="${filterForm}"
                               enctype="multipart/form-data">
                             <nav aria-label="Page navigation " class="pagination_container"></nav>
                             <table id="apartmentsTable" class="table table-bordered table-hover table-striped linkedRow"
@@ -95,58 +98,51 @@
                                     <th></th>
                                 </tr>
                                 <tr>
-                                    <th style="border-bottom:none"><input type="text" autocomplete="off" class="form-control" name="number"
+                                    <th style="border-bottom:none; display: flex; align-items: flex-start;"><input style="height: 44px" type="text" autocomplete="off" class="form-control my_filters" name="number"
                                                th:field="${filterForm.number}" id="number"></th>
 
-                                    <th style="border-bottom:none"><select autocomplete="off" class="form-select" id="building" name="buildingName">
+                                    <th style="border-bottom:none; "><select  autocomplete="off" class="form-select my_filters" id="buildingName" name="buildingName">
                                         <option value="-"
-                                                th:selected="${filterForm.buildingName == null}"></option>
+                                                ></option>
                                         <option th:each="building : ${buildings}"
                                                 th:text="${building.name}"
                                                 th:value="${building.name}"
-                                                th:selected="${#strings.containsIgnoreCase((building.name),((filterForm.buildingName != null) ? (filterForm.buildingName ): ('empty') ))}"></option>
+                                                ></option>
                                     </select></th>
 
-                                    <th style="border-bottom:none"><select autocomplete="off" class="form-select" id="section" name="section">
-                                        <option value="-" th:selected="${filterForm.section == null}"></option>
-                                        <option th:each="section: ${sections}" th:text="${section}"
-                                                th:value="${section}"
-                                                th:selected="${#strings.containsIgnoreCase((section),((filterForm.section != null) ? (filterForm.section ): ('empty') ))}"
-                                        ></option>
+                                    <th style="border-bottom:none"><select th:field="${section}" autocomplete="off" class="form-select my_filters" id="section" name="section">
+                                        <option value="-"></option>
                                     </select></th>
-                                    </select></th>
-                                    <th style="border-bottom:none"><select autocomplete="off" class="form-select" id="floor" name="floor">
-                                        <option value="-"
-                                                th:selected="${(filterForm.floor == null)or(filterForm.floor.isEmpty())}"></option>
-                                        <option th:each="floor : ${floors}" th:text="${floor}" th:value="${floor}"
-                                                th:selected="${#strings.containsIgnoreCase(floor,(filterForm.floor != null  ? filterForm.floor : 'emp' ))}"
-                                        ></option>
+
+                                    <th style="border-bottom:none"><select th:field="${floor}" autocomplete="off" class="form-select my_filters" id="floor" name="floor">
+                                        <option value="-"></option>
+
 
                                     </select></th>
                                     <th style="border-bottom:none">
-<!--                                        <select class="form-control select2bs4" name="owner" style="width: 100%;">-->
-<!--                                            <option value="0" th:selected="${filterForm.owner == null}"></option>-->
-<!--                                            <option th:each="owner : ${owners}"-->
-<!--                                                    th:text="${owner.first_name}+ ' '+${owner.last_name}+' '+${owner.fathers_name}"-->
-<!--                                                    th:value="${owner.id}"-->
-<!--                                                    th:selected="${#strings.containsIgnoreCase((owner.id),((filterForm.owner != null) ? (filterForm.owner ): ('emp') ))}"-->
+<!--                                        <select class="form-control select2bs4" name="ownerId" style="width: 100%;">-->
+<!--                                            <option value="0" th:selected="${filterForm.ownerId == null}"></option>-->
+<!--                                            <option th:each="ownerId : ${owners}"-->
+<!--                                                    th:text="${ownerId.first_name}+ ' '+${ownerId.last_name}+' '+${ownerId.fathers_name}"-->
+<!--                                                    th:value="${ownerId.id}"-->
+<!--                                                    th:selected="${#strings.containsIgnoreCase((ownerId.id),((filterForm.ownerId != null) ? (filterForm.ownerId ): ('emp') ))}"-->
 <!--                                            ></option>-->
 <!--                                        </select>-->
 
-                                        <select id="mySelect2" name="owner" class="form-select">
+                                        <select id="ownerId" name="owner" class="form-select my_filters">
                                             <option th:if="${filterForm.owner == null}" value="" selected="selected">Выберите пользователя</option>
                                             <option th:if="${filterForm.owner != null}" th:value="${filterForm.ownerEntity.id}" th:text="${filterForm.ownerEntity.getFullName()}"></option>
 
                                         </select>
                                     </th>
-                                    <th style="border-bottom:none"><select class="form-select" id="debt" name="debtSting">
-                                        <option th:selected="${filterForm.debtSting == null}" value="-"></option>
-                                        <option value="haveDebt"
-                                                th:selected="${#strings.containsIgnoreCase(('haveDebt'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}"
+                                    <th style="border-bottom:none"><select class="form-select my_filters" id="debtSting" name="debtSting">
+                                        <option value="-"></option>
+                                        <option value="true"
+                                                th:selected="${#strings.containsIgnoreCase(('true'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}"
                                         >Есть долг
                                         </option>
-                                        <option value="noDebt"
-                                                th:selected="${#strings.containsIgnoreCase(('noDebt'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}">
+                                        <option value="false"
+                                                th:selected="${#strings.containsIgnoreCase(('false'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}">
                                             Нет долга
                                         </option>
                                     </select></th>
@@ -172,9 +168,9 @@
 <!--                                           th:text="${apartment.floor}"-->
 <!--                                           th:href="@{{id}(id=${apartment.id})}"></a></td>-->
 <!--                                    <td><a style="display: block; color: black; text-decoration: none;"-->
-<!--                                           th:if="${apartment.owner != null}"-->
-<!--                                           th:text="${apartment.owner.first_name}+' '+${apartment.owner.last_name}+-->
-<!--                ' '+${apartment.owner.fathers_name}" th:href="@{{id}(id=${apartment.id})}"></a></td>-->
+<!--                                           th:if="${apartment.ownerId != null}"-->
+<!--                                           th:text="${apartment.ownerId.first_name}+' '+${apartment.ownerId.last_name}+-->
+<!--                ' '+${apartment.ownerId.fathers_name}" th:href="@{{id}(id=${apartment.id})}"></a></td>-->
 <!--                                    <td><a style="display: block; color: black; text-decoration: none;"-->
 <!--                                           th:text="${apartment.balance}"-->
 <!--                                           th:href="@{{id}(id=${apartment.id})}"></a></td>-->
@@ -193,7 +189,7 @@
                                 <tfoot>
                                 </tfoot>
                             </table>
-                            <nav aria-label="Page navigation " class="pagination_container" th:if="${apartments.totalPages gt 1}">
+                            <nav aria-label="Page navigation " class="pagination_container">
 <!--                                <ul class="pagination justify-content-center font-weight-medium">-->
 <!--                                    <li class="page-item" th:classappend="${apartments.number eq 0} ? 'disabled'">-->
 <!--                                        <a class="page-link" href="#"-->
@@ -253,7 +249,7 @@
 <!--                                    </div>-->
 <!--                                </ul>-->
                             </nav>
-                        </form>
+                        </div>
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -268,33 +264,6 @@
     <footer th:insert="~{main-template :: footer}"></footer>
     <!-- /.Footer -->
 </div>
-
-<script>
-    let timeoutId;
-
-    function handleFormSubmit() {
-        const form = document.getElementById('1');
-        form.submit();
-        console.log("Форма отправлена!");
-    }
-
-    function handleInputChange() {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(handleFormSubmit, 3000);
-    }
-
-    // event listener on field
-    const input = document.querySelector('input[type="text"]');
-    input.addEventListener('input', handleInputChange);
-
-    // event on Enter
-    document.addEventListener('keydown', function (event) {
-        if (event.key === "Enter") {
-            handleFormSubmit();
-        }
-    });
-</script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
@@ -309,9 +278,9 @@
 <script>
     $(document).ready(function() {
 
-        $("#building, #section, #floor, #debt").select2({placeholder:'Выберите...', minimumResultsForSearch:Infinity});
+        $("#buildingName, #debtSting").select2({placeholder:'Выберите...', minimumResultsForSearch:Infinity});
 
-        $('#mySelect2').select2({
+        $('#ownerId').select2({
             ajax: {
                 url: '/admin/apartments/getUsers',
                 // dataType: 'json',
@@ -349,7 +318,76 @@
             },
 
         });
-    });
+
+        $('#buildingName').on('change', function() {
+            var buildingName = $(this).val();
+            if (buildingName == null || buildingName == ('-')) {
+            $('#section').empty();
+            $('#floor').empty();
+            } else {
+                // Запрос на сервер для получения списка элементов для секций
+                $.ajax({
+                    url: '/admin/apartments/getSections',
+                    data: {buildingName: buildingName},
+                    success: function (data) {
+                        console.log('success ' + data)
+                        // Очистка второго селектора
+                        $('#section').empty();
+                        // Добавление первой пустой опции
+                        $('#section').prepend($('<option>', {
+                            value: '',
+                            text: 'Выберите...'
+                        }));
+                        // Добавление новых опций второго селектора на основе полученных данных
+                        $.each(data, function (index, item) {
+                            var option = $('<option>').val(item).text(item);
+                            $('#section').append(option);
+                        });
+                        $('#section').trigger('change');
+                    }
+                });
+                // Запрос на сервер для получения списка элементов для этажей
+                $.ajax({
+                    url: '/admin/apartments/getFloors',
+                    data: {buildingName: buildingName},
+                    success: function (data) {
+                        console.log('success ' + data)
+                        $('#floor').empty();
+                        $('#floor').prepend($('<option>', {
+                            value: '',
+                            text: 'Выберите...'
+                        }));
+                        $.each(data, function (index, item) {
+                            var option = $('<option>').val(item).text(item);
+                            $('#floor').append(option);
+                        });
+                        // Обновление Select2 для второго селектора
+                        $('#floor').trigger('change');
+                    }
+                });
+            }
+        });
+        $('#section').select2({
+            minimumResultsForSearch: Infinity
+        });
+        $('#floor').select2({
+            minimumResultsForSearch: Infinity
+        });
+    })
+    function resetAll(){
+        $('#buildingName').children().removeAttr('selected');
+        $('#buildingName').children().first().attr('selected', true);
+        $('#buildingName').trigger('change');
+        $('#debtSting').children().removeAttr('selected');
+        $('#debtSting').children().first().attr('selected', true);
+        $('#debtSting').trigger('change');
+        $('#section').empty();
+        $('#floor').empty();
+
+
+        reset();
+
+    }
 </script>
 
 <!-- general pagination script -->

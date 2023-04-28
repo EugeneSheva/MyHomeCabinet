@@ -2,6 +2,8 @@ package com.example.myhome.home.service;
 import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.ApartmentAccount;
 import com.example.myhome.home.model.ApartmentAccountDTO;
+import com.example.myhome.home.model.Building;
+import com.example.myhome.home.model.BuildingDTO;
 import com.example.myhome.home.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,5 +46,7 @@ public class ApartmentAccountService {
                 .filter(balance -> balance < 0)
                 .reduce(Double::sum).orElse(0.0);
     }
-
+    public ApartmentAccountDTO convertApartAccountToApartAccountDTO(ApartmentAccount account) {
+        return new ApartmentAccountDTO(account.getId(),account.getIsActive(), account.getNumber(),account.getBalance());
+    }
 }

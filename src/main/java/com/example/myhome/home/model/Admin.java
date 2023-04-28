@@ -51,9 +51,9 @@ public class Admin {
     @JsonIgnore
     @ManyToMany(mappedBy = "receivers")
     private List<Message> messageList;
-
+    @JsonIgnore
     @OneToMany
-    @JoinColumn(name = "owner")
+    @JoinColumn(name = "ownerId")
     private List<CashBox> cashBoxList;
 
     @OneToMany

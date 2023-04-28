@@ -6,8 +6,15 @@ import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.*;
 import com.example.myhome.home.validator.OwnerValidator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
@@ -73,12 +80,12 @@ public class PersonalCabinetController {
         model.addAttribute("avgInvoicePriceInMonth", invoiceService.getAverageTotalPriceForApartmentLastYear(ownerDTO.getApartments().get(0).getId()));
 
         Map<String, Double>expenseLastMonth = invoiceComponentService.findExprncesLastMonthByApartment(ownerDTO.getApartments().get(0).getId());
-        System.out.println("expenseLastMonth"+ expenseLastMonth);
+
         model.addAttribute("byMonthNames", new ArrayList<>(expenseLastMonth.keySet()));
         model.addAttribute("byMonthValues", new ArrayList<>(expenseLastMonth.values()));
 
         Map<String, Double>expenseThisYear = invoiceComponentService.findExprncesThisYearByApartment(ownerDTO.getApartments().get(0).getId());
-        System.out.println("expenseThisYear"+ expenseThisYear);
+
         model.addAttribute("byYearName", new ArrayList<>(expenseThisYear.keySet()));
         model.addAttribute("byYearValue", new ArrayList<>(expenseThisYear.values()));
 
@@ -95,12 +102,12 @@ public class PersonalCabinetController {
         model.addAttribute("avgInvoicePriceInMonth", invoiceService.getAverageTotalPriceForApartmentLastYear(id));
 
         Map<String, Double>expenseLastMonth = invoiceComponentService.findExprncesLastMonthByApartment(id);
-        System.out.println("expenseLastMonth"+ expenseLastMonth);
+
         model.addAttribute("byMonthNames", new ArrayList<>(expenseLastMonth.keySet()));
         model.addAttribute("byMonthValues", new ArrayList<>(expenseLastMonth.values()));
 
         Map<String, Double>expenseThisYear = invoiceComponentService.findExprncesThisYearByApartment(id);
-        System.out.println("expenseThisYear"+ expenseThisYear);
+
         model.addAttribute("byYearName", new ArrayList<>(expenseThisYear.keySet()));
         model.addAttribute("byYearValue", new ArrayList<>(expenseThisYear.values()));
 
@@ -110,12 +117,18 @@ public class PersonalCabinetController {
     }
 
     @GetMapping("/invoices")
-    public String getInvoicePageByOwner(Model model, Principal principal) {
+    public String getInvoicePageByOwner(Model model,FilterForm form, Principal principal) {
+        Page<Invoice> invoices;
+
+        if(form.getPage() == null) invoices = invoiceService.findAllBySpecificationAndPage(form, 1, 5);
+        else invoices = invoiceService.findAllBySpecificationAndPage(form, form.getPage()-1, 5);
+
+
+        model.addAttribute("totalPagesCount", invoices.getTotalPages());
+        model.addAttribute("filter_form", form);
         OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
         model.addAttribute("owner", ownerDTO);
-
-        List<Invoice> invoiceList = invoiceService.findAllByOwnerId(ownerDTO.getId());
-        model.addAttribute("invoiceList", invoiceList);
+        model.addAttribute("invoiceList", invoices);
         return "cabinet/invoices";
     }
 
@@ -150,12 +163,14 @@ public class PersonalCabinetController {
     }
 
     @GetMapping("/messages")
-    public String getMessagesPage(Model model, Principal principal) {
+    public String getMessagesPage(Model model, Principal principal,@PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) {
         OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
         model.addAttribute("owner", ownerDTO);
-
         List<Message> messagesList = ownerService.findOwnerDTObyEmailWithMessages(principal.getName()).getMessages();
-        model.addAttribute("messages", messagesList);
+        Page<Message> messagesListPage = new PageImpl<>(messagesList, pageable, messagesList.size());
+        model.addAttribute("messages", messagesListPage);
+        model.addAttribute("totalPagesCount", messagesListPage.getTotalPages());
+        model.addAttribute("filterForm", new FilterForm());
         return "cabinet/messages";
     }
 
@@ -264,5 +279,25 @@ public class PersonalCabinetController {
             ownerService.save(owner);
         }
         return "redirect:/cabinet/user/view";
+    }
+    @GetMapping(value="/get-invoices-cabinet")
+    public @ResponseBody Page<InvoiceDTO> getInvoices(@RequestParam Integer page,
+                                                   @RequestParam Integer size,
+                                                   @RequestParam String filters) throws JsonProcessingException {
+        System.out.println("AJAX page size filter "+ page + " " + size + " " + filters);
+        ObjectMapper mapper = new ObjectMapper();
+        FilterForm form = mapper.readValue(filters, FilterForm.class);
+        System.out.println("response " + invoiceService.findAllBySpecificationAndPage(form, page, size));
+        return invoiceService.findAllBySpecificationAndPageCabinet(form, page, size);
+    }
+
+    @GetMapping("/get-messages")
+    public @ResponseBody Page<Message> getOwners(@RequestParam Integer page,
+                                                  @RequestParam Integer size,
+                                                  @RequestParam String filters) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        FilterForm form = mapper.readValue(filters, FilterForm.class);
+        System.out.println("controller "+form);
+        return messageService.findAllBySpecification(form, page, size);
     }
 }

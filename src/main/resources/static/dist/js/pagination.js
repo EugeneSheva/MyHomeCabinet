@@ -26,6 +26,7 @@ function gatherFilters() {
     let date = $("#date").val();
     let datetime = $("#datetime").val();
     let debt = $("#debt").val();
+    let debtSting = $("#debtSting").val();
     let description = $("#description").val();
     let email = $("#email").val();
     let floor = $("#floor").val();
@@ -35,13 +36,14 @@ function gatherFilters() {
     let master_type = $("#master_type").val();
     let name = $("#name").val();
     let number = $("#number").val();
-    let owner_id = $("#owner").val();
+    let owner_id = $("#ownerId").val();
     let phone = $("#phone").val();
     let section_name = $("#section").val();
     let service_id = $("#service").val();
     let status = $("#status").val();
     let role = $("#role").val();
     let ownerName = $("#ownerName").val();
+    let buildingName = $("#buildingName").val();
 
     let filterForm = {
         active: (active != null) ? active : null,
@@ -61,6 +63,7 @@ function gatherFilters() {
         status: (status) ? status : null,
         completed: (completed != null) ? completed : null,
         debt: (debt != null) ? debt : null,
+        debtSting: (debtSting != null) ? debtSting : null,
         name: (name) ? name : null,
         role: (role) ? role : null,
         email: (email) ? email : null,
@@ -68,7 +71,8 @@ function gatherFilters() {
         number: (number) ? number : null,
         floor: (floor) ? floor: null,
         account : (account) ? account : null,
-        ownerName : (ownerName) ? ownerName : null
+        ownerName : (ownerName) ? ownerName : null,
+        buildingName : (buildingName) ? buildingName : null
     };
 
     console.log('gathered filters: ');
@@ -91,6 +95,7 @@ function setFilters(filters) {
         $("#datetime").val(null);
         $("#date").val(null);
         $("#debt").val('').trigger('change');
+        $("#debtSting").val(null);
         $("#email").val(null);
         $("#floor").val(null);
         $("#name").val(null);
@@ -99,12 +104,13 @@ function setFilters(filters) {
         $("#description").val(null);
         $("#master_type").val('').trigger('change');
         $("#master").val('').trigger('change');
-        $("#owner").val('').trigger('change');
+        $("#ownerId").val('').trigger('change');
         $("#phone").val(null);
         $("#status").val('').trigger('change');
         $("#completed").val('').trigger('change');
         $("#active").val('').trigger('change');
-        $("#ownerName").val('');
+        $("#ownerName").val(null);
+        $("#buildingName").val(null);
         return;
     }
     else {
@@ -112,6 +118,7 @@ function setFilters(filters) {
         $("#account").val(filters.account);
         $("#date").val(filters.date);
         $("#debt").val(filters.debt);
+        $("#debtSting").val(filters.debtSting);
         $("#email").val(filters.email);
         $("#floor").val(filters.floor);
         $("#name").val(filters.name);
@@ -127,12 +134,13 @@ function setFilters(filters) {
         $("#description").val(filters.description);
         $("#master_type").val(filters.master_type);
         $("#master").val(filters.master);
-        $("#owner").val(filters.owner);
+        $("#ownerId").val(filters.owner);
         $("#phone").val(filters.phone);
         $("#status").val(filters.status);
         $("#completed").val(filters.completed);
         $("#active").val(filters.active);
         $("#ownerName").val(filters.ownerName);
+        $("#buildingName").val(filters.buildingName);
     }
 
 }
@@ -254,6 +262,102 @@ function drawInvoicesTable(){
     drawPagination();
 
 }
+function drawMessagesTable(){
+    console.log('msg draw table start');
+    let pageFiltersString = JSON.stringify(gatherFilters());
+    let data = getTableData('/cabinet/get-messages', currentPageNumber, currentPageSize, pageFiltersString);
+    console.log('msg start'+data);
+    let $invoicesTableBody = $("#messageTable tbody");
+    $invoicesTableBody.html('');
+
+    for(const msg of data.content) {
+
+        let dateString = msg.date.toString();
+        let dateParts = dateString.split(",");
+        let year = parseInt(dateParts[0]);
+        let month = parseInt(dateParts[1]) - 1;
+        let day = parseInt(dateParts[2]);
+        let hours = parseInt(dateParts[3]);
+        let minutes = parseInt(dateParts[4]);
+        let date = new Date(year, month, day, hours, minutes);
+        let formattedDate = ("0" + date.getDate()).slice(-2) + "." + ("0" + (date.getMonth() + 1)).slice(-2) + "." + date.getFullYear() + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+        console.log('msg success');
+
+        let newTableRow = document.createElement('tr');
+        newTableRow.style.cursor = 'pointer';
+        newTableRow.class = 'invoice_row';
+        var index = msg.text.indexOf("<br>");
+        var text = msg.text.substring(3, index);
+        console.log("text" + text);
+        var newText = text.substring(0, 70);
+        if (newText.length == 70) {newText +='...' }
+        console.log("newText" + newText)
+        newTableRow.innerHTML =
+                                '<td><input type="checkbox" name="" id="" value="'+msg.id+'"></td>' +
+                                '<td>' + msg.sender.first_name + ' ' + msg.sender.last_name + '</td>' +
+                                '<td><strong>' + msg.subject + '</strong> - ' + newText + '</td>' +
+                                '<td>' + formattedDate + '</td>';
+        let row_children = newTableRow.children;
+        for(let j = 1; j < row_children.length - 1; j++) {
+            row_children[j].addEventListener('click', function(){
+                window.location.href = '/cabinet/messages/'+msg.id;
+            });
+        }
+        console.log('msg drawed');
+        $invoicesTableBody.append(newTableRow);
+    }
+    if(data.content.length === 0) {
+        let newTableRow = document.createElement('tr');
+        newTableRow.innerHTML = '<td colspan=10>Ничего не найдено...</td>';
+        $invoicesTableBody.append(newTableRow);
+    }
+
+    drawPagination();
+
+}
+
+function drawInvoicesInCabinetTable(){
+
+    let pageFiltersString = JSON.stringify(gatherFilters());
+    let data = getTableData('/cabinet/get-invoices-cabinet', currentPageNumber, currentPageSize, pageFiltersString);
+    let $invoicesTableBody = $("#invoicesTable tbody");
+    $invoicesTableBody.html('');
+
+    for(const invoice of data.content) {
+        let date = new Date(invoice.date);
+        date.setDate(date.getDate() + 1);
+        console.log('mydata '+ data);
+        let newTableRow = document.createElement('tr');
+        newTableRow.style.cursor = 'pointer';
+        newTableRow.class = 'invoice_row';
+        newTableRow.innerHTML =
+            '<td>' + invoice.id.toString().padStart(10, '0') + '</td>' +
+            '<td>' + date.toISOString().split('T')[0] + '</td>' +
+            '<td>' +
+            '<small class="label ' + (invoice.status == 'PAID' ? 'label-success' : invoice.status == 'UNPAID' ? 'label-danger' : 'label-warning') + '">' +
+            invoice.status +
+            '</small>' +
+            '</td>' +
+            '<td><span>' + invoice.total_price.toString() + '</span></td>';
+        let row_children = newTableRow.children;
+        for(let j = 1; j < row_children.length - 1; j++) {
+            row_children[j].addEventListener('click', function(){
+                window.location.href = '/admin/invoices/'+invoice.id;
+            });
+        }
+
+        $invoicesTableBody.append(newTableRow);
+    }
+    if(data.content.length === 0) {
+        let newTableRow = document.createElement('tr');
+        newTableRow.innerHTML = '<td colspan=10>Ничего не найдено...</td>';
+        $invoicesTableBody.append(newTableRow);
+    }
+
+    drawPagination();
+
+}
+
 function drawAccountsTable(){
     let pageFiltersString = JSON.stringify(gatherFilters());
     let data = getTableData('/admin/accounts/get-accounts', currentPageNumber, currentPageSize, pageFiltersString);
@@ -511,8 +615,9 @@ function drawTransactionsTable() {
 function drawTable() {
 
     let tableType = globalTableName;
-
+    console.log('draw table');
     if(tableType === 'invoices') drawInvoicesTable();
+    else if(tableType === 'invoicesInCabinet') drawInvoicesInCabinetTable();
     else if(tableType === 'apartments') drawApartmentsTable();
     else if(tableType === 'accounts') drawAccountsTable();
     else if(tableType === 'meters') drawMetersTable();
@@ -520,6 +625,7 @@ function drawTable() {
     else if(tableType === 'owners') drawOwnersTable();
     else if(tableType === 'buildings') drawBuildingsTable();
     else if(tableType === 'transactions') drawTransactionsTable();
+    else if(tableType === 'messages') drawMessagesTable();
 
 }
 //Функции, рисующие таблицы в зависимости от выбранной страницы

@@ -43,6 +43,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>, JpaSpec
     Double getTotalPriceByApartmentIdAndMonthAndYear(@Param("apartmentId") Long apartmentId, @Param("month") Integer month, @Param("year") Integer year);
 
     default Page<Invoice> findByFilters(LocalDate localDate, InvoiceStatus invoiceStatus, Pageable pageable) {
+        System.out.println("date in repo "+ localDate);
         Specification<Invoice> spec = Specification.where(null);
 
         if (localDate != null) {

@@ -1,5 +1,6 @@
 package com.example.myhome.home.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -21,7 +22,7 @@ public class IncomeExpenseItems {
 
     @Enumerated(EnumType.STRING)
     private IncomeExpenseType incomeExpenseType;
-
+    @JsonIgnore
     @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "incomeExpenseItems")
     private List<CashBox> transactions;
 

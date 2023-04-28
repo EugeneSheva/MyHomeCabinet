@@ -48,7 +48,7 @@ public class InvoiceComponentService {
         Integer lastDayOfMonth =  LocalDate.now().with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth();
         LocalDate from = LocalDate.of(year, lastMonthValue, 01);
         LocalDate to = LocalDate.of(year, lastMonthValue, lastDayOfMonth);
-        System.out.println("даты за посл месяц "+ from + " - " + to);;
+//        System.out.println("даты за посл месяц "+ from + " - " + to);
         List<InvoiceComponents> invoiceComponentsList = invoiceComponentRepository.findByInvoice_Apartment_IdAndInvoice_DateBetween(id, from, to);
 
         Map<String, Double> resultMap = new HashMap<>();
@@ -71,7 +71,7 @@ public class InvoiceComponentService {
         Integer yearValue = LocalDate.now().getYear();
         LocalDate from = LocalDate.of(yearValue, 01, 01);
         LocalDate to = LocalDate.now();
-        System.out.println("даты за посл год "+ from + " - " + to);
+//        System.out.println("даты за посл год "+ from + " - " + to);
         List<InvoiceComponents> invoiceComponentsList = invoiceComponentRepository.findByInvoice_Apartment_IdAndInvoice_DateBetween(id, from, to);
 
         Map<String, Double> resultMap = new HashMap<>();

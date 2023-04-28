@@ -53,14 +53,14 @@
                       <div class="box-header with-border" style="padding-block:15px;">
                           <h3 class="box-title"></h3>
                           <div class="box-tools">
-                              <a th:href="@{/admin/invoices}" class="btn btn-default btn-sm">
-                                  <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                              <a href="#" onclick="reset()" class="btn btn-default btn-sm">
+                                  <span class="hidden-xs">Очистить </span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                               </a>
                           </div>
                       </div>
                       <div class="box-body table-responsive">
-                          <form action="" method="get">
-                              <table class="table table-bordered table-hover table-striped linkedRow">
+                          <div>
+                              <table class="table table-bordered table-hover table-striped linkedRow" id="invoicesTable">
                                   <thead>
                                       <tr>
                                           <th>№</th>
@@ -70,33 +70,35 @@
                                       </tr>
                                       <tr class="filters">
                                           <td></td>
-                                          <td><input type="text" name="" id="date_picker" name="date" style="width:100%; padding-block: 10px;"></td>
+                                          <td><input type="date" class="my_filters"  id="date" name="date" style="width:100%; padding-block: 10px;"></td>
                                           <td>
-                                              <select th:field="*{status}" id="my_select" name>
+                                              <select class="my_filters" id="status" name>
+                                                  <option value="">Выберите...</option>
                                                   <option th:each="status : ${T(com.example.myhome.home.model.InvoiceStatus).values()}"
                                                           th:value="${status}"
-                                                          th:text="${status.getName()}"></option>
+                                                          th:text="${status.name}"></option>
                                               </select>
                                           </td>
                                           <td></td>
                                       </tr>
                                       </thead>
                                   <tbody>
-                                      <tr class="invoice_row" data-href="/cabinet/invoice/734" data-key="734" th:each="invoice : ${invoiceList}">
+<!--                                      <tr class="invoice_row" data-href="/cabinet/invoice/734" data-key="734" th:each="invoice : ${invoiceList}">-->
 
-                                          <td><a style="display: block; color: black; text-decoration: none;" th:text="${T(java.lang.String).format('%010d',invoice.id)}"
-                                          th:href="@{/cabinet/invoice/{id}(id=${invoice.id})}"></a></td>
+<!--                                          <td><a style="display: block; color: black; text-decoration: none;" th:text="${T(java.lang.String).format('%010d',invoice.id)}"-->
+<!--                                          th:href="@{/cabinet/invoice/{id}(id=${invoice.id})}"></a></td>-->
 
-                                          <td><a style="display: block; color: black; text-decoration: none;" th:text="${invoice.date}"
-                                              th:href="@{/cabinet/invoice/{id}(id=${invoice.id})}"></a></td>
+<!--                                          <td><a style="display: block; color: black; text-decoration: none;" th:text="${invoice.date}"-->
+<!--                                              th:href="@{/cabinet/invoice/{id}(id=${invoice.id})}"></a></td>-->
 
-                                          <td th:text="${invoice.status}"><small class="label label-danger"></small></td>
+<!--                                          <td th:text="${invoice.status}"><small class="label label-danger"></small></td>-->
 
-                                          <td><a style="display: block; color: black; text-decoration: none;" th:text="${invoice.total_price}"
-                                              th:href="@{/cabinet/invoice/{id}(id=${invoice.id})}"></a></td></tr>
-                                      </tbody>
+<!--                                          <td><a style="display: block; color: black; text-decoration: none;" th:text="${invoice.total_price}"-->
+<!--                                              th:href="@{/cabinet/invoice/{id}(id=${invoice.id})}"></a></td></tr>-->
+                                  </tbody>
                               </table>
-                          </form>
+                              <nav aria-label="Page navigation " class="pagination_container"></nav>
+                          </div>
                       </div>
                       <div class="box-footer clearfix"></div>
                   </div>
@@ -117,11 +119,11 @@
 <script th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
+<script th:src="@{/dist/js/pagination.js}"></script>
 
 <script>
     $(document).ready(function(){
-        $("#my_select").select2({width: '100%'});
+        $("#status").select2({minimumResultsForSearch: Infinity });
         $("#date_picker").datepicker();
 
         let rows = document.getElementsByClassName("invoice_row");
@@ -132,6 +134,20 @@
             });
         }
     });
+</script>
+
+<script th:inline="javascript">
+
+    let globalTableName = 'invoicesInCabinet';
+    let totalPagesCount = [[${totalPagesCount}]];
+    let tableData;
+
+    $(document).ready(function(){
+
+        drawTable();
+
+    });
+
 </script>
 
 </body>
