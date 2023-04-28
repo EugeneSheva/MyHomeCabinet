@@ -77,7 +77,7 @@ public class CashBoxSpecification {
 
     public static Specification<CashBox> ownerContains(Long userId) {
         return (root, query, builder) -> {
-            Join<CashBox, Owner> cashBoxOwnerJoin = root.join("owner", JoinType.INNER);
+            Join<CashBox, Owner> cashBoxOwnerJoin = root.join("ownerId", JoinType.INNER);
             return builder.equal(cashBoxOwnerJoin.get("id"), userId);
         };
     }

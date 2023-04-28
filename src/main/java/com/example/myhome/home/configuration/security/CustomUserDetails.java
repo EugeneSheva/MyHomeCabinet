@@ -60,7 +60,7 @@ public class CustomUserDetails implements UserDetails {
 //    @Override
 //    public String toString() {
 //        return "CustomUserDetails{" +
-//                "owner=" + owner +
+//                "ownerId=" + ownerId +
 //                '}';
 //    }
 }

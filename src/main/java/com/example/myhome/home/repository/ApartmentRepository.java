@@ -57,9 +57,9 @@ public interface ApartmentRepository extends JpaRepository<Apartment, Long>, Jpa
         }
 
         if (debt != null && !debt.equalsIgnoreCase("-")) {
-            if( debt.equalsIgnoreCase("haveDebt")) {
+            if( debt.equalsIgnoreCase("true")) {
             spec = spec.and(ApartmentSpecification.hasdebtContains());
-            } else if ( debt.equalsIgnoreCase("noDebt")) {
+            } else if ( debt.equalsIgnoreCase("false")) {
                 spec = spec.and(ApartmentSpecification.hasNodebtContains());
             }
         }

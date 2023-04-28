@@ -20,7 +20,7 @@ public class Message {
     private Long id;
 
     //отправитель
-    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name = "sender_id")
     private Admin sender;

@@ -4243,7 +4243,7 @@ Data.prototype = {
 
 	cache: function( owner ) {
 
-		// Check if the owner object already has a cache
+		// Check if the ownerId object already has a cache
 		var value = owner[ this.expando ];
 
 		// If not, create one
@@ -4278,12 +4278,12 @@ Data.prototype = {
 		var prop,
 			cache = this.cache( owner );
 
-		// Handle: [ owner, key, value ] args
+		// Handle: [ ownerId, key, value ] args
 		// Always use camelCase key (gh-2257)
 		if ( typeof data === "string" ) {
 			cache[ camelCase( data ) ] = value;
 
-		// Handle: [ owner, { properties } ] args
+		// Handle: [ ownerId, { properties } ] args
 		} else {
 
 			// Copy the properties one-by-one to the cache object

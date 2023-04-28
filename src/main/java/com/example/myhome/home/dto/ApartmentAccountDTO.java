@@ -21,5 +21,10 @@ public class ApartmentAccountDTO {
     private BuildingDTO building;
     private OwnerDTO owner;
 
-
+    public ApartmentAccountDTO(Long id, Boolean isActive, Long number, Double balance) {
+        this.id = id;
+        this.isActive = isActive;
+        this.number = number;
+        this.balance = balance;
+    }
 }

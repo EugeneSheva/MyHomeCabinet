@@ -71,7 +71,7 @@
                         </div>
                     </div>
                     <div class="card-body mt-3" style="padding: 0">
-                        <form method="POST" id="1" th:action="@{/admin/owners/filter}" th:object="${filterForm}"
+                        <div th:object="${filterForm}"
                               enctype="multipart/form-data">
                             <nav aria-label="Page navigation " class="pagination_container"></nav>
                             <table id="ownersTable" class="table table-bordered table-hover table-striped linkedRow"
@@ -101,16 +101,15 @@
                                 </tr>
                                 <tr>
                                     <th><input type="text" autocomplete="off" class="form-control my_filters" name="id"
-                                               th:field="${filterForm.id}" id="id"></th>
+                                               th:field="${filterForm.id}" id="id" style="padding: 0;"></th>
                                     <th><input type="text" autocomplete="off" class="form-control my_filters" name="ownerName"
                                                th:field="${filterForm.ownerName}" id="ownerName"></th>
                                     <th><input type="text" autocomplete="off" class="form-control my_filters" name="phone"
                                                th:field="${filterForm.phone}" id="phone"></th>
-                                    <th><input type="text" autocomplete="off" class="form-control my_filters" dname="email"
+                                    <th><input type="text" autocomplete="off" class="form-control my_filters" name="email"
                                                th:field="${filterForm.email}" id="email"></th>
-                                    <th><select autocomplete="off" class="form-select my_filters" id="buildingName" name="buildingName">
-                                        <option value=""
-                                                th:selected="${filterForm.buildingName == null}"></option>
+                                    <th><select autocomplete="off"  class="form-select my_filters" id="buildingName" name="buildingName" onchange="changeFilterData()">
+                                        <option value="" th:selected="${filterForm.buildingName == null}"></option>
                                         <option th:each="building : ${buildings}"
                                                 th:text="${building.name}"
                                                 th:value="${building.name}"
@@ -118,13 +117,13 @@
                                     </select></th>
 
                                     <th><input autocomplete="off" type="number" class="form-control my_filters" name="apartment"
-                                               th:field="${filterForm.apartment}" id="number"></th>
+                                               th:field="${filterForm.apartment}" id="apartment"></th>
 
                                     <th>
                                         <div class="md-form md-outline input-with-post-icon datepicker"
                                              style="padding: 0; margin-bottom: 0px">
                                             <input autocomplete="off" placeholder="Select date" th:value="${localDate}" type="date"
-                                                   id="localDate" name="localDate" class="form-control my_filters">
+                                                   id="date" name="localDate" class="form-control my_filters" onchange="changeFilterData()">
                                         </div>
                                     </th>
 
@@ -144,14 +143,14 @@
                                         </option>
                                     </select></th>
 
-                                    <th><select autocomplete="off" class="form-select my_filters" id="debt" name="debtSting">
-                                        <option th:selected="${filterForm.debtSting == null}" th:value="null"></option>
+                                    <th><select autocomplete="off" class="form-select my_filters" id="debtSting" name="debtSting">
+                                        <option th:selected="${filterForm.debtSting == null}" value=""></option>
                                         <option th:value="true"
-                                                th:selected="${#strings.containsIgnoreCase(('haveDebt'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}"
+                                                th:selected="${#strings.containsIgnoreCase(('true'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}"
                                         >Есть долг
                                         </option>
                                         <option th:value="false"
-                                                th:selected="${#strings.containsIgnoreCase(('noDebt'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}"
+                                                th:selected="${#strings.containsIgnoreCase(('false'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}"
                                         >Нет долга
                                         </option>
                                     </select></th>

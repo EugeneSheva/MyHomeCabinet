@@ -55,7 +55,7 @@ public class InvoiceSpecifications {
         return (root, query, builder) -> {
             LocalDateTime startOfDay = date.atStartOfDay();
             LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
-            return builder.between(root.get("added_at"), startOfDay, endOfDay);
+            return builder.equal(root.get("date"), date);
         };
     }
 }

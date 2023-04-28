@@ -61,20 +61,20 @@ public class OwnerController {
         model.addAttribute("filterForm", new FilterForm());
         return "admin_panel/owners/owners";
     }
-    @PostMapping("/filter")
-    public String filterApartments(Model model, @ModelAttribute FilterForm filterForm, @RequestParam(name = "id",required = false) Long id, @RequestParam(name = "ownerName",required = false) String ownerName,
-                                   @RequestParam(name = "phonenumber",required = false) String phonenumber, @RequestParam(name = "email",required = false) String email,
-                                   @RequestParam(name = "buildingName", required = false) String buildingName, @RequestParam(name = "apartment", required = false) Long apartment,
-                                   @RequestParam(name = "localDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate localDate, @RequestParam(name = "status",required = false) String status,
-                                   @RequestParam(name = "debtSting",required = false) String debt, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) throws IOException {
-        System.out.println(localDate);
-        Page<Owner>ownerList = ownerRepository.findByFilters(id,ownerName,phonenumber, email, buildingName, apartment, localDate, ownerService.stringStatusConverter(status), ownerService.isHaveDebt(debt), pageable);
-        System.out.println(ownerList);
-        model.addAttribute("owners", ownerList);
-        model.addAttribute("filterForm", filterForm);
-        return "admin_panel/owners/owners";
-
-    }
+//    @PostMapping("/filter")
+//    public String filterApartments(Model model, @ModelAttribute FilterForm filterForm, @RequestParam(name = "id",required = false) Long id, @RequestParam(name = "ownerName",required = false) String ownerName,
+//                                   @RequestParam(name = "phonenumber",required = false) String phonenumber, @RequestParam(name = "email",required = false) String email,
+//                                   @RequestParam(name = "buildingName", required = false) String buildingName, @RequestParam(name = "apartment", required = false) Long apartment,
+//                                   @RequestParam(name = "localDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate localDate, @RequestParam(name = "status",required = false) String status,
+//                                   @RequestParam(name = "debtSting",required = false) String debt, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) throws IOException {
+//        System.out.println(localDate);
+//        Page<Owner>ownerList = ownerRepository.findByFilters(id,ownerName,phonenumber, email, buildingName, apartment, localDate, ownerService.stringStatusConverter(status), ownerService.isHaveDebt(debt), pageable);
+//        System.out.println(ownerList);
+//        model.addAttribute("owners", ownerList);
+//        model.addAttribute("filterForm", filterForm);
+//        return "admin_panel/owners/owners";
+//
+//    }
 
     @GetMapping("/{id}")
     public String getOwner(@PathVariable("id") Long id, Model model) {
@@ -145,7 +145,7 @@ public class OwnerController {
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);
         System.out.println(form);
-        return ownerService.findAllBySpecification(form, page, size);
+        return ownerService.findAllBySpecification2(form, page, size);
     }
 
     @GetMapping("/get-all-owners")

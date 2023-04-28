@@ -31,7 +31,7 @@ public class CashBox {
     private ApartmentAccount apartmentAccount;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "ownerId")
     private Owner owner;
 
     private Boolean completed;

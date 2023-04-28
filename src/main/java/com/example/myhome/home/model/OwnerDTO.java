@@ -43,6 +43,24 @@ public class OwnerDTO {
         this.messages = messages;
     }
 
+    public OwnerDTO(Long id, String first_name, String last_name, String fathers_name, String fullName, String phone_number, String email, String viber, String telegram, String description, List<ApartmentDTO> apartments, List<BuildingDTO> buildings , String date, String status, Boolean hasDebt) {
+        this.id = id;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.fathers_name = fathers_name;
+        this.fullName = fullName;
+        this.phone_number = phone_number;
+        this.email = email;
+        this.viber = viber;
+        this.telegram = telegram;
+        this.description = description;
+        this.apartments = apartments;
+        this.buildings = buildings;
+        this.date = date;
+        this.status = status;
+        this.hasDebt = hasDebt;
+    }
+
     public OwnerDTO(Long id, String first_name, String last_name, String fathers_name, String fullName, List<ApartmentDTO> apartments) {
         this.id = id;
         this.first_name = first_name;
