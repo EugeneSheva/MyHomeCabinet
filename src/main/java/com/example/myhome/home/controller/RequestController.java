@@ -3,7 +3,7 @@ package com.example.myhome.home.controller;
 import com.example.myhome.home.model.RepairRequest;
 import com.example.myhome.home.dto.RepairRequestDTO;
 import com.example.myhome.home.model.filter.FilterForm;
-import com.example.myhome.home.service.AdminService;
+import com.example.myhome.home.service.impl.AdminServiceImpl;
 import com.example.myhome.home.service.OwnerService;
 import com.example.myhome.home.service.RepairRequestService;
 import com.example.myhome.home.validator.RequestValidator;
@@ -36,7 +36,7 @@ public class RequestController {
     private OwnerService ownerService;
 
     @Autowired
-    private AdminService adminService;
+    private AdminServiceImpl adminService;
 
     @Autowired private RequestValidator validator;
 

@@ -125,7 +125,7 @@
                         </div>
                       </td>
                     </tr>
-                    <tr th:if="${admins.size() == 0}">
+                    <tr th:if="${admins.getTotalElements() == 0}">
                       <td colspan="7">Ничего не найдено...</td>
                     </tr>
                   </tbody>

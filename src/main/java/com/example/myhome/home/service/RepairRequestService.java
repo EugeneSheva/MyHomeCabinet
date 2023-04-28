@@ -5,6 +5,7 @@ import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.RepairRequestRepository;
+import com.example.myhome.home.service.impl.AdminServiceImpl;
 import com.example.myhome.home.specification.RequestSpecifications;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +32,7 @@ public class RepairRequestService {
 
     @Autowired private ApartmentService apartmentService;
     @Autowired private OwnerService ownerService;
-    @Autowired private AdminService adminService;
+    @Autowired private AdminServiceImpl adminService;
 
     public List<RepairRequest> findAllRequests() {
         log.info("Searching for requests");

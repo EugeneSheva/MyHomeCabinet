@@ -1,10 +1,7 @@
 package com.example.myhome;
 
 import com.example.myhome.home.service.*;
-import com.example.myhome.home.service.impl.AccountServiceImpl;
-import com.example.myhome.home.service.impl.InvoiceServiceImpl;
-import com.example.myhome.home.service.impl.ServiceServiceImpl;
-import com.example.myhome.home.service.impl.TariffServiceImpl;
+import com.example.myhome.home.service.impl.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,7 +14,7 @@ class MyHomeApplicationTests {
     @MockBean
     private AccountServiceImpl accountServiceImpl;
     @MockBean
-    private AdminService adminService;
+    private AdminServiceImpl adminService;
     @MockBean
     private ApartmentService apartmentService;
     @MockBean
@@ -27,7 +24,7 @@ class MyHomeApplicationTests {
     @MockBean
     private MessageService messageService;
     @MockBean
-    private MeterDataService meterDataService;
+    private MeterDataServiceImpl meterDataService;
     @MockBean
     private OwnerService ownerService;
     @MockBean

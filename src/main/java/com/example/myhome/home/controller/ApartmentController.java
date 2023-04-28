@@ -8,6 +8,8 @@ import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.*;
+import com.example.myhome.home.service.impl.AdminServiceImpl;
+import com.example.myhome.home.service.impl.MeterDataServiceImpl;
 import com.example.myhome.home.service.impl.TariffServiceImpl;
 import com.example.myhome.home.validator.ApartmentValidator;
 import com.example.myhome.util.UserRole;
@@ -52,8 +54,8 @@ public class ApartmentController {
     private  final AccountRepository accountRepository;
     private  final MeterDataRepository meterDataRepository;
     private  final IncomeExpenseRepository incomeExpenseRepository;
-    private  final AdminService adminService;
-    private  final MeterDataService meterDataService;
+    private  final AdminServiceImpl adminService;
+    private  final MeterDataServiceImpl meterDataService;
 
 
     @GetMapping

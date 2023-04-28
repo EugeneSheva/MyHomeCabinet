@@ -130,15 +130,15 @@
                     <tr style="cursor: pointer;" class="meter_data_row" th:each="row, iter : ${meter_data_rows}">
                       <input type="hidden" class="row_id" th:value="${row.id}">
                       <td th:text="${T(java.lang.String).format('%010d', row.id)}"></td>
-                      <td th:text="${row.status.getName()}"></td>
+                      <td th:text="${row.status}"></td>
                       <td th:text="${row.date}"></td>
                       <td th:text="${#temporals.format(row.date, 'MMM yyyy')}"></td>
-                      <td th:text="${row.apartment.building.name}"></td>
-                      <td th:text="${row.apartment.section}"></td>
-                      <td th:text="${row.apartment.number}"></td>
-                      <td th:text="${row.service.name}"></td>
-                      <td th:style="${iter.index+1 == meter_data_rows.size()} ? 'background-color: #DFD5; font-weight: bold; text-decoration: underline'" th:text="${row.currentReadings}">32.0</td>
-                      <td th:style="${iter.index+1 == meter_data_rows.size()} ? 'background-color: #DFD5; font-weight: bold; text-decoration: underline'" th:text="${row.service.unit.name}">m²</td>
+                      <td th:text="${row.buildingName}"></td>
+                      <td th:text="${row.section}"></td>
+                      <td th:text="${row.apartmentNumber}"></td>
+                      <td th:text="${row.serviceName}"></td>
+                      <td th:style="${iter.index+1 == meter_data_rows.getTotalElements()} ? 'background-color: #DFD5; font-weight: bold; text-decoration: underline'" th:text="${row.readings}">32.0</td>
+                      <td th:style="${iter.index+1 == meter_data_rows.getTotalElements()} ? 'background-color: #DFD5; font-weight: bold; text-decoration: underline'" th:text="${row.serviceUnitName}">m²</td>
                       <td>
                         <div class="btn-group pull-right">
                           <a class="btn btn-default btn-sm" th:href="@{/admin/meters/update/{id}(id=${row.id})}"><i class="fa fa-pencil"></i></a>
@@ -146,7 +146,7 @@
                         </div>
                       </td>
                     </tr>
-                    <tr th:if="${meter_data_rows.size() == 0}">
+                    <tr th:if="${meter_data_rows.getTotalElements() == 0}">
                       <td colspan="11">Нет сохранённых показаний</td>
                     </tr>
                   </tbody>

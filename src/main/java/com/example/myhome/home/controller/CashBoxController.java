@@ -12,6 +12,7 @@ import com.example.myhome.home.repository.IncomeExpenseRepository;
 import com.example.myhome.home.repository.OwnerRepository;
 import com.example.myhome.home.service.*;
 import com.example.myhome.home.service.impl.AccountServiceImpl;
+import com.example.myhome.home.service.impl.AdminServiceImpl;
 import com.example.myhome.home.service.impl.IncomeExpenseItemServiceImpl;
 import com.example.myhome.home.validator.CashBoxtValidator;
 import com.example.myhome.util.UserRole;
@@ -43,7 +44,7 @@ public class CashBoxController {
     private final CashBoxService cashBoxService;
     private final OwnerService ownerService;
     private final OwnerRepository ownerRepository;
-    private final AdminService adminService;
+    private final AdminServiceImpl adminService;
     private final ApartmentAccountService apartmentAccountService;
     private final IncomeExpenseItemServiceImpl incomeExpenseItemService;
     private final IncomeExpenseRepository incomeExpenseRepository;

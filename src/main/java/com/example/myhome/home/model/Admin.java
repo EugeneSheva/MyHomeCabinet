@@ -20,23 +20,17 @@ import java.util.List;
 @Table(name = "admins")
 public class Admin {
 
-    /*
-    пользователи-админы системы
-     */
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Поле не должно быть пустым!")
     private String first_name, last_name;
-    @NotBlank(message = "Укажите номер телефона!")
     private String phone_number;
-    @NotBlank(message = "Укажите почту!")
-    @Email(message = "Неправильный формат электронной почты")
+
     private String email;
-    @NotBlank(message = "Необходимо написать пароль!")
+
     private String password;
+
     private boolean active = true;
 
     private String full_name = first_name + " " + last_name;
@@ -61,8 +55,6 @@ public class Admin {
     @ManyToMany(mappedBy = "admins")
     List<Building> buildings;
 
-
-
     @Override
     public String toString() {
         return "Admin{" +
@@ -70,7 +62,6 @@ public class Admin {
                 ", name='" + first_name+ " " + last_name + '\'' +
                 ", phone_number=" + phone_number +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", active=" + active +
                 ", dateOfRegistry=" + dateOfRegistry +
                 ", role=" + role +

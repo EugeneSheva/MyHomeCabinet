@@ -7,6 +7,7 @@ import com.example.myhome.home.model.InvoiceTemplate;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.service.*;
 import com.example.myhome.home.service.impl.InvoiceServiceImpl;
+import com.example.myhome.home.service.impl.MeterDataServiceImpl;
 import com.example.myhome.home.service.impl.ServiceServiceImpl;
 import com.example.myhome.home.service.impl.TariffServiceImpl;
 import com.example.myhome.home.validator.InvoiceValidator;
@@ -61,7 +62,7 @@ public class InvoiceController {
     private TariffServiceImpl tariffService;
 
     @Autowired
-    private MeterDataService meterDataService;
+    private MeterDataServiceImpl meterDataService;
 
     @Autowired
     private FileUploadUtil fileUploadUtil;

@@ -56,6 +56,8 @@ public class SettingsController {
             transactions = incomeExpenseRepository.findAll();
             model.addAttribute("type", "exp");
         }
+        log.info(transactions.toString());
+        transactions.forEach(System.out::println);
         model.addAttribute("transactions", transactions);
         return "admin_panel/system_settings/settings_inc_exp";
     }

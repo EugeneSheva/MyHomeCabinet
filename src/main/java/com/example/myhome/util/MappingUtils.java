@@ -1,9 +1,6 @@
 package com.example.myhome.util;
 
-import com.example.myhome.home.dto.ApartmentAccountDTO;
-import com.example.myhome.home.dto.ApartmentDTO;
-import com.example.myhome.home.dto.BuildingDTO;
-import com.example.myhome.home.dto.OwnerDTO;
+import com.example.myhome.home.dto.*;
 import com.example.myhome.home.model.*;
 
 import java.util.List;
@@ -11,6 +8,7 @@ import java.util.stream.Collectors;
 
 public class MappingUtils {
 
+    //ACCOUNT
     public static ApartmentAccount fromDTOToAccount(ApartmentAccountDTO dto) {
 
         if(dto == null) return null;
@@ -28,7 +26,6 @@ public class MappingUtils {
 
         return account;
     }
-
     public static ApartmentAccountDTO fromAccountToDTO(ApartmentAccount account) {
 
         if(account == null) return null;
@@ -47,6 +44,7 @@ public class MappingUtils {
         return dto;
     }
 
+    //APARTMENT
     public static Apartment fromDTOToApartment(ApartmentDTO dto) {
 
         if(dto == null) return null;
@@ -65,7 +63,6 @@ public class MappingUtils {
 
         return apartment;
     }
-
     public static ApartmentDTO fromApartmentToDTO(Apartment apartment) {
 
         if(apartment == null) return null;
@@ -86,6 +83,7 @@ public class MappingUtils {
         return dto;
     }
 
+    //BUILDING
     public static Building fromDTOToBuilding(BuildingDTO dto) {
 
         if(dto == null) return null;
@@ -100,7 +98,6 @@ public class MappingUtils {
 
         return building;
     }
-
     public static BuildingDTO fromBuildingToDTO(Building building) {
 
         if(building == null) return null;
@@ -116,6 +113,7 @@ public class MappingUtils {
         return dto;
     }
 
+    //OWNER
     public static Owner fromDTOToOwner(OwnerDTO dto){
 
         if(dto == null) return null;
@@ -129,7 +127,6 @@ public class MappingUtils {
 
         return owner;
     }
-
     public static OwnerDTO fromOwnerToDTO(Owner owner) {
 
         OwnerDTO dto = new OwnerDTO();
@@ -142,6 +139,66 @@ public class MappingUtils {
             dto.setEmail(owner.getEmail());
             dto.setFullName(String.join(" ", owner.getFirst_name(), owner.getFathers_name(), owner.getLast_name()));
         }
+
+        return dto;
+    }
+
+    //ADMIN
+    public static Admin fromDTOToAdmin(AdminDTO dto) {
+        if(dto == null) return null;
+
+        Admin admin = new Admin();
+        admin.setId(dto.getId());
+        admin.setFirst_name(dto.getFirst_name());
+        admin.setLast_name(dto.getLast_name());
+        admin.setEmail(dto.getEmail());
+        admin.setPassword(dto.getPassword());
+        admin.setRole(dto.getRole());
+        admin.setPhone_number(dto.getPhone_number());
+
+        return admin;
+    }
+    public static AdminDTO fromAdminToDTO(Admin admin) {
+        if(admin == null) return null;
+
+        AdminDTO dto = new AdminDTO();
+        dto.setId(admin.getId());
+        dto.setFirst_name(admin.getFirst_name());
+        dto.setLast_name(admin.getLast_name());
+        dto.setEmail(admin.getEmail());
+        dto.setRole(admin.getRole());
+        dto.setPhone_number(admin.getPhone_number());
+
+        return dto;
+    }
+
+    //METER
+    public static MeterData fromDTOToMeter(MeterDataDTO dto) {
+        if(dto == null) return null;
+        MeterData meter = new MeterData();
+        meter.setId(dto.getId());
+        meter.setCurrentReadings(dto.getReadings());
+        meter.setSection(dto.getSection());
+
+        return meter;
+    }
+    public static MeterDataDTO fromMeterToDTO(MeterData meter) {
+        if(meter == null) return null;
+        MeterDataDTO dto = new MeterDataDTO();
+        dto.setId(meter.getId());
+        dto.setReadings(meter.getCurrentReadings());
+        dto.setApartmentID(meter.getApartment().getId());
+        dto.setApartmentNumber(meter.getApartment().getNumber());
+        dto.setBuildingID(meter.getBuilding().getId());
+        dto.setBuildingName(meter.getBuilding().getName());
+        dto.setServiceID(meter.getService().getId());
+        dto.setServiceName(meter.getService().getName());
+        dto.setServiceUnitName(meter.getService().getUnit().getName());
+        dto.setSection(meter.getSection());
+        dto.setStatus(meter.getStatus().getName());
+        dto.setDate(meter.getDate());
+        dto.setApartmentOwnerID(meter.getApartment().getOwner().getId());
+        dto.setApartmentOwnerFullName(meter.getApartment().getOwner().getFullName());
 
         return dto;
     }

@@ -38,11 +38,6 @@ public class IncomeExpenseItems {
         this.incomeExpenseType = incomeExpenseType;
     }
 
-    @Override
-    public String toString() {
-        return name;
-    }
-
     @PreRemove
     public void clearTransactions() {
         transactions.forEach(t -> t.setIncomeExpenseItems(null));

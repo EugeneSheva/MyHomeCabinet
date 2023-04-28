@@ -19,11 +19,9 @@ $(document).ready(function() {
         + parseInt(repeat_password.dataset.value);
 
         if(correct_field_count != 6) {
-            save_button.disabled = true;
             save_button.classList.add('btn-default');
             save_button.classList.remove('btn-success');
         } else {
-            save_button.disabled = false;
             save_button.classList.add('btn-success');
             save_button.classList.remove('btn-default');
         }

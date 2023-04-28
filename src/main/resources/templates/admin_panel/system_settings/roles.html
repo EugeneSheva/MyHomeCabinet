@@ -158,6 +158,9 @@
 
 <script>
   $(document).ready(function(){
+    for(const button of document.querySelectorAll("input[type=checkbox]")) {
+      button.style = "pointer-events:none"
+    }
     let td = document.getElementsByTagName("td");
     for (const cell of td) {
       let checkbox = cell.firstElementChild;

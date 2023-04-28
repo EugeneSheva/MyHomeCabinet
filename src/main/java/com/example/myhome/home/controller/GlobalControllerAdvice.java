@@ -6,12 +6,11 @@ import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.model.PageRoleDisplay;
 import com.example.myhome.home.repository.PageRoleDisplayRepository;
-import com.example.myhome.home.service.AdminService;
+import com.example.myhome.home.service.impl.AdminServiceImpl;
 import com.example.myhome.home.service.OwnerService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,7 +32,7 @@ public class GlobalControllerAdvice {
     private OwnerService ownerService;
 
     @Autowired
-    private AdminService adminService;
+    private AdminServiceImpl adminService;
 
     @ModelAttribute
     public void addPagePermissions(Model model) {
