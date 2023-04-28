@@ -47,7 +47,7 @@ public class InvoiceController {
     private CashBoxService cashBoxService;
 
     @Autowired
-    private ApartmentAccountService apartmentAccountService;
+    private AccountService accountService;
 
     @Autowired
     private ApartmentService apartmentService;
@@ -86,8 +86,8 @@ public class InvoiceController {
 
         model.addAttribute("owners", ownerService.findAllDTO());
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
-        model.addAttribute("account_balance", apartmentAccountService.getSumOfAccountBalances());
-        model.addAttribute("account_debt", apartmentAccountService.getSumOfAccountDebts());
+        model.addAttribute("account_balance", accountService.getSumOfAccountBalances());
+        model.addAttribute("account_debt", accountService.getSumOfAccountDebts());
 
         model.addAttribute("totalPagesCount", invoices.getTotalPages());
 

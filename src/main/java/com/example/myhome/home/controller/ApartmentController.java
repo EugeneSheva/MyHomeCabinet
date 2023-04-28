@@ -12,6 +12,7 @@ import com.example.myhome.home.service.impl.AdminServiceImpl;
 import com.example.myhome.home.service.impl.MeterDataServiceImpl;
 import com.example.myhome.home.service.impl.TariffServiceImpl;
 import com.example.myhome.home.validator.ApartmentValidator;
+import com.example.myhome.util.MappingUtils;
 import com.example.myhome.util.UserRole;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class ApartmentController {
     private String uploadPath;
     private final ApartmentService apartmentService;
     private final ApartmentRepository apartmentRepository;
-    private final ApartmentAccountService apartmentAccountService;
+    private final AccountService accountService;
     private final BuildingService buildingService;
     private final BuildingRepository buildingRepository;
     private final OwnerService ownerService;
@@ -100,7 +101,7 @@ public class ApartmentController {
         model.addAttribute("buildings", buildingList);
         List<Tariff>tariffs = tariffService.findAllTariffs();
         model.addAttribute("tariffs", tariffs);
-        List<ApartmentAccountDTO> accountDTOList = apartmentAccountService.findDtoApartmentAccounts();
+        List<ApartmentAccountDTO> accountDTOList = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
         model.addAttribute("accounts", accountDTOList);
         return "admin_panel/apartments/apartment_edit";
     }
@@ -120,7 +121,7 @@ public class ApartmentController {
         }
         List<Tariff>tariffs = tariffService.findAllTariffs();
         model.addAttribute("tariffs", tariffs);
-        List<ApartmentAccountDTO> accountDTOList = apartmentAccountService.findDtoApartmentAccounts();
+        List<ApartmentAccountDTO> accountDTOList = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
         model.addAttribute("accounts", accountDTOList);
         return "admin_panel/apartments/apartment_edit";
     }
@@ -204,8 +205,8 @@ public class ApartmentController {
         List<Invoice>invoices=invoiceRepository.findAllByApartmentId(id);
         model.addAttribute("invoices", invoices);
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
-        model.addAttribute("account_balance", apartmentAccountService.getSumOfAccountBalances());
-        model.addAttribute("account_debt", apartmentAccountService.getSumOfAccountDebts());
+        model.addAttribute("account_balance", accountService.getSumOfAccountBalances());
+        model.addAttribute("account_debt", accountService.getSumOfAccountDebts());
         model.addAttribute("filter_form", new FilterForm());
         return "admin_panel/invoices/invoices";
     }
@@ -237,7 +238,7 @@ public class ApartmentController {
         List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
         model.addAttribute("owners", ownerDTOList);
 
-        List<ApartmentAccountDTO> apartmentAccountDTOS = apartmentAccountService.findDtoApartmentAccounts();
+        List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
         model.addAttribute("accounts", apartmentAccountDTOS);
 
         CashBox cashBox = new CashBox();

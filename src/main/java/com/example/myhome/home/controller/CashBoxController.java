@@ -15,6 +15,7 @@ import com.example.myhome.home.service.impl.AccountServiceImpl;
 import com.example.myhome.home.service.impl.AdminServiceImpl;
 import com.example.myhome.home.service.impl.IncomeExpenseItemServiceImpl;
 import com.example.myhome.home.validator.CashBoxtValidator;
+import com.example.myhome.util.MappingUtils;
 import com.example.myhome.util.UserRole;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,7 +46,7 @@ public class CashBoxController {
     private final OwnerService ownerService;
     private final OwnerRepository ownerRepository;
     private final AdminServiceImpl adminService;
-    private final ApartmentAccountService apartmentAccountService;
+    private final AccountService accountService;
     private final IncomeExpenseItemServiceImpl incomeExpenseItemService;
     private final IncomeExpenseRepository incomeExpenseRepository;
     private final AccountRepository accountRepository;
@@ -80,7 +81,7 @@ public class CashBoxController {
     @GetMapping("/show-incomes")
     public String showAccountIncomePage(@RequestParam Long account_id, Model model) {
         List<CashBox> cashBoxList;
-        cashBoxList = apartmentAccountService.findById(account_id).getTransactions();
+        cashBoxList = accountService.findAccountById(account_id).getTransactions();
 
         // -- перегоняю List в Page для того , чтобы в html-страничке ничего не ломалось --
         Pageable pageable = PageRequest.of(0, 5);
@@ -162,7 +163,7 @@ public class CashBoxController {
         List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
         model.addAttribute("owners", ownerDTOList);
 
-        List<ApartmentAccountDTO> apartmentAccountDTOS = apartmentAccountService.findDtoApartmentAccounts();
+        List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
         model.addAttribute("accounts", apartmentAccountDTOS);
 
         model.addAttribute("nextId", cashBoxService.getMaxId()+1);
@@ -171,7 +172,7 @@ public class CashBoxController {
 
         if(account_id != null) {
             System.out.println("if block, id is not null");
-            ApartmentAccount account = apartmentAccountService.findById(account_id);
+            ApartmentAccount account = accountService.findAccountById(account_id);
             cashBox.setApartmentAccount(account);
             System.out.println(account.getApartment().getOwner().toString());
         }
@@ -214,7 +215,7 @@ public class CashBoxController {
             List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
             model.addAttribute("owners", ownerDTOList);
 
-            List<ApartmentAccountDTO> apartmentAccountDTOS = apartmentAccountService.findDtoApartmentAccounts();
+            List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
             model.addAttribute("accounts", apartmentAccountDTOS);
 
         } else if (cashBox.getIncomeExpenseType().equals(IncomeExpenseType.EXPENSE)){
@@ -251,7 +252,7 @@ public class CashBoxController {
             List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
             model.addAttribute("owners", ownerDTOList);
 
-            List<ApartmentAccountDTO> apartmentAccountDTOS = apartmentAccountService.findDtoApartmentAccounts();
+            List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
             model.addAttribute("accounts", apartmentAccountDTOS);
 
         } else if (cashBox.getIncomeExpenseType().equals(IncomeExpenseType.EXPENSE)){
@@ -292,7 +293,7 @@ public class CashBoxController {
                 List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
                 model.addAttribute("owners", ownerDTOList);
 
-                List<ApartmentAccountDTO> apartmentAccountDTOS = apartmentAccountService.findDtoApartmentAccounts();
+                List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
                 model.addAttribute("accounts", apartmentAccountDTOS);
             } else if (cashBoxItem.getIncomeExpenseType().equals(IncomeExpenseType.EXPENSE)){
                 List<IncomeExpenseItems>expenseItemsList=incomeExpenseRepository.findAllByIncomeExpenseType(IncomeExpenseType.EXPENSE);
@@ -307,7 +308,7 @@ public class CashBoxController {
                 if (amount > 0) cashBoxItem.setAmount(amount * (-1));
             } else {
                 cashBoxItem.setOwner(ownerService.findById(ownerId));
-                ApartmentAccount account = apartmentAccountService.findById(accountId);
+                ApartmentAccount account = accountService.findAccountById(accountId);
                 if(!account.getTransactions().contains(cashBoxItem)) {
                     account.getTransactions().add(cashBoxItem);
                     account.addToBalance(cashBoxItem.getAmount());
