@@ -53,10 +53,10 @@
                             <h3 class="card-title"></h3>
                             <div class="card-tools">
                                 <div class="input-group input-group-sm">
-                                    <input type="text" class="form-control" placeholder="Поиск">
+                                        <input type="text" th:field="${filterForm.description}" id="description" class="form-control" placeholder="Поиск">
                                     <div class="input-group-append">
 <!--                        поиск-->
-                                        <div class="btn btn-primary">
+                                        <div class="btn btn-primary" onclick="changeFilterData()">
                                             <i class="fas fa-search"></i>
                                         </div>
                                     </div>
@@ -76,7 +76,7 @@
                                 </div>
                             </div>
                             <div class="table-responsive mailbox-messages">
-                                <table class="table table-hover table-striped" width="100%">
+                                <table class="table table-hover table-striped" id="messageTable" width="100%">
                                     <col style="width:10%">
                                     <col style="width:25%">
                                     <col style="width:45%">
@@ -90,22 +90,22 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="message : ${messages}" id="myList">
-                                        <td>
-                                            <div class="icheck-primary">
-                                                <input type="checkbox" th:value="${message.id}" name="check1" value=""
-                                                       id="check1">
-                                                <label for="check1"></label>
-                                            </div>
-                                        </td>
-                                        <td class="mailbox-name"><a style="display: block; color: black;" th:text="${message.receiversName}" th:href="@{{id}(id=${message.id})}"></a></td>
-                                        <!--                                            -->
-                                        <td class="mailbox-subject"><b th:text="${message.subject}+' - '"></b><a style="display: block; color: black;"
-                                                th:utext="${message.text}" th:href="@{{id}(id=${message.id})}"></a>
-                                        </td>
-                                        <td class="mailbox-date" th:text="${message.date}"
-                                            th:href="@{{id}(id=${message.id})}"></td>
-                                    </tr>
+<!--                                    <tr th:each="message : ${messages}" id="myList">-->
+<!--                                        <td>-->
+<!--                                            <div class="icheck-primary">-->
+<!--                                                <input type="checkbox" th:value="${message.id}" name="check1" value=""-->
+<!--                                                       id="check1">-->
+<!--                                                <label for="check1"></label>-->
+<!--                                            </div>-->
+<!--                                        </td>-->
+<!--                                        <td class="mailbox-name"><a style="display: block; color: black;" th:text="${message.receiversName}" th:href="@{{id}(id=${message.id})}"></a></td>-->
+<!--                                        &lt;!&ndash;                                            &ndash;&gt;-->
+<!--                                        <td class="mailbox-subject"><b th:text="${message.subject}+' - '"></b><a style="display: block; color: black;"-->
+<!--                                                th:utext="${message.text}" th:href="@{{id}(id=${message.id})}"></a>-->
+<!--                                        </td>-->
+<!--                                        <td class="mailbox-date" th:text="${message.date}"-->
+<!--                                            th:href="@{{id}(id=${message.id})}"></td>-->
+<!--                                    </tr>-->
                                     </tbody>
                                 </table>
                             </div>
@@ -125,6 +125,7 @@
                             </div>
                         </div>
                     </div>
+                    <nav aria-label="Page navigation " class="pagination_container"></nav>
                     <!-- /.card-body -->
                 </div>
                 <!-- /.card -->
@@ -194,12 +195,13 @@
     function deleteSelected() {
         var result = confirm("Подтвердите удаление");
            if (result) {
-               var url = "/messages/deleteSelected";
+               var url = "/admin/messages/deleteSelected";
                const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
                var ids = [];
                checkedBoxes.forEach((box) => {
                    ids.push(box.value);
                });
+               console.log('ids' +ids)
 
                $.ajax({
                    url: url,
@@ -207,15 +209,25 @@
                    traditional: true,
                    data: {checkboxList: ids},
                    success: function () {
-                       // Удаление выбранных элементов со страницы в случае успеха
-                       checkedBoxes.forEach((box) => {
-                           const row = box.parentNode.parentNode.parentNode;
-                           row.parentNode.removeChild(row);
-                       });
+                       drawTable();
                    }
                });
            }
     }
+</script>
+<script th:src="@{/dist/js/pagination.js}"></script>
+<script th:inline="javascript">
+
+    let globalTableName = 'messagesCabinet';
+    let totalPagesCount = [[${totalPagesCount}]];
+    let tableData;
+    console.log('pre draw table');
+    $(document).ready(function(){
+        console.log('pre draw table2');
+        drawTable();
+
+    });
+
 </script>
 
 

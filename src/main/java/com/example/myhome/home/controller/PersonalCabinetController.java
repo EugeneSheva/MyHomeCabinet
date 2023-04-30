@@ -10,10 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -69,6 +66,8 @@ public class PersonalCabinetController {
     private MessageRepository messageRepository;
     @Autowired
     private RepairRequestRepository repairRequestRepository;
+    @Autowired
+    private RepairRequestService repairRequestService;
     @Autowired
     private OwnerValidator ownerValidator;
 
@@ -255,11 +254,20 @@ public class PersonalCabinetController {
 
     }
 
+    @GetMapping("/get-requests")
+    public @ResponseBody Page<RepairRequestDTO> getRequests(@RequestParam Integer page,
+                                                            @RequestParam Integer size,
+                                                            @RequestParam String filters) throws JsonProcessingException, IllegalAccessException {
+        Pageable pageable = PageRequest.of(page-1, size);
+        System.out.println(repairRequestService.findAll(pageable));
+        return repairRequestService.findAll(pageable);
+    }
+
 
     @GetMapping("/user/view")
     public String getUserProfilePage(Model model, Principal principal) {
-        OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmailFull(principal.getName());
-        model.addAttribute("owner", ownerDTO);
+        Owner owner = ownerService.findByLogin(principal.getName());
+        model.addAttribute("owner", owner);
         return "cabinet/user_profile";
     }
 

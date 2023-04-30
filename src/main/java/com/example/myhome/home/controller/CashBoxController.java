@@ -372,8 +372,9 @@ public class CashBoxController {
                                                      @RequestParam String filters) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);
-        return cashBoxService.findAllBySpecification(form, page, size);
+        return cashBoxService.findAllBySpecification2(form, page, size);
     }
+
 
 
 }

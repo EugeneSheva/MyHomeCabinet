@@ -2,6 +2,7 @@ package com.example.myhome.home.repository;
 
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Message;
+import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.specification.ApartmentSpecification;
 import com.example.myhome.home.specification.MessageSpecification;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ public interface MessageRepository extends JpaRepository<Message, Long>, JpaSpec
     @Query("SELECT m FROM Message m JOIN m.receivers r JOIN r.messages rm WHERE rm.id = :ownerId GROUP BY m.id")
     List<Message> findAllMessagesByOwnerId(@Param("ownerId") Long ownerId);
 
+    Page<Message> findAll(Pageable pageable);
     default Page<Message> findByFilters(String text, Pageable pageable) {
         Specification<Message> spec = Specification.where(null);
 

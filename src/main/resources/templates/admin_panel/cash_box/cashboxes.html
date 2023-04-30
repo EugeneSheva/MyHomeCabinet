@@ -143,7 +143,7 @@
                     </div>
                 </div>
                 <div class="card-body " style="padding: 0;">
-                    <form method="POST" id="1" th:action="@{/admin/cashbox/filter}" th:object="${filterForm}"
+                    <div  th:object="${filterForm}"
                           enctype="multipart/form-data">
                         <nav aria-label="Page navigation " class="pagination_container mt-3"></nav>
                         <table id="cashboxTable" class="table table-bordered table-hover table-striped linkedRow"
@@ -171,25 +171,23 @@
                             </tr>
                             <tr>
                                 <td style="padding: 10px">
-                                    <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" autocomplete="off" th:field="*{id}" class="my_filters" data-name="id" type="text">
+                                    <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" autocomplete="off" th:field="*{id}" class="my_filters" id="id" type="text">
                                 </td>
-
                                 <th style="border-bottom:none">
-                                    <div class="form-group" style="margin: 0; margin-top: -50px">
-                                        <div class="input-group">
+                                    <div class="form-group" style="margin: 0; margin-top: -50px; margin-bottom: 12px">
+                                        <div class="input-group" style="height: 42px">
                                             <div class="input-group-prepend">
                                               <span class="input-group-text">
                                                 <i class="far fa-calendar-alt"></i>
                                               </span>
                                             </div>
-                                            <input type="text" autocomplete="off" class="form-control float-right" id="reservation"
+                                            <input type="text" style="height: 42px" autocomplete="off" class="form-control float-right my_filters" id="date"
                                                    name="date">
                                         </div>
                                     </div>
                                 </th>
-
-                                <th style="border-bottom:none"><select autocomplete="off" class="form-select" id="isCompleted" name="isCompleted">
-                                    <option th:selected="${filterForm.debtSting == null}" value="-"></option>
+                                <th style="border-bottom:none"><select autocomplete="off" th:field="*{isCompleted}" class="form-select my_filters" id="isCompleted" name="isCompleted">
+                                    <option th:selected="${filterForm.isCompleted == null}" value="-"></option>
                                     <option value="сompleted"
                                             th:selected="${#strings.containsIgnoreCase(('сompleted'),((filterForm.isCompleted != null) ? (filterForm.isCompleted ): ('emp') ))}"
                                     >Проведен
@@ -200,7 +198,7 @@
                                     </option>
                                 </select></th>
 
-                                <th style="border-bottom:none"><select autocomplete="off" class="form-select" id="incomeExpenseItem" name="incomeExpenseItem">
+                                <th style="border-bottom:none"><select autocomplete="off" class="form-select my_filters" id="incomeExpenseItem" name="incomeExpenseItem">
                                     <option value="-"
                                             th:selected="${filterForm.incomeExpenseItem == null}"></option>
                                     <option th:each="incomeExpenseItem : ${incomeExpenseItems}"
@@ -210,27 +208,16 @@
                                 </select></th>
 
                                 <th style="border-bottom:none">
-<!--                                    <select class="form-control select2bs4" id="select2" name="ownerId" data-ajax="true" style="width: 100%;">-->
-<!--                                        <option value="0" th:selected="${filterForm.ownerId == null}"></option>-->
-<!--                                        <option th:each="ownerId : ${owners}"-->
-<!--                                                th:text="${ownerId.first_name}+ ' '+${ownerId.last_name}+' '+${ownerId.fathers_name}"-->
-<!--                                                th:value="${ownerId.id}"-->
-<!--                                                th:selected="${#strings.containsIgnoreCase((ownerId.id),((filterForm.ownerId != null) ? (filterForm.ownerId ): ('emp') ))}"-->
-<!--                                        ></option>-->
-<!--                                    </select>-->
-
-                                    <select autocomplete="off" id="mySelect2" name="owner">
+                                    <select autocomplete="off" id="ownerId" class="my_filters" name="owner">
                                         <option th:if="${filterForm.owner == null}" value="" selected="selected">Выберите пользователя</option>
                                         <option th:if="${filterForm.owner != null}" th:value="${filterForm.ownerEntity.id}" th:text="${filterForm.ownerEntity.getFullName()}"></option>
-
                                     </select>
                                 </th>
-
                                 <td style="padding: 10px">
-                                    <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" autocomplete="off" th:field="*{account}" class="my_filters" data-name="id" type="text">
+                                    <input style="width: 100%; padding-block: 10px; border: 0.5px solid silver;" autocomplete="off" th:field="*{accountId}" class="my_filters" id="accountId" data-name="id" type="text">
                                 </td>
 
-                                <th style="border-bottom:none"><select autocomplete="off" class="form-select" id="incomeExpenseType" name="incomeExpenseType">
+                                <th style="border-bottom:none"><select autocomplete="off" class="form-select my_filters" id="incomeExpenseType" name="incomeExpenseType">
                                     <option th:selected="${filterForm.incomeExpenseType == null}" value="-"></option>
                                     <option value="income"
                                             th:selected="${#strings.containsIgnoreCase(('income'),((filterForm.incomeExpenseType != null) ? (filterForm.incomeExpenseType ): ('emp') ))}"
@@ -251,7 +238,7 @@
                             </tfoot>
                         </table>
                         <nav aria-label="Page navigation " class="pagination_container"></nav>
-                    </form>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -335,8 +322,6 @@
                 format: 'MM/DD/YYYY hh:mm A'
             }
         })
-
-
     })
 </script>
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
@@ -355,37 +340,37 @@
         console.log(2)
     }
 </script>
-<script>
-    let timeoutId;
+<!--<script>-->
+<!--    let timeoutId;-->
 
-    function handleFormSubmit() {
-        const form = document.getElementById('1');
-        form.submit();
-        console.log("Форма отправлена!");
-    }
+<!--    function handleFormSubmit() {-->
+<!--        const form = document.getElementById('1');-->
+<!--        form.submit();-->
+<!--        console.log("Форма отправлена!");-->
+<!--    }-->
 
-    function handleInputChange() {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(handleFormSubmit, 3000);
-    }
+<!--    function handleInputChange() {-->
+<!--        clearTimeout(timeoutId);-->
+<!--        timeoutId = setTimeout(handleFormSubmit, 3000);-->
+<!--    }-->
 
-    // event listener on field
-    const input = document.querySelector('input[type="text"]');
-    input.addEventListener('input', handleInputChange);
+<!--    // event listener on field-->
+<!--    const input = document.querySelector('input[type="text"]');-->
+<!--    input.addEventListener('input', handleInputChange);-->
 
-    // event on Enter
-    document.addEventListener('keydown', function (event) {
-        if (event.key === "Enter") {
-            handleFormSubmit();
-        }
-    });
-</script>
+<!--    // event on Enter-->
+<!--    document.addEventListener('keydown', function (event) {-->
+<!--        if (event.key === "Enter") {-->
+<!--            handleFormSubmit();-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
 <script>
     $(document).ready(function() {
 
         $("#isCompleted, #incomeExpenseItem, #incomeExpenseType").select2({placeholder: "Выберите...", minimumResultsForSearch: Infinity});
 
-        $('#mySelect2').select2({
+        $('#ownerId').select2({
             ajax: {
                 url: '/admin/cashbox/getUsers',
                 // dataType: 'json',

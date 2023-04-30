@@ -19,6 +19,7 @@ function gatherFilters() {
 
     let active = $("#active").val();
     let account = $("#account").val();
+    let accountId = $("#accountId").val();
     let address = $("#address").val();
     let apartment_number = $("#apartment").val();
     let building_id = $("#building").val();
@@ -44,6 +45,9 @@ function gatherFilters() {
     let role = $("#role").val();
     let ownerName = $("#ownerName").val();
     let buildingName = $("#buildingName").val();
+    let isCompleted = $("#isCompleted").val();
+    let incomeExpenseItem = $("#incomeExpenseItem").val();
+    let incomeExpenseType = $("#incomeExpenseType").val();
 
     let filterForm = {
         active: (active != null) ? active : null,
@@ -71,8 +75,12 @@ function gatherFilters() {
         number: (number) ? number : null,
         floor: (floor) ? floor: null,
         account : (account) ? account : null,
+        accountId : (accountId) ? accountId : null,
         ownerName : (ownerName) ? ownerName : null,
-        buildingName : (buildingName) ? buildingName : null
+        buildingName : (buildingName) ? buildingName : null,
+        isCompleted : (isCompleted) ? isCompleted : null,
+        incomeExpenseItem : (incomeExpenseItem) ? incomeExpenseItem : null,
+        incomeExpenseType : (incomeExpenseType) ? incomeExpenseType : null
     };
 
     console.log('gathered filters: ');
@@ -86,6 +94,7 @@ function setFilters(filters) {
     if(filters === null) {
         $("#address").val(null);
         $("#account").val(null);
+        $("#accountId").val(null);
         $("#building").val('').trigger('change');
         $("#service").val('').trigger('change');
         $("#apartment").val(null);
@@ -111,11 +120,15 @@ function setFilters(filters) {
         $("#active").val('').trigger('change');
         $("#ownerName").val(null);
         $("#buildingName").val(null);
+        $("#isCompleted").val('-').trigger('change');
+        $("#incomeExpenseItem").val('-').trigger('change');
+        $("#incomeExpenseType").val('-').trigger('change');
         return;
     }
     else {
         $("#address").val(filters.address);
         $("#account").val(filters.account);
+        $("#accountId").val(filters.accountId);
         $("#date").val(filters.date);
         $("#debt").val(filters.debt);
         $("#debtSting").val(filters.debtSting);
@@ -141,6 +154,10 @@ function setFilters(filters) {
         $("#active").val(filters.active);
         $("#ownerName").val(filters.ownerName);
         $("#buildingName").val(filters.buildingName);
+        $("#isCompleted").val(filters.isCompleted);
+        $("#incomeExpenseItem").val(filters.incomeExpenseItem);
+        $("#incomeExpenseType").val(filters.incomeExpenseType);
+
     }
 
 }
@@ -262,7 +279,7 @@ function drawInvoicesTable(){
     drawPagination();
 
 }
-function drawMessagesTable(){
+function drawMessagesTableCabinet(){
     console.log('msg draw table start');
     let pageFiltersString = JSON.stringify(gatherFilters());
     let data = getTableData('/cabinet/get-messages', currentPageNumber, currentPageSize, pageFiltersString);
@@ -281,7 +298,6 @@ function drawMessagesTable(){
         let minutes = parseInt(dateParts[4]);
         let date = new Date(year, month, day, hours, minutes);
         let formattedDate = ("0" + date.getDate()).slice(-2) + "." + ("0" + (date.getMonth() + 1)).slice(-2) + "." + date.getFullYear() + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
-        console.log('msg success');
 
         let newTableRow = document.createElement('tr');
         newTableRow.style.cursor = 'pointer';
@@ -316,7 +332,64 @@ function drawMessagesTable(){
 
 }
 
-function drawInvoicesInCabinetTable(){
+function drawMessagesTableAdmin() {
+    console.log('msg draw table start');
+    let pageFiltersString = JSON.stringify(gatherFilters());
+    let data = getTableData('/admin/messages/get-messages', currentPageNumber, currentPageSize, pageFiltersString);
+    console.log('msg start' + data);
+    let $invoicesTableBody = $("#messageTable tbody");
+    $invoicesTableBody.html('');
+
+    for (const msg of data.content) {
+
+        let dateString = msg.date.toString();
+        let dateParts = dateString.split(",");
+        let year = parseInt(dateParts[0]);
+        let month = parseInt(dateParts[1]) - 1;
+        let day = parseInt(dateParts[2]);
+        let hours = parseInt(dateParts[3]);
+        let minutes = parseInt(dateParts[4]);
+        let date = new Date(year, month, day, hours, minutes);
+        let formattedDate = ("0" + date.getDate()).slice(-2) + "." + ("0" + (date.getMonth() + 1)).slice(-2) + "." + date.getFullYear() + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+        console.log('msg success');
+
+        let newTableRow = document.createElement('tr');
+        newTableRow.style.cursor = 'pointer';
+        newTableRow.class = 'invoice_row';
+        var index = msg.text.indexOf("<br>");
+        var text = msg.text.substring(3, index);
+        console.log("text" + text);
+        var newText = text.substring(0, 70);
+        if (newText.length == 70) {
+            newText += '...'
+        }
+        console.log("newText" + newText)
+        newTableRow.innerHTML =
+            '<td><input type="checkbox" name="" id="" value="' + msg.id + '"></td>' +
+            '<td>' + msg.receiversName + '</td>' +
+            '<td><strong>' + msg.subject + '</strong> - ' + newText + '</td>' +
+            '<td>' + formattedDate + '</td>';
+        let row_children = newTableRow.children;
+        for (let j = 1; j < row_children.length - 1; j++) {
+            row_children[j].addEventListener('click', function () {
+                window.location.href = '/cabinet/messages/' + msg.id;
+            });
+        }
+        console.log('msg drawed');
+        $invoicesTableBody.append(newTableRow);
+    }
+    if (data.content.length === 0) {
+        let newTableRow = document.createElement('tr');
+        newTableRow.innerHTML = '<td colspan=10>Ничего не найдено...</td>';
+        $invoicesTableBody.append(newTableRow);
+    }
+
+    drawPagination();
+
+}
+
+
+    function drawInvoicesInCabinetTable(){
 
     let pageFiltersString = JSON.stringify(gatherFilters());
     let data = getTableData('/cabinet/get-invoices-cabinet', currentPageNumber, currentPageSize, pageFiltersString);
@@ -483,6 +556,48 @@ function drawRequestsTable() {
     }
     drawPagination();
 }
+
+function drawRequestsTableCabinet() {
+    console.log('2')
+    let pageFiltersString = '';
+    console.log('3')
+    let data = getTableData('/cabinet/get-requests', currentPageNumber, currentPageSize, pageFiltersString);
+    console.log(data);
+    let $requestsTable = $("#requestsTable tbody");
+    $requestsTable.html('');
+    for(const request of data.content) {
+        let date = new Date(request.best_time.split('T')[0]);
+        let day = date.getDate().toString().padStart(2, '0'); // получаем день месяца, преобразуем в строку и добавляем нуль в начало, если число состоит из одной цифры
+        let month = (date.getMonth() + 1).toString().padStart(2, '0'); // получаем номер месяца (от 0 до 11), прибавляем 1, преобразуем в строку и добавляем нуль в начало, если число состоит из одной цифры
+        let year = date.getFullYear().toString(); // получаем год в виде четырехзначного числа
+        let hours = date.getHours().toString().padStart(2, '0'); // получаем часы, преобразуем в строку и добавляем нуль в начало, если число состоит из одной цифры
+        let minutes = date.getMinutes().toString().padStart(2, '0'); // получаем минуты, преобразуем в строку и добавляем нуль в начало, если число состоит из одной цифры
+        let formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;
+        let newTableRow = document.createElement('tr');
+        newTableRow.style.cursor = 'pointer';
+        newTableRow.class = 'request_row';
+
+        newTableRow.innerHTML =   '<td>' + request.id + '</td>' +
+            '<td>' + request.master_type + '</td>' +
+            '<td style="max-width: 200px; text-overflow: ellipsis; white-space: nowrap; overflow:hidden">' + request.description + '</td>' +
+            '<td>' + formattedDate + '</td>' +
+            '<td><small class="label ' + ((request.status === 'Новое') ? 'label-primary' : (request.status === 'В работе') ? 'label-warning' : 'label-success') + '">' + request.status + '</small></td>' +
+            '<td>' +
+            '<div class="btn-group pull-right">' +
+            '<a class="btn btn-default btn-sm" href="/cabinet/requests/delete/' + request.id + '"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
+            '</div>' +
+            '</td>';
+
+        $requestsTable.append(newTableRow);
+    }
+    if(data.content.length === 0) {
+        let newTableRow = document.createElement('tr');
+        newTableRow.innerHTML = '<td colspan=10>Ничего не найдено...</td>';
+        $requestsTable.append(newTableRow);
+    }
+    drawPagination();
+}
+
 function drawOwnersTable(){
     let pageFiltersString = JSON.stringify(gatherFilters());
     let data = getTableData('/admin/owners/get-owners', currentPageNumber, currentPageSize, pageFiltersString);
@@ -549,7 +664,7 @@ function drawBuildingsTable() {
                                   '<td>' +
                                       '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
                                           '<a href="edit/' + building.id +'" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>' +
-                                          '<a href="delete/' + building.id +'" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>' +
+                                          '<a href="delete/' + building.id +'" class="btn btn-default btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></i></a>' +
                                       '</div>' +
                                   '</td>';
         let row_children = newTableRow.children;
@@ -577,21 +692,32 @@ function drawTransactionsTable() {
     let $cashboxTable = $("#cashboxTable tbody");
     $cashboxTable.html('');
     for(const cashbox of data.content) {
+
+        let dateString = cashbox.date.toString();
+        let dateParts = dateString.split(",");
+        let year = parseInt(dateParts[0]);
+        let month = parseInt(dateParts[1]) - 1;
+        let day = parseInt(dateParts[2]);
+        let date = new Date(year, month, day);
+        let formattedDate = ("0" + date.getDate()).slice(-2) + "." + ("0" + (date.getMonth() + 1)).slice(-2) + "." + date.getFullYear();
+        console.log('msg success');
+
+
         let newTableRow = document.createElement('tr');
         newTableRow.style.cursor = 'pointer';
         newTableRow.class = 'cashbox_row';
         newTableRow.innerHTML =   '<td>' + cashbox.id + '</td>' +
-                                  '<td>' + cashbox.date + '</td>' +
+                                  '<td>' + formattedDate + '</td>' +
                                   '<td>' + ((cashbox.completed) ? 'Проведен' : 'Не проведен') + '</td>' +
-                                  '<td>' + cashbox.transactionItemName + '</td>' +
-                                  '<td>' + cashbox.ownerFullName + '</td>' +
-                                  '<td>' + cashbox.accountNumber + '</td>' +
-                                  '<td>' + cashbox.transactionType + '</td>' +
+                                  '<td>' + cashbox.incomeExpenseItems + '</td>' +
+                                  '<td>' + ((cashbox.owner!=null) ? cashbox.owner : 'не указано') + '</td>' +
+                                  '<td>' + ((cashbox.apartmentAccount!=null) ? cashbox.apartmentAccount.toString().padStart(10, '0') : 'не указано') + '</td>' +
+                                  '<td>' + ((cashbox.incomeExpenseType == 'INCOME') ? 'Приход' : 'Расход') + '</td>' +
                                   '<td>' + cashbox.amount + '</td>' +
                                   '<td>' +
                                       '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
                                           '<a href="/admin/cashbox/edit/' + cashbox.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></a>' +
-                                          '<a href="/admin/cashbox/delete/' + cashbox.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></a>' +
+                                          '<a href="/admin/cashbox/delete/' + cashbox.id + '" class="btn btn-default btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></a>' +
                                       '</div>' +
                                   '</td>';
         let row_children = newTableRow.children;
@@ -622,11 +748,12 @@ function drawTable() {
     else if(tableType === 'accounts') drawAccountsTable();
     else if(tableType === 'meters') drawMetersTable();
     else if(tableType === 'requests') drawRequestsTable();
+    else if(tableType === 'requestsCabinet') drawRequestsTableCabinet();
     else if(tableType === 'owners') drawOwnersTable();
     else if(tableType === 'buildings') drawBuildingsTable();
     else if(tableType === 'transactions') drawTransactionsTable();
-    else if(tableType === 'messages') drawMessagesTable();
-
+    else if(tableType === 'messagesCabinet') drawMessagesTableCabinet();
+    else if(tableType === 'messagesAdmin') drawMessagesTableAdmin();
 }
 //Функции, рисующие таблицы в зависимости от выбранной страницы
 

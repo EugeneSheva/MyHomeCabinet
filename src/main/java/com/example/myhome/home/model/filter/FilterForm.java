@@ -52,10 +52,11 @@ public class FilterForm {
     private String buildingName;
     private String debtSting;
     private String isCompleted;
-    private Long incomeExpenseItem;
+    private String incomeExpenseItem;
     private String incomeExpenseType;
 
     private String account;
+    private Long accountId;
 
     public FilterForm() {
     }

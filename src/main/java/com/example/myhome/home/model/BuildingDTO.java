@@ -21,6 +21,12 @@ public class BuildingDTO {
     private String address;
     private List<String>floors = new ArrayList<>();
 
+    private String img1;
+    private String img2;
+    private String img3;
+    private String img4;
+    private String img5;
+
     public BuildingDTO() {
     }
 
@@ -28,6 +34,15 @@ public class BuildingDTO {
         this.id = id;
         this.name = name;
         this.text = name;
+    }
+
+    public BuildingDTO(Long id, String name, String text, List<String> sections, String address, List<String> floors) {
+        this.id = id;
+        this.name = name;
+        this.text = text;
+        this.sections = sections;
+        this.address = address;
+        this.floors = floors;
     }
 
     public BuildingDTO(Long id, String name, List<String> sections, String address, List<String> floors) {

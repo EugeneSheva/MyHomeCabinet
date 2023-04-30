@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,62 +33,82 @@ public class CashBoxService {
     public Page<CashBox> findAll(Pageable pageable) { return cashBoxRepository.findAll(pageable); }
     public CashBox save(CashBox cashBox) { return cashBoxRepository.save(cashBox); }
 
-    public Page<CashBoxDTO> findAllBySpecification(FilterForm filters, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page-1, size);
-        Page<CashBox> initialPage = cashBoxRepository.findAll(buildSpecFromFilters(filters), pageable);
+//    public Page<CashBoxDTO> findAllBySpecification(FilterForm filters, Integer page, Integer size) {
+//        Pageable pageable = PageRequest.of(page-1, size);
+//        Page<CashBox> initialPage = cashBoxRepository.findAll(buildSpecFromFilters(filters), pageable);
+//
+//        List<CashBoxDTO> listDTO = initialPage.getContent().stream()
+//                .map(cashbox -> {
+//                    String transactionItemName = (cashbox.getIncomeExpenseItems() != null) ? cashbox.getIncomeExpenseItems().getName() : "";
+//                    String ownerFullName = (cashbox.getOwner() != null) ? cashbox.getOwner().getFullName() : "";
+//                    String accountNumber = (cashbox.getApartmentAccount() != null) ? String.format("%010d", cashbox.getApartmentAccount().getId()) : "";
+//                    String transactionType = (cashbox.getIncomeExpenseType() != null) ? cashbox.getIncomeExpenseType().getName() : "";
+//                    return CashBoxDTO.builder()
+//                            .id(cashbox.getId())
+//                            .date(cashbox.getDate())
+//                            .completed(cashbox.getCompleted())
+//                            .transactionItemName(transactionItemName)
+//                            .ownerFullName(ownerFullName)
+//                            .accountNumber(accountNumber)
+//                            .transactionType(transactionType)
+//                            .amount(cashbox.getAmount())
+//                            .build();
+//                })
+//                .collect(Collectors.toList());
+//
+//        return new PageImpl<>(listDTO, pageable, initialPage.getTotalElements());
+//    }
 
-        List<CashBoxDTO> listDTO = initialPage.getContent().stream()
-                .map(cashbox -> {
-                    String transactionItemName = (cashbox.getIncomeExpenseItems() != null) ? cashbox.getIncomeExpenseItems().getName() : "";
-                    String ownerFullName = (cashbox.getOwner() != null) ? cashbox.getOwner().getFullName() : "";
-                    String accountNumber = (cashbox.getApartmentAccount() != null) ? String.format("%010d", cashbox.getApartmentAccount().getId()) : "";
-                    String transactionType = (cashbox.getIncomeExpenseType() != null) ? cashbox.getIncomeExpenseType().getName() : "";
-                    return CashBoxDTO.builder()
-                            .id(cashbox.getId())
-                            .date(cashbox.getDate())
-                            .completed(cashbox.getCompleted())
-                            .transactionItemName(transactionItemName)
-                            .ownerFullName(ownerFullName)
-                            .accountNumber(accountNumber)
-                            .transactionType(transactionType)
-                            .amount(cashbox.getAmount())
-                            .build();
-                })
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(listDTO, pageable, initialPage.getTotalElements());
+//    private Specification<CashBox> buildSpecFromFilters(FilterForm filters) {
+//        Long id = filters.getId();
+//        String date = filters.getDate();
+//        Boolean completed = filters.getCompleted();
+//        Long transactionItemID = filters.getIncomeExpenseItem();
+//        Long ownerID = filters.getOwner();
+//        Long accountID = (filters.getAccount() != null) ? Long.parseLong(filters.getAccount()) : null;
+//        IncomeExpenseType transactionType = (filters.getIncomeExpenseType() != null) ? IncomeExpenseType.valueOf(filters.getIncomeExpenseType()) : null;
+//
+//        LocalDate from = null, to = null;
+//
+//        if(date != null && !date.isEmpty()) {
+//            String date_from = date.split(" - ")[0];
+//            from =
+//                    LocalDate.parse(date_from);
+//            String date_to = date.split(" - ")[1];
+//            to =
+//                    LocalDate.parse(date_to);
+//        }
+//
+//        return Specification.where(CashBoxSpecification.hasId(id)
+//                .and(CashBoxSpecification.hasDatesBetween(from, to))
+//                .and(CashBoxSpecification.isCompletedContains(completed))
+//                .and(CashBoxSpecification.hasTransactionItemID(transactionItemID))
+//                .and(CashBoxSpecification.hasOwnerID(ownerID))
+//                .and(CashBoxSpecification.hasAccountID(accountID))
+//                .and(CashBoxSpecification.hasTransactionType(transactionType)));
+//
+//    }
+public Page<CashBoxDTO> findAllBySpecification2(FilterForm filters, Integer page, Integer size) {
+    Pageable pageable = PageRequest.of(page-1, size);
+    List<CashBoxDTO> listDTO = new ArrayList<>();
+    System.out.println("filters" +filters);
+    System.out.println("date" +filters.getDate());
+    LocalDate startDate = null;
+    LocalDate endDate = null;
+    if (filters.getDate() != null) {
+        String[] dateArray = filters.getDate().split(" - ");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        startDate = LocalDate.parse(dateArray[0], formatter);
+        endDate = LocalDate.parse(dateArray[1], formatter);
     }
+    Page<CashBox> cashBoxList = cashBoxRepository.findByFilters(filters.getId(),startDate, endDate, getIsCompleteFromString(filters.getIsCompleted()), filters.getIncomeExpenseItem(), filters.getOwner(), filters.getAccountId(), getIncomeExpenseTypeFromString(filters.getIncomeExpenseType()), pageable);
 
-    private Specification<CashBox> buildSpecFromFilters(FilterForm filters) {
-        Long id = filters.getId();
-        String date = filters.getDate();
-        Boolean completed = filters.getCompleted();
-        Long transactionItemID = filters.getIncomeExpenseItem();
-        Long ownerID = filters.getOwner();
-        Long accountID = (filters.getAccount() != null) ? Long.parseLong(filters.getAccount()) : null;
-        IncomeExpenseType transactionType = (filters.getIncomeExpenseType() != null) ? IncomeExpenseType.valueOf(filters.getIncomeExpenseType()) : null;
-
-        LocalDate from = null, to = null;
-
-        if(date != null && !date.isEmpty()) {
-            String date_from = date.split(" - ")[0];
-            from =
-                    LocalDate.parse(date_from);
-            String date_to = date.split(" - ")[1];
-            to =
-                    LocalDate.parse(date_to);
-        }
-
-        return Specification.where(CashBoxSpecification.hasId(id)
-                .and(CashBoxSpecification.hasDatesBetween(from, to))
-                .and(CashBoxSpecification.isCompletedContains(completed))
-                .and(CashBoxSpecification.hasTransactionItemID(transactionItemID))
-                .and(CashBoxSpecification.hasOwnerID(ownerID))
-                .and(CashBoxSpecification.hasAccountID(accountID))
-                .and(CashBoxSpecification.hasTransactionType(transactionType)));
-
+    for (CashBox cashBox : cashBoxList) {
+        listDTO.add(new CashBoxDTO(cashBox.getId(), cashBox.getDate(), cashBox.getCompleted(), cashBox.getIncomeExpenseType(), cashBox.getOwner()!=null ? cashBox.getOwner().getFullName() : null,
+                cashBox.getApartmentAccount()!=null ?  cashBox.getApartmentAccount().getId() : null, cashBox.getIncomeExpenseItems().getName(), cashBox.getManager().getFullName(), cashBox.getAmount(), cashBox.getDescription()));
     }
-
+    return new PageImpl<>(listDTO, pageable, cashBoxList.getTotalElements());
+}
     public void deleteById(Long id) { cashBoxRepository.deleteById(id); }
 
     public Long getMaxId() {return cashBoxRepository.getMaxId().orElse(0L);}
