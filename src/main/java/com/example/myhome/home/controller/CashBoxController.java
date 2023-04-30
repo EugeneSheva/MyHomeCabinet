@@ -1,4 +1,9 @@
 package com.example.myhome.home.controller;
+import com.example.myhome.home.controller.socket.WebsocketController;
+import com.example.myhome.home.dto.AdminDTO;
+import com.example.myhome.home.dto.ApartmentAccountDTO;
+import com.example.myhome.home.dto.CashBoxDTO;
+import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.AccountRepository;
@@ -6,15 +11,17 @@ import com.example.myhome.home.repository.CashBoxRepository;
 import com.example.myhome.home.repository.IncomeExpenseRepository;
 import com.example.myhome.home.repository.OwnerRepository;
 import com.example.myhome.home.service.*;
+import com.example.myhome.home.service.impl.AccountServiceImpl;
+import com.example.myhome.home.service.impl.AdminServiceImpl;
+import com.example.myhome.home.service.impl.IncomeExpenseItemServiceImpl;
 import com.example.myhome.home.validator.CashBoxtValidator;
+import com.example.myhome.util.MappingUtils;
 import com.example.myhome.util.UserRole;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -38,14 +45,16 @@ public class CashBoxController {
     private final CashBoxService cashBoxService;
     private final OwnerService ownerService;
     private final OwnerRepository ownerRepository;
-    private final AdminService adminService;
-    private final ApartmentAccountService apartmentAccountService;
-    private final IncomeExpenseItemService incomeExpenseItemService;
+    private final AdminServiceImpl adminService;
+    private final AccountService accountService;
+    private final IncomeExpenseItemServiceImpl incomeExpenseItemService;
     private final IncomeExpenseRepository incomeExpenseRepository;
     private final AccountRepository accountRepository;
-    private final AccountService accountService;
+    private final AccountServiceImpl accountServiceImpl;
     private final CashBoxRepository cashBoxRepository;
     private final CashBoxtValidator cashBoxtValidator;
+
+    private final WebsocketController websocketController;
 
 
     @GetMapping
@@ -53,8 +62,8 @@ public class CashBoxController {
         Page<CashBox> cashBoxList = cashBoxService.findAll(pageable);
         model.addAttribute("cashBoxList", cashBoxList);
         model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount().orElse(0.0));
-        model.addAttribute("accountBalance", accountService.getSumOfAccountBalances());
-        model.addAttribute("sumDebt", accountService.getSumOfAccountDebts());
+        model.addAttribute("accountBalance", accountServiceImpl.getSumOfAccountBalances());
+        model.addAttribute("sumDebt", accountServiceImpl.getSumOfAccountDebts());
         model.addAttribute("filterForm", new FilterForm());
         int pageNumber = 0;
         int pageSize = 2;
@@ -72,7 +81,7 @@ public class CashBoxController {
     @GetMapping("/show-incomes")
     public String showAccountIncomePage(@RequestParam Long account_id, Model model) {
         List<CashBox> cashBoxList;
-        cashBoxList = apartmentAccountService.findById(account_id).getTransactions();
+        cashBoxList = accountService.findAccountById(account_id).getTransactions();
 
         // -- перегоняю List в Page для того , чтобы в html-страничке ничего не ломалось --
         Pageable pageable = PageRequest.of(0, 5);
@@ -83,8 +92,8 @@ public class CashBoxController {
 
         model.addAttribute("cashBoxList", cashBoxPage);
         model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount().orElse(0.0));
-        model.addAttribute("accountBalance", accountService.getSumOfAccountBalances());
-        model.addAttribute("sumDebt", accountService.getSumOfAccountDebts());
+        model.addAttribute("accountBalance", accountServiceImpl.getSumOfAccountBalances());
+        model.addAttribute("sumDebt", accountServiceImpl.getSumOfAccountDebts());
         model.addAttribute("filterForm", new FilterForm());
         int pageNumber = 0;
         int pageSize = 2;
@@ -154,7 +163,7 @@ public class CashBoxController {
         List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
         model.addAttribute("owners", ownerDTOList);
 
-        List<ApartmentAccountDTO> apartmentAccountDTOS = apartmentAccountService.findDtoApartmentAccounts();
+        List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
         model.addAttribute("accounts", apartmentAccountDTOS);
 
         model.addAttribute("nextId", cashBoxService.getMaxId()+1);
@@ -163,7 +172,7 @@ public class CashBoxController {
 
         if(account_id != null) {
             System.out.println("if block, id is not null");
-            ApartmentAccount account = apartmentAccountService.findById(account_id);
+            ApartmentAccount account = accountService.findAccountById(account_id);
             cashBox.setApartmentAccount(account);
             System.out.println(account.getApartment().getOwner().toString());
         }
@@ -206,7 +215,7 @@ public class CashBoxController {
             List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
             model.addAttribute("owners", ownerDTOList);
 
-            List<ApartmentAccountDTO> apartmentAccountDTOS = apartmentAccountService.findDtoApartmentAccounts();
+            List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
             model.addAttribute("accounts", apartmentAccountDTOS);
 
         } else if (cashBox.getIncomeExpenseType().equals(IncomeExpenseType.EXPENSE)){
@@ -243,7 +252,7 @@ public class CashBoxController {
             List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
             model.addAttribute("owners", ownerDTOList);
 
-            List<ApartmentAccountDTO> apartmentAccountDTOS = apartmentAccountService.findDtoApartmentAccounts();
+            List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
             model.addAttribute("accounts", apartmentAccountDTOS);
 
         } else if (cashBox.getIncomeExpenseType().equals(IncomeExpenseType.EXPENSE)){
@@ -284,7 +293,7 @@ public class CashBoxController {
                 List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
                 model.addAttribute("owners", ownerDTOList);
 
-                List<ApartmentAccountDTO> apartmentAccountDTOS = apartmentAccountService.findDtoApartmentAccounts();
+                List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
                 model.addAttribute("accounts", apartmentAccountDTOS);
             } else if (cashBoxItem.getIncomeExpenseType().equals(IncomeExpenseType.EXPENSE)){
                 List<IncomeExpenseItems>expenseItemsList=incomeExpenseRepository.findAllByIncomeExpenseType(IncomeExpenseType.EXPENSE);
@@ -299,7 +308,7 @@ public class CashBoxController {
                 if (amount > 0) cashBoxItem.setAmount(amount * (-1));
             } else {
                 cashBoxItem.setOwner(ownerService.findById(ownerId));
-                ApartmentAccount account = apartmentAccountService.findById(accountId);
+                ApartmentAccount account = accountService.findAccountById(accountId);
                 if(!account.getTransactions().contains(cashBoxItem)) {
                     account.getTransactions().add(cashBoxItem);
                     account.addToBalance(cashBoxItem.getAmount());
@@ -321,6 +330,9 @@ public class CashBoxController {
             return "admin_panel/cash_box/cashbox_edit";
         }
         cashBoxService.save(cashBoxItem);
+
+        websocketController.sendCashboxItem(cashBoxItem);
+
         return "redirect:/admin/cashbox";
     }
 
@@ -332,6 +344,9 @@ public class CashBoxController {
             return "admin_panel/cash_box/cashbox_edit";
         }
         cashBoxService.save(cashBoxItem);
+
+        websocketController.sendCashboxItem(cashBoxItem);
+
         return "redirect:/admin/cashbox";
     }
 
@@ -342,6 +357,9 @@ public class CashBoxController {
             return "admin_panel/cash_box/cashbox_edit";
         }
         cashBoxService.save(cashBoxItem);
+
+        websocketController.sendCashboxItem(cashBoxItem);
+
         return "redirect:/admin/cashbox";
     }
 
@@ -373,6 +391,21 @@ public class CashBoxController {
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);
         return cashBoxService.findAllBySpecification2(form, page, size);
+    }
+
+    @GetMapping("/get-cashbox-balance")
+    public @ResponseBody Double getCashboxBalance() {
+        return cashBoxService.calculateBalance();
+    }
+
+    @GetMapping("/get-account-balance")
+    public @ResponseBody Double getAccountBalance() {
+        return accountServiceImpl.getSumOfAccountBalances();
+    }
+
+    @GetMapping("/get-account-debts")
+    public @ResponseBody Double getAccountDebts() {
+        return accountServiceImpl.getSumOfAccountDebts();
     }
 
 

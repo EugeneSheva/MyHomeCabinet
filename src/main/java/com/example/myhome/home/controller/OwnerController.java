@@ -1,13 +1,14 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.dto.BuildingDTO;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.OwnerRepository;
-import com.example.myhome.home.service.ApartmentAccountService;
+import com.example.myhome.home.service.AccountService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Owner;
-import com.example.myhome.home.model.OwnerDTO;
+import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.service.OwnerService;
 import com.example.myhome.home.validator.OwnerValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -32,7 +33,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +49,7 @@ public class OwnerController {
     private final OwnerValidator ownerValidator;
     private final OwnerRepository ownerRepository;
     private final BuildingService buildingService;
-    private final ApartmentAccountService accountService;
+    private final AccountService accountService;
 
     @GetMapping
     public String getOwners(Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) {
@@ -133,7 +133,7 @@ public class OwnerController {
 
     @GetMapping("/get-account-owner/{account_id}")
     public @ResponseBody OwnerDTO getSingleOwnerFromAccountId(@PathVariable long account_id) {
-        ApartmentAccount account = accountService.findById(account_id);
+        ApartmentAccount account = accountService.findAccountById(account_id);
         Owner owner = account.getApartment().getOwner();
         return owner.transformIntoDTO();
     }

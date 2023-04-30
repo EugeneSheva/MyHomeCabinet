@@ -55,11 +55,11 @@ public class AdminPanelSecurityConfig {
     Использование AuthenticationManager в этой версии спринга уничтожает возможность делать тесты,
     выкидывает StackOverflowError , надо или удалить ссылку на имеющийся, или вставить новый @MockBean
      */
-//    @Bean
-//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-//            throws Exception {
-//        return authenticationConfiguration.getAuthenticationManager();
-//    }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
 //    @Bean
 //    public PersistentTokenRepository persistentTokenRepository() {

@@ -1,11 +1,9 @@
 package com.example.myhome.home.model.filter;
 
-import com.example.myhome.home.model.OwnerDTO;
+import com.example.myhome.home.dto.OwnerDTO;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 
@@ -73,4 +71,20 @@ public class FilterForm {
         return false;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        for (Field field : this.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                if(field.get(this) != null) {
+                    str.append(field.getName()).append(": ").append(field.get(this)).append(", ");
+                }
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            field.setAccessible(false);
+        }
+        return str.toString();
+    }
 }

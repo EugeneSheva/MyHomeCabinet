@@ -6,15 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 
-import com.example.myhome.home.specification.OwnerSpecification;
+import com.example.myhome.home.specification.OwnerSpecifications;
 import com.example.myhome.util.UserStatus;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.Optional;
 
@@ -28,34 +25,34 @@ public interface OwnerRepository extends JpaRepository<Owner, Long>, JpaSpecific
     default Page<Owner> findByFilters(Long id, String name, String phoneNumber, String email, String buildingName, Long apartmentNumber, LocalDate added, UserStatus status, String is_debt, Pageable pageable) {
         Specification<Owner> spec = Specification.where(null);
         if (id != null ) {
-            spec = spec.and(OwnerSpecification.idContains(id));
+            spec = spec.and(OwnerSpecifications.idContains(id));
         }
         if (name != null && !name.isEmpty()) {
-            spec = spec.and(OwnerSpecification.nameContains(name));
+            spec = spec.and(OwnerSpecifications.nameContains(name));
         }
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
-            spec = spec.and(OwnerSpecification.phonenumberContains(phoneNumber));
+            spec = spec.and(OwnerSpecifications.phonenumberContains(phoneNumber));
         }
         if (email != null && !email.isEmpty()) {
-            spec = spec.and(OwnerSpecification.emailContains(email));
+            spec = spec.and(OwnerSpecifications.emailContains(email));
         }
       if (buildingName != null && !buildingName.isEmpty() && !buildingName.equalsIgnoreCase("-")) {
-          spec = spec.and(OwnerSpecification.buildingContains(buildingName));
+          spec = spec.and(OwnerSpecifications.buildingContains(buildingName));
       }
         if (apartmentNumber != null) {
-            spec = spec.and(OwnerSpecification.apartmentContains(apartmentNumber));
+            spec = spec.and(OwnerSpecifications.apartmentContains(apartmentNumber));
         }
         if (added != null ) {
-            spec = spec.and(OwnerSpecification.dateContains(added));
+            spec = spec.and(OwnerSpecifications.dateContains(added));
         }
         if (status != null ) {
-            spec = spec.and(OwnerSpecification.statusContains(status));
+            spec = spec.and(OwnerSpecifications.statusContains(status));
         }
         if (is_debt != null && !is_debt.isEmpty() && is_debt.equalsIgnoreCase("true" )) {
-            spec = spec.and(OwnerSpecification.hasDebtContains());
+            spec = spec.and(OwnerSpecifications.hasDebtContains());
         }
         if (is_debt != null && !is_debt.isEmpty() && is_debt.equalsIgnoreCase("false" )) {
-            spec = spec.and(OwnerSpecification.noDebtContains());
+            spec = spec.and(OwnerSpecifications.noDebtContains());
         }
         return findAll(spec, pageable);
     }
@@ -64,7 +61,7 @@ public interface OwnerRepository extends JpaRepository<Owner, Long>, JpaSpecific
         System.out.println("name"+name);
         Specification<Owner> spec = Specification.where(null);
         if (name != null && !name.isEmpty()) {
-            spec = spec.and(OwnerSpecification.nameContains(name));
+            spec = spec.and(OwnerSpecifications.nameContains(name));
         }
         return findAll(spec, pageable);
     }

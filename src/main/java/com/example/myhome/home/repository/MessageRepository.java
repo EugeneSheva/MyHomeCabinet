@@ -1,7 +1,7 @@
 package com.example.myhome.home.repository;
 
-import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Message;
+import com.example.myhome.home.specification.MessageSpecifications;
 import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.specification.ApartmentSpecification;
 import com.example.myhome.home.specification.MessageSpecification;

@@ -4,7 +4,7 @@ import com.example.myhome.home.exception.EmptyObjectException;
 import com.example.myhome.home.model.Service;
 import com.example.myhome.home.model.Tariff;
 import com.example.myhome.home.repository.TariffRepository;
-import com.example.myhome.home.service.TariffService;
+import com.example.myhome.home.service.impl.TariffServiceImpl;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ public class TariffServiceTests {
     private TariffRepository tariffRepository;
 
     @Autowired
-    private TariffService tariffService;
+    private TariffServiceImpl tariffService;
 
     @Test
     @Order(1)

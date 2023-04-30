@@ -1,10 +1,16 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.dto.*;
+import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.*;
+import com.example.myhome.home.service.impl.AdminServiceImpl;
+import com.example.myhome.home.service.impl.MeterDataServiceImpl;
+import com.example.myhome.home.service.impl.TariffServiceImpl;
 import com.example.myhome.home.validator.ApartmentValidator;
+import com.example.myhome.util.MappingUtils;
 import com.example.myhome.util.UserRole;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,13 +40,14 @@ public class ApartmentController {
 
     @Value("${upload.path}")
     private String uploadPath;
+
     private final ApartmentService apartmentService;
     private final ApartmentRepository apartmentRepository;
-    private final ApartmentAccountService apartmentAccountService;
+    private final AccountService accountService;
     private final BuildingService buildingService;
     private final BuildingRepository buildingRepository;
     private final OwnerService ownerService;
-    private final TariffService tariffService;
+    private final TariffServiceImpl tariffService;
     private final CashBoxRepository cashBoxRepository;
     private final CashBoxService cashBoxService;
     private final InvoiceRepository invoiceRepository;
@@ -48,8 +55,8 @@ public class ApartmentController {
     private  final AccountRepository accountRepository;
     private  final MeterDataRepository meterDataRepository;
     private  final IncomeExpenseRepository incomeExpenseRepository;
-    private  final AdminService adminService;
-    private  final MeterDataService meterDataService;
+    private  final AdminServiceImpl adminService;
+    private  final MeterDataServiceImpl meterDataService;
 
 
     @GetMapping
@@ -94,7 +101,7 @@ public class ApartmentController {
         model.addAttribute("buildings", buildingList);
         List<Tariff>tariffs = tariffService.findAllTariffs();
         model.addAttribute("tariffs", tariffs);
-        List<ApartmentAccountDTO> accountDTOList = apartmentAccountService.findDtoApartmentAccounts();
+        List<ApartmentAccountDTO> accountDTOList = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
         model.addAttribute("accounts", accountDTOList);
         return "admin_panel/apartments/apartment_edit";
     }
@@ -114,7 +121,7 @@ public class ApartmentController {
         }
         List<Tariff>tariffs = tariffService.findAllTariffs();
         model.addAttribute("tariffs", tariffs);
-        List<ApartmentAccountDTO> accountDTOList = apartmentAccountService.findDtoApartmentAccounts();
+        List<ApartmentAccountDTO> accountDTOList = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
         model.addAttribute("accounts", accountDTOList);
         return "admin_panel/apartments/apartment_edit";
     }
@@ -198,8 +205,8 @@ public class ApartmentController {
         List<Invoice>invoices=invoiceRepository.findAllByApartmentId(id);
         model.addAttribute("invoices", invoices);
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
-        model.addAttribute("account_balance", apartmentAccountService.getSumOfAccountBalances());
-        model.addAttribute("account_debt", apartmentAccountService.getSumOfAccountDebts());
+        model.addAttribute("account_balance", accountService.getSumOfAccountBalances());
+        model.addAttribute("account_debt", accountService.getSumOfAccountDebts());
         model.addAttribute("filter_form", new FilterForm());
         return "admin_panel/invoices/invoices";
     }
@@ -231,7 +238,7 @@ public class ApartmentController {
         List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
         model.addAttribute("owners", ownerDTOList);
 
-        List<ApartmentAccountDTO> apartmentAccountDTOS = apartmentAccountService.findDtoApartmentAccounts();
+        List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
         model.addAttribute("accounts", apartmentAccountDTOS);
 
         CashBox cashBox = new CashBox();
@@ -280,8 +287,8 @@ public class ApartmentController {
     @GetMapping("/get-apartments-page")
     @ResponseBody
     public Page<ApartmentDTO> getApartmentsByPage(@RequestParam Integer page,
-                                               @RequestParam Integer size,
-                                               @RequestParam String filters) throws JsonProcessingException {
+                                                  @RequestParam Integer size,
+                                                  @RequestParam String filters) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);
         return apartmentService.findBySpecificationAndPage(page, size, form);

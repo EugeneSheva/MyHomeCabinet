@@ -1,14 +1,7 @@
 package com.example.myhome.home.repository;
 
-import com.example.myhome.home.model.Apartment;
-import com.example.myhome.home.model.IncomeExpenseType;
 import com.example.myhome.home.model.Invoice;
 import com.example.myhome.home.model.InvoiceStatus;
-import com.example.myhome.home.repository.specifications.InvoiceSpecifications;
-import com.example.myhome.home.specification.ApartmentSpecification;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -41,22 +33,6 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>, JpaSpec
 
     @Query("SELECT SUM(i.total_price) FROM Invoice i WHERE i.apartment.id = :apartmentId AND MONTH(i.dateFrom) = :month AND YEAR(i.dateFrom) = :year")
     Double getTotalPriceByApartmentIdAndMonthAndYear(@Param("apartmentId") Long apartmentId, @Param("month") Integer month, @Param("year") Integer year);
-
-    default Page<Invoice> findByFilters(LocalDate localDate, InvoiceStatus invoiceStatus, Pageable pageable) {
-        System.out.println("date in repo "+ localDate);
-        Specification<Invoice> spec = Specification.where(null);
-
-        if (localDate != null) {
-            spec = spec.and(InvoiceSpecifications.dateContains(localDate));
-        }
-
-        if (invoiceStatus != null) {
-            spec = spec.and(InvoiceSpecifications.hasStatus(invoiceStatus));
-        }
-
-        return findAll(spec,pageable);
-    }
-
 
 
 

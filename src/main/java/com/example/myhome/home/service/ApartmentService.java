@@ -1,10 +1,13 @@
 package com.example.myhome.home.service;
 
 import com.example.myhome.home.exception.NotFoundException;
+import com.example.myhome.home.model.Apartment;
+import com.example.myhome.home.dto.ApartmentDTO;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.ApartmentRepository;
 import com.example.myhome.util.FileUploadUtil;
+import com.example.myhome.util.MappingUtils;
 import com.example.myhome.util.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +21,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -59,119 +63,65 @@ public class ApartmentService {
     }
 
     public List<ApartmentDTO> findDtoApartments() {
-        List<ApartmentDTO> apartmentDTOList = new ArrayList<>();
-        for (Apartment apartment : apartmentRepository.findAll()) {
-            apartmentDTOList.add(new ApartmentDTO(apartment.getId(), apartment.getBuilding().getId(), apartment.getSection(),
-                    apartment.getFloor(), apartment.getNumber(), apartment.getBalance(), apartment.getAccount().getId(), apartment.getOwner().getId()));
-        }
-        return apartmentDTOList;
+        return apartmentRepository.findAll().stream().map(MappingUtils::fromApartmentToDTO).collect(Collectors.toList());
     }
 
 
     public List<ApartmentDTO> convertApartmentsToApartmentsDTO(List<Apartment> apartmentList) {
-        List<ApartmentDTO> apartmentDTOList = new ArrayList<>();
-        for (Apartment apartment : apartmentList) {
-            apartmentDTOList.add(new ApartmentDTO(apartment.getId(), buildingService.convertBuildingToBuildingDTO(apartment.getBuilding()), apartment.getSection(),
-                    apartment.getFloor(), apartment.getNumber(), apartment.getBalance(), apartment.getAccount().getId(), apartment.getOwner().getId()));
-        }
-        return apartmentDTOList;
+        return apartmentList.stream().map(MappingUtils::fromApartmentToDTO).collect(Collectors.toList());
     }
 
     public ApartmentDTO convertApartmentsToApartmentsDTO(Apartment apartment) {
-        return new ApartmentDTO(apartment.getId(), buildingService.convertBuildingToBuildingDTO(apartment.getBuilding()), apartment.getSection(),
-                apartment.getFloor(), apartment.getNumber(), apartment.getBalance(), apartment.getAccount().getId(), apartment.getOwner().getId());
+        return MappingUtils.fromApartmentToDTO(apartment);
     }
 
 
     public ApartmentDTO findApartmentDto(Long id) {
         Apartment apartment = apartmentRepository.findById(id).orElseThrow();
-        ApartmentDTO apartmentDTO = new ApartmentDTO(apartment.getId(), buildingService.findBuildingDTObyId(apartment.getBuilding().getId()), apartment.getSection(),
-                apartment.getFloor(), apartment.getNumber(), apartment.getBalance(), apartment.getAccount().getId(), apartment.getOwner().getId());
-        return apartmentDTO;
+        return MappingUtils.fromApartmentToDTO(apartment);
     }
 
 
     public List<ApartmentDTO> findDtoApartmentsWithDebt() {
-        List<ApartmentDTO> apartmentDTOList = new ArrayList<>();
-        for (Apartment apartment : apartmentRepository.findApartmentsByBalanceBefore(0D)) {
-            apartmentDTOList.add(new ApartmentDTO(apartment.getId(), apartment.getBuilding().getId(), apartment.getSection(),
-                    apartment.getFloor(), apartment.getNumber(), apartment.getBalance(), apartment.getAccount().getNumber(), apartment.getOwner().getId()));
-        }
-        return apartmentDTOList;
+        return apartmentRepository.findApartmentsByBalanceBefore(0D).stream().map(MappingUtils::fromApartmentToDTO).collect(Collectors.toList());
     }
 
     public List<ApartmentDTO> findDtoApartmentsByBuilding(Long building_id) {
-        System.out.println("start service");
-        List<ApartmentDTO> apartmentDTOList = new ArrayList<>();
-        for (Apartment apartment : apartmentRepository.findApartmentsByBuildingId(building_id)) {
-            apartmentDTOList.add(new ApartmentDTO(apartment.getId(), apartment.getBuilding().getId(), apartment.getSection(),
-                    apartment.getFloor(), apartment.getNumber(), apartment.getBalance(), apartment.getAccount().getNumber(), apartment.getOwner().getId()));
-        }
-        System.out.println("apartmentDTOList " + apartmentDTOList);
-        return apartmentDTOList;
+        return apartmentRepository.findApartmentsByBuildingId(building_id).stream().map(MappingUtils::fromApartmentToDTO).collect(Collectors.toList());
     }
 
     public List<ApartmentDTO> findDtoApartmentsByBuildingWithDebt(Long building_id) {
-        List<ApartmentDTO> apartmentDTOList = new ArrayList<>();
-        for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndBalanceBefore(building_id, 0D)) {
-            apartmentDTOList.add(new ApartmentDTO(apartment.getId(), apartment.getBuilding().getId(), apartment.getSection(),
-                    apartment.getFloor(), apartment.getNumber(), apartment.getBalance(), apartment.getAccount().getNumber(), apartment.getOwner().getId()));
-        }
-        return apartmentDTOList;
+        return apartmentRepository.findApartmentsByBuildingIdAndBalanceBefore(building_id, 0D).stream().map(MappingUtils::fromApartmentToDTO).collect(Collectors.toList());
     }
 
     public List<ApartmentDTO> findDtoApartmentsByBuildingAndSection(Long building_id, String section) {
-        List<ApartmentDTO> apartmentDTOList = new ArrayList<>();
-        for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndSectionContainingIgnoreCase(building_id, section)) {
-            apartmentDTOList.add(new ApartmentDTO(apartment.getId(), apartment.getBuilding().getId(), apartment.getSection(),
-                    apartment.getFloor(), apartment.getNumber(), apartment.getBalance(), apartment.getAccount().getNumber(), apartment.getOwner().getId()));
-        }
-        return apartmentDTOList;
+        return apartmentRepository.findApartmentsByBuildingIdAndSectionContainingIgnoreCase(building_id, section).stream()
+                .map(MappingUtils::fromApartmentToDTO).collect(Collectors.toList());
     }
 
     public List<ApartmentDTO> findDtoApartmentsByBuildingAndSectionWithDebt(Long building_id, String section) {
-        List<ApartmentDTO> apartmentDTOList = new ArrayList<>();
-        for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndSectionContainingIgnoreCaseAndBalanceBefore(building_id, section, 0D)) {
-            apartmentDTOList.add(new ApartmentDTO(apartment.getId(), apartment.getBuilding().getId(), apartment.getSection(),
-                    apartment.getFloor(), apartment.getNumber(), apartment.getBalance(), apartment.getAccount().getNumber(), apartment.getOwner().getId()));
-        }
-        return apartmentDTOList;
+        return apartmentRepository.findApartmentsByBuildingIdAndSectionContainingIgnoreCaseAndBalanceBefore(building_id, section, 0D)
+                .stream().map(MappingUtils::fromApartmentToDTO).collect(Collectors.toList());
     }
 
     public List<ApartmentDTO> findDtoApartmentsByBuildingAndFloor(Long building_id, String floor) {
-        List<ApartmentDTO> apartmentDTOList = new ArrayList<>();
-        for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndFloorContainingIgnoreCase(building_id, floor)) {
-            apartmentDTOList.add(new ApartmentDTO(apartment.getId(), apartment.getBuilding().getId(), apartment.getSection(),
-                    apartment.getFloor(), apartment.getNumber(), apartment.getBalance(), apartment.getAccount().getNumber(), apartment.getOwner().getId()));
-        }
-        return apartmentDTOList;
+        return apartmentRepository.findApartmentsByBuildingIdAndFloorContainingIgnoreCase(building_id, floor)
+                .stream().map(MappingUtils::fromApartmentToDTO).collect(Collectors.toList());
     }
 
     public List<ApartmentDTO> findDtoApartmentsByBuildingAndFloorWithDebt(Long building_id, String floor) {
-        List<ApartmentDTO> apartmentDTOList = new ArrayList<>();
-        for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndFloorContainingIgnoreCaseAndBalanceBefore(building_id, floor, 0D)) {
-            apartmentDTOList.add(new ApartmentDTO(apartment.getId(), apartment.getBuilding().getId(), apartment.getSection(),
-                    apartment.getFloor(), apartment.getNumber(), apartment.getBalance(), apartment.getAccount().getNumber(), apartment.getOwner().getId()));
-        }
-        return apartmentDTOList;
+        return apartmentRepository.findApartmentsByBuildingIdAndFloorContainingIgnoreCaseAndBalanceBefore(building_id, floor, 0D)
+                .stream().map(MappingUtils::fromApartmentToDTO).collect(Collectors.toList());
     }
 
     public List<ApartmentDTO> findDtoApartmentsByBuildingAndSectionAndFloor(Long building_id, String section, String floor) {
-        List<ApartmentDTO> apartmentDTOList = new ArrayList<>();
-        for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndSectionContainingIgnoreCaseAndFloorContainingIgnoreCase(building_id, section, floor)) {
-            apartmentDTOList.add(new ApartmentDTO(apartment.getId(), apartment.getBuilding().getId(), apartment.getSection(),
-                    apartment.getFloor(), apartment.getNumber(), apartment.getBalance(), apartment.getAccount().getNumber(), apartment.getOwner().getId()));
-        }
-        return apartmentDTOList;
+        return apartmentRepository.findApartmentsByBuildingIdAndSectionContainingIgnoreCaseAndFloorContainingIgnoreCase(building_id, section, floor)
+                .stream().map(MappingUtils::fromApartmentToDTO).collect(Collectors.toList());
     }
 
     public List<ApartmentDTO> findDtoApartmentsByBuildingAndSectionAndFloorWithDebt(Long building_id, String section, String floor) {
-        List<ApartmentDTO> apartmentDTOList = new ArrayList<>();
-        for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndSectionContainingIgnoreCaseAndFloorContainingIgnoreCaseAndBalanceBefore(building_id, section, floor, 0D)) {
-            apartmentDTOList.add(new ApartmentDTO(apartment.getId(), apartment.getBuilding().getId(), apartment.getSection(),
-                    apartment.getFloor(), apartment.getNumber(), apartment.getBalance(), apartment.getAccount().getNumber(), apartment.getOwner().getId()));
-        }
-        return apartmentDTOList;
+        return apartmentRepository.findApartmentsByBuildingIdAndSectionContainingIgnoreCaseAndFloorContainingIgnoreCaseAndBalanceBefore(building_id, section, floor, 0D)
+                .stream().map(MappingUtils::fromApartmentToDTO).collect(Collectors.toList());
     }
 
     public Long getQuantity() {
@@ -180,15 +130,11 @@ public class ApartmentService {
 
     public Page<ApartmentDTO> findBySpecificationAndPage(Integer page, Integer size, FilterForm filters) {
         Pageable pageable = PageRequest.of(page - 1, size);
-        List<ApartmentDTO> listDTO = new ArrayList<>();
+
         Page<Apartment> apartments = apartmentRepository.findByFilters(filters.getNumber(), filters.getBuildingName(), filters.getSection(),
                 filters.getFloor(), filters.getOwner(), filters.getDebtSting(), pageable);
-        for (Apartment apartment : apartments) {
-            Owner owner = apartment.getOwner();
-            Building building = apartment.getBuilding();
-            listDTO.add(new ApartmentDTO(apartment.getId(), new BuildingDTO(building.getId(), building.getName()), apartment.getSection(), apartment.getFloor(),
-                    apartment.getNumber(), apartment.getAccount().getId(), new OwnerDTO(owner.getId(), owner.getFirst_name(), owner.getLast_name(), owner.getFathers_name(), owner.getFullName()), apartment.getBalance()));
-        }
+        List<ApartmentDTO> listDTO = apartments.getContent().stream().map(MappingUtils::fromApartmentToDTO).collect(Collectors.toList());
+
         return new PageImpl<>(listDTO, pageable, apartments.getTotalElements());
     }
 //

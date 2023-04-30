@@ -26,7 +26,7 @@ public class ApartmentAccount {
     private Boolean isActive;
 
     @Transient
-    private Boolean changedState = false;
+    private Boolean changedState;
 
     @ToString.Exclude
     @JsonIgnore
@@ -70,7 +70,7 @@ public class ApartmentAccount {
         this.apartment.setAccount(null);
     }
 
-    public double getBalance() {
+    public double getAccountBalance() {
         return
                 this.transactions.stream()
                 .filter(CashBox::getCompleted)

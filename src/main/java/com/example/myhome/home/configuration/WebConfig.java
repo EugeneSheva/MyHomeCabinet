@@ -1,6 +1,9 @@
 package com.example.myhome.home.configuration;
+import com.example.myhome.home.converters.StringToApartmentDTOConverter;
+import com.example.myhome.home.converters.StringToBuildingDTOConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -25,5 +28,11 @@ public class WebConfig implements WebMvcConfigurer {
         registry
                 .addResourceHandler("/files/**")
                 .addResourceLocations(prefix + uploadPath + "/", prefix + uploadPath + "/files/");
+    }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new StringToApartmentDTOConverter());
+        registry.addConverter(new StringToBuildingDTOConverter());
     }
 }

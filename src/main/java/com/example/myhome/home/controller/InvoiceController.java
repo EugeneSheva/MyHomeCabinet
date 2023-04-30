@@ -5,8 +5,11 @@ import com.example.myhome.home.model.Invoice;
 import com.example.myhome.home.model.InvoiceComponents;
 import com.example.myhome.home.model.InvoiceTemplate;
 import com.example.myhome.home.model.filter.FilterForm;
-import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.*;
+import com.example.myhome.home.service.impl.InvoiceServiceImpl;
+import com.example.myhome.home.service.impl.MeterDataServiceImpl;
+import com.example.myhome.home.service.impl.ServiceServiceImpl;
+import com.example.myhome.home.service.impl.TariffServiceImpl;
 import com.example.myhome.home.validator.InvoiceValidator;
 import com.example.myhome.util.FileDownloadUtil;
 import com.example.myhome.util.FileUploadUtil;
@@ -17,7 +20,8 @@ import lombok.extern.java.Log;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.MediaType;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,12 +31,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @SuppressWarnings("unused")
 @Controller
@@ -41,13 +41,13 @@ import java.util.List;
 public class InvoiceController {
 
     @Autowired
-    private InvoiceService invoiceService;
+    private InvoiceServiceImpl invoiceService;
 
     @Autowired
     private CashBoxService cashBoxService;
 
     @Autowired
-    private ApartmentAccountService apartmentAccountService;
+    private AccountService accountService;
 
     @Autowired
     private ApartmentService apartmentService;
@@ -56,13 +56,13 @@ public class InvoiceController {
     private BuildingService buildingService;
 
     @Autowired
-    private ServiceService serviceService;
+    private ServiceServiceImpl serviceService;
 
     @Autowired
-    private TariffService tariffService;
+    private TariffServiceImpl tariffService;
 
     @Autowired
-    private MeterDataService meterDataService;
+    private MeterDataServiceImpl meterDataService;
 
     @Autowired
     private FileUploadUtil fileUploadUtil;
@@ -77,17 +77,17 @@ public class InvoiceController {
 
     @GetMapping
     public String showInvoicePage(Model model,
-                                  FilterForm form) throws IllegalAccessException {
+                                  FilterForm form) {
 
         Page<Invoice> invoices;
+        Pageable pageable = PageRequest.of((form.getPage() == null) ? 1 : form.getPage()-1 ,5);
 
-        if(form.getPage() == null) invoices = invoiceService.findAllBySpecificationAndPage(form, 1, 5);
-        else invoices = invoiceService.findAllBySpecificationAndPage(form, form.getPage()-1, 5);
+        invoices = invoiceService.findAllInvoicesByFiltersAndPage(form, pageable);
 
         model.addAttribute("owners", ownerService.findAllDTO());
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
-        model.addAttribute("account_balance", apartmentAccountService.getSumOfAccountBalances());
-        model.addAttribute("account_debt", apartmentAccountService.getSumOfAccountDebts());
+        model.addAttribute("account_balance", accountService.getSumOfAccountBalances());
+        model.addAttribute("account_debt", accountService.getSumOfAccountDebts());
 
         model.addAttribute("totalPagesCount", invoices.getTotalPages());
 
@@ -216,7 +216,7 @@ public class InvoiceController {
     public String getPrintPage(@PathVariable long id, Model model) {
         Invoice invoice = invoiceService.findInvoiceById(id);
         model.addAttribute("invoice", invoice);
-        model.addAttribute("default_template", invoiceService.findDefaultTemplate().orElse(null));
+        model.addAttribute("default_template", invoiceService.findDefaultTemplate());
         model.addAttribute("templates", invoiceService.findAllTemplates());
         return "admin_panel/invoices/invoice_print";
     }
@@ -259,7 +259,7 @@ public class InvoiceController {
             invoiceService.deleteTemplateById(delete_id);
             return "redirect:/admin/invoices/template";
         }
-        model.addAttribute("default_template", invoiceService.findDefaultTemplate().orElse(null));
+        model.addAttribute("default_template", invoiceService.findDefaultTemplate());
         model.addAttribute("templates", invoiceService.findAllTemplates());
         return "admin_panel/invoices/invoice_template_settings";
     }
@@ -289,7 +289,7 @@ public class InvoiceController {
 
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);
-        return invoiceService.findAllBySpecificationAndPage(form, page-1, size);
+        return invoiceService.findAllInvoicesByFiltersAndPage(form, PageRequest.of(page-1, size));
     }
 
     @GetMapping("/get-filtered-invoice-count")

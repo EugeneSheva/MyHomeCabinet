@@ -1,30 +1,27 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.ApartmentAccount;
-import com.example.myhome.home.model.ApartmentAccountDTO;
+import com.example.myhome.home.dto.ApartmentAccountDTO;
 import com.example.myhome.home.model.filter.FilterForm;
-import com.example.myhome.home.repository.AccountRepository;
-import com.example.myhome.home.repository.ApartmentRepository;
-import com.example.myhome.home.repository.BuildingRepository;
 import com.example.myhome.home.service.AccountService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.CashBoxService;
 import com.example.myhome.home.service.OwnerService;
 import com.example.myhome.home.validator.AccountValidator;
+import com.example.myhome.util.MappingUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/admin/accounts")
@@ -49,16 +46,9 @@ public class AccountController {
     public String showAccountsPage(Model model,
                                    FilterForm filterForm) throws IllegalAccessException {
 
-        Page<ApartmentAccount> accountList;
-
-        accountList = accountService.findAllBySpecification(filterForm);
-
-        model.addAttribute("accounts", accountList.getContent());
-        model.addAttribute("totalPagesCount", accountList.getTotalPages());
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
         model.addAttribute("account_balance", accountService.getSumOfAccountBalances());
         model.addAttribute("account_debt", accountService.getSumOfAccountDebts());
-
         model.addAttribute("owners", ownerService.findAllDTO());
         model.addAttribute("buildings", buildingService.findAllDTO());
 
@@ -74,39 +64,46 @@ public class AccountController {
     // показать профиль лицевого счёта
     @GetMapping("/{id}")
     public String showAccountInfoPage(@PathVariable long id, Model model) {
-        model.addAttribute("account", accountService.getAccountById(id));
+        model.addAttribute("account", accountService.findAccountById(id));
         return "admin_panel/accounts/account_profile";
     }
 
     // открытие страницы создания лицевого счета
     @GetMapping("/create")
     public String showCreateAccountPage(Model model) {
-        model.addAttribute("apartmentAccount", new ApartmentAccount());
+        ApartmentAccountDTO dto = new ApartmentAccountDTO();
+        dto.setId(accountService.getMaxAccountId()+1);
+        log.info(dto.toString());
+        model.addAttribute("apartmentAccountDTO", dto);
         model.addAttribute("buildings", buildingService.findAll());
-        model.addAttribute("id", accountService.getMaxId()+1);
 
         return "admin_panel/accounts/account_card";
     }
 
     // создание лицевого счета
     @PostMapping("/create")
-    public String createAccount(@ModelAttribute ApartmentAccount account,
+    public String createAccount(@ModelAttribute ApartmentAccountDTO apartmentAccountDTO,
                                 BindingResult bindingResult,
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
 
-        log.info(account.toString());
-        validator.validate(account, bindingResult);
-        log.info("account apartment id" + account.getApartment().getId());
+        log.info(apartmentAccountDTO.toString());
+        validator.validate(apartmentAccountDTO, bindingResult);
 
         if(bindingResult.hasErrors()) {
             log.info("Errors found");
             log.info(bindingResult.getAllErrors().toString());
+
+            ApartmentAccountDTO dto = (ApartmentAccountDTO) bindingResult.getTarget();
+            if(dto != null) dto.setId(accountService.getMaxAccountId()+1);
+
+            model.addAttribute("apartmentAccountDTO", bindingResult.getTarget());
             model.addAttribute("buildings", buildingService.findAllDTO());
             log.info(buildingService.findAllDTO().toString());
             return "admin_panel/accounts/account_card";
         } else {
-            accountService.save(account);
+            ApartmentAccount account = accountService.fromDTO(apartmentAccountDTO);
+            accountService.saveAccount(account);
             return "redirect:/admin/accounts";
         }
 
@@ -115,7 +112,7 @@ public class AccountController {
 
     @GetMapping("/update/{id}")
     public String showUpdateAccountPage(@PathVariable long id, Model model) {
-        model.addAttribute("apartmentAccount", accountService.getAccountById(id));
+        model.addAttribute("apartmentAccountDTO", accountService.toDTO(accountService.findAccountById(id)));
         model.addAttribute("id", id);
         model.addAttribute("buildings", buildingService.findAll());
 
@@ -124,9 +121,11 @@ public class AccountController {
 
     @PostMapping("/update/{id}")
     public String updateAccount(@PathVariable long id,
-                                @ModelAttribute ApartmentAccount account,
+                                @ModelAttribute ApartmentAccountDTO apartmentAccountDTO,
                                 BindingResult bindingResult,
                                 Model model) {
+
+        ApartmentAccount account = accountService.fromDTO(apartmentAccountDTO);
         validator.validate(account, bindingResult);
         if(bindingResult.hasErrors()) {
             log.info("Errors found");
@@ -135,7 +134,7 @@ public class AccountController {
             log.info(buildingService.findAllDTO().toString());
             return "admin_panel/accounts/account_card";
         }
-        accountService.save(account);
+        accountService.saveAccount(account);
 
         return "redirect:/admin/accounts";
     }
@@ -157,9 +156,7 @@ public class AccountController {
                                                                @RequestParam String filters) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);
-        Page<ApartmentAccountDTO> p = accountService.findAllBySpecification(form, page, size);
-        log.info("PAGES COUNT : " + p.getTotalPages());
-        return p;
+        return accountService.toDTO(accountService.findAllAccountsByFiltersAndPage(form, PageRequest.of(page, size)));
     }
 
     @ModelAttribute

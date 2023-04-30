@@ -30,8 +30,7 @@ public interface CashBoxRepository extends JpaRepository<CashBox, Long>, JpaSpec
     Optional<Long> getMaxId();
 
     List<CashBox>findAllByApartmentAccountId(Long id);
-    default Page<CashBox> findByFilters(Long id, LocalDate from, LocalDate to, Boolean isCompleted, String incomeExpenseItem, Long ownerId,
-                                        Long accountNumber, IncomeExpenseType incomeExpenseType, Pageable pageable) {
+    default Page<CashBox> findByFilters(Long id, LocalDate from, LocalDate to, Boolean isCompleted, String incomeExpenseItem, Long ownerId, Long accountNumber, IncomeExpenseType incomeExpenseType, Pageable pageable) {
         Specification<CashBox> spec = Specification.where(null);
 
         if (id != null ) {

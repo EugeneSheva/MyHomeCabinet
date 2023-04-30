@@ -1,9 +1,11 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.dto.AdminDTO;
+import com.example.myhome.home.dto.BuildingDTO;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.BuildingRepository;
-import com.example.myhome.home.service.AdminService;
+import com.example.myhome.home.service.impl.AdminServiceImpl;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.validator.BuildingValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -46,7 +48,7 @@ public class BuildingController {
     private String uploadPath;
     private final BuildingService buildingService;
     private final BuildingRepository buildingRepository;
-    private final AdminService adminService;
+    private final AdminServiceImpl adminService;
 
     private final BuildingValidator buildingValidator;
     @GetMapping

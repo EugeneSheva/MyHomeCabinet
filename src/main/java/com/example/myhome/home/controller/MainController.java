@@ -1,9 +1,7 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.pages.AboutPage;
-import com.example.myhome.home.repository.DocumentRepository;
-import com.example.myhome.home.repository.PageRepository;
-import com.example.myhome.home.service.WebsiteService;
+import com.example.myhome.home.service.impl.WebsiteServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MainController {
 
-    @Autowired private WebsiteService websiteService;
+    @Autowired private WebsiteServiceImpl websiteService;
 
     @GetMapping
     public String showMainPage(Model model) {

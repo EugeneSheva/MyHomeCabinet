@@ -1,13 +1,16 @@
 package com.example.myhome.home.service;
 
 import com.example.myhome.home.configuration.security.CustomUserDetails;
+import com.example.myhome.home.dto.ApartmentDTO;
+import com.example.myhome.home.dto.BuildingDTO;
+import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
-import com.example.myhome.home.repository.AccountRepository;
 import com.example.myhome.home.repository.OwnerRepository;
-import com.example.myhome.home.specification.OwnerSpecification;
+import com.example.myhome.home.specification.OwnerSpecifications;
 import com.example.myhome.util.FileUploadUtil;
+import com.example.myhome.util.MappingUtils;
 import com.example.myhome.util.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -148,15 +151,15 @@ public class OwnerService {
         UserStatus status = (filters.getStatus() != null) ? UserStatus.valueOf(filters.getStatus()) : null;
         Boolean has_debt = filters.getDebt();
 
-        return Specification.where(OwnerSpecification.idContains(id)
-                .and(OwnerSpecification.nameContains(ownerName))
-                .and(OwnerSpecification.phonenumberContains(ownerPhoneNumber))
-                .and(OwnerSpecification.emailContains(email))
-                .and(OwnerSpecification.hasBuilding(building))
-                .and(OwnerSpecification.apartmentContains(apartmentNumber))
-                .and(OwnerSpecification.dateContains(date))
-                .and(OwnerSpecification.statusContains(status))
-                .and(OwnerSpecification.hasDebt(has_debt)));
+        return Specification.where(OwnerSpecifications.idContains(id)
+                .and(OwnerSpecifications.nameContains(ownerName))
+                .and(OwnerSpecifications.phonenumberContains(ownerPhoneNumber))
+                .and(OwnerSpecifications.emailContains(email))
+                .and(OwnerSpecifications.hasBuilding(building))
+                .and(OwnerSpecifications.apartmentContains(apartmentNumber))
+                .and(OwnerSpecifications.dateContains(date))
+                .and(OwnerSpecifications.statusContains(status))
+                .and(OwnerSpecifications.hasDebt(has_debt)));
     }
 
     public Page<OwnerDTO> findAllBySpecification2(FilterForm filters, Integer page, Integer size) {
@@ -164,17 +167,7 @@ public class OwnerService {
         List<OwnerDTO> listDTO = new ArrayList<>();
         Page<Owner>ownerList = ownerRepository.findByFilters(filters.getId(),filters.getOwnerName(),filters.getPhone(),filters.getEmail(), filters.getBuildingName(),filters.getApartment(), filters.getDate() != null ? LocalDate.parse(filters.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null, filters.getStatus()!=null? UserStatus.valueOf(filters.getStatus()) : null, String.valueOf(filters.getDebtSting()), pageable);
         for (Owner owner : ownerList) {
-            List<ApartmentDTO> apartments = new ArrayList<>();
-            List<BuildingDTO> buildings = new ArrayList<>();
-            owner.getApartments().forEach(
-                    apart -> {
-                        buildings.add(BuildingDTO.builder().id(apart.getBuilding().getId()).name(apart.getBuilding().getName()).build());
-                        apartments.add(ApartmentDTO.builder().id(apart.getId()).fullName("№"+apart.getNumber()+", " + apart.getBuilding().getName()).build());
-                    }
-            );
-            listDTO.add(new OwnerDTO(owner.getId(), owner.getFirst_name(), owner.getLast_name(), owner.getFathers_name(), owner.getFullName(),
-                    owner.getPhone_number(), owner.getEmail(), owner.getViber(), owner.getTelegram(), owner.getDescription(), apartments, buildings,
-                    owner.getAdded_at().toString(), owner.getStatus().toString(),owner.isHas_debt()));
+            listDTO.add(MappingUtils.fromOwnerToDTO(owner));
         }
         return new PageImpl<>(listDTO, pageable, ownerList.getTotalElements());
     }
@@ -257,24 +250,24 @@ public class OwnerService {
     }
 
 
-    public OwnerDTO findOwnerDTObyEmail(String mail) {
-        Owner owner = ownerRepository.findByEmail(mail).orElseThrow();
-        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.convertApartmentsToApartmentsDTO(owner.getApartments()));
-    }
-
-    public OwnerDTO findOwnerDTObyEmailWithMessages(String mail) {
-        Owner owner = ownerRepository.findByEmail(mail).orElseThrow();
-        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.convertApartmentsToApartmentsDTO(owner.getApartments()), owner.getMessages(), owner.getPhone_number(), owner.getEmail(), owner.getViber(), owner.getTelegram(), owner.getDescription(), owner.getProfile_picture());
-    }
-
-    public OwnerDTO findOwnerDTObyEmailFull(String mail) {
-        Owner owner = ownerRepository.findByEmail(mail).orElseThrow();
-        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.convertApartmentsToApartmentsDTO(owner.getApartments()), owner.getMessages(), owner.getPhone_number(),owner.getEmail(),owner.getViber(),owner.getTelegram(), owner.getDescription(), owner.getProfile_picture());
-    }
-
-    public OwnerDTO convertOwnerToOwnerDTO(Owner owner) {
-        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.convertApartmentsToApartmentsDTO(owner.getApartments()));
-    }
+//    public OwnerDTO findOwnerDTObyEmail(String mail) {
+//        Owner owner = ownerRepository.findByEmail(mail).orElseThrow();
+//        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.convertApartmentsToApartmentsDTO(owner.getApartments()));
+//    }
+//
+//    public OwnerDTO findOwnerDTObyEmailWithMessages(String mail) {
+//        Owner owner = ownerRepository.findByEmail(mail).orElseThrow();
+//        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.convertApartmentsToApartmentsDTO(owner.getApartments()), owner.getMessages(), owner.getPhone_number(), owner.getEmail(), owner.getViber(), owner.getTelegram(), owner.getDescription(), owner.getProfile_picture());
+//    }
+//
+//    public OwnerDTO findOwnerDTObyEmailFull(String mail) {
+//        Owner owner = ownerRepository.findByEmail(mail).orElseThrow();
+//        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.convertApartmentsToApartmentsDTO(owner.getApartments()), owner.getMessages(), owner.getPhone_number(),owner.getEmail(),owner.getViber(),owner.getTelegram(), owner.getDescription(), owner.getProfile_picture());
+//    }
+//
+//    public OwnerDTO convertOwnerToOwnerDTO(Owner owner) {
+//        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.convertApartmentsToApartmentsDTO(owner.getApartments()));
+//    }
 
 
 }

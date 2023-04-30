@@ -34,7 +34,7 @@
               <li class="breadcrumb-item"><a th:href="@{/admin/meters}">Счётчики</a></li>
               <li class="breadcrumb-item"><a th:href="@{/admin/meters/data
               ?flat_id={flat_id}&service_id={service_id}
-              (flat_id=${meter.apartment.id}, service_id=${meter.service.id})}">Показания счётчиков, кв. <span th:text="${meter.apartment.number}"></span></a></li>
+              (flat_id=${flat_id}, service_id=${service_id})}">Показания счётчиков, кв. <span th:text="${meter.apartmentNumber}"></span></a></li>
               <li class="breadcrumb-item active">Показание счётчика №<span th:text="${T(java.lang.String).format('%010d', meter.id)}"></span></li>
             </ol>
           </div><!-- /.col -->
@@ -73,7 +73,7 @@
             <div class="box" style="caret-color:transparent;">
               <div class="box-header with-border" style="padding-block: 7px;">
                 <h3 class="box-title"></h3>
-                <div class="box-tools">
+                <div class="box-tools" style="top: 15px;">
                   <a th:href="@{/admin/meters/update/{id}(id=${meter.id})}" class="btn btn-primary btn-sm">
                     <span class="hidden-xs">Редактировать показание  </span><i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
                   </a>
@@ -86,36 +86,36 @@
                       <tbody>
                       <tr>
                         <td style="font-weight:bold">Счётчик</td>
-                        <td th:text="${meter.service.name}"></td>
+                        <td th:text="${meter.serviceName}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Дом</td>
-                        <td th:text="${meter.apartment.building.name}"></td>
+                        <td th:text="${meter.buildingName}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Секция</td>
-                        <td th:text="${meter.apartment.section}"></td>
+                        <td th:text="${meter.section}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Квартира</td>
-                        <td th:text="${meter.apartment.number}"></td>
+                        <td th:text="${meter.apartmentNumber}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Пользователь</td>
-                        <td ><a th:href="@{/admin/owners/{id}(id=${meter.apartment.owner.id})}"
-                                th:text="${meter.apartment.owner.getFullName()}"></a></td>
+                        <td ><a th:href="@{/admin/owners/{id}(id=${meter.apartmentOwnerID})}"
+                                th:text="${meter.apartmentOwnerFullName}"></a></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Текущие показания</td>
-                        <td th:text="${meter.currentReadings}"></td>
+                        <td th:text="${meter.readings}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Ед.изм</td>
-                        <td th:text="${meter.service.unit.name}"></td>
+                        <td th:text="${meter.serviceUnitName}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Статус</td>
-                        <td><small class="label label-success" th:text="${meter.status.getName()}">Активен</small></td>
+                        <td><small class="label label-success" th:text="${meter.status}">Активен</small></td>
                       </tr>
                       </tbody>
                     </table>

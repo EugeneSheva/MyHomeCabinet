@@ -1,17 +1,31 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.configuration.security.CustomAdminDetails;
+import com.example.myhome.home.dto.AdminDTO;
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.model.filter.FilterForm;
-import com.example.myhome.home.repository.AdminRepository;
 import com.example.myhome.home.service.AdminService;
+import com.example.myhome.home.service.impl.AdminServiceImpl;
+import com.example.myhome.util.MappingUtils;
 import com.example.myhome.util.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,59 +38,64 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
+    @Autowired private AuthenticationManager authenticationManager;
+
     @GetMapping
     public String showAdminsPage(Model model,
-                                 FilterForm form,
-                                 @RequestParam(required = false) Integer page) throws IllegalAccessException {
-        List<Admin> adminList;
-        if(!form.filtersPresent()) {
-            if(page == null) adminList = adminService.findAll();
-            else adminList = adminService.findAll(page);
-        }
-        else {
-            if(page == null) adminList = adminService.findAllBySpecification(form);
-            else adminList = adminService.findAllBySpecificationAndPage(form, page);
-        }
+                                 FilterForm form) throws IllegalAccessException {
 
-        model.addAttribute("admins", adminList);
+        Page<AdminDTO> adminPage;
+        Pageable pageable = PageRequest.of((form.getPage() == null) ? 0 : form.getPage()-1 ,15);
 
+        adminPage = adminService.findAllByFiltersAndPage(form, pageable);
+
+        model.addAttribute("admins", adminPage);
         model.addAttribute("filter_form", form);
+
         return "admin_panel/system_settings/settings_users";
     }
 
     @GetMapping("/{id}")
     public String showAdminProfile(@PathVariable long id, Model model) {
-        model.addAttribute("admin", adminService.findAdminById(id));
+        AdminDTO admin = MappingUtils.fromAdminToDTO(adminService.findAdminById(id));
+        model.addAttribute("admin", admin);
         return "admin_panel/system_settings/admin_profile";
     }
 
     @GetMapping("/create")
     public String showCreateAdminPage(Model model) {
-        model.addAttribute("admin", new Admin());
+        model.addAttribute("adminDTO", new AdminDTO());
         return "admin_panel/system_settings/admin_card";
     }
 
     @GetMapping("/update/{id}")
     public String showUpdateAdminPage(@PathVariable long id, Model model) {
-        model.addAttribute("admin", adminService.findAdminById(id));
+        AdminDTO admin = MappingUtils.fromAdminToDTO(adminService.findAdminById(id));
+        model.addAttribute("adminDTO", admin);
         return "admin_panel/system_settings/admin_card";
     }
 
     @PostMapping("/create")
-    public String createAdmin(@Valid @ModelAttribute Admin admin, BindingResult bindingResult) {
+    public String createAdmin(@Valid @ModelAttribute AdminDTO dto, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) return "admin_panel/system_settings/admin_card";
         else {
+            Admin admin = MappingUtils.fromDTOToAdmin(dto);
             adminService.saveAdmin(admin);
             return "redirect:/admin/admins";
         }
     }
 
     @PostMapping("/update/{id}")
-    public String updateAdmin(@PathVariable long id, @Valid @ModelAttribute Admin admin, BindingResult bindingResult) {
-        admin.setId(id);
+    public String updateAdmin(@PathVariable long id, @Valid @ModelAttribute AdminDTO dto, BindingResult bindingResult) {
+        dto.setId(id);
+
         if(bindingResult.hasErrors()) return "admin_panel/system_settings/admin_card";
         else {
+            Admin admin = MappingUtils.fromDTOToAdmin(dto);
             adminService.saveAdmin(admin);
+
+
+
             return "redirect:/admin/admins";
         }
     }

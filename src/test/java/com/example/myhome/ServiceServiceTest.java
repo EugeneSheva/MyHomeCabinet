@@ -4,7 +4,7 @@ import com.example.myhome.home.model.Service;
 import com.example.myhome.home.model.Unit;
 import com.example.myhome.home.repository.ServiceRepository;
 import com.example.myhome.home.repository.UnitRepository;
-import com.example.myhome.home.service.ServiceService;
+import com.example.myhome.home.service.impl.ServiceServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +24,7 @@ public class ServiceServiceTest {
     @MockBean private ServiceRepository serviceRepository;
     @MockBean private UnitRepository unitRepository;
 
-    @Autowired private ServiceService service;
+    @Autowired private ServiceServiceImpl service;
 
     @Test
     void sanityCheck(){

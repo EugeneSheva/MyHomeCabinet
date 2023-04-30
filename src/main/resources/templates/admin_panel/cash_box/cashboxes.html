@@ -8,29 +8,16 @@
     <link rel="stylesheet" th:href="@{/dist/css/website.css}">
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
-    <!-- Font Awesome -->
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
-    <!-- daterange picker -->
     <link rel="stylesheet" th:href="@{/plugins/daterangepicker/daterangepicker.css}">
-    <!-- iCheck for checkboxes and radio inputs -->
     <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
-    <!-- Bootstrap Color Picker -->
     <link rel="stylesheet" th:href="@{/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css}">
-    <!-- Tempusdominus Bootstrap 4 -->
     <link rel="stylesheet" th:href="@{/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
-    <!--    &lt;!&ndash; Select2 &ndash;&gt;-->
-    <!-- Bootstrap4 Duallistbox -->
     <link rel="stylesheet" th:href="@{/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css}">
-    <!-- BS Stepper -->
     <link rel="stylesheet" th:href="@{/plugins/bs-stepper/css/bs-stepper.min.css}">
-    <!-- Theme style -->
     <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
-
     <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
 
-<!--    <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css}" rel="stylesheet">-->
-<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>-->
-    <!-- Select2 -->
     <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
     <style>
@@ -41,10 +28,17 @@
     margin-top: -8px;
     }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
+
+    <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+        enabled. Please enable
+        Javascript and reload this page!</h2></noscript>
 
     <div th:insert="~{main-template :: loading}"></div>
     <nav th:insert="~{main-template :: header}"></nav>
@@ -77,7 +71,7 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="small-box bg-green overflow-hidden">
                                 <div class="inner">
-                                    <h3 th:text="${cashBoxSum}+' грн.'"></h3>
+                                    <h3 id="cashboxBalance" th:text="${cashBoxSum}+' грн.'"></h3>
                                     <p>Состояние кассы</p>
                                 </div>
                                 <div class="icon">
@@ -89,7 +83,7 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="small-box bg-blue overflow-hidden">
                                 <div class="inner">
-                                    <h3 th:text="${accountBalance}+' грн.'"></h3>
+                                    <h3 id="accountBalance" th:text="${accountBalance}+' грн.'"></h3>
                                     <p>Баланс по счетам</p>
                                 </div>
                                 <div class="icon">
@@ -101,7 +95,7 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="small-box bg-red overflow-hidden">
                                 <div class="inner">
-                                    <h3 th:text="${sumDebt}+' грн.'"></h3>
+                                    <h3 id="accountDebts" th:text="${sumDebt}+' грн.'"></h3>
                                     <p>Задолженность по счетам</p>
                                 </div>
                                 <div class="icon">
@@ -264,12 +258,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.min.js"></script>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 
 <script th:src="@{/dist/js/pagination.js}"></script>
+
+<script th:src="@{/dist/js/websocket.js}"></script>
 
 <script th:inline="javascript">
 
@@ -367,6 +362,8 @@
 <!--</script>-->
 <script>
     $(document).ready(function() {
+
+
 
         $("#isCompleted, #incomeExpenseItem, #incomeExpenseType").select2({placeholder: "Выберите...", minimumResultsForSearch: Infinity});
 
