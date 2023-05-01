@@ -39,8 +39,8 @@ import java.util.stream.Collectors;
 @Log
 public class AdminServiceImpl implements AdminService {
 
-    @Autowired private final AdminRepository adminRepository;
-    @Autowired private final PasswordEncoder passwordEncoder;
+    private final AdminRepository adminRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Admin findAdminById (Long id) {

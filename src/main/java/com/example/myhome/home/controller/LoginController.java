@@ -37,11 +37,11 @@ public class LoginController {
         cookie.setPath(StringUtils.hasLength(request.getContextPath()) ? request.getContextPath() : "/");
         response.addCookie(cookie);
     }
-
-    void clearRememberMeTokens() {
-        CustomUserDetails details = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = details.getUsername();
-        repository.removeUserTokens(username);
-    }
+//
+//    void clearRememberMeTokens() {
+//        CustomUserDetails details = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        String username = details.getUsername();
+//        repository.removeUserTokens(username);
+//    }
 
 }

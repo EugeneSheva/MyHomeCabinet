@@ -2,6 +2,9 @@ package com.example.myhome.home.controller;
 
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.repository.*;
+import com.example.myhome.home.service.RoleService;
+import com.example.myhome.home.service.UserRoleService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -17,17 +20,16 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
+@RequiredArgsConstructor
 @Log
 public class SettingsController {
 
-    @Autowired
-    private IncomeExpenseRepository incomeExpenseRepository;
+    private final IncomeExpenseRepository incomeExpenseRepository;
+    private final PaymentDetailsRepository paymentDetailsRepository;
+    private final PageRoleDisplayRepository pageRoleDisplayRepository;
 
-    @Autowired
-    private PaymentDetailsRepository paymentDetailsRepository;
+    private final UserRoleService userRoleService;
 
-    @Autowired
-    private PageRoleDisplayRepository pageRoleDisplayRepository;
 
     @GetMapping("/admin")
     public String redirectToStatPage() {
@@ -138,8 +140,10 @@ public class SettingsController {
             pages.get(i).setId((long) i+1);
             pages.get(i).setPage_name(originalList.get(i).getPage_name());
             pages.get(i).setRole_director(true);
+            pages.get(i).setCode(originalList.get(i).getCode());
         }
         pageRoleDisplayRepository.saveAll(pages);
+        userRoleService.updateRoles(pages);
         redirectAttributes.addFlashAttribute("success", "Сохранено!");
         return "redirect:/admin/roles";
     }

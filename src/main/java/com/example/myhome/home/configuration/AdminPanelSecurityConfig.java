@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
@@ -37,7 +38,7 @@ public class AdminPanelSecurityConfig {
     private AdminService adminDetailsService;
 
     @Bean
-    public PasswordEncoder passwordEncoder2() {return new BCryptPasswordEncoder(12);}
+    public PasswordEncoder passwordEncoder() {return new BCryptPasswordEncoder(12);}
 
     /*
     Использование AuthenticationManager в этой версии спринга уничтожает возможность делать тесты,
@@ -62,6 +63,11 @@ public class AdminPanelSecurityConfig {
     }
 
     @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
+    }
+
+    @Bean
     public SecurityFilterChain adminSecurityFilterChain(HttpSecurity http) throws Exception {
 
         log.info("setting up admin filter chain");
@@ -70,26 +76,30 @@ public class AdminPanelSecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/dist/**").permitAll()
                 .antMatchers("/images/**").permitAll()
-                .antMatchers("/statistics").hasAuthority("statistics.read")
-                .antMatchers(HttpMethod.GET,"/cashbox/**").hasAuthority("cashbox.read")
-                .antMatchers(HttpMethod.POST, "/cashbox/**").hasAuthority("cashbox.write")
-                .antMatchers(HttpMethod.GET,"/invoices/**").hasAuthority("invoices.read")
-                .antMatchers(HttpMethod.POST, "/invoices/**").hasAuthority("invoices.write")
-                .antMatchers(HttpMethod.GET,"/accounts/**").hasAuthority("accounts.read")
-                .antMatchers(HttpMethod.POST, "/accounts/**").hasAuthority("accounts.write")
-                .antMatchers(HttpMethod.GET,"/apartments/**").hasAuthority("apartments.read")
-                .antMatchers(HttpMethod.POST, "/apartments/**").hasAuthority("apartments.write")
-                .antMatchers(HttpMethod.GET,"/owners/**").hasAuthority("owners.read")
-                .antMatchers(HttpMethod.POST, "/owners/**").hasAuthority("owners.write")
-                .antMatchers(HttpMethod.GET,"/buildings/**").hasAuthority("buildings.read")
-                .antMatchers(HttpMethod.POST, "/buildings/**").hasAuthority("buildings.write")
-                .antMatchers(HttpMethod.GET,"/messages/**").hasAuthority("messages.read")
-                .antMatchers(HttpMethod.POST, "/messages/**").hasAuthority("messages.write")
-                .antMatchers(HttpMethod.GET,"/meters/**").hasAuthority("meters.read")
-                .antMatchers(HttpMethod.POST, "/meters/**").hasAuthority("meters.write")
-                .antMatchers(HttpMethod.GET,"/requests/**").hasAuthority("requests.read")
-                .antMatchers(HttpMethod.POST, "/requests/**").hasAuthority("requests.write")
+                .antMatchers("/**/statistics").hasAuthority("statistics.read")
+                .antMatchers(HttpMethod.GET,"/**/cashbox/**").hasAuthority("cashbox.read")
+                .antMatchers(HttpMethod.POST, "/**/cashbox/**").hasAuthority("cashbox.write")
+                .antMatchers(HttpMethod.GET,"/**/invoices/**").hasAuthority("invoices.read")
+                .antMatchers(HttpMethod.POST, "/**/invoices/**").hasAuthority("invoices.write")
+                .antMatchers(HttpMethod.GET,"/**/accounts/**").hasAuthority("accounts.read")
+                .antMatchers(HttpMethod.POST, "/**/accounts/**").hasAuthority("accounts.write")
+                .antMatchers(HttpMethod.GET,"/**/apartments/**").hasAuthority("apartments.read")
+                .antMatchers(HttpMethod.POST, "/**/apartments/**").hasAuthority("apartments.write")
+                .antMatchers(HttpMethod.GET,"/**/owners/**").hasAuthority("owners.read")
+                .antMatchers(HttpMethod.POST, "/**/owners/**").hasAuthority("owners.write")
+                .antMatchers(HttpMethod.GET,"/**/buildings/**").hasAuthority("buildings.read")
+                .antMatchers(HttpMethod.POST, "/**/buildings/**").hasAuthority("buildings.write")
+                .antMatchers(HttpMethod.GET,"/**/messages/**").hasAuthority("messages.read")
+                .antMatchers(HttpMethod.POST, "/**/messages/**").hasAuthority("messages.write")
+                .antMatchers(HttpMethod.GET,"/**/meters/**").hasAuthority("meters.read")
+                .antMatchers(HttpMethod.POST, "/**/meters/**").hasAuthority("meters.write")
+                .antMatchers(HttpMethod.GET,"/**/requests/**").hasAuthority("requests.read")
+                .antMatchers(HttpMethod.POST, "/**/requests/**").hasAuthority("requests.write")
+                .antMatchers(HttpMethod.GET,"/**/roles").hasAuthority("roles.read")
+                .antMatchers(HttpMethod.POST,"/**/roles").hasAuthority("roles.write")
                 .anyRequest().authenticated()
+                .and()
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler())
                 .and()
                 .formLogin()
                     .loginPage("/admin/site/login").permitAll()

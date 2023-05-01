@@ -221,7 +221,7 @@
         placeholder: 'Выберите...'
     });
 
-    $("#section_select, #apartment_select, #service, #status").select2({placeholder: 'Выберите...', minimumResultsForSearch:Infinity});
+    $("#section_select, #apartment_select, #serviceID, #status").select2({placeholder: 'Выберите...', minimumResultsForSearch:Infinity});
 
     $("#house_select").change(function(){
         console.log(this);
@@ -325,18 +325,18 @@
       let section_name = document.getElementById("section_select").value;
       let date = document.getElementById("date").value;
       let apartment_id = document.getElementById("apartment_select").value;
-      let service_id = document.getElementById("service").value;
+      let service_id = document.getElementById("serviceID").value;
       let stat = document.getElementById("status").value;
-      let readings = document.getElementById("currentReadings").value;
+      let readings = document.getElementById("readings").value;
 
       let meter = {
         'id': initial_meter_id,
         'apartment': apartment_id,
         'building': building_id,
         'section': section_name,
-        'currentReadings': readings,
+        'readings': readings,
         'status': stat,
-        'service': service_id,
+        'serviceID': service_id,
         'date': date
       }
 

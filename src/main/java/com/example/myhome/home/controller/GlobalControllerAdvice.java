@@ -38,52 +38,52 @@ public class GlobalControllerAdvice {
         model.addAttribute("pageRoles", pageRoles);
     }
 
-    @ModelAttribute
-    public void addLoggedInOwnerAttribute(HttpSession session,
-                                          HttpServletRequest request, HttpServletResponse response,
-                                          Model model) {
-
-        // без этих двух строчек почему-то кидает NPE , даже когда весь сайт работает
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth == null) return;
-
-        // без этих двух строчек почему-то кидает NPE , даже когда весь сайт работает
-
-        Object principal = auth.getPrincipal();
-        if(principal instanceof CustomUserDetails) {
-            CustomUserDetails details = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Owner owner = ownerService.fromCustomUserDetailsToOwner(details);
-            model.addAttribute("auth_owner", owner);
-        }
-        else {
-            model.addAttribute("auth_owner", new Owner());
-        }
-
-    }
-
-    @ModelAttribute
-    public void addLoggedInAdminAttribute(HttpSession session,
-                                          HttpServletRequest request, HttpServletResponse response,
-                                          Model model) {
-
-        // без этих двух строчек почему-то кидает NPE , даже когда весь сайт работает
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth == null) return;
-
-        // без этих двух строчек почему-то кидает NPE , даже когда весь сайт работает
-
-        Object principal = auth.getPrincipal();
-        if(principal instanceof CustomAdminDetails) {
-            CustomAdminDetails details = (CustomAdminDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Admin admin = adminService.fromCustomAdminDetailsToAdmin(details);
-            model.addAttribute("auth_admin", admin);
-        }
-        else {
-            model.addAttribute("auth_admin", new Admin());
-        }
-
-    }
+//    @ModelAttribute
+//    public void addLoggedInOwnerAttribute(HttpSession session,
+//                                          HttpServletRequest request, HttpServletResponse response,
+//                                          Model model) {
+//
+//        // без этих двух строчек почему-то кидает NPE , даже когда весь сайт работает
+//
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if(auth == null) return;
+//
+//        // без этих двух строчек почему-то кидает NPE , даже когда весь сайт работает
+//
+//        Object principal = auth.getPrincipal();
+//        if(principal instanceof CustomUserDetails) {
+//            CustomUserDetails details = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//            Owner owner = ownerService.fromCustomUserDetailsToOwner(details);
+//            model.addAttribute("auth_owner", owner);
+//        }
+//        else {
+//            model.addAttribute("auth_owner", new Owner());
+//        }
+//
+//    }
+//
+//    @ModelAttribute
+//    public void addLoggedInAdminAttribute(HttpSession session,
+//                                          HttpServletRequest request, HttpServletResponse response,
+//                                          Model model) {
+//
+//        // без этих двух строчек почему-то кидает NPE , даже когда весь сайт работает
+//
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if(auth == null) return;
+//
+//        // без этих двух строчек почему-то кидает NPE , даже когда весь сайт работает
+//
+//        Object principal = auth.getPrincipal();
+//        if(principal instanceof CustomAdminDetails) {
+//            CustomAdminDetails details = (CustomAdminDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//            Admin admin = adminService.fromCustomAdminDetailsToAdmin(details);
+//            model.addAttribute("auth_admin", admin);
+//        }
+//        else {
+//            model.addAttribute("auth_admin", new Admin());
+//        }
+//
+//    }
 
 }

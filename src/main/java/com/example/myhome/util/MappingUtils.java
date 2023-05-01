@@ -184,7 +184,7 @@ public class MappingUtils {
         admin.setLast_name(dto.getLast_name());
         admin.setEmail(dto.getEmail());
         admin.setPassword(dto.getPassword());
-        admin.setRole(dto.getRole());
+//        admin.setRole(dto.getRole());
         admin.setPhone_number(dto.getPhone_number());
 
         return admin;
@@ -197,7 +197,7 @@ public class MappingUtils {
         dto.setFirst_name(admin.getFirst_name());
         dto.setLast_name(admin.getLast_name());
         dto.setEmail(admin.getEmail());
-        dto.setRole(admin.getRole());
+//        dto.setRole(admin.getRole());
         dto.setPhone_number(admin.getPhone_number());
 
         return dto;

@@ -68,12 +68,7 @@ public class RequestController {
         model.addAttribute("repairRequest", new RepairRequest());
         model.addAttribute("id", repairRequestService.getMaxId()+1);
         model.addAttribute("owners", ownerService.findAll());
-        model.addAttribute("masters", adminService.findAll().stream()
-                .filter(master -> master.getRole() != UserRole.ROLE_ADMIN &&
-                        master.getRole() != UserRole.ROLE_MANAGER &&
-                        master.getRole() != UserRole.ROLE_DIRECTOR)
-                .sorted(Comparator.comparing(o -> o.getRole().getName()))
-                .collect(Collectors.toList()));
+        model.addAttribute("masters", adminService.findAll());
 
         model.addAttribute("date", LocalDate.now());
         model.addAttribute("time", LocalTime.now());
@@ -93,12 +88,7 @@ public class RequestController {
         model.addAttribute("best_date", repairRequest.getBest_time_request().toLocalDate());
         model.addAttribute("best_time", repairRequest.getBest_time_request().toLocalTime());
         model.addAttribute("owners", ownerService.findAll());
-        model.addAttribute("masters", adminService.findAll().stream()
-                .filter(master -> master.getRole() != UserRole.ROLE_ADMIN &&
-                        master.getRole() != UserRole.ROLE_MANAGER &&
-                        master.getRole() != UserRole.ROLE_DIRECTOR)
-                .sorted(Comparator.comparing(o -> o.getRole().getName()))
-                .collect(Collectors.toList()));
+        model.addAttribute("masters", adminService.findAll());
 
         return "admin_panel/requests/request_card";
     }

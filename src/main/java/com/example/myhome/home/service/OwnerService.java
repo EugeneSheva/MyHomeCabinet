@@ -240,10 +240,6 @@ public class OwnerService {
         return userstatus;
     }
 
-    public Owner fromCustomUserDetailsToOwner(CustomUserDetails details) {
-        return findByLogin(details.getUsername());
-    }
-
     public Long countAllOwners() {
         return ownerRepository.count();
     }
