@@ -26,7 +26,8 @@ public class TariffServiceImpl implements TariffService {
     public List<Tariff> findAllTariffs() {return tariffRepository.findAll();}
 
     public List<Tariff> findAllTariffsSorted(Boolean ascending_order) {
-        return tariffRepository.findAll(Sort.by((ascending_order) ? Sort.Direction.ASC : Sort.Direction.DESC));
+        log.info(ascending_order.toString());
+        return tariffRepository.findAll(Sort.by((ascending_order) ? Sort.Direction.ASC : Sort.Direction.DESC, "name"));
     }
 
     public Tariff findTariffById(Long tariff_id) {return tariffRepository.findById(tariff_id).orElseThrow();}

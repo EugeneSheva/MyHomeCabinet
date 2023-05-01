@@ -55,12 +55,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Page<ApartmentAccount> findAllAccountsByFiltersAndPage(FilterForm filters, Pageable pageable) {
+    public Page<ApartmentAccountDTO> findAllAccountsByFiltersAndPage(FilterForm filters, Pageable pageable) {
         log.info("Searching for accounts(page "+pageable.getPageNumber()+"/size "+pageable.getPageSize() + ") and specification");
-        Specification<ApartmentAccount> spec = buildSpecFromFilters(filters);
-        Page<ApartmentAccount> page = accountRepository.findAll(spec, pageable);
-        log.info("Found " + page.getContent().size() + " accounts");
-        return page;
+        Page<ApartmentAccount> initialPage = accountRepository.findAll(buildSpecFromFilters(filters), pageable);
+        log.info("Found " + initialPage.getContent().size() + " accounts");
+        List<ApartmentAccountDTO> listDTO = initialPage.getContent().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
+        return new PageImpl<>(listDTO, pageable, initialPage.getTotalElements());
     }
 
     @Override

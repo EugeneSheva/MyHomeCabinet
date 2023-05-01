@@ -14,6 +14,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.validation.DataBinder;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.verify;
 public class AccountServiceImplTest {
 
     @MockBean private AccountRepository accountRepository;
+    @MockBean private AuthenticationManager manager;
     @Autowired private AccountServiceImpl accountServiceImpl;
     @Autowired private AccountValidator validator;
 

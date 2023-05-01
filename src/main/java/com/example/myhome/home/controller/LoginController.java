@@ -1,6 +1,5 @@
 package com.example.myhome.home.controller;
 
-import com.example.myhome.home.configuration.security.CustomUserDetails;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;

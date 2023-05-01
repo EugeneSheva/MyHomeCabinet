@@ -1,6 +1,5 @@
 package com.example.myhome.home.service;
 
-import com.example.myhome.home.configuration.security.CustomUserDetails;
 import com.example.myhome.home.dto.ApartmentDTO;
 import com.example.myhome.home.dto.BuildingDTO;
 import com.example.myhome.home.dto.OwnerDTO;

@@ -7,6 +7,7 @@ import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.RepairRequestRepository;
 import com.example.myhome.home.service.impl.AdminServiceImpl;
 import com.example.myhome.home.specification.RequestSpecifications;
+import com.example.myhome.util.MappingUtils;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -58,32 +59,7 @@ public class RepairRequestService {
         Page<RepairRequest> initialPage = repairRequestRepository.findAll(buildSpecFromFilters(filters), pageable);
 
         List<RepairRequestDTO> listDTO = initialPage.getContent().stream()
-                .map(request -> {
-                    Long apartmentID = (request.getApartment() != null) ? request.getApartment().getId() : null;
-                    Long apartmentNumber = (request.getApartment() != null) ? request.getApartment().getNumber() : null;
-                    String apartmentBuildingName = (request.getApartment() != null) ? request.getApartment().getBuilding().getName() : null;
-                    Long ownerID = (request.getOwner() != null) ? request.getOwner().getId() : null;
-                    String ownerFullName = (request.getOwner() != null) ? request.getOwner().getFullName() : null;
-                    String ownerPhoneNumber = (request.getOwner() != null) ? request.getOwner().getPhone_number() : null;
-                    Long masterID = (request.getMaster() != null) ? request.getMaster().getId() : null;
-                    String masterFullName = (request.getMaster() != null) ? request.getMaster().getFullName() : null;
-
-                    return RepairRequestDTO.builder()
-                            .id(request.getId())
-                            .best_time(request.getBest_time_request().format(DateTimeFormatter.ofPattern("yyyy-MM-dd - HH:mm")))
-                            .master_type(request.getMaster_type().getName())
-                            .description(request.getDescription())
-                            .apartmentID(apartmentID)
-                            .apartmentNumber(apartmentNumber)
-                            .apartmentBuildingName(apartmentBuildingName)
-                            .ownerID(ownerID)
-                            .ownerFullName(ownerFullName)
-                            .ownerPhoneNumber(ownerPhoneNumber)
-                            .masterID(masterID)
-                            .masterFullName(masterFullName)
-                            .status(request.getStatus().getName())
-                            .build();
-                })
+                .map(MappingUtils::fromRequestToDTO)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(listDTO, pageable, initialPage.getTotalElements());

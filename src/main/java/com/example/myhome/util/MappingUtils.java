@@ -4,6 +4,7 @@ import com.example.myhome.home.dto.*;
 import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.model.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,35 @@ public class MappingUtils {
         dto.setNumber(account.getNumber());
         dto.setChangedState(account.getChangedState());
         dto.setSection(account.getSection());
+
+        Apartment apartment = account.getApartment();
+        if(apartment != null) {
+            dto.setApartment(
+                    ApartmentDTO.builder()
+                            .id(apartment.getId())
+                            .fullName("кв. " + apartment.getNumber() + ", " + account.getBuilding().getName())
+                            .build());
+        }
+
+        Building building = account.getBuilding();
+        if(building != null) {
+            dto.setBuilding(
+                    BuildingDTO.builder()
+                            .id(building.getId())
+                            .name(building.getName())
+                            .build()
+            );
+        }
+
+        Owner owner = account.getApartment().getOwner();
+        if(owner != null) {
+            dto.setOwner(
+                    OwnerDTO.builder()
+                            .id(owner.getId())
+                            .fullName(owner.getFullName())
+                            .build()
+            );
+        }
 
 //        dto.setApartment(fromApartmentToDTO(account.getApartment()));
 //        dto.setOwner(fromOwnerToDTO(account.getOwner()));
@@ -202,6 +232,37 @@ public class MappingUtils {
         dto.setApartmentOwnerFullName(meter.getApartment().getOwner().getFullName());
 
         return dto;
+    }
+
+    //REQUEST
+//    public static RepairRequest fromDTOToRequest(RepairRequestDTO dto) {}
+    public static RepairRequestDTO fromRequestToDTO(RepairRequest request) {
+        if(request == null) return null;
+
+        Long apartmentID = (request.getApartment() != null) ? request.getApartment().getId() : null;
+        Long apartmentNumber = (request.getApartment() != null) ? request.getApartment().getNumber() : null;
+        String apartmentBuildingName = (request.getApartment() != null) ? request.getApartment().getBuilding().getName() : null;
+        Long ownerID = (request.getApartment().getOwner() != null) ? request.getApartment().getOwner().getId() : null;
+        String ownerFullName = (request.getApartment().getOwner() != null) ? request.getApartment().getOwner().getFullName() : null;
+        String ownerPhoneNumber = (request.getApartment().getOwner() != null) ? request.getApartment().getOwner().getPhone_number() : null;
+        Long masterID = (request.getMaster() != null) ? request.getMaster().getId() : null;
+        String masterFullName = (request.getMaster() != null) ? request.getMaster().getFullName() : null;
+
+        return RepairRequestDTO.builder()
+                .id(request.getId())
+                .best_time(request.getBest_time_request().format(DateTimeFormatter.ofPattern("yyyy-MM-dd - HH:mm")))
+                .master_type(request.getMaster_type().getName())
+                .description(request.getDescription())
+                .apartmentID(apartmentID)
+                .apartmentNumber(apartmentNumber)
+                .apartmentBuildingName(apartmentBuildingName)
+                .ownerID(ownerID)
+                .ownerFullName(ownerFullName)
+                .ownerPhoneNumber(ownerPhoneNumber)
+                .masterID(masterID)
+                .masterFullName(masterFullName)
+                .status(request.getStatus().getName())
+                .build();
     }
 
 }

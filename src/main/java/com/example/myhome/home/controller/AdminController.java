@@ -1,11 +1,9 @@
 package com.example.myhome.home.controller;
 
-import com.example.myhome.home.configuration.security.CustomAdminDetails;
 import com.example.myhome.home.dto.AdminDTO;
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.service.AdminService;
-import com.example.myhome.home.service.impl.AdminServiceImpl;
 import com.example.myhome.util.MappingUtils;
 import com.example.myhome.util.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,19 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

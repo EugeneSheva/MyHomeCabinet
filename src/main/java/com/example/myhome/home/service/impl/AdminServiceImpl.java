@@ -1,7 +1,5 @@
 package com.example.myhome.home.service.impl;
 
-import com.example.myhome.home.configuration.security.CustomAdminDetails;
-import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.dto.AdminDTO;
 
@@ -15,7 +13,6 @@ import com.example.myhome.util.UserRole;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.java.Log;
-import org.hibernate.engine.spi.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,11 +24,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -139,15 +137,15 @@ public class AdminServiceImpl implements AdminService {
             log.info("Save successful!");
             log.info(savedAdmin.toString());
 
-            String currentlyLoggedInAdminEmail = ((CustomAdminDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-
-            if(savedAdmin.getEmail().equalsIgnoreCase(currentlyLoggedInAdminEmail)) {
-                log.info("Updated currently logged user's credentials, changing role to " + savedAdmin.getRole().name());
-                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                List<GrantedAuthority> updatedAuthorities = List.of(new SimpleGrantedAuthority(savedAdmin.getRole().name()));
-                Authentication newAuth = new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(), updatedAuthorities);
-                SecurityContextHolder.getContext().setAuthentication(newAuth);
-            }
+//            String currentlyLoggedInAdminEmail = ((CustomAdminDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+//
+//            if(savedAdmin.getEmail().equalsIgnoreCase(currentlyLoggedInAdminEmail)) {
+//                log.info("Updated currently logged user's credentials, changing role to " + savedAdmin.getRole().name());
+//                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//                List<GrantedAuthority> updatedAuthorities = List.of(new SimpleGrantedAuthority(savedAdmin.getRole().name()));
+//                Authentication newAuth = new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(), updatedAuthorities);
+//                SecurityContextHolder.getContext().setAuthentication(newAuth);
+//            }
 
             return savedAdmin;
         } catch (Exception e) {
@@ -189,11 +187,6 @@ public class AdminServiceImpl implements AdminService {
     public List<Admin> getAdminsByRole(UserRole role) { return adminRepository.getAdminsByRole(role);}
 
     @Override
-    public Admin fromCustomAdminDetailsToAdmin(CustomAdminDetails details) {
-        return findAdminByLogin(details.getUsername());
-    }
-
-    @Override
     public Specification<Admin> buildSpecFromFilters(FilterForm filters) throws IllegalAccessException {
 
         if(!filters.filtersPresent()) return null;
@@ -218,4 +211,11 @@ public class AdminServiceImpl implements AdminService {
     }
 
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info("Searching for user with username " + username);
+        Admin admin = adminRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Такого пользователя не существует"));
+        log.info("Admin found : " + admin.toString());
+        return admin;
+    }
 }

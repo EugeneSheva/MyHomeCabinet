@@ -366,18 +366,25 @@ function drawAccountsTable(){
     $accountsTableBody.html('');
 
     for(const account of data.content) {
+
+        let apartName = (account.apartment) ? account.apartment.fullName : '';
+        let buildingName = (account.building) ? account.building.name : '';
+        let ownerName = (account.owner) ? account.owner.fullName : '';
+
         let newTableRow = document.createElement('tr');
         newTableRow.style.cursor = 'pointer';
         newTableRow.class = 'account_row';
         newTableRow.innerHTML = '<td>' + account.id + '</td>' +
+
                                 '<td>' +
                                     '<small class="label ' + ((account.isActive) ? 'label-success' : 'label-danger') + '">' +
-                                                            ((account.isActive) ? 'Активен' : 'Неактивен') + '</small>' +
+                                                             ((account.isActive) ? 'Активен' : 'Неактивен') + '</small>' +
                                 '</td>' +
-                                '<td>' + account.apartment.number + '</td>' +
-                                '<td>' + account.building.name + '</td>' +
-                                '<td>' + account.apartment.section + '</td>' +
-                                '<td>' + account.owner.fullName + '</td>' +
+                                '<td>' + apartName + '</td>' +
+                                '<td>' + buildingName + '</td>' +
+                                '<td>' + account.section + '</td>' +
+                                '<td>' + ownerName + '</td>' +
+
                                 '<td style="color:' + ((account.balance > 0) ? 'green' : 'red') + '" >' + account.balance + '</td>' +
                                 '<td>' +
                                     '<div class="btn-group pull-right">' +
@@ -577,21 +584,22 @@ function drawTransactionsTable() {
     let $cashboxTable = $("#cashboxTable tbody");
     $cashboxTable.html('');
     for(const cashbox of data.content) {
+        let date = new Date(cashbox.date);
         let newTableRow = document.createElement('tr');
         newTableRow.style.cursor = 'pointer';
         newTableRow.class = 'cashbox_row';
         newTableRow.innerHTML =   '<td>' + cashbox.id + '</td>' +
-                                  '<td>' + cashbox.date + '</td>' +
+                                  '<td>' + date.toISOString().split('T')[0] + '</td>' +
                                   '<td>' + ((cashbox.completed) ? 'Проведен' : 'Не проведен') + '</td>' +
                                   '<td>' + cashbox.transactionItemName + '</td>' +
                                   '<td>' + cashbox.ownerFullName + '</td>' +
                                   '<td>' + cashbox.accountNumber + '</td>' +
-                                  '<td>' + cashbox.transactionType + '</td>' +
-                                  '<td>' + cashbox.amount + '</td>' +
+                                  '<td style="color: ' + (cashbox.amount > 0 ? 'green' : 'red') + '">' + cashbox.transactionType + '</td>' +
+                                  '<td style="color: ' + (cashbox.amount > 0 ? 'green' : 'red') + '">' + cashbox.amount + '</td>' +
                                   '<td>' +
                                       '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
                                           '<a href="/admin/cashbox/edit/' + cashbox.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></a>' +
-                                          '<a href="/admin/cashbox/delete/' + cashbox.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></a>' +
+                                          '<a href="/admin/cashbox/delete/' + cashbox.id + '" class="btn btn-default btn-sm"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
                                       '</div>' +
                                   '</td>';
         let row_children = newTableRow.children;

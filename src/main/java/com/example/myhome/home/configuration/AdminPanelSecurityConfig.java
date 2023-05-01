@@ -1,10 +1,12 @@
-package com.example.myhome.home.configuration.security;
+package com.example.myhome.home.configuration;
 
+import com.example.myhome.home.service.AdminService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -32,24 +34,10 @@ public class AdminPanelSecurityConfig {
     private DataSource dataSource;
 
     @Autowired
-    private PersistentTokenRepository repository;
-
-    @Bean
-    public UserDetailsService adminDetailsService() {
-        return new CustomAdminDetailsService();
-    }
+    private AdminService adminDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder2() {return new BCryptPasswordEncoder(12);}
-
-    @Bean
-    public DaoAuthenticationProvider authenticationProviderAdmin(){
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(adminDetailsService());
-        authenticationProvider.setPasswordEncoder(passwordEncoder2());
-
-        return authenticationProvider;
-    }
 
     /*
     Использование AuthenticationManager в этой версии спринга уничтожает возможность делать тесты,
@@ -61,16 +49,16 @@ public class AdminPanelSecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-//    @Bean
-//    public PersistentTokenRepository persistentTokenRepository() {
-//        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
-//        tokenRepository.setDataSource(dataSource);
-//        return tokenRepository;
-//    }
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        return tokenRepository;
+    }
 
     @Bean
     public PersistentTokenBasedRememberMeServices rememberMeServicesAdmin() {
-        return new PersistentTokenBasedRememberMeServices("secretKey", adminDetailsService(), repository);
+        return new PersistentTokenBasedRememberMeServices("secretKey", adminDetailsService, persistentTokenRepository());
     }
 
     @Bean
@@ -78,13 +66,29 @@ public class AdminPanelSecurityConfig {
 
         log.info("setting up admin filter chain");
 
-        http.authenticationProvider(authenticationProviderAdmin());
-        http.userDetailsService(adminDetailsService());
-
         http.antMatcher("/admin/**")
                 .authorizeRequests()
                 .antMatchers("/dist/**").permitAll()
                 .antMatchers("/images/**").permitAll()
+                .antMatchers("/statistics").hasAuthority("statistics.read")
+                .antMatchers(HttpMethod.GET,"/cashbox/**").hasAuthority("cashbox.read")
+                .antMatchers(HttpMethod.POST, "/cashbox/**").hasAuthority("cashbox.write")
+                .antMatchers(HttpMethod.GET,"/invoices/**").hasAuthority("invoices.read")
+                .antMatchers(HttpMethod.POST, "/invoices/**").hasAuthority("invoices.write")
+                .antMatchers(HttpMethod.GET,"/accounts/**").hasAuthority("accounts.read")
+                .antMatchers(HttpMethod.POST, "/accounts/**").hasAuthority("accounts.write")
+                .antMatchers(HttpMethod.GET,"/apartments/**").hasAuthority("apartments.read")
+                .antMatchers(HttpMethod.POST, "/apartments/**").hasAuthority("apartments.write")
+                .antMatchers(HttpMethod.GET,"/owners/**").hasAuthority("owners.read")
+                .antMatchers(HttpMethod.POST, "/owners/**").hasAuthority("owners.write")
+                .antMatchers(HttpMethod.GET,"/buildings/**").hasAuthority("buildings.read")
+                .antMatchers(HttpMethod.POST, "/buildings/**").hasAuthority("buildings.write")
+                .antMatchers(HttpMethod.GET,"/messages/**").hasAuthority("messages.read")
+                .antMatchers(HttpMethod.POST, "/messages/**").hasAuthority("messages.write")
+                .antMatchers(HttpMethod.GET,"/meters/**").hasAuthority("meters.read")
+                .antMatchers(HttpMethod.POST, "/meters/**").hasAuthority("meters.write")
+                .antMatchers(HttpMethod.GET,"/requests/**").hasAuthority("requests.read")
+                .antMatchers(HttpMethod.POST, "/requests/**").hasAuthority("requests.write")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

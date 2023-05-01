@@ -1,7 +1,5 @@
 package com.example.myhome.home.controller;
 
-import com.example.myhome.home.configuration.security.CustomAdminDetails;
-import com.example.myhome.home.configuration.security.CustomUserDetails;
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.model.PageRoleDisplay;

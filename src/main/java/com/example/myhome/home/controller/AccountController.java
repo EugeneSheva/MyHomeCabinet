@@ -156,7 +156,7 @@ public class AccountController {
                                                                @RequestParam String filters) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);
-        return accountService.toDTO(accountService.findAllAccountsByFiltersAndPage(form, PageRequest.of(page, size)));
+        return accountService.findAllAccountsByFiltersAndPage(form, PageRequest.of(page-1, size));
     }
 
     @ModelAttribute
