@@ -5,7 +5,7 @@ import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.CashBoxRepository;
-import com.example.myhome.home.specification.CashBoxSpecification;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

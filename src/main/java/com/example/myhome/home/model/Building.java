@@ -2,6 +2,7 @@ package com.example.myhome.home.model;
 
 import javax.persistence.*;
 
+
 import com.example.myhome.home.dto.BuildingDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

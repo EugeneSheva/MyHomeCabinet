@@ -21,7 +21,7 @@ import java.util.*;
 
 @Service
 @Log
-public class InvoiceServiceImpl implements InvoiceService, InvoiceTemplateService {
+public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplateService {
 
     @Autowired private InvoiceRepository invoiceRepository;
     @Autowired private InvoiceTemplateRepository invoiceTemplateRepository;

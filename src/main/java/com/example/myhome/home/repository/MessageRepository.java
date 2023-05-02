@@ -3,8 +3,8 @@ package com.example.myhome.home.repository;
 import com.example.myhome.home.model.Message;
 import com.example.myhome.home.specification.MessageSpecifications;
 import com.example.myhome.home.model.Owner;
-import com.example.myhome.home.specification.ApartmentSpecification;
-import com.example.myhome.home.specification.MessageSpecification;
+import com.example.myhome.home.specification.ApartmentSpecifications;
+import com.example.myhome.home.specification.MessageSpecifications;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -28,7 +28,7 @@ public interface MessageRepository extends JpaRepository<Message, Long>, JpaSpec
         Specification<Message> spec = Specification.where(null);
 
         if (text != null && !text.isEmpty()) {
-            spec = spec.and(MessageSpecification.textContains(text));
+            spec = spec.and(MessageSpecifications.textContains(text));
         }
         return findAll(spec,pageable);
     }

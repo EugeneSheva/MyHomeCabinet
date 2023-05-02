@@ -1,5 +1,6 @@
 package com.example.myhome.home.dto;
 
+import com.example.myhome.home.model.IncomeExpenseType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

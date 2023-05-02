@@ -1,5 +1,6 @@
-package com.example.myhome.home.model;
+package com.example.myhome.home.dto;
 
+import com.example.myhome.home.dto.ApartmentDTO;
 import lombok.*;
 
 import javax.persistence.*;

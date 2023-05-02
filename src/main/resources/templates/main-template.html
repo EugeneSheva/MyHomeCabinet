@@ -17,6 +17,12 @@
     </ul>
     <!-- Right navbar links -->
     <aside class="navbar-nav ml-auto align-items-center" >
+        <form id="languageForm" action="#" th:action="@{/change-language}" method="post" style="padding-right: 10px">
+            <select class="form-group" name="language" onchange="document.getElementById('languageForm').submit()" style="margin-bottom: 0">
+                <option th:selected="${#locale.language == 'uk'}" value="uk_UA">Укр</option>
+                <option th:selected="${#locale.language == 'ru'}" value="ru_UA">Рус</option>
+            </select>
+        </form>
       <li class="dropdown user user-menu">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
           <i class="fa fa-user-circle text-purple"></i>
@@ -70,7 +76,8 @@
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <!-- Add icons to the links using the .nav-icon class
                  with font-awesome or any other icon font library -->
-            <li class="nav-item" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[0].getRoles()}__)')}">
+            <li class="nav-item" >
+<!--                th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[0].getRoles()}__)')}">-->
               <a th:href="@{/admin/statistics/}" class="nav-link">
                 <i class="fa-solid fa-chart-line"></i>
                 <p class="pl-1">
@@ -78,7 +85,8 @@
                 </p>
               </a>
             </li>
-            <li class="nav-item" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[1].getRoles()}__)')}">
+            <li class="nav-item">
+<!--                th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[1].getRoles()}__)')}">-->
               <a th:href="@{/admin/cashbox/}"class="nav-link">
                 <i class="fa fa-usd" aria-hidden="true" style="width:16px"></i>
                 <p class="pl-1">
@@ -86,7 +94,8 @@
                 </p>
               </a>
             </li>
-            <li class="nav-item" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[2].getRoles()}__)')}">
+            <li class="nav-item">
+<!--              th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[2].getRoles()}__)')}">-->
               <a th:href="@{/admin/invoices}" class="nav-link">
                 <i class="fa fa-files-o" aria-hidden="true"></i>
                 <p class="pl-1">
@@ -94,7 +103,8 @@
                 </p>
               </a>
             </li>
-            <li class="nav-item" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[3].getRoles()}__)')}">
+            <li class="nav-item">
+<!--                th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[3].getRoles()}__)')}">-->
               <a th:href="@{/admin/accounts}" class="nav-link">
                 <i class="fa fa-credit-card" aria-hidden="true"></i>
                 <p class="pl-1">
@@ -102,7 +112,8 @@
                 </p>
               </a>
             </li>
-            <li class="nav-item" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[4].getRoles()}__)')}">
+            <li class="nav-item" >
+<!--                th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[4].getRoles()}__)')}">-->
               <a th:href="@{/admin/apartments/}" class="nav-link">
                 <i class="fa fa-key" aria-hidden="true"></i>
                 <p class="pl-1">
@@ -110,7 +121,8 @@
                 </p>
               </a>
             </li>
-            <li class="nav-item" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[5].getRoles()}__)')}">
+            <li class="nav-item" >
+<!--                th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[5].getRoles()}__)')}">-->
               <a th:href="@{/admin/owners/}" class="nav-link">
                 <i class="fa fa-users" aria-hidden="true" style="font-size: 14px"></i>
                 <p class="pl-1">
@@ -118,7 +130,8 @@
                 </p>
               </a>
             </li>
-            <li class="nav-item" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[6].getRoles()}__)')}">
+            <li class="nav-item" >
+<!--              th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[6].getRoles()}__)')}">-->
               <a th:href="@{/admin/buildings/}" class="nav-link">
                 <i class="fa fa-building" aria-hidden="true" style="width:16px"></i>
                 <p class="pl-1">
@@ -126,7 +139,8 @@
                 </p>
               </a>
             </li>
-            <li class="nav-item" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[7].getRoles()}__)')}">
+            <li class="nav-item" >
+<!--              th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[7].getRoles()}__)')}">-->
               <a th:href="@{/admin/messages/}" class="nav-link">
                 <i class="fa fa-envelope-o" aria-hidden="true"></i>
                 <p class="pl-1">
@@ -134,7 +148,8 @@
                 </p>
               </a>
             </li>
-            <li class="nav-item" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[8].getRoles()}__)')}">
+            <li class="nav-item" >
+<!--              th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[8].getRoles()}__)')}">-->
               <a th:href="@{/admin/requests}" class="nav-link">
                 <i class="fa fa-wrench" aria-hidden="true"></i>
                 <p class="pl-1">
@@ -142,7 +157,8 @@
                 </p>
               </a>
             </li>
-            <li class="nav-item" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[9].getRoles()}__)')}">
+            <li class="nav-item">
+<!--                th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[9].getRoles()}__)')}">-->
               <a th:href="@{/admin/meters}" class="nav-link">
                 <i class="fa fa-tachometer" aria-hidden="true"></i>
                 <p class="pl-1">
@@ -150,7 +166,8 @@
                 </p>
               </a>
             </li>
-            <li class="nav-item" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[10].getRoles()}__)')}">
+            <li class="nav-item">
+<!--                th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[10].getRoles()}__)')}">-->
               <a href="#" class="nav-link">
                 <i class="fa fa-desktop" aria-hidden="true"></i>
                 <p class="pl-1">
@@ -194,37 +211,43 @@
                 </p>
               </a>
               <ul class="nav nav-treeview" style="font-weight: 400">
-                <li class="nav-item dropdown-items" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[11].getRoles()}__)')}">
+                <li class="nav-item dropdown-items">
+<!--                    th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[11].getRoles()}__)')}">-->
                   <a th:href="@{/admin/services}" class="nav-link dropdown-links" style="margin:0">
                     <i style="font-size: 12px;" class="fa fa-briefcase nav-icon"></i>
                     <p>Услуги</p>
                   </a>
                 </li>
-                <li class="nav-item dropdown-items" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[12].getRoles()}__)')}" >
+                <li class="nav-item dropdown-items">
+<!--                    th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[12].getRoles()}__)')}" >-->
                   <a th:href="@{/admin/tariffs}" class="nav-link dropdown-links" style="margin:0">
                     <i style="font-size: 12px;"  class="fa fa-money nav-icon"></i>
                     <p>Тарифы</p>
                   </a>
                 </li>
-                <li class="nav-item dropdown-items" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[13].getRoles()}__)')}">
+                <li class="nav-item dropdown-items">
+<!--                  th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[13].getRoles()}__)')}">-->
                   <a th:href="@{/admin/admins}" class="nav-link dropdown-links" style="margin:0">
                     <i style="font-size: 12px;" class="fa fa-user-plus nav-icon"></i>
                     <p>Пользователи</p>
                   </a>
                 </li>
-                <li class="nav-item dropdown-items" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[14].getRoles()}__)')}">
+                <li class="nav-item dropdown-items">
+<!--                  th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[14].getRoles()}__)')}">-->
                   <a th:href="@{/admin/roles}" class="nav-link dropdown-links" style="margin:0">
                     <i style="font-size: 12px;" class="fa fa-users nav-icon"></i>
                     <p>Роли</p>
                   </a>
                 </li>
-                <li class="nav-item dropdown-items" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[15].getRoles()}__)')}">
+                <li class="nav-item dropdown-items">
+<!--                  th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[15].getRoles()}__)')}">-->
                   <a th:href="@{/admin/payment-details}" class="nav-link dropdown-links" style="margin:0">
                     <i style="font-size: 12px;" class="fa fa-credit-card nav-icon"></i>
                     <p>Платежные реквизиты</p>
                   </a>
                 </li>
-                <li class="nav-item dropdown-items" th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[16].getRoles()}__)')}">
+                <li class="nav-item dropdown-items">
+<!--                  th:if="${#authorization.expression('hasAnyAuthority(__${pageRoles[16].getRoles()}__)')}">-->
                   <a th:href="@{/admin/income-expense}" class="nav-link dropdown-links" style="margin:0">
                     <i style="font-size: 12px;" class="fa fa-list-ol nav-icon"></i>
                     <p>Статьи платежей</p>

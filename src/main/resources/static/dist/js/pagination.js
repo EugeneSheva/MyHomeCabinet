@@ -188,6 +188,7 @@ function drawApartmentsTable() {
     let $apartmentsTable = $("#apartmentsTable tbody");
     $apartmentsTable.html('');
     for(const apartment of data.content) {
+        console.log("apartment" + apartment);
         let newTableRow = document.createElement('tr');
         newTableRow.style.cursor = 'pointer';
         newTableRow.class = 'apartment_row';
@@ -333,10 +334,8 @@ function drawMessagesTableCabinet(){
 }
 
 function drawMessagesTableAdmin() {
-    console.log('msg draw table start');
     let pageFiltersString = JSON.stringify(gatherFilters());
     let data = getTableData('/admin/messages/get-messages', currentPageNumber, currentPageSize, pageFiltersString);
-    console.log('msg start' + data);
     let $invoicesTableBody = $("#messageTable tbody");
     $invoicesTableBody.html('');
 
@@ -351,19 +350,16 @@ function drawMessagesTableAdmin() {
         let minutes = parseInt(dateParts[4]);
         let date = new Date(year, month, day, hours, minutes);
         let formattedDate = ("0" + date.getDate()).slice(-2) + "." + ("0" + (date.getMonth() + 1)).slice(-2) + "." + date.getFullYear() + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
-        console.log('msg success');
 
         let newTableRow = document.createElement('tr');
         newTableRow.style.cursor = 'pointer';
         newTableRow.class = 'invoice_row';
         var index = msg.text.indexOf("<br>");
         var text = msg.text.substring(3, index);
-        console.log("text" + text);
         var newText = text.substring(0, 70);
         if (newText.length == 70) {
             newText += '...'
         }
-        console.log("newText" + newText)
         newTableRow.innerHTML =
             '<td><input type="checkbox" name="" id="" value="' + msg.id + '"></td>' +
             '<td>' + msg.receiversName + '</td>' +
@@ -375,7 +371,6 @@ function drawMessagesTableAdmin() {
                 window.location.href = '/cabinet/messages/' + msg.id;
             });
         }
-        console.log('msg drawed');
         $invoicesTableBody.append(newTableRow);
     }
     if (data.content.length === 0) {
@@ -383,9 +378,7 @@ function drawMessagesTableAdmin() {
         newTableRow.innerHTML = '<td colspan=10>Ничего не найдено...</td>';
         $invoicesTableBody.append(newTableRow);
     }
-
     drawPagination();
-
 }
 
 

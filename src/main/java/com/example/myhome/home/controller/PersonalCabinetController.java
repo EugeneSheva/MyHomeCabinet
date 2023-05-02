@@ -1,10 +1,15 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.configuration.security.CustomUserDetails;
+import com.example.myhome.home.dto.ApartmentDTO;
+import com.example.myhome.home.dto.InvoiceDTO;
+import com.example.myhome.home.dto.OwnerDTO;
+import com.example.myhome.home.dto.RepairRequestDTO;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.*;
+import com.example.myhome.home.service.impl.InvoiceComponentServiceImpl;
 import com.example.myhome.home.validator.OwnerValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,7 +64,7 @@ public class PersonalCabinetController {
     @Autowired
     private InvoiceService invoiceService;
     @Autowired
-    private InvoiceComponentService invoiceComponentService;
+    private InvoiceComponentServiceImpl invoiceComponentService;
     @Autowired
     private MessageService messageService;
     @Autowired
@@ -290,8 +295,8 @@ public class PersonalCabinetController {
     }
     @GetMapping(value="/get-invoices-cabinet")
     public @ResponseBody Page<InvoiceDTO> getInvoices(@RequestParam Integer page,
-                                                   @RequestParam Integer size,
-                                                   @RequestParam String filters) throws JsonProcessingException {
+                                                      @RequestParam Integer size,
+                                                      @RequestParam String filters) throws JsonProcessingException {
         System.out.println("AJAX page size filter "+ page + " " + size + " " + filters);
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);

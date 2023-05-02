@@ -1,5 +1,7 @@
 package com.example.myhome.home.service;
 
+import com.example.myhome.home.dto.BuildingDTO;
+import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.dto.ApartmentDTO;
@@ -130,11 +132,15 @@ public class ApartmentService {
 
     public Page<ApartmentDTO> findBySpecificationAndPage(Integer page, Integer size, FilterForm filters) {
         Pageable pageable = PageRequest.of(page - 1, size);
-
+        List<ApartmentDTO> listDTO = new ArrayList<>();
         Page<Apartment> apartments = apartmentRepository.findByFilters(filters.getNumber(), filters.getBuildingName(), filters.getSection(),
                 filters.getFloor(), filters.getOwner(), filters.getDebtSting(), pageable);
-        List<ApartmentDTO> listDTO = apartments.getContent().stream().map(MappingUtils::fromApartmentToDTO).collect(Collectors.toList());
-
+        for (Apartment apartment : apartments) {
+            Owner owner = apartment.getOwner();
+            Building building = apartment.getBuilding();
+            listDTO.add(new ApartmentDTO(apartment.getId(), new BuildingDTO(building.getId(), building.getName()), apartment.getSection(), apartment.getFloor(),
+                    apartment.getNumber(), apartment.getAccount().getId(), new OwnerDTO(owner.getId(), owner.getFirst_name(), owner.getLast_name(), owner.getFathers_name(), owner.getFullName()), apartment.getBalance()));
+        }
         return new PageImpl<>(listDTO, pageable, apartments.getTotalElements());
     }
 //

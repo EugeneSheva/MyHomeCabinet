@@ -1,5 +1,6 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.controller.socket.WebsocketController;
 import com.example.myhome.home.dto.ApartmentDTO;
 import com.example.myhome.home.dto.BuildingDTO;
 import com.example.myhome.home.model.*;
@@ -44,6 +45,7 @@ public class MessageController {
     private final OwnerService ownerService;
     private final AdminRepository adminRepository;
     private final MessageValidator messageValidator;
+    private final WebsocketController websocketController;
 
     @GetMapping
     public String getMessages(Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) {
@@ -141,6 +143,7 @@ public class MessageController {
             message.setSender(adminRepository.findByEmail(principal.getName()).orElseThrow());
             message.setReceivers(recivers);
             messageService.save(message);
+            websocketController.sendMessagesItem(message);
             return "redirect:/admin/messages/";
         }
     }
