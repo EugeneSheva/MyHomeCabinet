@@ -272,9 +272,9 @@
 
   <!-- Main Footer -->
   <footer th:fragment="footer" class="main-footer">
-    <strong>Разработано <a href="#">AVADA-MEDIA</a>.</strong>
-    <strong>На базе системы управления <a href="#">"МойДом24"</a>.</strong>
-    <strong>Документация API доступна по <a href="#">ссылке</a>.</strong>
+    <strong th:text="#{footerP1}">Разработано <a href="#" th:text="#{footerP2}">AVADA-MEDIA</a>.</strong>
+    <strong th:text="#{footerP3}">На базе системы управления <a href="#" th:text="#{footerP4}">"МойДом24"</a>.</strong>
+    <strong th:text="#{footerP5}">Документация API доступна по <a href="#" th:text="#{footerP6}">ссылке</a>.</strong>
     <div class="float-right d-none d-sm-inline-block">
       <b>Version</b> 1.0.0
     </div>

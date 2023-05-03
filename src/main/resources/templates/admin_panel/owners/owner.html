@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>МойДом24</title>
+    <title th:text="#{myHome24}">МойДом24</title>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -25,13 +25,13 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0" th:text="'Профиль владельца'"></h1>
+                        <h1 class="m-0" th:text="#{ownerPrifile}"></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>  Главная</a></li>
-                            <li class="breadcrumb-item"><a th:href="@{/admin/owners}">Владельцы квартир</a></li>
-                            <li class="breadcrumb-item active">Профиль владельца</li>
+                            <li class="breadcrumb-item"><a href="/"><i class="fa fa-home" th:text="#{homePage}"></i>  </a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/admin/owners}" th:text="#{apartmentsOwners}">Владельцы квартир</a></li>
+                            <li class="breadcrumb-item active" th:text="#{ownerPrifile}">Профиль владельца</li>
                         </ol>
                     </div>
                 </div>
@@ -46,8 +46,8 @@
                 <div class="card" style="padding: 10px">
                     <div class="form-group">
                         <a th:href="@{edit/{id}(id=${id})}" class="btn btn-primary btn-sm float-right"
-                           style="margin-left: 2px">Редактировать профиль <i class="fa fa-pencil visible-xs" aria-hidden="true"></i></a>
-                        <a class="btn btn-default btn-sm float-right" style="margin-left: 2px">Перейти в кабинет</a>
+                           style="margin-left: 2px"><h7 th:text="#{editProfile}"></h7> <i class="fa fa-pencil visible-xs" aria-hidden="true"></i></a>
+                        <a class="btn btn-default btn-sm float-right" style="margin-left: 2px" th:text="#{toCabinet}">Перейти в кабинет</a>
                     </div>
                     <div class="card">
                         <div class="card-body p-0">
@@ -61,47 +61,47 @@
                                 <col style="width:50%">
                                 <tbody>
                                 <tr>
-                                    <td><b>Статус</b></td>
+                                    <td><b th:text="#{status}">Статус</b></td>
                                     <td th:text="${owner.status}">?</td>
                                 </tr>
                                 <tr>
-                                    <td><b>ID</b></td>
+                                    <td><b th:text="#{id}">ID</b></td>
                                     <td th:text="${owner.id}">?</td>
                                 </tr>
                                 <tr>
-                                    <td><b>Фамилия</b></td>
+                                    <td><b th:text="#{lastName}">Фамилия</b></td>
                                     <td th:text="${owner.first_name}">?</td>
                                 </tr>
                                 <tr>
-                                    <td><b>Имя</b></td>
+                                    <td><b th:text="#{firstName}">Имя</b></td>
                                     <td th:text="${owner.last_name}">?</td>
                                 </tr>
                                 <tr>
-                                    <td><b>Отчество</b></td>
+                                    <td><b th:text="#{fathersName}">Отчество</b></td>
                                     <td th:text="${owner.fathers_name}">?</td>
                                 </tr>
                                 <tr>
-                                    <td><b>Дата рождения</b></td>
+                                    <td><b th:text="#{birthDate}">Дата рождения</b></td>
                                     <td th:text="${owner.birthdate}">?</td>
                                 </tr>
                                 <tr>
-                                    <td><b>О владельце (заметки)</b></td>
+                                    <td><b th:text="#{aboutOwner}">О владельце (заметки)</b></td>
                                     <td th:text="${owner.description}">?</td>
                                 </tr>
                                 <tr>
-                                    <td><b>Телефон</b></td>
+                                    <td><b th:text="#{phonenumber}">Телефон</b></td>
                                     <td th:text="${owner.phone_number}">?</td>
                                 </tr>
                                 <tr>
-                                    <td><b>Viber</b></td>
+                                    <td><b th:text="#{viber}">Viber</b></td>
                                     <td th:text="${owner.viber}">?</td>
                                 </tr>
                                 <tr>
-                                    <td><b>Telegram</b></td>
+                                    <td><b th:text="#{telegram}">Telegram</b></td>
                                     <td th:text="${owner.telegram}">?</td>
                                 </tr>
                                 <tr>
-                                    <td><b>Email</b></td>
+                                    <td><b th:text="#{email}">Email</b></td>
                                     <td th:text="${owner.email}">?</td>
                                 </tr>
                                 </tbody>

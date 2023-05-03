@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>МойДом24</title>
+    <title th:text="#{myHome24}">МойДом24</title>
     <link rel="stylesheet"
           th:href="@{https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback}">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -29,7 +29,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Статистика</h1> <h1  th:text="#{hello}"></h1>
+                        <h1 class="m-0" th:text="#{statistics}"></h1>
                     </div>
                 </div>
             </div>
@@ -47,22 +47,22 @@
                         <div class="small-box bg-info">
                             <div class="inner">
                                 <h3 th:if="${buidingsQuant}" th:text="${buidingsQuant}"></h3>
-                                <p>Домов</p>
+                                <p th:text="#{buildingQuant}"></p>
                             </div>
                             <div class="icon">
                                 <i class="fa fa-building" aria-hidden="true"></i>
                             </div>
-                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            <a href="#" class="small-box-footer" th:text="#{moreInfo}"><i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                         <div class="small-box bg-info">
                             <div class="inner">
                                 <h3 th:if="${apartmentsQuant}" th:text="${apartmentsQuant}"></h3>
-                                <p>Квартир</p>
+                                <p th:text="#{apartmentQuant}"></p>
                             </div>
                             <div class="icon">
                                 <i class="fa fa-key" aria-hidden="true"></i></i>
                             </div>
-                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            <a href="#" class="small-box-footer" th:text="#{moreInfo}"><i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
 
@@ -71,22 +71,22 @@
                         <div class="small-box bg-success">
                             <div class="inner">
                                 <h3 th:if="${ownersQuant}" th:text="${ownersQuant}"><sup style="font-size: 20px">%</sup></h3>
-                                <p>Активных владельцев</p>
+                                <p th:text="#{activeUserQuant}"></p>
                             </div>
                             <div class="icon">
                                 <i class="fa fa-users" aria-hidden="true"></i>
                             </div>
-                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            <a href="#" class="small-box-footer" th:text="#{moreInfo}"><i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                         <div class="small-box bg-success">
                             <div class="inner">
                                 <h3 th:if="${accountsQuant}" th:text="${accountsQuant}">53<sup style="font-size: 20px"></sup></h3>
-                                <p>Лицевых счетов</p>
+                                <p th:text="#{apartmentAccountQuant}"></p>
                             </div>
                             <div class="icon">
                                 <i class="fa fa-id-card-o" aria-hidden="true"></i>
                             </div>
-                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            <a href="#" class="small-box-footer" th:text="#{moreInfo}"><i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
 
@@ -95,22 +95,22 @@
                         <div class="small-box bg-warning">
                             <div class="inner">
                                 <h3 th:if="${inworkRepairRequestQuant}" th:text="${inworkRepairRequestQuant}"></h3>
-                                <p>Заявок мастера в работе</p>
+                                <p th:text="#{repairRequestsQuant}"></p>
                             </div>
                             <div class="icon">
                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                             </div>
-                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            <a href="#" class="small-box-footer" th:text="#{moreInfo}"><i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                         <div class="small-box bg-warning">
                             <div class="inner">
                                 <h3 th:if="${newRepairRequestQuant}" th:text="${newRepairRequestQuant}"></h3>
-                                <p>Новых заявок мастера</p>
+                                <p th:text="#{newRepairRequests}"></p>
                             </div>
                             <div class="icon">
                                 <i class="fa fa-user-plus" aria-hidden="true"></i>
                             </div>
-                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            <a href="#" class="small-box-footer" th:text="#{moreInfo}"><i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
                 </div>
@@ -132,7 +132,7 @@
                         <div class="info-box">
                             <span class="info-box-icon bg-danger"><i class="fa fa-money" aria-hidden="true"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text">ЗАДОЛЖЕННОСТЬ ПО СЧЕТАМ, ГРН</span>
+                                <span class="info-box-text" th:text="#{debtOnAccounts}"></span>
                                 <span class="info-box-number" th:text="${sumDebt}"></span>
                             </div>
                         </div>
@@ -140,7 +140,7 @@
                         <div class="info-box" style="margin-top: 25px; margin-bottom: 25px;">
                             <span class="info-box-icon bg-info"><i class="fa fa-money" aria-hidden="true"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text">БАЛАНС ПО СЧЕТАМ, ГРН</span>
+                                <span class="info-box-text" th:text="#{balanceOnAccount}"></span>
                                 <span class="info-box-number" th:text="${accountBalance}"></span>
                             </div>
                         </div>
@@ -148,7 +148,7 @@
                         <div class="info-box">
                             <span class="info-box-icon bg-success"><i class="fa fa-money" aria-hidden="true"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text">СОСТОЯНИЕ КАССЫ, ГРН</span>
+                                <span class="info-box-text" th:text="#{cashBoxBalance}"></span>
                                 <span class="info-box-number" th:text="${cashBoxSum}"></span>
                             </div>
                         </div>
@@ -196,6 +196,13 @@
     var dataInv = /*[[${diagramAllInvoices}]]*/ [];
     var dataPaidInv = /*[[${diagramPaidInvoices}]]*/ [];
 
+    var incomeName = [[#{income}]];
+    var expenseName = [[#{expense}]];
+    var repaidDebtName = [[#{repaidDebt}]];
+    var debtName = [[#{debt}]];
+
+
+
     console.log(months)
     console.log(dataInv)
     console.log(dataPaidInv)
@@ -204,7 +211,7 @@
             labels: months,
             datasets: [
                 {
-                    label               : 'Задолженность',
+                    label               : debtName,
                     backgroundColor     : 'rgb(236,0,0)',
                     borderColor         : 'rgba(60,141,188,0.8)',
                     pointRadius          : false,
@@ -215,7 +222,7 @@
                     data                : dataInv
                 },
                 {
-                    label               : 'Погашеные задолженности',
+                    label               : repaidDebtName,
                     backgroundColor     : 'rgb(0,139,2)',
                     borderColor         : 'rgba(210, 214, 222, 1)',
                     pointRadius         : false,
@@ -262,7 +269,7 @@
             labels: months,
             datasets: [
                 {
-                    label               : 'Приход',
+                    label               : incomeName,
                     backgroundColor     : 'rgb(0,139,2)',
                     borderColor         : 'rgba(60,141,188,0.8)',
                     pointRadius          : false,
@@ -273,7 +280,7 @@
                     data: dataIn
                 },
                 {
-                    label               : 'Расход ',
+                    label               : expenseName,
                     backgroundColor     : 'rgb(236,0,0)',
                     borderColor         : 'rgba(210, 214, 222, 1)',
                     pointRadius         : false,

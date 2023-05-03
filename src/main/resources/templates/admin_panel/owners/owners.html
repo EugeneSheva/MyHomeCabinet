@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>МойДом24</title>
+    <title th:text="#{myHome24}">МойДом24</title>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -31,12 +31,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Владельцы</h1>
+                        <h1 class="m-0" th:text="#{owners}">Владельцы</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>  Главная</a></li>
-                            <li class="breadcrumb-item active">Владельцы</li>
+                            <li class="breadcrumb-item"><a href="/"><i class="fa fa-home" th:text="#{homePage}"></i></a></li>
+                            <li class="breadcrumb-item active" th:text="#{owners}"></li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -49,15 +49,15 @@
             <div class="row mr-2 mt-3" style="justify-content: flex-end">
                 <div class="dropdown">
                     <button class="btn btn-success btn-sm float-right dropdown-toggle" type="button"
-                            id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{selectAction}">
                         Выберите действие
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item" th:href="@{/admin/owners/new}">Добавить владельца
+                        <li><a class="dropdown-item" th:href="@{/admin/owners/new}" th:text="#{addApartOwner}">Добавить владельца
                             квартиры</a></li>
-                        <li><a class="dropdown-item" th:href="@{/admin/owners/newMessage}">Отправить сообщение
+                        <li><a class="dropdown-item" th:href="@{/admin/owners/newMessage}" th:text="#{sendMsgToDebtors}">Отправить сообщение
                             должникам</a></li>
-                        <li><a class="dropdown-item" href="#">Отправить приглашение</a></li>
+                        <li><a class="dropdown-item" href="#" th:text="#{sendInvition}">Отправить приглашение</a></li>
                     </ul>
                 </div>
             </div>
@@ -66,7 +66,7 @@
                     <div class="card-header" style="background-color: transparent;">
                         <div class="form-group">
                             <a href="#" onclick="reset()" class="btn btn-default btn-sm float-right">
-                                Очистить </span><i class="fa fa-eraser visible-xs"></i>
+                                <h7 th:text="#{clear}"></h7> </span><i class="fa fa-eraser visible-xs"></i>
                             </a>
                         </div>
                     </div>
@@ -88,15 +88,15 @@
                                 <col style="width:7%">
                                 <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>ФИО</th>
-                                    <th>Телефон</th>
-                                    <th>Email</th>
-                                    <th >Дом</th>
-                                    <th >Квартира</th>
-                                    <th>Добавлен</th>
-                                    <th >Статус</th>
-                                    <th >Есть долг</th>
+                                    <th th:text="#{id}">ID</th>
+                                    <th th:text="#{flf}">ФИО</th>
+                                    <th th:text="#{phonenumber}">Телефон</th>
+                                    <th th:text="#{email}">Email</th>
+                                    <th th:text="#{building}">Дом</th>
+                                    <th th:text="#{apartment}">Квартира</th>
+                                    <th th:text="#{added}">Добавлен</th>
+                                    <th th:text="#{status}">Статус</th>
+                                    <th th:text="#{hasDebt}">Есть долг</th>
                                     <th></th>
                                 </tr>
                                 <tr>
@@ -108,6 +108,7 @@
                                                th:field="${filterForm.phone}" id="phone"></th>
                                     <th><input type="text" autocomplete="off" class="form-control my_filters" name="email"
                                                th:field="${filterForm.email}" id="email"></th>
+
                                     <th><select autocomplete="off"  class="form-select my_filters" id="buildingName" name="buildingName" onchange="changeFilterData()">
                                         <option value="" th:selected="${filterForm.buildingName == null}"></option>
                                         <option th:each="building : ${buildings}"
@@ -131,15 +132,15 @@
                                         <option th:selected="${filterForm.debtSting == null}" value=""></option>
                                         <option value="ACTIVE"
                                                 th:selected="${#strings.containsIgnoreCase(('active'),((filterForm.status != null) ? (filterForm.status ): ('emp') ))}"
-                                        >Активный
+                                                th:text="#{active}">Активный
                                         </option>
                                         <option value="NEW"
                                                 th:selected="${#strings.containsIgnoreCase(('new'),((filterForm.status != null) ? (filterForm.status ): ('emp') ))}"
-                                        >Новый
+                                                th:text="#{new}">Новый
                                         </option>
                                         <option value="DISABLED"
                                                 th:selected="${#strings.containsIgnoreCase(('disabled'),((filterForm.status != null) ? (filterForm.status ): ('emp') ))}"
-                                        >Отключенный
+                                                th:text="#{disabled}">Отключенный
                                         </option>
                                     </select></th>
 
@@ -147,11 +148,11 @@
                                         <option th:selected="${filterForm.debtSting == null}" value=""></option>
                                         <option th:value="true"
                                                 th:selected="${#strings.containsIgnoreCase(('true'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}"
-                                        >Есть долг
+                                                th:text="#{hasDebt}">Есть долг
                                         </option>
                                         <option th:value="false"
                                                 th:selected="${#strings.containsIgnoreCase(('false'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}"
-                                        >Нет долга
+                                                th:text="#{noDebtS}">Нет долга
                                         </option>
                                     </select></th>
                                     <th></th>
