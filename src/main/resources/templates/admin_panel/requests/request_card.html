@@ -31,13 +31,13 @@
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0"
-                th:text="${id != null} ? 'Заявка №' + ${id} + ' - редактирование' : 'Новая заявка'"></h1>
+                th:text="*{id != null} ? 'Заявка №' + *{id} + ' - редактирование' : 'Новая заявка'"></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
               <li class="breadcrumb-item"><a th:href="@{/admin/requests}">Вызовы мастера</a></li>
-              <li class="breadcrumb-item active" th:text="${id != null} ? 'Заявка №' + ${id} + ' - редактирование' : 'Новая заявка'"></li>
+              <li class="breadcrumb-item active" th:text="*{id != null} ? 'Заявка №' + *{id} + ' - редактирование' : 'Новая заявка'"></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -51,11 +51,11 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-3">
-              <input style="width: 90%;" th:value="${date}" th:readonly="${id != null}" name="date" id="date" type="date" class="form-control">
+              <input style="width: 90%;" th:value="${date}" th:readonly="*{id != null}" name="date" id="date" type="date" class="form-control">
             </div>
             <div class="col-md-3">
               <span style="display:inline;">от </span>
-              <input style="width: 90%; display:inline-block;" th:readonly="${id != null}" th:value="${#temporals.format(time, 'HH:mm')}" name="time" id="time" type="time" class="form-control">
+              <input style="width: 90%; display:inline-block;" th:readonly="*{id != null}" th:value="${#temporals.format(time, 'HH:mm')}" name="time" id="time" type="time" class="form-control">
             </div>
             <div class="col-md-6"></div>
           </div>
@@ -68,19 +68,19 @@
                   <div class="row">
                     <div class="col-md-6">
                       <h5>Владелец квартиры</h5>
-                      <select class="selects" th:field="*{owner}">
+                      <select class="selects" th:field="*{ownerID}">
                         <option value="0">Выберите...</option>
                         <option th:each="owner : ${owners}"
                                 th:value="${owner.id}"
                                 th:text="${owner.getFullName()} + ' (ID: ' + ${owner.id} + ')'"></option>
                       </select>
-                      <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('owner')}" th:errors="*{owner}"></h4>
+                      <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('ownerID')}" th:errors="*{ownerID}"></h4>
                     </div>
                     <div class="col-md-6">
                       <h5>Удобное время</h5>
                       <input type="date" style="padding-block:10px" name="best_date" th:value="${best_date}" id="">
                       <input type="time" style="padding-block:10px" name="best_time" th:value="${best_time}" id="">
-                      <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('best_time_request')}" th:errors="*{best_time_request}"></h4>
+                      <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('best_time')}" th:errors="*{best_time}"></h4>
                     </div>
                   </div>
 
@@ -92,16 +92,16 @@
                     </div>
                     <div class="col-md-6">
                       <h4 style="font-weight:bold">Квартира</h4>
-                      <select th:if="*{owner != null}" class="selects mb-3" th:field="*{apartment}">
+                      <select th:if="*{ownerID != null}" class="selects mb-3" th:field="*{apartmentID}">
                         <option value="0">Выберите...</option>
-                        <option th:each="(flat : *{owner.getApartments()})"
-                                th:value="${flat.id}"
-                                th:text="'кв. ' + ${flat.number} + ', ' + ${flat.building.name}"></option>
+<!--                        <option th:each="(flat : *{owner.getApartments()})"-->
+<!--                                th:value="${flat.id}"-->
+<!--                                th:text="'кв. ' + ${flat.number} + ', ' + ${flat.building.name}"></option>-->
                       </select>
-                      <select th:if="*{owner == null}" disabled class="selects mb-3" th:field="*{apartment}">
+                      <select th:if="*{ownerID == null}" disabled class="selects mb-3" th:field="*{apartmentID}">
                         <option value="0">Выберите...</option>
                       </select>
-                      <h4 style="color: red; font-weight: bold; margin-top: -15px" th:if="${#fields.hasErrors('apartment')}" th:errors="*{apartment}"></h4>
+                      <h4 style="color: red; font-weight: bold; margin-top: -15px" th:if="${#fields.hasErrors('apartmentID')}" th:errors="*{apartmentID}"></h4>
                       <h4 style="font-weight:bold">Тип мастера</h4>
                       <select class="selects mb-3" id="master_type" th:field="*{master_type}">
                         <option th:each="type : ${T(com.example.myhome.home.model.RepairMasterType).values()}"
@@ -117,14 +117,14 @@
                       </select>
                       <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></h4>
                       <h4 style="font-weight:bold">Мастер</h4>
-                      <select class="selects" id="masters" th:field="*{master}">
+                      <select class="selects" id="masters" th:field="*{masterID}">
                         <option value="">Выберите...</option>
                         <option th:each="master : ${masters}"
                                 th:if="${master != null}"
                                 th:value="${master.id}"
                                 th:text="${(master.role != null) ? master.role.getName() : 'XXX'} + ' - ' + ${master.getFullName()}"></option>
                       </select>
-                      <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('master')}" th:errors="*{master}"></h4>
+                      <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('masterID')}" th:errors="*{masterID}"></h4>
                     </div>
                   </div>
 
@@ -174,102 +174,11 @@
 <script th:src="@{/summernote/summernote.min.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+<script th:src="@{/dist/js/requests.js}"></script>
+
 <script>
 
-  function loadApartments(input) {
-    let owner_id = input.value;
-    console.log(owner_id);
 
-    $("#apartment").prop("disabled", (owner_id != '0') ? false : true);
-
-    $.get('/admin/owners/get-apartments/' + owner_id, function(data){
-      alert("получил квартиры");
-      console.log(data);
-
-      $("#apartment").html('');
-
-      for(let i = 0; i < data.length; i++) {
-        let option = document.createElement("option");
-        option.value = data[i].id;
-        option.text = 'кв. ' + data[i].number + ', ' + data[i].building.name;
-        $("#apartment").append(option);
-      }
-    });
-  }
-
-  $(document).ready(function(){
-    $("#date, #time").change(function(){
-      alert("change");
-      console.log($(this).val());
-    });
-
-    let owner_input = document.getElementById("owner");
-    owner_input.addEventListener('change', () => loadApartments(owner_input));
-
-    $("#owner").select2({
-        ajax: {
-            url: '/admin/owners/get-all-owners',
-            data: function(params){
-                console.log(params.page);
-                return {
-                    search: params.term || "",
-                    page: params.page || 1
-                }
-            },
-
-        },
-        placeholder: 'Выберите...',
-        minimumInputLength: 2
-    });
-
-    $("#apartment, #master_type, #status, #masters").select2({placeholder:'Выберите...', minimumResultsForSearch:Infinity});
-
-
-    $("#owner").change(function(){
-      let owner_id = $("#owner").val();
-      console.log(owner_id);
-
-      $("#apartment").prop("disabled", (owner_id != '0') ? false : true);
-
-      $.get('/admin/owners/get-apartment/' + owner_id, function(data){
-        alert("получил квартиры");
-        console.log(data);
-
-        $("#apartment").html('');
-
-        for(let i = 0; i < data.length; i++) {
-          let option = document.createElement("option");
-          option.value = data[i].id;
-          option.text = 'кв. ' + data[i].number + ', ' + data[i].building.name;
-          $("#apartment").append(option);
-        }
-      });
-    });
-
-    $("#master_type").change(function(){
-      let master_type = $(this).val();
-      let master_type_name = $( "#master_type option:selected" ).text();
-      console.log(master_type.toLowerCase());
-      console.log(master_type_name);
-
-      $.get('/admin/admins/get-masters-by-type', {type:master_type}, function(data){
-        alert("получил мастеров типа: " + master_type_name);
-        console.log(data);
-
-        $("#masters").html('');
-
-        for(let i = 0; i < data.length; i++) {
-          let option = document.createElement("option");
-          console.log(data[i].role);
-          option.value = data[i].id;
-          option.text = master_type_name + ' - ' + data[i].first_name + ' ' + data[i].last_name;
-          $("#masters").append(option);
-        }
-      })
-    });
-
-    $("#comment").summernote({height:150});
-  })
 </script>
 
 <!-- PAGE PLUGINS -->

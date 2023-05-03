@@ -27,29 +27,12 @@ public interface AccountService {
     ApartmentAccount getAccountNumberFromFlat(Long flat_id);
 
     ApartmentAccount saveAccount(ApartmentAccount account);
+    ApartmentAccount saveAccount(ApartmentAccountDTO dto);
 
     @Transactional
     void deleteAccountById(Long account_id);
 
     Specification<ApartmentAccount> buildSpecFromFilters(FilterForm filters);
 
-    default ApartmentAccount fromDTO(ApartmentAccountDTO dto) {return MappingUtils.fromDTOToAccount(dto);}
-    default ApartmentAccountDTO toDTO(ApartmentAccount account) {
-        return MappingUtils.fromAccountToDTO(account);
-    }
-    default List<ApartmentAccountDTO> toDTO(List<ApartmentAccount> accountList) {
-        return accountList.stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
-    }
-    default Page<ApartmentAccountDTO> toDTO(Page<ApartmentAccount> accountPage) {
-        return new PageImpl<>(
-                accountPage.getContent().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList()),
-                accountPage.getPageable(),
-                accountPage.getTotalElements()
-        );
-    }
-
-    default Page<ApartmentAccountDTO> toPage(List<ApartmentAccountDTO> list, Pageable pageable, Long totalElements) {
-        return new PageImpl<>(list, pageable, totalElements);
-    }
 
 }

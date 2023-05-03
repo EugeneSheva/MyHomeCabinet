@@ -65,8 +65,7 @@
                   <i class="glyphicon glyphicon-calendar"></i>
                 </span>
                 <input type="hidden" th:value="${now}">
-                <input style="width: 90%;" type="date" id="date" class="form-control" th:field="*{date}" th:if="*{date != null}">
-                <input style="width: 90%;" type="date" id="date" data-bl="1" class="form-control" th:field="*{date}" th:value="${now}" th:if="*{date == null}">
+                <input style="width: 90%;" type="date" id="date" class="form-control" name="date" th:value="*{date != null} ? *{date} : ${now}">
                 <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></h4>
               </div>
             </div>
@@ -185,6 +184,8 @@
 
 <script th:inline="javascript">
 
+  let apartmentID = [[${meterDataDTO.apartmentID}]];
+
   function utf8_decode (aa) {
     var bb = '', c = 0;
     for (var i = 0; i < aa.length; i++) {
@@ -222,6 +223,23 @@
     });
 
     $("#section_select, #apartment_select, #serviceID, #status").select2({placeholder: 'Выберите...', minimumResultsForSearch:Infinity});
+
+<!--    let apartment_select = $("#apartment_select");-->
+<!--      $.ajax({-->
+<!--        type:'GET',-->
+<!--        url: '/admin/apartments/get-apartment/',-->
+<!--        data: {id: apartmentID}-->
+<!--      }).then(function(data){-->
+<!--        let option = new Option('кв. ' + data.number, data.id, true, true);-->
+<!--        apartment_select.append(option).trigger('change');-->
+
+<!--        apartment_select.trigger({-->
+<!--          type:'select2:select',-->
+<!--          params: {-->
+<!--            data: data-->
+<!--          }-->
+<!--        });-->
+<!--      });-->
 
     $("#house_select").change(function(){
         console.log(this);
@@ -334,9 +352,9 @@
         'apartment': apartment_id,
         'building': building_id,
         'section': section_name,
-        'readings': readings,
+        'currentReadings': readings,
         'status': stat,
-        'serviceID': service_id,
+        'service': service_id,
         'date': date
       }
 

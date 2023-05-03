@@ -2,12 +2,17 @@ package com.example.myhome.home.service;
 
 import com.example.myhome.home.dto.RepairRequestDTO;
 import com.example.myhome.home.exception.NotFoundException;
+import com.example.myhome.home.mapper.RepairRequestDTOMapper;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
+import com.example.myhome.home.repository.AdminRepository;
+import com.example.myhome.home.repository.ApartmentRepository;
+import com.example.myhome.home.repository.OwnerRepository;
 import com.example.myhome.home.repository.RepairRequestRepository;
 import com.example.myhome.home.service.impl.AdminServiceImpl;
 import com.example.myhome.home.specification.RequestSpecifications;
 import com.example.myhome.util.MappingUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,15 +30,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 @Log
 public class RepairRequestService {
 
-    @Autowired
-    private RepairRequestRepository repairRequestRepository;
+    private final RepairRequestRepository repairRequestRepository;
 
-    @Autowired private ApartmentService apartmentService;
-    @Autowired private OwnerService ownerService;
-    @Autowired private AdminServiceImpl adminService;
+    private final ApartmentService apartmentService;
+    private final OwnerService ownerService;
+    private final AdminServiceImpl adminService;
+
+    private final ApartmentRepository apartmentRepository;
+    private final OwnerRepository ownerRepository;
+    private final AdminRepository adminRepository;
+
+    private final RepairRequestDTOMapper mapper;
 
     public List<RepairRequest> findAllRequests() {
         log.info("Searching for requests");
@@ -59,7 +70,7 @@ public class RepairRequestService {
         Page<RepairRequest> initialPage = repairRequestRepository.findAll(buildSpecFromFilters(filters), pageable);
 
         List<RepairRequestDTO> listDTO = initialPage.getContent().stream()
-                .map(MappingUtils::fromRequestToDTO)
+                .map(mapper::fromRequestToDTO)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(listDTO, pageable, initialPage.getTotalElements());
@@ -122,12 +133,40 @@ public class RepairRequestService {
         }
     }
 
+    public RepairRequestDTO findRequestDTOById(Long request_id) {
+        RepairRequest request = findRequestById(request_id);
+        if(request != null) return mapper.fromRequestToDTO(request);
+        else return null;
+    }
+
     public RepairRequest saveRequest(RepairRequest request) {
         log.info("Trying to save request...");
         log.info(request.toString());
         RepairRequest savedRequest;
         try {
             savedRequest = repairRequestRepository.save(request);
+            log.info("Request successfully saved! Saved request: ");
+            log.info(savedRequest.toString());
+            return savedRequest;
+        } catch (Exception e) {
+            log.severe("Request couldn't be saved");
+            log.severe(e.getMessage());
+            return null;
+        }
+    }
+
+    public RepairRequest saveRequest(RepairRequestDTO dto) {
+
+        log.info("Forming repair request to save from DTO");
+        RepairRequest request = mapper.fromDTOToRequest(dto);
+        request.setApartment(apartmentRepository.getReferenceById(dto.getApartmentID()));
+        request.setOwner(ownerRepository.getReferenceById(dto.getOwnerID()));
+        request.setMaster(adminRepository.getReferenceById(dto.getMasterID()));
+        log.info("Request formation finished, trying to save...");
+        log.info(request.toString());
+
+        try {
+            RepairRequest savedRequest = repairRequestRepository.save(request);
             log.info("Request successfully saved! Saved request: ");
             log.info(savedRequest.toString());
             return savedRequest;

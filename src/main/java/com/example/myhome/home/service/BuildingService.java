@@ -2,6 +2,8 @@ package com.example.myhome.home.service;
 
 import com.example.myhome.home.dto.BuildingDTO;
 import com.example.myhome.home.exception.NotFoundException;
+import com.example.myhome.home.mapper.ApartmentDTOMapper;
+import com.example.myhome.home.mapper.BuildingDTOMapper;
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Building;
 import com.example.myhome.home.model.filter.FilterForm;
@@ -37,8 +39,11 @@ public class BuildingService {
     private final BuildingRepository buildingRepository;
     private final FileUploadUtil fileUploadUtil;
 
+    private final BuildingDTOMapper mapper;
+    private final ApartmentDTOMapper apartmentMapper;
+
     public Building findById(Long id) {
-        return buildingRepository.findById(id).orElseThrow(() -> new NotFoundException());
+        return buildingRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     public List<Building> findAll() {
@@ -60,7 +65,9 @@ public class BuildingService {
 
     public BuildingDTO findBuildingDTObyId(Long id) {
         Building building = buildingRepository.findById(id).orElseThrow();
-        return new BuildingDTO(building.getId(), building.getName(), building.getSections(), building.getAddress(), building.getFloors());
+        BuildingDTO dto = mapper.fromBuildingToDTO(building);
+        dto.setApartments(building.getApartments().stream().map(apartmentMapper::fromApartmentToDTO).collect(Collectors.toList()));
+        return dto;
     }
 
 

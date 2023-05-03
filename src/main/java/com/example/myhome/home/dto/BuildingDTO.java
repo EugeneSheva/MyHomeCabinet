@@ -52,6 +52,7 @@ public class BuildingDTO {
 //                ", sections=" + sections +
                 ", address='" + address + '\'' +
 //                ", floors=" + floors +
+                ", apartments=" + apartments +
                 '}';
     }
 

@@ -1,9 +1,13 @@
 package com.example.myhome.home.service.impl;
 
 import com.example.myhome.home.dto.MeterDataDTO;
+import com.example.myhome.home.mapper.MeterDTOMapper;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
+import com.example.myhome.home.repository.ApartmentRepository;
+import com.example.myhome.home.repository.BuildingRepository;
 import com.example.myhome.home.repository.MeterDataRepository;
+import com.example.myhome.home.repository.ServiceRepository;
 import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.MeterDataService;
@@ -38,7 +42,12 @@ public class MeterDataServiceImpl implements MeterDataService {
     @Autowired private ServiceServiceImpl serviceService;
     @Autowired private BuildingService buildingService;
 
+    @Autowired private ApartmentRepository apartmentRepository;
+    @Autowired private ServiceRepository serviceRepository;
+    @Autowired private BuildingRepository buildingRepository;
+
     @Autowired private MeterValidator validator;
+    @Autowired private MeterDTOMapper mapper;
 
     @Override
     public List<MeterData> findAllMeters() {return meterDataRepository.findAll();}
@@ -160,8 +169,21 @@ public class MeterDataServiceImpl implements MeterDataService {
     @Override
     public MeterData findMeterDataById(Long meter_id) {return meterDataRepository.findById(meter_id).orElseThrow();}
 
+    public MeterDataDTO findMeterDataDTOById(Long meter_id) {
+        MeterData meter = meterDataRepository.findById(meter_id).orElseThrow();
+        return mapper.fromMeterToDTO(meter);
+    }
+
     @Override
     public MeterData saveMeterData(MeterData meterData) {return meterDataRepository.save(meterData);}
+    public MeterData saveMeterData(MeterDataDTO dto) {
+        log.info("Forming meter to save from DTO");
+        MeterData meterData = mapper.fromDTOToMeter(dto);
+        meterData.setApartment(apartmentRepository.getReferenceById(dto.getApartmentID()));
+        meterData.setBuilding(buildingRepository.getReferenceById(dto.getBuildingID()));
+        meterData.setService(serviceRepository.getReferenceById(dto.getServiceID()));
+        return saveMeterData(meterData);
+    }
     public MeterData saveMeterDataAJAX(Long id,    // <-- если хочешь обновить существующий
                                        String building_id,
                                        String section_name,

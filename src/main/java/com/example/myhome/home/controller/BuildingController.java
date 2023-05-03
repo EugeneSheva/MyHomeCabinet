@@ -2,6 +2,7 @@ package com.example.myhome.home.controller;
 
 import com.example.myhome.home.dto.AdminDTO;
 import com.example.myhome.home.dto.BuildingDTO;
+import com.example.myhome.home.mapper.BuildingDTOMapper;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.BuildingRepository;
@@ -51,6 +52,8 @@ public class BuildingController {
     private final AdminServiceImpl adminService;
 
     private final BuildingValidator buildingValidator;
+
+    private final BuildingDTOMapper mapper;
     @GetMapping
     public String getBuildigs(Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) {
         Page<Building> buildingList = buildingService.findAll(pageable);
@@ -152,6 +155,14 @@ public class BuildingController {
     @GetMapping("/get-section-apartments/{id}")
     public @ResponseBody List<Apartment> getBuildingSectionApartmentsFromQuery(@PathVariable long id, @RequestParam String section_name) {
         return buildingService.getSectionApartments(id, section_name);
+    }
+
+    @GetMapping("/get-building")
+    public @ResponseBody BuildingDTO getSingleBuilding(@RequestParam Long building_id) {
+        Building building = buildingService.findById(building_id);
+        BuildingDTO dto = mapper.fromBuildingToDTO(building);
+        log.info(dto.toString());
+        return dto;
     }
 
     @GetMapping("/get-buildings")

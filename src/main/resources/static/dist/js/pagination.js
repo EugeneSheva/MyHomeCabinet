@@ -467,7 +467,7 @@ function drawRequestsTable() {
                                   '<td><a href="/admin/owners/' + request.ownerID + '">' + request.ownerFullName + '</a></td>' +
                                   '<td>' + request.ownerPhoneNumber + '</td>' +
                                   '<td><a href="/admin/admins/' + request.masterID + '">' + ((request.masterFullName != null) ? request.masterFullName : '') + '</a></td>' +
-                                  '<td><small class="label ' + ((request.status === 'Новое') ? 'label-primary' : (request.status === 'В работе') ? 'label-warning' : 'label-success') + '">' + request.status + '</small></td>' +
+                                  '<td><small class="label ' + ((request.statusName === 'Новое') ? 'label-primary' : (request.statusName === 'В работе') ? 'label-warning' : 'label-success') + '">' + request.statusName + '</small></td>' +
                                   '<td>' +
                                       '<div class="btn-group pull-right">' +
                                           '<a class="btn btn-default btn-sm" href="/admin/requests/update/' + request.id + '"><i class="fa fa-pencil" aria-hidden="true"></i></a>' +

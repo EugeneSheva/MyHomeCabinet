@@ -88,21 +88,21 @@
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Дом</td>
-                        <td><a th:href="@{/admin/buildings/{id}(id=${account.apartment.building.id})}" th:text="${account.apartment.building.name}"></a></td>
+                        <td><a th:href="@{/admin/buildings/{id}(id=${account.building.id})}" th:text="${account.building.name}"></a></td>
 
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Секция</td>
-                        <td th:text="${account.apartment.section}"></td>
+                        <td th:text="${account.section}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Квартира</td>
-                        <td><a th:href="@{/admin/apartments/{id}(id=${account.apartment.id})}" th:text="${account.apartment.number}"></a></td>
+                        <td><a th:href="@{/admin/apartments/{id}(id=${account.apartment.id})}" th:text="${account.apartment.fullName}"></a></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Владелец</td>
-                        <td ><a th:href="@{/admin/owners/{id}(id=${account.apartment.owner.id})}"
-                                th:text="${account.apartment.owner.getFullName()}"></a></td>
+                        <td ><a th:href="@{/admin/owners/{id}(id=${account.owner.id})}"
+                                th:text="${account.owner.fullName}"></a></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Остаток, грн.</td>

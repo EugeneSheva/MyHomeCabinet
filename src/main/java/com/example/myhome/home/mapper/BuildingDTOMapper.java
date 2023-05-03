@@ -1,0 +1,39 @@
+package com.example.myhome.home.mapper;
+
+import com.example.myhome.home.dto.BuildingDTO;
+import com.example.myhome.home.model.Building;
+import org.springframework.stereotype.Component;
+
+@Component
+public class BuildingDTOMapper {
+
+    public Building fromDTOToBuilding(BuildingDTO dto) {
+
+        if(dto == null) return null;
+
+        Building building = new Building();
+        building.setId(dto.getId());
+        building.setName(dto.getName());
+        building.setSections(dto.getSections());
+        building.setAddress(dto.getAddress());
+        building.setFloors(dto.getFloors());
+//        building.setApartments(dto.getApartments().stream().map(MappingUtils::fromDTOToApartment).collect(Collectors.toList()));
+
+        return building;
+    }
+    public BuildingDTO fromBuildingToDTO(Building building) {
+
+        if(building == null) return null;
+
+        BuildingDTO dto = new BuildingDTO();
+        dto.setId(building.getId());
+        dto.setName(building.getName());
+        dto.setSections(building.getSections());
+        dto.setAddress(building.getAddress());
+        dto.setFloors(building.getFloors());
+//        dto.setApartments(building.getApartments().stream().map(MappingUtils::fromApartmentToDTO).collect(Collectors.toList()));
+
+        return dto;
+    }
+
+}

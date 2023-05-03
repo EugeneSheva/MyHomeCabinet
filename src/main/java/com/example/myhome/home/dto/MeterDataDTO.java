@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -16,6 +17,7 @@ public class MeterDataDTO {
     private Long id;
 
     private String status;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 
     private Long buildingID;

@@ -1,5 +1,6 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.mapper.AccountDTOMapper;
 import com.example.myhome.home.model.ApartmentAccount;
 import com.example.myhome.home.dto.ApartmentAccountDTO;
 import com.example.myhome.home.model.filter.FilterForm;
@@ -7,6 +8,7 @@ import com.example.myhome.home.service.AccountService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.CashBoxService;
 import com.example.myhome.home.service.OwnerService;
+import com.example.myhome.home.service.impl.AccountServiceImpl;
 import com.example.myhome.home.validator.AccountValidator;
 import com.example.myhome.util.MappingUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,7 +31,7 @@ import java.util.Objects;
 public class AccountController {
 
     @Autowired
-    private AccountService accountService;
+    private AccountServiceImpl accountService;
 
     @Autowired
     private CashBoxService cashBoxService;
@@ -40,6 +42,8 @@ public class AccountController {
     @Autowired private OwnerService ownerService;
 
     @Autowired private AccountValidator validator;
+
+    @Autowired private AccountDTOMapper mapper;
 
     // показать все счета
     @GetMapping
@@ -64,7 +68,7 @@ public class AccountController {
     // показать профиль лицевого счёта
     @GetMapping("/{id}")
     public String showAccountInfoPage(@PathVariable long id, Model model) {
-        model.addAttribute("account", accountService.findAccountById(id));
+        model.addAttribute("account", accountService.findAccountDTOById(id));
         return "admin_panel/accounts/account_profile";
     }
 
@@ -72,9 +76,9 @@ public class AccountController {
     @GetMapping("/create")
     public String showCreateAccountPage(Model model) {
         ApartmentAccountDTO dto = new ApartmentAccountDTO();
-        dto.setId(accountService.getMaxAccountId()+1);
         log.info(dto.toString());
         model.addAttribute("apartmentAccountDTO", dto);
+        model.addAttribute("id", accountService.getMaxAccountId()+1);
         model.addAttribute("buildings", buildingService.findAll());
 
         return "admin_panel/accounts/account_card";
@@ -102,8 +106,7 @@ public class AccountController {
             log.info(buildingService.findAllDTO().toString());
             return "admin_panel/accounts/account_card";
         } else {
-            ApartmentAccount account = accountService.fromDTO(apartmentAccountDTO);
-            accountService.saveAccount(account);
+            accountService.saveAccount(apartmentAccountDTO);
             return "redirect:/admin/accounts";
         }
 
@@ -112,9 +115,9 @@ public class AccountController {
 
     @GetMapping("/update/{id}")
     public String showUpdateAccountPage(@PathVariable long id, Model model) {
-        model.addAttribute("apartmentAccountDTO", accountService.toDTO(accountService.findAccountById(id)));
+        model.addAttribute("apartmentAccountDTO", accountService.findAccountDTOById(id));
         model.addAttribute("id", id);
-        model.addAttribute("buildings", buildingService.findAll());
+        model.addAttribute("buildings", buildingService.findAllDTO());
 
         return "admin_panel/accounts/account_card";
     }
@@ -125,8 +128,7 @@ public class AccountController {
                                 BindingResult bindingResult,
                                 Model model) {
 
-        ApartmentAccount account = accountService.fromDTO(apartmentAccountDTO);
-        validator.validate(account, bindingResult);
+        validator.validate(apartmentAccountDTO, bindingResult);
         if(bindingResult.hasErrors()) {
             log.info("Errors found");
             log.info(bindingResult.getAllErrors().toString());
@@ -134,7 +136,7 @@ public class AccountController {
             log.info(buildingService.findAllDTO().toString());
             return "admin_panel/accounts/account_card";
         }
-        accountService.saveAccount(account);
+        accountService.saveAccount(apartmentAccountDTO);
 
         return "redirect:/admin/accounts";
     }

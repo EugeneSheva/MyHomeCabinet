@@ -1,13 +1,18 @@
 package com.example.myhome.home.dto;
 
+import com.example.myhome.home.model.RepairStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class RepairRequestDTO {
 
@@ -15,6 +20,10 @@ public class RepairRequestDTO {
     private String best_time;
     private String master_type;
     private String description;
+    private String comment;
+
+    private LocalDate request_date;
+    private LocalTime request_time;
 
     private Long apartmentID;
     private Long apartmentNumber;
@@ -27,6 +36,7 @@ public class RepairRequestDTO {
     private Long masterID;
     private String masterFullName;
 
-    private String status;
+    private RepairStatus status;
+    private String statusName;
 
 }

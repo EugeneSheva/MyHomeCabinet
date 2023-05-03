@@ -65,10 +65,10 @@ public class RequestController {
     @GetMapping("/create")
     public String showCreateRequestPage(Model model) {
 
-        model.addAttribute("repairRequest", new RepairRequest());
+        model.addAttribute("repairRequest", new RepairRequestDTO());
         model.addAttribute("id", repairRequestService.getMaxId()+1);
-        model.addAttribute("owners", ownerService.findAll());
-        model.addAttribute("masters", adminService.findAll());
+        model.addAttribute("owners", ownerService.findAllDTO());
+        model.addAttribute("masters", adminService.findAllDTO());
 
         model.addAttribute("date", LocalDate.now());
         model.addAttribute("time", LocalTime.now());
@@ -95,10 +95,10 @@ public class RequestController {
 
     @GetMapping("/info/{id}")
     public String getRequestInfoPage(@PathVariable long id, Model model) {
-        RepairRequest request = repairRequestService.findRequestById(id);
+        RepairRequestDTO request = repairRequestService.findRequestDTOById(id);
         model.addAttribute("request", request);
-        model.addAttribute("request_date", request.getRequest_date().toLocalDate());
-        model.addAttribute("request_time", request.getRequest_date().toLocalTime());
+        model.addAttribute("request_date", request.getRequest_date());
+        model.addAttribute("request_time", request.getRequest_date());
         return "admin_panel/requests/request_profile";
     }
 

@@ -33,7 +33,7 @@ public class AccountValidator implements Validator {
             System.out.println("Error found(apartment)");
             errors.rejectValue(ApartmentAccount_.APARTMENT, "apartment.empty", "Укажите квартиру!");
         } else if(accountServiceImpl.apartmentHasAccount(account.getApartment().getId())) {
-            if(!account.getChangedState()) errors.rejectValue(ApartmentAccount_.APARTMENT, "apartment.has_account", "К этой квартире уже привязан лицевой счёт!");
+            if(account.getChangedState() == null || !account.getChangedState()) errors.rejectValue(ApartmentAccount_.APARTMENT, "apartment.has_account", "К этой квартире уже привязан лицевой счёт!");
         }
         if(account.getIsActive() == null) {
             System.out.println("Error found(active)");

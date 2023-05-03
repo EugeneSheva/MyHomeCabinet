@@ -53,7 +53,7 @@
           <div class="row">
             <div class="col-md-3">
               №
-              <input style="width: 95%;" th:value="${T(java.lang.String).format('%010d',id)}" disabled class="form-control">
+              <input style="width: 90%; display:inline-block" th:value="${T(java.lang.String).format('%010d',id)}" disabled class="form-control">
             </div>
             <div class="col-md-3"></div>
             <div class="col-md-6"></div>
@@ -173,6 +173,12 @@
 <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
 
 <script th:inline="javascript">
+
+  let id = [[${apartmentAccountDTO.id}]];
+  let buildingID = [[${apartmentAccountDTO.building.id}]];
+  let apartmentID = [[${apartmentAccountDTO.apartment.id}]];
+  console.log(apartmentID);
+
   $(document).ready(function(){
 
     $("#house_select").change(function(){
@@ -315,6 +321,60 @@
             },
             placeholder: 'Выберите...'
         });
+
+        let house_select = $("#house_select");
+        $.ajax({
+          type:'GET',
+          url: '/admin/buildings/get-building/',
+          data: {building_id: buildingID}
+        }).then(function(data){
+          let option = new Option(data.name, data.id, true, true);
+          house_select.append(option).trigger('change');
+
+          house_select.trigger({
+            type:'select2:select',
+            params: {
+              data: data
+            }
+          });
+        });
+
+        if($("#apartment_exists").val() != null && $("#apartment_exists").val() != 0) {
+          let section_select = $("#section_select");
+          console.log("BRBRBBRR");
+          $.ajax({
+            type:'GET',
+            url: '/admin/apartments/get-section/',
+            data: {id: apartmentID}
+          }).then(function(data){
+            console.log(data);
+            let option = new Option(data, data, true, true);
+            section_select.append(option).trigger('change');
+
+            section_select.trigger({
+              type:'select2:select',
+              params: {
+                data: data
+              }
+            });
+          });
+          let apartment_select = $("#apartment_select");
+          $.ajax({
+            type:'GET',
+            url: '/admin/apartments/get-apartment/',
+            data: {id: apartmentID}
+          }).then(function(data){
+            let option = new Option(data.name, data.id, true, true);
+            apartment_select.append(option).trigger('change');
+
+            apartment_select.trigger({
+              type:'select2:select',
+              params: {
+                data: data
+              }
+            });
+          });
+        }
 
         if($("#apartment_select").val() != null) {
 

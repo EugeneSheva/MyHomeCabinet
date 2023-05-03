@@ -80,23 +80,23 @@
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Владелец</td>
-                        <td><a th:href="@{/admin/owners/{id}(id=${request.apartment.owner.id})}" th:text="${request.apartment.owner.getFullName()}"></a></td>
+                        <td><a th:href="@{/admin/owners/{id}(id=${request.ownerID})}" th:text="${request.ownerFullName}"></a></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Телефон</td>
-                        <td th:text="${request.apartment.owner.phone_number}"></td>
+                        <td th:text="${request.ownerPhoneNumber}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Квартира</td>
-                        <td><a th:href="@{/admin/apartments/{id}(id=${request.apartment.id})}" th:text="${request.apartment.number} + ', ' + ${request.apartment.building.name}"></a></td>
+                        <td><a th:href="@{/admin/apartments/{id}(id=${request.apartmentID})}" th:text="${request.apartmentNumber} + ', ' + ${request.apartmentBuildingName}"></a></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Тип мастера</td>
-                        <td th:text="${request.master_type.getName()}"></td>
+                        <td th:text="${request.master_type}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Мастер</td>
-                        <td><a th:href="@{/admin/admins/{id}(id=${request.master.id})}" th:text="${request.master.getFullName()}"></a></td>
+                        <td><a th:href="@{/admin/admins/{id}(id=${request.masterID})}" th:text="${request.masterFullName}"></a></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold">Описание</td>

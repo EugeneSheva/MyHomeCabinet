@@ -11,7 +11,7 @@ public class StringToApartmentDTOConverter implements Converter<String, Apartmen
             Long id = Long.parseLong(source);
             dto.setId(id);
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            System.out.println(e.getLocalizedMessage());
         }
         System.out.println(dto);
         return dto;
