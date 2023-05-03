@@ -1,7 +1,12 @@
 package com.example.myhome.home.repository;
 
+import com.example.myhome.home.model.Building;
 import com.example.myhome.home.model.CashBox;
 import com.example.myhome.home.model.IncomeExpenseType;
+import com.example.myhome.home.model.Owner;
+import com.example.myhome.home.specification.CashBoxSpecifications;
+import com.example.myhome.home.specification.OwnerSpecifications;
+import com.example.myhome.util.UserStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -28,30 +33,33 @@ public interface CashBoxRepository extends JpaRepository<CashBox, Long>, JpaSpec
     default Page<CashBox> findByFilters(Long id, LocalDate from, LocalDate to, Boolean isCompleted, String incomeExpenseItem, Long ownerId, Long accountNumber, IncomeExpenseType incomeExpenseType, Pageable pageable) {
         Specification<CashBox> spec = Specification.where(null);
 
-//        if (id != null ) {
-//            spec = spec.and(CashBoxSpecifications.idContains(id));
-//        }
-//        if (from != null && to != null) {
-//            spec = spec.and(CashBoxSpecifications.dateBetwenContains(from, to));
-//        }
-//        if (from == null && to != null) {
-//            spec = spec.and(CashBoxSpecifications.dateBeforeContains(to));
-//        }
-//        if (from != null && to == null) {
-//            spec = spec.and(CashBoxSpecifications.dateAfterContains(from));
-//        }
-//        if (incomeExpenseItem != null && !incomeExpenseItem.isEmpty() && !incomeExpenseItem.equalsIgnoreCase("-")) {
-//            spec = spec.and(CashBoxSpecifications.incExpItemContains(incomeExpenseItem));
-//        }
-//        if (ownerId != null && ownerId>0) {
-//            spec = spec.and(CashBoxSpecifications.ownerContains(ownerId));
-//        }
-//        if (accountNumber != null ) {
-//            spec = spec.and(CashBoxSpecifications.accountContains(accountNumber));
-//        }
-//        if (incomeExpenseType != null) {
-//            spec = spec.and(CashBoxSpecifications.incomeExpenseTypeContains(incomeExpenseType));
-//        }
+        if (id != null ) {
+            spec = spec.and(CashBoxSpecifications.idContains(id));
+        }
+        if (from != null && to != null) {
+            spec = spec.and(CashBoxSpecifications.dateBetwenContains(from, to));
+        }
+        if (from == null && to != null) {
+            spec = spec.and(CashBoxSpecifications.dateBeforeContains(to));
+        }
+        if (from != null && to == null) {
+            spec = spec.and(CashBoxSpecifications.dateAfterContains(from));
+        }
+        if (isCompleted != null) {
+            spec = spec.and(CashBoxSpecifications.isCompletedContains(isCompleted));
+        }
+        if (incomeExpenseItem != null && !incomeExpenseItem.isEmpty() && !incomeExpenseItem.equalsIgnoreCase("-")) {
+            spec = spec.and(CashBoxSpecifications.incExpItemContains(incomeExpenseItem));
+        }
+        if (ownerId != null && ownerId>0) {
+            spec = spec.and(CashBoxSpecifications.ownerContains(ownerId));
+        }
+        if (accountNumber != null ) {
+            spec = spec.and(CashBoxSpecifications.accountContains(accountNumber));
+        }
+        if (incomeExpenseType != null) {
+            spec = spec.and(CashBoxSpecifications.incomeExpenseTypeContains(incomeExpenseType));
+        }
 
         return findAll(spec, pageable);
     }

@@ -1,16 +1,26 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.controller.socket.WebsocketController;
 import com.example.myhome.home.dto.ApartmentDTO;
 import com.example.myhome.home.dto.BuildingDTO;
 import com.example.myhome.home.model.*;
 
+import com.example.myhome.home.model.filter.FilterForm;
+import com.example.myhome.home.repository.AdminRepository;
 import com.example.myhome.home.repository.ApartmentRepository;
 import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.MessageService;
 import com.example.myhome.home.service.OwnerService;
 import com.example.myhome.home.validator.MessageValidator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,12 +43,16 @@ public class MessageController {
     private final ApartmentRepository apartmentRepository;
     private final ApartmentService apartmentService;
     private final OwnerService ownerService;
+    private final AdminRepository adminRepository;
     private final MessageValidator messageValidator;
+    private final WebsocketController websocketController;
 
     @GetMapping
-    public String getMessages(Model model) {
-        List<Message> messagesList = messageService.findAll();
+    public String getMessages(Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) {
+        Page<Message> messagesList = messageService.findAll(pageable);
         model.addAttribute("messages", messagesList);
+        model.addAttribute("totalPagesCount", messagesList.getTotalPages());
+        model.addAttribute("filterForm", new FilterForm());
         return "admin_panel/messages/messages";
     }
 
@@ -61,8 +76,8 @@ public class MessageController {
     public String saveMessage(@Valid @ModelAttribute("message") Message message, BindingResult bindingResult, @RequestParam(name = "debt",
             defaultValue = "false") Boolean debt, @RequestParam(name = "building", defaultValue = "0") Long buildingId,
                               @RequestParam(name = "section", defaultValue = "") String section, @RequestParam(name = "floor", defaultValue = "") String floor,
-                              @RequestParam(name = "apartmentId", defaultValue = "0") Long apartmentId) throws IOException {
-messageValidator.validate(message,bindingResult);
+                              @RequestParam(name = "apartmentId", defaultValue = "0") Long apartmentId, Principal principal) throws IOException {
+        messageValidator.validate(message,bindingResult);
         if (bindingResult.hasErrors()){
             return "admin_panel/messages/message_edit";
         } else {
@@ -125,8 +140,10 @@ messageValidator.validate(message,bindingResult);
                 recivers.add(apartment.getOwner());
                 message.setReceiversName(apartment.getBuilding().getName() + ", " + apartment.getSection() + ", " + apartment.getFloor() + ", кв." + apartment.getNumber());
             }
+            message.setSender(adminRepository.findByEmail(principal.getName()).orElseThrow());
             message.setReceivers(recivers);
             messageService.save(message);
+            websocketController.sendMessagesItem(message);
             return "redirect:/admin/messages/";
         }
     }
@@ -181,6 +198,16 @@ messageValidator.validate(message,bindingResult);
         for (Long aLong : checkboxList) {
             messageService.deleteById(aLong);
         }
+    }
+
+    @GetMapping("/get-messages")
+    public @ResponseBody Page<Message> getOwners(@RequestParam Integer page,
+                                                 @RequestParam Integer size,
+                                                 @RequestParam String filters) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        FilterForm form = mapper.readValue(filters, FilterForm.class);
+        System.out.println("controller "+form);
+        return messageService.findAllBySpecification(form, page, size);
     }
 }
 

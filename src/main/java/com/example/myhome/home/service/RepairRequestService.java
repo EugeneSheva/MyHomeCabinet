@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -187,5 +188,19 @@ public class RepairRequestService {
         }
         log.info("Request with ID " + request_id + " successfully deleted");
     }
+
+    public Page<RepairRequestDTO> findAll(Pageable pageable){
+        List<RepairRequestDTO>listDTO= new ArrayList<>();
+        Page<RepairRequest>repairRequests = repairRequestRepository.findAll(pageable);
+        System.out.println("service "+repairRequests.getTotalElements());
+        for (RepairRequest rr : repairRequests) {
+            listDTO.add(new RepairRequestDTO(rr.getId(), rr.getBest_time_request().toString(), rr.getMaster_type().getName(), rr.getDescription(), rr.getApartment().getId(),
+                    rr.getApartment().getNumber(), rr.getApartment().getBuilding().getName(), rr.getOwner().getId(), rr.getOwner().getFullName(),
+                    rr.getOwner().getPhone_number(), rr.getMaster().getId(), rr.getMaster().getFullName(),rr.getStatus().getName()));
+        }
+        return new PageImpl<>(listDTO, pageable, repairRequests.getTotalElements());
+    }
+
+
 
 }

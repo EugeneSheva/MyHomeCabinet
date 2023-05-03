@@ -13,9 +13,7 @@
     <link rel="stylesheet" th:href="@{/dist/css/website.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/css/tempus-dominus.min.css"
-          crossorigin="anonymous">
+    <link rel="stylesheet"  href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/css/tempus-dominus.min.css" crossorigin="anonymous">
     <!-- Popperjs -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
             crossorigin="anonymous"></script>
@@ -157,7 +155,6 @@
 <script src="../../dist/js/adminlte.min.js"></script>
 <script th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 <!--<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>-->
@@ -230,7 +227,7 @@
 <script th:src="@{/dist/js/pagination.js}"></script>
 <script th:inline="javascript">
 
-    let globalTableName = 'messages';
+    let globalTableName = 'messagesCabinet';
     let totalPagesCount = [[${totalPagesCount}]];
     let tableData;
     console.log('pre draw table');

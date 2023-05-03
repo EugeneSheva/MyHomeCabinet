@@ -42,4 +42,8 @@ public class MessageService {
         System.out.println("messageList" +messageList);
         return messageList;
     }
+
+    public Page<Message> findAll(Pageable pageable) {
+        return messageRepository.findAll(pageable);
+    }
 }

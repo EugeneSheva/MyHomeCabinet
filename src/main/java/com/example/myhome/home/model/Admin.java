@@ -54,7 +54,7 @@ public class Admin implements UserDetails {
     @OneToMany
     @JoinColumn(name = "ownerId")
     private List<CashBox> cashBoxList;
-
+    @JsonIgnore
     @OneToMany
     @JoinColumn(name = "manager")
     private List<CashBox> cashBoxListManager;

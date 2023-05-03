@@ -1,5 +1,6 @@
 package com.example.myhome.home.dto;
 
+import com.example.myhome.home.model.IncomeExpenseType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,12 +15,12 @@ public class CashBoxDTO {
     private Long id;
     private LocalDate date;
     private Boolean completed;
-    private String transactionItemName;
+    private IncomeExpenseType incomeExpenseType;
+    private String owner;
+    private Long apartmentAccount;
 
-    private String ownerFullName;
-    private String accountNumber;
-
-    private String transactionType;
+    private String incomeExpenseItems;
+    private String manager;
     private Double amount;
-
+    private String description;
 }

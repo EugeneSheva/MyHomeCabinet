@@ -110,35 +110,35 @@ public class CashBoxController {
         return "admin_panel/cash_box/cashboxes";
     }
 
-    @PostMapping("/filter")
-    public String filterApartments(Model model, @ModelAttribute FilterForm filterForm, @RequestParam(name = "id",required = false) Long id, @RequestParam(name = "date",required = false) String date,
-                                   @RequestParam(name = "isCompleted",required = false) String isCompleted, @RequestParam(name = "incomeExpenseItem",required = false) String incomeExpenseItem,
-                                   @RequestParam(name = "owner", required = false) Long owner,  @RequestParam(name = "accountNumber", required = false) Long accountNumber,
-                                   @RequestParam(name = "incomeExpenseType",required = false) String incomeExpenseType,
-                                   @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) throws IOException {
-        filterForm.setOwnerEntity(ownerService.findByIdDTO(owner));
-        String[] dateArray = date.split(" - ");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-        LocalDate startDate = LocalDate.parse(dateArray[0], formatter);
-        LocalDate endDate = LocalDate.parse(dateArray[1], formatter);
-
-        Page<CashBox> cashBoxList = cashBoxRepository.findByFilters(id,startDate, endDate, cashBoxService.getIsCompleteFromString(isCompleted), incomeExpenseItem,owner,accountNumber, cashBoxService.getIncomeExpenseTypeFromString(incomeExpenseType), pageable);
-
-        model.addAttribute("cashBoxList", cashBoxList);
-        model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount());
-        model.addAttribute("accountBalance", accountRepository.getSumOfAccountBalances());
-        model.addAttribute("sumDebt", accountRepository.getSumOfAccountDebts());
-        List<OwnerDTO>ownerDTOList=ownerService.findAllDTO();
-        model.addAttribute("owners", ownerDTOList);
-
-        List<IncomeExpenseItems>incomeExpenseItems=incomeExpenseItemService.findAll();
-        model.addAttribute("incomeExpenseItems", incomeExpenseItems);
-        model.addAttribute("filterForm", filterForm);
-
-        return "admin_panel/cash_box/cashboxes";
-
-
-        }
+//    @PostMapping("/filter")
+//    public String filterApartments(Model model, @ModelAttribute FilterForm filterForm, @RequestParam(name = "id",required = false) Long id, @RequestParam(name = "date",required = false) String date,
+//                                   @RequestParam(name = "isCompleted",required = false) String isCompleted, @RequestParam(name = "incomeExpenseItem",required = false) String incomeExpenseItem,
+//                                   @RequestParam(name = "owner", required = false) Long owner,  @RequestParam(name = "accountNumber", required = false) Long accountNumber,
+//                                   @RequestParam(name = "incomeExpenseType",required = false) String incomeExpenseType,
+//                                   @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) throws IOException {
+//        filterForm.setOwnerEntity(ownerService.findByIdDTO(owner));
+//        String[] dateArray = date.split(" - ");
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+//        LocalDate startDate = LocalDate.parse(dateArray[0], formatter);
+//        LocalDate endDate = LocalDate.parse(dateArray[1], formatter);
+//
+//        Page<CashBox> cashBoxList = cashBoxRepository.findByFilters(id,startDate, endDate, cashBoxService.getIsCompleteFromString(isCompleted), incomeExpenseItem,owner,accountNumber, cashBoxService.getIncomeExpenseTypeFromString(incomeExpenseType), pageable);
+//
+//        model.addAttribute("cashBoxList", cashBoxList);
+//        model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount());
+//        model.addAttribute("accountBalance", accountRepository.getSumOfAccountBalances());
+//        model.addAttribute("sumDebt", accountRepository.getSumOfAccountDebts());
+//        List<OwnerDTO>ownerDTOList=ownerService.findAllDTO();
+//        model.addAttribute("owners", ownerDTOList);
+//
+//        List<IncomeExpenseItems>incomeExpenseItems=incomeExpenseItemService.findAll();
+//        model.addAttribute("incomeExpenseItems", incomeExpenseItems);
+//        model.addAttribute("filterForm", filterForm);
+//
+//        return "admin_panel/cash_box/cashboxes";
+//
+//
+//        }
 
     @GetMapping("/{id}")
     public String getCashBox(@PathVariable("id") Long id, Model model) {
@@ -393,7 +393,7 @@ public class CashBoxController {
                                                      @RequestParam String filters) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);
-        return cashBoxService.findAllBySpecification(form, page, size);
+        return cashBoxService.findAllBySpecification2(form, page, size);
     }
 
     @GetMapping("/get-cashbox-balance")
@@ -410,6 +410,7 @@ public class CashBoxController {
     public @ResponseBody Double getAccountDebts() {
         return accountServiceImpl.getSumOfAccountDebts();
     }
+
 
 
 }

@@ -17,6 +17,12 @@
     </ul>
     <!-- Right navbar links -->
     <aside class="navbar-nav ml-auto align-items-center" >
+        <form id="languageForm" action="#" th:action="@{/change-language}" method="post" style="padding-right: 10px">
+            <select class="form-group" name="language" onchange="document.getElementById('languageForm').submit()" style="margin-bottom: 0">
+                <option th:selected="${#locale.language == 'uk'}" value="uk_UA">Укр</option>
+                <option th:selected="${#locale.language == 'ru'}" value="ru_UA">Рус</option>
+            </select>
+        </form>
       <li class="dropdown user user-menu">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
           <i class="fa fa-user-circle text-purple"></i>
