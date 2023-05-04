@@ -137,6 +137,14 @@
     float:right;
 }
 
+.user-row {
+    padding: 2px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .user-header {
     background-color: rgba(255,0,0,0.4);
 }

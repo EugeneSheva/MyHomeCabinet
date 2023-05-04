@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>МойДом24</title>
+    <title th:text="#{myHome24}">МойДом24</title>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -26,13 +26,13 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0" th:text="'Сообщение'"></h1>
+                        <h1 class="m-0" th:text="#{message}"></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a th:href="@{/}"><i class="fa fa-home"></i> Главная</a></li>
-                            <li class="breadcrumb-item"><a th:href="@{/admin/messages/}">Сообщения</a></li>
-                            <li class="breadcrumb-item active" th:text="'Сообщение'"></li>
+                            <li class="breadcrumb-item"><a th:href="@{/}"><i class="fa fa-home" th:text="#{homePage}"></i></a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/admin/messages/}" th:text="#{messages}">Сообщения</a></li>
+                            <li class="breadcrumb-item active" th:text="#{message}"></li>
                         </ol>
                     </div>
                 </div>
@@ -47,7 +47,7 @@
                     <div class="card-body p-0">
                         <div class="mailbox-read-info">
                             <h5 th:text="${message.subject}"></h5>
-                            <h6 >отправитель
+                            <h6 th:text="#{sender}">отправитель
 <!--                                th:text="${message.sender.name}"-->
                                 <span class="mailbox-read-time float-right" th:text="${message.date}"><h6 th:text="${message.date}"></h6></span></h6>
                         </div>
@@ -56,7 +56,7 @@
 
                     </div>
                     <div class="card-footer">
-                        <a type="button" th:href="@{/admin/messages/delete/{id}(id=${message.id})}" class="btn btn-default"><i class="far fa-trash-alt"></i>Удалить</a>
+                        <a type="button" th:href="@{/admin/messages/delete/{id}(id=${message.id})}" class="btn btn-default"><i class="far fa-trash-alt" th:text="#{delete}"></i></a>
                     </div>
                 </div>
             </div>

@@ -7,9 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Controller
@@ -48,6 +55,14 @@ public class MainController {
     public String showContactsPage(Model model) {
         model.addAttribute("page", websiteService.getContactsPage());
         return "main_website/contacts";
+    }
+
+    @PostMapping("/change-language")
+    public String changeLanguage(@RequestParam("language") String language, @RequestParam("url") String url, HttpServletRequest request, HttpServletResponse response) {
+        LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
+        Locale locale = new Locale(language.split("_")[0], language.split("_")[1]);
+        localeResolver.setLocale(request, response, locale);
+        return "redirect:"+url;
     }
 
 }
