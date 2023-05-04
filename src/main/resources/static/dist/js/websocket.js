@@ -110,7 +110,7 @@ function drawNewMessageRow(msg) {
     let row_children = newTableRow.children;
     for (let j = 1; j < row_children.length - 1; j++) {
         row_children[j].addEventListener('click', function () {
-            window.location.href = '/cabinet/messages/' + msg.id;
+            window.location.href = '/admin/messages/' + msg.id;
         });
     }
     console.log('msg drawed');

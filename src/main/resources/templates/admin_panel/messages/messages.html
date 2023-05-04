@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>МойДом24-Сообщения</title>
+    <title th:text="#{myHome24}">МойДом24</title>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -27,12 +27,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Сообщения</h1>
+                        <h1 class="m-0" th:text="#{messages}">Сообщения</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i> Главная</a></li>
-                            <li class="breadcrumb-item active">Сообщения</li>
+                            <li class="breadcrumb-item"><a href="#"><i class="fa fa-home" th:text="#{homePage}"></i></a></li>
+                            <li class="breadcrumb-item active" th:text="#{messages}">Сообщения</li>
                         </ol>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
             <div class="container-fluid">
                 <div class="card" style="padding: 10px">
                     <div class="form-group">
-                        <a th:href="@{/admin/messages/new}" class="btn btn-success btn-sm float-right">Отправить сообщение</a>
+                        <a th:href="@{/admin/messages/new}" class="btn btn-success btn-sm float-right" th:text="#{sendMessage}">Отправить сообщение</a>
                     </div>
                     <div class="card card-primary card-outline" style="border-top-color: #999999">
                         <div class="card-header">
@@ -84,9 +84,9 @@
                                     <thead>
                                     <tr>
                                         <th></th>
-                                        <th>Получатели</th>
-                                        <th>Текст</th>
-                                        <th>Дата</th>
+                                        <th th:text="#{recipient}">Получатели</th>
+                                        <th th:text="#{text}">Текст</th>
+                                        <th th:text="#{date}">Дата</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -221,7 +221,7 @@
 <script th:src="@{/dist/js/websocket.js}"></script>
 <script th:inline="javascript">
 
-    let globalTableName = 'messagesCabinet';
+    let globalTableName = 'messagesAdmin';
     let totalPagesCount = [[${totalPagesCount}]];
     let tableData;
     console.log('pre draw table');

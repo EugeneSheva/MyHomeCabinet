@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>МойДом24</title>
+    <title th:text="#{myHome24}">МойДом24</title>
 
     <link rel="stylesheet" th:href="@{/dist/css/website.css}">
     <link rel="stylesheet"
@@ -50,12 +50,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Касса</h1>
+                        <h1 class="m-0" th:text="#{cashBox}">Касса</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>  Главная</a></li>
-                            <li class="breadcrumb-item active">Касса</li>
+                            <li class="breadcrumb-item"><a href="/" th:text="#{homePage}"><i class="fa fa-home"></i>  Главная</a></li>
+                            <li class="breadcrumb-item active" th:text="#{cashBox}">Касса</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -72,7 +72,7 @@
                             <div class="small-box bg-green overflow-hidden">
                                 <div class="inner">
                                     <h3 id="cashboxBalance" th:text="${cashBoxSum}+' грн.'"></h3>
-                                    <p>Состояние кассы</p>
+                                    <p th:text="#{cashBoxBalanceL}">Состояние кассы</p>
                                 </div>
                                 <div class="icon">
                                     <i class="fa fa-dollar"></i>
@@ -84,7 +84,7 @@
                             <div class="small-box bg-blue overflow-hidden">
                                 <div class="inner">
                                     <h3 id="accountBalance" th:text="${accountBalance}+' грн.'"></h3>
-                                    <p>Баланс по счетам</p>
+                                    <p th:text="#{balanceOnAccountL}">Баланс по счетам</p>
                                 </div>
                                 <div class="icon">
                                     <i class="fa fa-dollar"></i>
@@ -96,7 +96,7 @@
                             <div class="small-box bg-red overflow-hidden">
                                 <div class="inner">
                                     <h3 id="accountDebts" th:text="${sumDebt}+' грн.'"></h3>
-                                    <p>Задолженность по счетам</p>
+                                    <p th:text="#{debtOnAccountsL}">Задолженность по счетам</p>
                                 </div>
                                 <div class="icon">
                                     <i class="fa fa-dollar"></i>
@@ -109,19 +109,19 @@
                 <div class="col-xs-12 col-lg-3">
                     <div class="btn-group pull-right margin-bottom">
                         <button type="button" class="btn btn-success dropdown-toggle" style="width: 230px;"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" th:text="#{cashBoxAction}">
                             Выберите действие <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" style="width:230px;">
                             <li><a th:href="@{/admin/cashbox/newIncome}"
-                                   style="padding-inline:15px;display: block; color: black; text-decoration: none;">Создать
+                                   style="padding-inline:15px;display: block; color: black; text-decoration: none;" th:text="#{createIncome}">Создать
                                 приход</a>
                             </li>
                             <li><a th:href="@{/admin/cashbox/newExpense}"
-                                   style="padding-inline:15px;display: block; color: black; text-decoration: none;">Создать
+                                   style="padding-inline:15px;display: block; color: black; text-decoration: none;" th:text="#{createExpense}">Создать
                                 расход</a></li>
                             <li onclick="downloadExcelTable()"
-                                style="display: block; color: black; text-decoration: none;"><a>Выгрузить в Excel</a>
+                                style="display: block; color: black; text-decoration: none;"><a th:text="#{uploadToExele}">Выгрузить в Excel</a>
                             </li>
                             </li>
                         </ul>
@@ -132,7 +132,7 @@
                 <div class="card-header" style="background-color: transparent;">
                     <div class="form-group">
                         <a href="#" onclick="reset()" class="btn btn-default btn-sm float-right">
-                            Очистить <i class="fa fa-eraser visible-xs"></i>
+                            <h7 th:text="#{clear}"></h7> <i class="fa fa-eraser visible-xs"></i>
                         </a>
                     </div>
                 </div>
@@ -154,13 +154,13 @@
                             <thead>
                             <tr>
                                 <th>№</th>
-                                <th>Дата</th>
-                                <th>Статус</th>
-                                <th>Тип платежа</th>
-                                <th>Владелец</th>
-                                <th>Лицевой счет</th>
-                                <th style="min-width:100px">Приход/расход</th>
-                                <th>Сумма(грн)</th>
+                                <th th:text="#{date}">Дата</th>
+                                <th th:text="#{status}">Статус</th>
+                                <th th:text="#{paymentType}">Тип платежа</th>
+                                <th th:text="#{owner}">Владелец</th>
+                                <th th:text="#{apartmentAccount}">Лицевой счет</th>
+                                <th style="min-width:100px" th:text="#{incomeAndExpense}">Приход/расход</th>
+                                <th th:text="#{sum}">Сумма(грн)</th>
                                 <th></th>
                             </tr>
                             <tr>
@@ -181,20 +181,20 @@
                                     </div>
                                 </th>
                                 <th style="border-bottom:none"><select autocomplete="off" th:field="*{isCompleted}" class="form-select my_filters" id="isCompleted" name="isCompleted">
-                                    <option th:selected="${filterForm.isCompleted == null}" value="-"></option>
+                                    <option th:selected="${filterForm.isCompleted == null}" value="-" th:text="#{choise}"></option>
                                     <option value="сompleted"
                                             th:selected="${#strings.containsIgnoreCase(('сompleted'),((filterForm.isCompleted != null) ? (filterForm.isCompleted ): ('emp') ))}"
-                                    >Проведен
+                                            th:text="#{complete}" >Проведен
                                     </option>
                                     <option value="notComplete"
                                             th:selected="${#strings.containsIgnoreCase(('notComplete'),((filterForm.isCompleted != null) ? (filterForm.isCompleted ): ('emp') ))}"
-                                    >Не проведен
+                                            th:text="#{notComplete}" >Не проведен
                                     </option>
                                 </select></th>
 
                                 <th style="border-bottom:none"><select autocomplete="off" class="form-select my_filters" id="incomeExpenseItem" name="incomeExpenseItem">
                                     <option value="-"
-                                            th:selected="${filterForm.incomeExpenseItem == null}"></option>
+                                            th:selected="${filterForm.incomeExpenseItem == null}" th:text="#{choise}"></option>
                                     <option th:each="incomeExpenseItem : ${incomeExpenseItems}"
                                             th:text="${incomeExpenseItem.name}"
                                             th:value="${incomeExpenseItem.name}"
@@ -203,7 +203,7 @@
 
                                 <th style="border-bottom:none">
                                     <select autocomplete="off" id="ownerId" class="my_filters" name="owner">
-                                        <option th:if="${filterForm.owner == null}" value="" selected="selected">Выберите пользователя</option>
+                                        <option th:if="${filterForm.owner == null}" value="" selected="selected" th:text="#{choise}">Выберите пользователя</option>
                                         <option th:if="${filterForm.owner != null}" th:value="${filterForm.ownerEntity.id}" th:text="${filterForm.ownerEntity.getFullName()}"></option>
                                     </select>
                                 </th>
@@ -212,14 +212,14 @@
                                 </td>
 
                                 <th style="border-bottom:none"><select autocomplete="off" class="form-select my_filters" id="incomeExpenseType" name="incomeExpenseType">
-                                    <option th:selected="${filterForm.incomeExpenseType == null}" value="-"></option>
+                                    <option th:selected="${filterForm.incomeExpenseType == null}" value="-" th:text="#{choise}"></option>
                                     <option value="income"
                                             th:selected="${#strings.containsIgnoreCase(('income'),((filterForm.incomeExpenseType != null) ? (filterForm.incomeExpenseType ): ('emp') ))}"
-                                    >Приход
+                                            th:text="#{income}" >Приход
                                     </option>
                                     <option value="expense"
                                             th:selected="${#strings.containsIgnoreCase(('expense'),((filterForm.incomeExpenseType != null) ? (filterForm.incomeExpenseType ): ('emp') ))}"
-                                    >Расход
+                                            th:text="#{expense}" >Расход
                                     </option>
                                 </select></th>
                                 <th style="border-bottom:none"></th>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>МойДом24</title>
+    <title th:text="#{myHome24}">МойДом24</title>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -26,14 +26,14 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                    <h1 class="m-0" th:text="${apartment.id != null? ('Квартира '+ apartment.number + ', ' + apartment.building.name): 'Новая квартира'}"></h1>
+                    <h1 class="m-0" th:text="#{apartment} + ${apartment.number} + ', ' + ${apartment.building.name}"></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a th:href="@{/}"><i class="fa fa-home"></i> Главная</a></li>
                             <li class="breadcrumb-item"><a th:href="@{/admin/apartments/}">Квартиры</a></li>
                             <li class="breadcrumb-item active"
-                                th:text="${apartment.id != null? ('Квартира '+ apartment.number + ', ' + apartment.building.name): 'Новая квартира'}"></li>
+                                th:text="#{apartment} + ${apartment.number} + ', ' + ${apartment.building.name}"></li>
                         </ol>
                     </div>
                 </div>
@@ -47,12 +47,12 @@
 
                 <div class="box" style="padding: 10px; border-top-color: #bbbbbb;">
                     <div class="box-header">
-                        <h3 class="box-title">Просмотр квартиры</h3>
-                        <div class="box-tools">
-                            <a th:href="@{edit/{id}(id=${id})}" class="btn btn-primary btn-sm float-right" style="margin-left: 2px">Редактировать
-                                квартиру <i class="fa fa-pencil visible-xs" aria-hidden="true"></i></a>
-                            <a th:href="@{/admin/apartments/NewInvoiceByApartment/{id}(id=${apartment.id})}" class="btn btn-default btn-sm float-right" style="margin-left: 2px"><i></i><i class="fa fa-files-o visible-xs" aria-hidden="true"></i> Оформить квитанцию</a>
-                            <a th:href="@{/admin/apartments/NewIncomesByApartment/{id}(id=${apartment.id})}" class="btn btn-default btn-sm float-right" style="margin-left: 2px"><i class="fa fa-dollar visible-xs" aria-hidden="true"></i> Принять платеж</a>
+                        <h3 class="box-title" th:text="#{viewApartment}">Просмотр квартиры</h3>
+                        <div class="box-tools" style="top: 10px;">
+                            <a th:href="@{edit/{id}(id=${id})}" class="btn btn-primary btn-sm float-right" style="margin-left: 2px" >
+                                 <h7 th:text="#{editApartment}"></h7><i class="fa fa-pencil visible-xs" aria-hidden="true"></i></a>
+                            <a th:href="@{/admin/apartments/NewInvoiceByApartment/{id}(id=${apartment.id})}" class="btn btn-default btn-sm float-right" style="margin-left: 2px"><i></i><i class="fa fa-files-o visible-xs" aria-hidden="true" th:text="#{editApartment}"></i></a>
+                            <a th:href="@{/admin/apartments/NewIncomesByApartment/{id}(id=${apartment.id})}" class="btn btn-default btn-sm float-right" style="margin-left: 2px"><i class="fa fa-dollar visible-xs" aria-hidden="true" th:text="#{editApartment}"></i></a>
                         </div>
                     </div>
                     <div class="box-body">
@@ -61,44 +61,44 @@
                             <col style="width:60%">
                             <tbody>
                             <tr>
-                                <td><b>Лицевой счет</td>
+                                <td ><b th:text="#{apartmentAccount}">Лицевой счет</b></td>
                                 <td th:text="${T(java.lang.String).format('%010d',apartment.account.id)}">?</td>
                             </tr>
                             <tr>
-                                <td><b>Номер квартиры</b></td>
+                                <td><b th:text="#{apartmentNumber}">Номер квартиры</b></td>
                                 <td th:text="${apartment.number}">?</td>
                             </tr>
                             <tr>
-                                <td><b>Площадь</b></td>
+                                <td><b th:text="#{square}">Площадь</b></td>
                                 <td th:text="${apartment.square}">?</td>
                             </tr>
                             <tr>
-                                <td><b>Дом</b></td>
+                                <td><b th:text="#{building}">Дом</b></td>
                                 <td th:text="${apartment.building.name}"></td>
                             </tr>
                             <tr>
-                                <td><b>Секция</b></td>
+                                <td><b th:text="#{section}">Секция</b></td>
                                 <td th:text="${apartment.section}">?</td>
                             </tr>
                             <tr>
-                                <td><b>Этаж</b></td>
+                                <td><b th:text="#{floor}">Этаж</b></td>
                                 <td th:text="${apartment.floor}">?</td>
                             </tr>
                             <tr>
-                                <td><b>Владелец</b></td>
+                                <td><b th:text="#{owner}">Владелец</b></td>
                                 <td th:text="${apartment.owner.first_name}+ ' '+${apartment.owner.last_name}+' '+${apartment.owner.fathers_name}">?</td>
                             </tr>
                             <tr>
-                                <td><b>Тариф</b></td>
+                                <td><b th:text="#{tariff}">Тариф</b></td>
                                 <td th:if="${apartment.tariff != null}" th:text="${apartment.tariff.name}">?</td>
                                 <td th:if="${apartment.tariff == null}">--отсутствует--</td>
                             </tr>
                             </tbody>
                         </table>
                         <div style="margin: 10px">
-                            <a th:href="@{/admin/apartments/metersDataByApartment/{id}(id=${id})}">Посмотреть показания счетчиков</a><br>
-                            <a th:href="@{/admin/apartments/incomesByApartmentAccount/{id}(id=${apartment.account.id})}">Посмотреть приходы</a><br>
-                            <a th:href="@{/admin/apartments/invoicesByApartment/{id}(id=${id})}">Посмотреть квитанции</a><br>
+                            <a th:href="@{/admin/apartments/metersDataByApartment/{id}(id=${id})}" th:text="#{viewMeterReadings}">Посмотреть показания счетчиков</a><br>
+                            <a th:href="@{/admin/apartments/incomesByApartmentAccount/{id}(id=${apartment.account.id})}" th:text="#{viewIncomes}">Посмотреть приходы</a><br>
+                            <a th:href="@{/admin/apartments/invoicesByApartment/{id}(id=${id})}" th:text="#{viewInvoices}">Посмотреть квитанции</a><br>
                         </div>
                     </div>
                 </div>

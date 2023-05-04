@@ -51,7 +51,16 @@
 <!--              <a th:href="@{/admin/admins/update/{id}(id=${auth_admin.id})}" class="btn btn-warning">Профиль</a>-->
               <a href="#" class="btn btn-warning">Профиль</a>
             </div>
-            <div class="pull-right">
+              <div >
+                  <form id="languageForm" action="#" th:action="@{/change-language}" method="post" >
+                      <input type="hidden" name="url" th:value="${#httpServletRequest.requestURI}" />
+                      <select class="form-group" name="language" onchange="document.getElementById('languageForm').submit()" style="margin-bottom: 0; width: 92px; height: 36px;">
+                          <option th:selected="${#locale.language == 'uk'}" value="uk_UA">Укр</option>
+                          <option th:selected="${#locale.language == 'ru'}" value="ru_UA">Рус</option>
+                      </select>
+                  </form>
+              </div>
+            <div >
               <a th:href="@{/admin/logout}" class="btn btn-danger">Выйти</a>
             </div>
           </li>
@@ -91,89 +100,78 @@
                  with font-awesome or any other icon font library -->
             <li class="nav-item" sec:authorize="hasAuthority('statistics.read')">
               <a th:href="@{/admin/statistics/}" class="nav-link">
-                <i class="fa-solid fa-chart-line"></i>
-                <p class="pl-1">
-                  Статистика
+                <i class="fa-solid fa-chart-line" ></i>
+                <p class="pl-1" th:text="#{statistics}">
                 </p>
               </a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('cashbox.read')">
               <a th:href="@{/admin/cashbox/}"class="nav-link">
                 <i class="fa fa-usd" aria-hidden="true" style="width:16px"></i>
-                <p class="pl-1">
-                  Касса
+                <p class="pl-1" th:text="#{cashBox}">
                 </p>
               </a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('invoices.read')">
               <a th:href="@{/admin/invoices}" class="nav-link">
                 <i class="fa fa-files-o" aria-hidden="true"></i>
-                <p class="pl-1">
-                  Квитанции на оплату
+                <p class="pl-1" th:text="#{invoices}">
                 </p>
               </a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('accounts.read')">
               <a th:href="@{/admin/accounts}" class="nav-link">
                 <i class="fa fa-credit-card" aria-hidden="true"></i>
-                <p class="pl-1">
-                  Лицевые счета
+                <p class="pl-1" th:text="#{apartAccount}">
                 </p>
               </a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('apartments.read')">
               <a th:href="@{/admin/apartments/}" class="nav-link">
                 <i class="fa fa-key" aria-hidden="true"></i>
-                <p class="pl-1">
-                  Квартиры
+                <p class="pl-1" th:text="#{apartments}">
                 </p>
               </a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('owners.read')">
               <a th:href="@{/admin/owners/}" class="nav-link">
                 <i class="fa fa-users" aria-hidden="true" style="font-size: 14px"></i>
-                <p class="pl-1">
-                  Владельцы квартир
+                <p class="pl-1" th:text="#{apartmentsOwners}">
                 </p>
               </a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('buildings.read')">
               <a th:href="@{/admin/buildings/}" class="nav-link">
                 <i class="fa fa-building" aria-hidden="true" style="width:16px"></i>
-                <p class="pl-1">
-                  Дома
+                <p class="pl-1" th:text="#{buildings}">
                 </p>
               </a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('messages.read')">
               <a th:href="@{/admin/messages/}" class="nav-link">
                 <i class="fa fa-envelope-o" aria-hidden="true"></i>
-                <p class="pl-1">
-                  Сообщения
+                <p class="pl-1" th:text="#{messages}">
                 </p>
               </a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('requests.read')">
               <a th:href="@{/admin/requests}" class="nav-link">
                 <i class="fa fa-wrench" aria-hidden="true"></i>
-                <p class="pl-1">
-                  Заявки вызова мастера
+                <p class="pl-1" th:text="#{repairRequest}">
                 </p>
               </a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('meters.read')">
               <a th:href="@{/admin/meters}" class="nav-link">
                 <i class="fa fa-tachometer" aria-hidden="true"></i>
-                <p class="pl-1">
-                  Показания счетчиков
+                <p class="pl-1" th:text="#{metersData}">
                 </p>
               </a>
             </li>
             <li class="nav-item" sec:authorize="hasAuthority('website_settings.read')">
               <a href="#" class="nav-link">
                 <i class="fa fa-desktop" aria-hidden="true"></i>
-                <p class="pl-1">
-                  Управление сайтом
+                <p class="pl-1" th:text="#{siteManagment}">
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
@@ -181,25 +179,25 @@
                 <li class="nav-item dropdown-items" >
                   <a th:href="@{/admin/website/home}" class="nav-link dropdown-links" style="margin:0">
                     <i style="font-size: 12px;" class="far fa-circle fa-sm nav-icon"></i>
-                    <p> Главная страница</p>
+                    <p th:text="#{mainPage}"></p>
                   </a>
                 </li>
                 <li class="nav-item dropdown-items" >
                   <a th:href="@{/admin/website/about}" class="nav-link dropdown-links" style="margin:0">
                     <i style="font-size: 12px;" class="far fa-circle fa-sm nav-icon"></i>
-                    <p>О нас</p>
+                    <p th:text="#{aboutUs}"></p>
                   </a>
                 </li>
                 <li class="nav-item dropdown-items" >
                   <a th:href="@{/admin/website/services}" class="nav-link dropdown-links" style="margin:0">
                     <i style="font-size: 12px;" class="far fa-circle fa-sm nav-icon"></i>
-                    <p>Услуги</p>
+                    <p th:text="#{services}"></p>
                   </a>
                 </li>
                 <li class="nav-item dropdown-items" >
                   <a th:href="@{/admin/website/contacts}" class="nav-link dropdown-links" style="margin:0">
                     <i style="font-size: 12px;" class="far fa-circle fa-sm nav-icon"></i>
-                    <p>Контакты</p>
+                    <p th:text="#{contacts}"></p>
                   </a>
                 </li>
               </ul>
@@ -208,8 +206,7 @@
             'roles.read','payment_details.read','transaction_items.read')">
               <a href="#" class="nav-link">
                 <i class="fa fa-cogs" aria-hidden="true"></i>
-                <p class="pl-1">
-                  Настройка системы
+                <p class="pl-1" th:text="#{systemSetup}">
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
@@ -217,37 +214,37 @@
                 <li class="nav-item dropdown-items" sec:authorize="hasAuthority('services.read')">
                   <a th:href="@{/admin/services}" class="nav-link dropdown-links" style="margin:0">
                     <i style="font-size: 12px;" class="fa fa-briefcase nav-icon"></i>
-                    <p>Услуги</p>
+                    <p th:text="#{services}">Услуги</p>
                   </a>
                 </li>
                 <li class="nav-item dropdown-items" sec:authorize="hasAuthority('tariffs.read')" >
                   <a th:href="@{/admin/tariffs}" class="nav-link dropdown-links" style="margin:0">
                     <i style="font-size: 12px;"  class="fa fa-money nav-icon"></i>
-                    <p>Тарифы</p>
+                    <p th:text="#{tariffs}">Тарифы</p>
                   </a>
                 </li>
                 <li class="nav-item dropdown-items" sec:authorize="hasAuthority('users.read')">
                   <a th:href="@{/admin/admins}" class="nav-link dropdown-links" style="margin:0">
                     <i style="font-size: 12px;" class="fa fa-user-plus nav-icon"></i>
-                    <p>Пользователи</p>
+                    <p th:text="#{users}">Пользователи</p>
                   </a>
                 </li>
                 <li class="nav-item dropdown-items" sec:authorize="hasAuthority('roles.read')">
                   <a th:href="@{/admin/roles}" class="nav-link dropdown-links" style="margin:0">
                     <i style="font-size: 12px;" class="fa fa-users nav-icon"></i>
-                    <p>Роли</p>
+                    <p th:text="#{roles}">Роли</p>
                   </a>
                 </li>
                 <li class="nav-item dropdown-items" sec:authorize="hasAuthority('payment_details.read')">
                   <a th:href="@{/admin/payment-details}" class="nav-link dropdown-links" style="margin:0">
                     <i style="font-size: 12px;" class="fa fa-credit-card nav-icon"></i>
-                    <p>Платежные реквизиты</p>
+                    <p th:text="#{paymentDetails}">Платежные реквизиты</p>
                   </a>
                 </li>
                 <li class="nav-item dropdown-items" sec:authorize="hasAuthority('transaction_items.read')">
                   <a th:href="@{/admin/income-expense}" class="nav-link dropdown-links" style="margin:0">
                     <i style="font-size: 12px;" class="fa fa-list-ol nav-icon"></i>
-                    <p>Статьи платежей</p>
+                    <p th:text="#{paymentItens}">Статьи платежей</p>
                   </a>
                 </li>
               </ul>
@@ -310,9 +307,9 @@
 
   <!-- Main Footer -->
   <footer th:fragment="footer" class="main-footer">
-    <strong>Разработано <a href="#">AVADA-MEDIA</a>.</strong>
-    <strong>На базе системы управления <a href="#">"МойДом24"</a>.</strong>
-    <strong>Документация API доступна по <a href="#">ссылке</a>.</strong>
+    <strong th:text="#{footerP1}">Разработано <a href="#" th:text="#{footerP2}">AVADA-MEDIA</a>.</strong>
+    <strong th:text="#{footerP3}">На базе системы управления <a href="#" th:text="#{footerP4}">"МойДом24"</a>.</strong>
+    <strong th:text="#{footerP5}">Документация API доступна по <a href="#" th:text="#{footerP6}">ссылке</a>.</strong>
     <div class="float-right d-none d-sm-inline-block">
       <b>Version</b> 1.0.0
     </div>

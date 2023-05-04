@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>МойДом24</title>
+    <title th:text="#{myHome24}">МойДом24</title>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -30,9 +30,9 @@
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a th:href="@{/}"><i class="fa fa-home"></i> Главная</a></li>
-                            <li class="breadcrumb-item"><a th:href="@{/admin/buildings/}">Дома</a></li>
-                            <li class="breadcrumb-item active" th:text="'Дом '+${building.name}"></li>
+                            <li class="breadcrumb-item"><a th:href="@{/}"><i class="fa fa-home" th:text="#{homePage}"></i></a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/admin/buildings/}" th:text="#{buildings}"></a></li>
+                            <li class="breadcrumb-item active" th:text="#{building}+' '+${building.name}"></li>
                         </ol>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
 
                 <div class="card" style="padding: 10px">
                     <div class="form-group" style="margin-bottom: 0px">
-                        <a th:href="@{/admin/buildings/edit/{id}(id=${id})}" class="btn btn-primary btn-sm float-right">Редактировать
+                        <a th:href="@{/admin/buildings/edit/{id}(id=${id})}" class="btn btn-primary btn-sm float-right" th:text="#{editBuilding}">Редактировать
                             дом</a>
                     </div>
                     <hr>
@@ -59,23 +59,23 @@
                                         <col style="width:50%">
                                         <tbody>
                                         <tr>
-                                            <td><b>Название</b></td>
+                                            <td><b th:text="#{named}">Название</b></td>
                                             <td th:text="${building.name}">?</td>
                                         </tr>
                                         <tr>
-                                            <td><b>Адрес</b></td>
+                                            <td><b th:text="#{address}">Адрес</b></td>
                                             <td th:text="${building.address}">?</td>
                                         </tr>
                                         <tr>
-                                            <td><b>Секций</b></td>
+                                            <td><b th:text="#{sectionsQuamt}">Секций</b></td>
                                             <td th:text="${building.sections.size()}">?</td>
                                         </tr>
                                         <tr>
-                                            <td><b>Этажей</b></td>
+                                            <td><b th:text="#{floorsQuamt}">Этажей</b></td>
                                             <td th:text="${building.floors.size()}">?</td>
                                         </tr>
                                         <tr>
-                                            <td><b>Пользователи</b></td>
+                                            <td><b th:text="#{users}">Пользователи</b></td>
                                             <td>
                                                 <div th:each="admin : ${building.getAdmins()}">
                                                     <a th:text="${admin.role+' '+admin.first_name+' '+admin.last_name}"></a>

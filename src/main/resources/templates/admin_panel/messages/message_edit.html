@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>МойДом24-Дома</title>
+    <title th:text="#{myHome24}">МойДом24-Дома</title>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -41,14 +41,14 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0" th:text="'Новое сообщение'"></h1>
+                        <h1 class="m-0" th:text="#{newMessage}"></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a th:href="@{/}"><i class="fa fa-home"></i> Главная</a></li>
-                            <li class="breadcrumb-item"><a th:href="@{/admin/messages/}">Сообщения</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/}"><i class="fa fa-home" th:text="#{homePage}"></i></a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/admin/messages/}" th:text="#{messages}">Сообщения</a></li>
                             <li class="breadcrumb-item active"
-                                th:text="'Новое сообщение'"></li>
+                                th:text="#{newMessage}"></li>
                         </ol>
                     </div>
                 </div>
@@ -89,31 +89,31 @@
 
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="true" id="debt" name="debt" th:checked="${selectWithDebt!=null}" th:onchange="apartmentList()">
-                                <label class="form-check-label" for="debt">Владельцам с задолженостями</label>
+                                <label class="form-check-label" for="debt" th:text="#{toOwnerWithDebt}">Владельцам с задолженостями</label>
                             </div>
 
-                            <label for="building" class="form-label" >ЖК</label>
+                            <label for="building" class="form-label" th:text="#{rc}">ЖК</label>
                             <select class="form-select" id="building" name="building" th:onchange="selectBuilding()">
-                                <option selected="" value="0">Всем...</option>
+                                <option selected="" value="0" th:text="#{toAll}">Всем...</option>
                                 <option  th:each="building, item : ${buildings}"
                                          th:text="${buildings[__${item.index}__].name}"
                                          th:value="${buildings[__${item.index}__].id}" th:id="${item.count}"></option>
                             </select>
 
-                            <label for="section"   class="form-label"  >Секция</label>
+                            <label for="section"   class="form-label"  th:text="#{section}">Секция</label>
                             <select class="form-select" id="section" th:onchange="apartmentList()" name="section">
-                                <option selected="" value="">Всем...</option>
+                                <option selected="" value="" th:text="#{toAll}">Всем...</option>
 
                             </select>
 
-                            <label for="floor"  class="form-label" >Этаж</label>
+                            <label for="floor"  class="form-label" th:text="#{floor}">Этаж</label>
                             <select class="form-select" id="floor" th:onchange="apartmentList()" name="floor">
-                                <option selected="" value="">Всем...</option>
+                                <option selected="" value="" th:text="#{toAll}">Всем...</option>
                             </select>
 
-                            <label for="apartment"  class="form-label" >Квартира</label>
+                            <label for="apartment"  class="form-label" th:text="#{apartment}">Квартира</label>
                             <select class="form-select" id="apartment" name="apartmentId">
-                                <option selected="" value="">Всем...</option>
+                                <option selected="" value="" th:text="#{toAll}">Всем...</option>
                             </select>
 
                             <label for="date"></label>
@@ -131,7 +131,7 @@
                         <div class="card-footer" style="background-color: #fafafa">
                             <div class="float-right">
                                 <button type="submit" class="btn btn-success"><i
-                                        class="far fa-envelope"></i> Отправить
+                                        class="far fa-envelope" th:text="#{send}"></i>
                                 </button>
                             </div>
                         </div>

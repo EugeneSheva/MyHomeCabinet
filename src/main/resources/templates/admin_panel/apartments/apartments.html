@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>МойДом24</title>
+    <title th:text="#{myHome24}">МойДом24</title>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -43,12 +43,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Квартиры</h1>
+                        <h1 class="m-0" th:text="#{apartments}">Квартиры</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i> Главная</a></li>
-                            <li class="breadcrumb-item active">Квартиры</li>
+                            <li class="breadcrumb-item"><a href="#"><i class="fa fa-home" th:text="#{homePage}"></i ></a></li>
+                            <li class="breadcrumb-item active" th:text="#{apartments}">Квартиры</li>
                         </ol>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
             <div class="row mr-2 mt-3" style="justify-content: flex-end">
                 <div class="col-xs-12">
                     <div class="pull-right margin-bottom">
-                        <a class="btn btn-success" th:href="@{/admin/apartments/new}">Добавить квартиру</a>
+                        <a class="btn btn-success" th:href="@{/admin/apartments/new}" th:text="#{addApartment}">Добавить квартиру</a>
                     </div>
                 </div>
             </div>
@@ -69,8 +69,8 @@
                 <div class="card card card-primary card-outline" style="padding: 0px; border-top-color: #bbbbbb;">
                     <div class="card-header" style="background-color: transparent;">
                         <div class="form-group">
-                            <a href="#" onclick="resetAll()" class="btn btn-default btn-sm float-right">
-                                Очистить</span><i class="fa fa-eraser visible-xs"></i>
+                            <a href="#" onclick="resetAll()" class="btn btn-default btn-sm float-right"><h7 th:text="#{clear}"></h7>
+                                </span><i class="fa fa-eraser visible-xs"></i>
                             </a>
                         </div>
                     </div>
@@ -89,12 +89,12 @@
                                 <col style="width:5%">
                                 <thead>
                                 <tr>
-                                    <th>№ кв.</th>
-                                    <th>Дом</th>
-                                    <th>Секция</th>
-                                    <th>Этаж</th>
-                                    <th>Владелец</th>
-                                    <th>Остаток</th>
+                                    <th th:text="#{apartNumb}">№ кв.</th>
+                                    <th th:text="#{building}">Дом</th>
+                                    <th th:text="#{section}">Секция</th>
+                                    <th th:text="#{floor}">Этаж</th>
+                                    <th th:text="#{owner}">Владелец</th>
+                                    <th th:text="#{restOfMoney}">Остаток</th>
                                     <th></th>
                                 </tr>
                                 <tr>
@@ -139,11 +139,11 @@
                                         <option value="-"></option>
                                         <option value="true"
                                                 th:selected="${#strings.containsIgnoreCase(('true'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}"
-                                        >Есть долг
+                                        th:text="#{debtS}">Есть долг
                                         </option>
                                         <option value="false"
-                                                th:selected="${#strings.containsIgnoreCase(('false'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}">
-                                            Нет долга
+                                                th:selected="${#strings.containsIgnoreCase(('false'),((filterForm.debtSting != null) ? (filterForm.debtSting ): ('emp') ))}"
+                                                th:text="#{noDebtS}">Нет долга
                                         </option>
                                     </select></th>
                                     <th style="border-bottom:none"></th>
@@ -275,10 +275,11 @@
 <script src="../../plugins/select2/js/select2.full.min.js"></script>
 
 <!-- select2 filter script -->
-<script>
+<script th:inline="javascript">
+    var choise = [[#{choise}]];
     $(document).ready(function() {
 
-        $("#buildingName, #debtSting").select2({placeholder:'Выберите...', minimumResultsForSearch:Infinity});
+        $("#buildingName, #debtSting").select2({placeholder:choise, minimumResultsForSearch:Infinity});
 
         $('#ownerId').select2({
             ajax: {
@@ -336,7 +337,7 @@
                         // Добавление первой пустой опции
                         $('#section').prepend($('<option>', {
                             value: '',
-                            text: 'Выберите...'
+                            text: choise
                         }));
                         // Добавление новых опций второго селектора на основе полученных данных
                         $.each(data, function (index, item) {
@@ -355,7 +356,7 @@
                         $('#floor').empty();
                         $('#floor').prepend($('<option>', {
                             value: '',
-                            text: 'Выберите...'
+                            text: choise
                         }));
                         $.each(data, function (index, item) {
                             var option = $('<option>').val(item).text(item);

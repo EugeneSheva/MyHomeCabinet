@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>МойДом24</title>
+    <title th:text="#{myHome24}">МойДом24</title>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -31,12 +31,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Дома</h1>
+                        <h1 class="m-0" th:text="#{buildings}">Дома</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i> Главная</a></li>
-                            <li class="breadcrumb-item active">Дома</li>
+                            <li class="breadcrumb-item"><a href="#"><i class="fa fa-home" th:text="#{homePage}"></i></a></li>
+                            <li class="breadcrumb-item active" th:text="#{buildings}"></li>
                         </ol>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
             <div class="row mr-2 mt-3" style="justify-content: flex-end">
                 <div class="col-xs-12">
                     <div class="pull-right margin-bottom">
-                        <a class="btn btn-success" th:href="@{/admin/buildings/new}">Добавить дом</a>
+                        <a class="btn btn-success" th:href="@{/admin/buildings/new}" th:text="#{addBuilding}">Добавить дом</a>
                     </div>
                 </div>
             </div>
@@ -58,7 +58,7 @@
                     <div class="card-header" style="background-color: transparent;">
                         <div class="form-group">
                             <a href="#" onclick="reset()" class="btn btn-default btn-sm float-right">
-                                Очистить</span><i class="fa fa-eraser visible-xs"></i>
+                               <h7 th:text="#{clear}"></h7></span><i class="fa fa-eraser visible-xs"></i>
                             </a>
                         </div>
                     </div>
@@ -73,8 +73,8 @@
                                 <thead>
                                 <tr>
                                     <th style="border-bottom:none"></th>
-                                    <th style="border-bottom:none">Название</th>
-                                    <th style="border-bottom:none">Адрес</th>
+                                    <th style="border-bottom:none" th:text="#{named}">Название</th>
+                                    <th style="border-bottom:none" th:text="#{address}">Адрес</th>
                                     <th style="border-bottom:none"></th>
                                 </tr>
                                 <tr>
