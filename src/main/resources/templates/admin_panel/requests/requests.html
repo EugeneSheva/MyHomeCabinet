@@ -30,12 +30,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Заявки вызова мастера</h1>
+                        <h1 class="m-0" th:text="#{requests.mainTablePage.pageName}">Заявки вызова мастера</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i>  Главная</a></li>
-                            <li class="breadcrumb-item active">Заявки вызова мастера</li>
+                            <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i> <span th:text="#{requests.mainTablePage.breadcrumb.main}"> Главная</span></a></li>
+                            <li class="breadcrumb-item active" th:text="#{requests.mainTablePage.pageName}">Заявки вызова мастера</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -48,7 +48,7 @@
             <div class="row mr-2" style="justify-content: flex-end">
                 <div class="col-xs-12">
                     <div class="pull-right margin-bottom">
-                        <a class="btn btn-success" th:href="@{/admin/requests/create}">Добавить заявку</a>
+                        <a class="btn btn-success" th:href="@{/admin/requests/create}" th:text="#{requests.mainTablePage.request.add}">Добавить заявку</a>
                     </div>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                                 <h3 class="box-title"></h3>
                                 <div class="box-tools">
                                     <a href="#" onclick="reset()" class="btn btn-default btn-sm">
-                                        <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                                        <span class="hidden-xs" th:text="#{requests.mainTablePage.table.erase}">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                                     </a>
                                     <div id="page_button_container_top" class="mb-4" style="display: flex; justify-content: center;"></div>
                                 </div>
@@ -71,21 +71,21 @@
                                     <table id="requestsTable" class="table table-bordered table-hover table-striped linkedRow">
                                     <thead>
                                     <tr>
-                                        <th style="width: 100px; min-width: 100px">
+                                        <th style="width: 100px; min-width: 100px" th:text="#{requests.mainTablePage.table.id}">
                                             № заявки
                                         </th>
-                                        <th style="min-width: 220px">
+                                        <th style="min-width: 220px" th:text="#{requests.mainTablePage.table.time}">
                                             Удобное время
                                         </th>
-                                        <th style="min-width: 150px">
+                                        <th style="min-width: 150px" th:text="#{requests.mainTablePage.table.master.type}">
                                             Тип мастера
                                         </th>
-                                        <th>Описание</th>
-                                        <th>Квартира</th>
-                                        <th style="min-width: 270px">Владелец</th>
-                                        <th>Телефон</th>
-                                        <th style="min-width: 200px">Мастер</th>
-                                        <th style="width: 135px; min-width: 135px">Статус</th>
+                                        <th th:text="#{requests.mainTablePage.table.description}">Описание</th>
+                                        <th th:text="#{requests.mainTablePage.table.apartment}">Квартира</th>
+                                        <th style="min-width: 270px" th:text="#{requests.mainTablePage.table.owner}">Владелец</th>
+                                        <th th:text="#{requests.mainTablePage.table.phone}">Телефон</th>
+                                        <th style="min-width: 200px" th:text="#{requests.mainTablePage.table.master.name}">Мастер</th>
+                                        <th style="width: 135px; min-width: 135px" th:text="#{requests.mainTablePage.table.status}">Статус</th>
                                         <th style="width: 80px; min-width: 80px">&nbsp;</th>
                                     </tr>
                                     <tr>

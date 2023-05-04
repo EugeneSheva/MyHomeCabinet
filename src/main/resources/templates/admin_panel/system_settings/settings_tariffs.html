@@ -26,12 +26,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Тарифы</h1>
+            <h1 class="m-0" th:text="#{settings.system.tariffs.mainPage.pageName}">Тарифы</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item active">Тарифы</li>
+              <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i> <span th:text="#{settings.system.tariffs.mainPage.breadcrumb.main}"> Главная</span></a></li>
+              <li class="breadcrumb-item active" th:text="#{settings.system.tariffs.mainPage.pageName}">Тарифы</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -44,7 +44,7 @@
       <div class="row mr-2" style="justify-content: flex-end">
         <div class="col-xs-12">
           <div class="pull-right margin-bottom">
-            <a class="btn btn-success" th:href="@{/admin/tariffs/create}">Добавить тариф</a>
+            <a class="btn btn-success" th:href="@{/admin/tariffs/create}" th:text="#{settings.system.tariffs.mainPage.add-tariff}">Добавить тариф</a>
           </div>
         </div>
       </div>
@@ -56,9 +56,9 @@
                 <table class="table table-bordered table-hover table-striped linkedRow">
                   <thead>
                   <tr>
-                    <th><a th:href="'/admin/tariffs?sort=' + ${sort}" data-sort="name">Название тарифа</a></th>
-                    <th>Описание тарифа</th>
-                    <th>Дата редактирования</th>
+                    <th><a th:href="'/admin/tariffs?sort=' + ${sort}" data-sort="name" th:text="#{settings.system.tariffs.mainPage.table.name}">Название тарифа</a></th>
+                    <th th:text="#{settings.system.tariffs.mainPage.table.description}">Описание тарифа</th>
+                    <th th:text="#{settings.system.tariffs.mainPage.table.date}">Дата редактирования</th>
                     <th style="width: 114px; min-width: 114px">&nbsp;</th>
                   </tr>
                   </thead>

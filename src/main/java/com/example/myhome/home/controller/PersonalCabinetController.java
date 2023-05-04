@@ -1,6 +1,6 @@
 package com.example.myhome.home.controller;
 
-import com.example.myhome.home.configuration.security.CustomUserDetails;
+
 import com.example.myhome.home.dto.ApartmentDTO;
 import com.example.myhome.home.dto.InvoiceDTO;
 import com.example.myhome.home.dto.OwnerDTO;

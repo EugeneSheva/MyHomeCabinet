@@ -26,14 +26,14 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Печатная форма документа</h1>
+            <h1 class="m-0" th:text="#{invoices.printPage.pageName}">Печатная форма документа</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/invoices}">Квитанции</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/invoices/{id}(id=${invoice.id})}">Квитанция №<span th:text="${T(java.lang.String).format('%010d', invoice.id)}"></span></a></li>
-              <li class="breadcrumb-item active">Печатная форма документа</li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  <span th:text="#{invoices.printPage.breadcrumbMenuMain}">Главная</span></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/invoices}" th:text="#{invoices.printPage.breadcrumbMainTablePageName}">Квитанции</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/invoices/{id}(id=${invoice.id})}"><span th:text="#{invoices.printPage.breadcrumbSingleInvoiceName}">Квитанция</span> №<span th:text="${T(java.lang.String).format('%010d', invoice.id)}"></span></a></li>
+              <li class="breadcrumb-item active" th:text="#{invoices.printPage.pageName}">Печатная форма документа</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -50,10 +50,10 @@
           <div class="col-md-12">
             <div class="box" style="caret-color:transparent; padding:0; padding-inline: 10px;">
               <div class="box-header with-border" style="padding-top: 15px; padding-bottom: 15px;">
-                <h3 class="box-title" style="margin: 0; padding: 0">Список шаблонов</h3>
+                <h3 class="box-title" style="margin: 0; padding: 0" th:text="#{invoices.printPage.card.header}">Список шаблонов</h3>
                 <div class="box-tools">
                   <a th:href="@{/admin/invoices/template}" class="btn btn-default btn-sm">
-                    <span class="hidden-xs"> Настройка шаблонов </span>
+                    <span class="hidden-xs" th:text="#{invoices.printPage.card.settings}"> Настройка шаблонов </span>
                   </a>
                 </div>
               </div>
@@ -76,8 +76,8 @@
                 <div class="row">
                   <div class="col-lg-12 text-right pull-right">
                     <div class="form-group">
-                      <button type="submit" class="btn btn-success">Скачать</button>
-                      <button type="submit" class="btn btn-default">Отправить на e-mail</button>
+                      <button type="submit" class="btn btn-success" th:text="#{invoices.printPage.card.download}">Скачать</button>
+                      <button type="submit" class="btn btn-default" th:text="#{invoices.printPage.card.email}">Отправить на e-mail</button>
                     </div>
                   </div>
                 </div>

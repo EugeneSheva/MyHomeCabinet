@@ -33,13 +33,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Показания счетчиков, кв.<span th:text="${apart_number}"></span></h1>
+            <h1 class="m-0"><span th:text="#{meters.meterDataPage.pageName}">Показания счетчиков, кв.</span><span th:text="${apart_number}"></span></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/meters}">Счётчики</a></li>
-              <li class="breadcrumb-item active">Показания счетчиков, кв.<span th:text="${apart_number}"></span></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i> <span th:text="#{meters.meterDataPage.breadcrumb.main}">Главная</span> </a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/meters}" th:text="#{meters.meterDataPage.breadcrumb.previous}">Счётчики</a></li>
+              <li class="breadcrumb-item active" ><span th:text="#{meters.meterDataPage.pageName}">Показания счетчиков, кв.</span><span th:text="${apart_number}"></span></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -54,7 +54,7 @@
           <div class="pull-right margin-bottom">
             <a class="btn btn-success"
                th:href="@{/admin/meters/create-add?flat_id={flat_id}&service_id={service_id}
-               (flat_id=${flat_id}, service_id=${service_id})}">Добавить показание</a>
+               (flat_id=${flat_id}, service_id=${service_id})}" th:text="#{meters.meterDataPage.meter.add}">Добавить показание</a>
           </div>
         </div>
       </div>
@@ -67,7 +67,7 @@
                 <div class="box-tools">
                   <a th:href="@{/admin/meters/data?flat_id={flat_id}&service_id={service_id}
                       (flat_id=${flat_id}, service_id=${service_id})}" class="btn btn-default btn-sm">
-                    <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                    <span class="hidden-xs" th:text="#{meters.meterDataPage.table.erase}">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                   </a>
                 </div>
               </div>
@@ -76,19 +76,19 @@
                   <thead>
                   <tr>
                     <th style="width: 125px; min-width: 125px">№</th>
-                    <th>Статус</th>
-                    <th style="width: 125px; min-width: 125px">
+                    <th th:text="#{meters.meterDataPage.table.status}">Статус</th>
+                    <th style="width: 125px; min-width: 125px" th:text="#{meters.meterDataPage.table.date}">
                         Дата
                     </th>
-                    <th style="width: 125px; min-width: 125px">
+                    <th style="width: 125px; min-width: 125px" th:text="#{meters.meterDataPage.table.month}">
                         Месяц
                     </th>
-                    <th style="min-width: 200px">Дом</th>
-                    <th style="min-width: 160px">Секция</th>
-                    <th style="width: 110px; min-width: 110px">№ квартиры</th>
-                    <th>Счетчик</th>
-                    <th style="width: 90px; min-width: 90px">Показания</th>
-                    <th style="width: 90px; min-width: 90px">Ед. изм.</th>
+                    <th style="min-width: 200px" th:text="#{meters.meterDataPage.table.house}">Дом</th>
+                    <th style="min-width: 160px" th:text="#{meters.meterDataPage.table.section}">Секция</th>
+                    <th style="width: 110px; min-width: 110px" th:text="#{meters.meterDataPage.table.apartment}">№ квартиры</th>
+                    <th th:text="#{meters.meterDataPage.table.meter}">Счетчик</th>
+                    <th style="width: 90px; min-width: 90px" th:text="#{meters.meterDataPage.table.readings}">Показания</th>
+                    <th style="width: 90px; min-width: 90px" th:text="#{meters.meterDataPage.table.unit}">Ед. изм.</th>
                     <th style="width: 80px; min-width: 80px">&nbsp;</th>
                   </tr>
                   <form action="" th:object="${filter_form}">
@@ -147,7 +147,7 @@
                       </td>
                     </tr>
                     <tr th:if="${meter_data_rows.getTotalElements() == 0}">
-                      <td colspan="11">Нет сохранённых показаний</td>
+                      <td colspan="11" th:text="#{search.results.empty}">Нет сохранённых показаний</td>
                     </tr>
                   </tbody>
                 </table>
@@ -178,7 +178,7 @@
 <!-- Icons -->
 <script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
 <!-- jQuery -->
-<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+`<script th:src="@{/plugins/jquery/jquery.min.js}"></script>`
 <!-- Bootstrap -->
 <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <!-- overlayScrollbars -->

@@ -26,13 +26,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Тариф: <span th:text="${tariff.name}"></span></h1>
+            <h1 class="m-0"><span th:text="#{settings.system.tariffs.infoPage.pageName}">Тариф:</span> <span th:text="${tariff.name}"></span></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/tariffs}">Тарифы</a></li>
-              <li class="breadcrumb-item active">Тариф: <span th:text="${tariff.name}"></span></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i> <span th:text="#{settings.system.tariffs.infoPage.breadcrumb.main}"> Главная</span></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/tariffs}" th:text="#{settings.system.tariffs.infoPage.breadcrumb.previous}">Тарифы</a></li>
+              <li class="breadcrumb-item active"><span th:text="#{settings.system.tariffs.infoPage.pageName}">Тариф:</span> <span th:text="${tariff.name}"></span></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -50,7 +50,7 @@
               <div class="box-header with-border" style="padding-block:30px;">
                 <div class="box-tools">
                   <a th:href="@{/admin/tariffs/update/{id}(id=${tariff.id})}" class="btn btn-primary btn-sm">
-                    <span class="hidden-xs"> Редактировать тариф </span><i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                    <span class="hidden-xs" th:text="#{settings.system.tariffs.infoPage.card.edit}"> Редактировать тариф </span><i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
                   </a>
                 </div>
               </div>
@@ -60,15 +60,15 @@
                     <table class="table table-bordered table-striped table-view">
                       <tbody>
                         <tr>
-                          <td><b>Название тарифа</b></td>
+                          <td><b th:text="#{settings.system.tariffs.infoPage.card.name}">Название тарифа</b></td>
                           <td th:text="${tariff.name}"></td>
                         </tr>
                         <tr>
-                          <td><b>Описание</b></td>
+                          <td><b th:text="#{settings.system.tariffs.infoPage.card.description}">Описание</b></td>
                           <td th:text="${tariff.description}"></td>
                         </tr>
                         <tr>
-                          <td><b>Дата редактирования</b></td>
+                          <td><b th:text="#{settings.system.tariffs.infoPage.card.date}">Дата редактирования</b></td>
                           <td th:text="${#temporals.format(tariff.date, 'dd-MM-yyyy - HH:mm')}"></td>
                         </tr>
                       </tbody>
@@ -80,10 +80,10 @@
                       <thead>
                       <tr>
                         <th>#</th>
-                        <th>Услуга</th>
-                        <th>Ед.изм</th>
-                        <th>Цена за ед., грн</th>
-                        <th>Валюта</th>
+                        <th th:text="#{settings.system.tariffs.infoPage.card.service}">Услуга</th>
+                        <th th:text="#{settings.system.tariffs.infoPage.card.unit}">Ед.изм</th>
+                        <th th:text="#{settings.system.tariffs.infoPage.card.unit-price}">Цена за ед., грн</th>
+                        <th th:text="#{settings.system.tariffs.infoPage.card.currency}">Валюта</th>
                       </tr>
                       </thead>
                       <tbody>

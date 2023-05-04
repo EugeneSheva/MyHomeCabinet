@@ -30,13 +30,13 @@
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0"
-                th:text="*{id != null} ? 'Квитанция №' + *{id}  : 'Новая квитанция'"></h1>
+                th:text="*{id != null} ? #{invoices.editPage.pageNameEdit} + ' №' + *{id}  : #{invoices.editPage.pageNameNew}"></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/invoices}">Квитанции</a></li>
-              <li class="breadcrumb-item active" th:text="*{id != null} ? 'Квитанция №' + *{id} : 'Новая квитанция'"></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  <span th:text="#{invoices.editPage.breadcrumbMenuMain}">Главная</span></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/invoices}" th:text="#{invoices.editPage.breadcrumbMainTablePageName}">Квитанции</a></li>
+              <li class="breadcrumb-item active" th:text="*{id != null} ? #{invoices.editPage.pageNameEdit} + ' №' + *{id}  : #{invoices.editPage.pageNameNew}"></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -58,7 +58,7 @@
                      class="form-control">
             </div>
             <div class="col-md-3">
-              <span style="display:inline-block;">от </span>
+              <span style="display:inline-block;" th:text="#{invoices.editPage.datePrefix}">от </span>
               <input style="width: 90%; display:inline-block;" type="date"
                      th:if="*{id != null}"
                      th:field="*{date}"
@@ -78,9 +78,9 @@
 
                   <div class="row">
                     <div class="col-md-6">
-                      <h4 style="font-weight: bold">Дом</h4>
+                      <h4 style="font-weight: bold" th:text="#{invoices.editPage.card.house}">Дом</h4>
                       <select id="house_select" th:field="*{building}" th:style="${#fields.hasErrors('building')} ? 'border: 0.5px solid red'" class="selects mb-3">
-                        <option value="">Выберите...</option>
+                        <option value="" th:text="#{select.placeholder}">Выберите...</option>
                         <option th:each="building : ${buildings}"
                                 th:value="${building.id}"
                                 th:text="${building.name}"></option>
@@ -89,7 +89,7 @@
 
                       <br>
 
-                      <h4 style="font-weight: bold">Секция</h4>
+                      <h4 style="font-weight: bold" th:text="#{invoices.editPage.card.section}">Секция</h4>
                       <select id="section_select" th:if="*{building != null}" th:style="${#fields.hasErrors('section')} ? 'border: 0.5px solid red'" th:field="*{section}" class="selects mb-3">
                         <option th:each="section : *{building.getSections()}"
                                 th:value="${section}"
@@ -99,7 +99,7 @@
                         <option value="">Сначала выберите дом</option>
                       </select>
                       <div style="color: #d80450; font-weight: bold;" th:if="${#fields.hasErrors('section')}" th:errors="*{section}"></div>
-                      <h4 style="font-weight: bold">Квартира</h4>
+                      <h4 style="font-weight: bold" th:text="#{invoices.editPage.card.apartment}">Квартира</h4>
                       <select id="apartment_select" th:if="*{building != null}" th:style="${#fields.hasErrors('apartment')} ? 'border: 0.5px solid red'" th:field="*{apartment}" class="selects mb-3">
                         <option th:each="flat : *{building.getApartments()}"
                                 th:value="${flat.id}"
@@ -110,18 +110,18 @@
                       </select>
                       <div style="color: #d80450; font-weight: bold; margin-top:-15px; margin-bottom:-20px" th:if="${#fields.hasErrors('apartment')}" th:errors="*{apartment}"></div>
 
-                      <h4 style="font-weight: bold">Лицевой счёт</h4>
+                      <h4 style="font-weight: bold" th:text="#{invoices.editPage.card.account}">Лицевой счёт</h4>
                       <input type="text" id="account" style="width: 100%; caret-color:transparent; padding-block: 10px;" class="mb-3" th:field="*{account}" th:styleappend="${#fields.hasErrors('account')} ? 'border: 0.5px solid red'" readonly>
                       <div style="color: #d80450; font-weight: bold; margin-top:-15px; margin-bottom:-20px" th:if="${#fields.hasErrors('account')}" th:errors="*{account}"></div>
 
                       <p id="owner_name">
-                        <b>Владелец: </b>
+                        <b th:text="#{invoices.editPage.card.owner}">Владелец: </b>
                         <span th:if="*{owner != null}">
                           <a th:href="@{/admin/owners/{id}(id=*{owner.id})}" th:text="*{owner.getFullName()}"></a>
                         </span>
                       </p>
                       <p id="owner_phone">
-                        <b>Телефон: </b>
+                        <b th:text="#{invoices.editPage.card.phone}">Телефон: </b>
                         <span th:if="*{owner != null}">
                           <a th:href="'tel:' + *{owner.phone_number}" th:text="*{owner.phone_number}"></a>
                         </span>
@@ -130,20 +130,20 @@
                     <div class="col-md-6">
                       <div style="display:flex;align-items:center; column-gap:10px" class="mt-4">
                         <input type="checkbox" style="caret-color:transparent; width:20px;height:20px" th:field="*{completed}">
-                        <b style="font-size:23px">Проведена</b>
+                        <b style="font-size:23px" th:text="#{invoices.editPage.card.completed}">Проведена</b>
                       </div>
                       <br>
-                      <h4 style="font-weight: bold">Статус</h4>
+                      <h4 style="font-weight: bold" th:text="#{invoices.editPage.card.status}">Статус</h4>
                       <select th:field="*{status}" class="selects mb-3" th:style="${#fields.hasErrors('status')} ? 'border: 0.5px solid red'">
-                        <option disabled value="">Выберите...</option>
+                        <option disabled value="" th:text="#{select.placeholder}">Выберите...</option>
                         <option th:each="stat : ${T(com.example.myhome.home.model.InvoiceStatus).values()}"
                                 th:value="${stat}"
                                 th:text="${stat.getName()}"></option>
                       </select>
                       <div style="color: #d80450; font-weight: bold; margin-top:-15px; margin-bottom:10px" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></div>
-                      <h4 style="font-weight: bold">Тариф</h4>
+                      <h4 style="font-weight: bold" th:text="#{invoices.editPage.card.tariff}">Тариф</h4>
                       <select th:field="*{tariff}" class="selects mb-3" th:style="${#fields.hasErrors('tariff')} ? 'border: 0.5px solid red'">
-                        <option value="">Выберите...</option>
+                        <option value="" th:text="#{select.placeholder}">Выберите...</option>
                         <option th:each="t : ${tariffs}"
                                 th:value="${t.id}"
                                 th:text="${t.name}"></option>
@@ -151,12 +151,12 @@
                       <div style="color: #d80450; font-weight: bold; margin-top:-15px; margin-bottom:10px" th:if="${#fields.hasErrors('tariff')}" th:errors="*{tariff}"></div>
                       <div class="row">
                         <div class="col-sm-2">
-                          <h4 style="font-weight: bold">Период с</h4>
+                          <h4 style="font-weight: bold" th:text="#{invoices.editPage.card.from}">Период с</h4>
                           <input type="date" style="width: 90%; padding-block: 10px;" th:field="*{dateFrom}" th:styleappend="${#fields.hasErrors('dateFrom')} ? 'border: 0.5px solid red'">
                           <div style="color: #d80450; font-weight: bold; margin-bottom:10px" th:if="${#fields.hasErrors('dateFrom')}" th:errors="*{dateFrom}"></div>
                         </div>
                         <div class="col-sm-2" style="text-overflow: ">
-                          <h4 style="font-weight: bold">Период по</h4>
+                          <h4 style="font-weight: bold" th:text="#{invoices.editPage.card.to}">Период по</h4>
                           <input type="date" style="width: 90%; padding-block: 10px;" th:field="*{dateTo}" th:styleappend="${#fields.hasErrors('dateTo')} ? 'border: 0.5px solid red'">
                           <div style="color: #d80450; font-weight: bold; margin-bottom:10px" th:if="${#fields.hasErrors('dateTo')}" th:errors="*{dateTo}"></div>
                         </div>
@@ -169,11 +169,11 @@
                     <table class="table table-bordered table-striped table-view" th:onerror="this.style='border:0.5px solid red'">
                       <thead>
                         <tr>
-                          <th>Услуга</th>
-                          <th>Ед.изм</th>
-                          <th>Цена за ед., грн</th>
-                          <th>Количество потребления(расход)</th>
-                          <th>Стоимость, грн.</th>
+                          <th th:text="#{invoices.editPage.card.service}">Услуга</th>
+                          <th th:text="#{invoices.editPage.card.unit}">Ед.изм</th>
+                          <th th:text="#{invoices.editPage.card.unitPrice}">Цена за ед., грн</th>
+                          <th th:text="#{invoices.editPage.card.unitAmount}">Количество потребления(расход)</th>
+                          <th th:text="#{invoices.editPage.card.price}">Стоимость, грн.</th>
                           <th></th>
                         </tr>
                       </thead>
@@ -181,7 +181,7 @@
                         <tr id="component_row_template" style="display:none;">
                           <td>
                             <select class="selects services" onchange="setUnit(this)" name="services">
-                              <option value="">Выберите...</option>
+                              <option value="" th:text="#{select.placeholder}">Выберите...</option>
                               <option th:each="service : ${services}"
                                       th:value="${service.id}"
                                       th:text="${service.name}"></option>
@@ -210,7 +210,7 @@
                           <input type="hidden" th:field="*{components[__${iter.index}__].id}">
                           <td>
                             <select class="selects services" onchange="setUnit(this)" th:field="*{components[__${iter.index}__].service.id}"  name="services">
-                              <option value="0">Выберите...</option>
+                              <option value="0" th:text="#{select.placeholder}">Выберите...</option>
                               <option th:each="service : ${services}"
                                       th:value="${service.id}"
                                       th:text="${service.name}"></option>
@@ -246,16 +246,16 @@
                         <tr id="button_row">
                           <td colspan="4">
                             <button type="button" id="add_service_btn" class="btn btn-default btn-hover-change form-row-add-invoiceservice-btn">
-                              Добавить услугу
+                              <span th:text="#{invoices.editPage.card.add}"></span>
                             </button>
                             <button type="button" id="set_services_from_tariff_btn" class="btn btn-default set-tariff-services">
-                              Установить все услуги согласно тарифу
+                              <span th:text="#{invoices.editPage.card.setFromTariff}"></span>
                             </button>
                             <button type="button" class="btn btn-default add-counters">
-                              Добавить показания счетчиков
+                              <span th:text="#{invoices.editPage.card.addMeters}"></span>
                             </button>
                           </td>
-                          <td><span style="font-weight: bold" id="total_price_show" th:text="'Итого: ' + *{total_price}"></span></td>
+                          <td><span style="font-weight: bold" id="total_price_show" th:text="#{invoices.editPage.card.total} + ': ' + *{total_price}"></span></td>
                         </tr>
                       </tbody>
                     </table>
@@ -266,8 +266,8 @@
                   <div class="row justify-content-end">
                     <div class="col-xs-12">
                       <div class="form-group">
-                        <a th:href="@{/admin/invoices}" class="btn btn-default">Отменить</a>
-                        <button type="submit" class="btn btn-success">Сохранить</button>
+                        <a th:href="@{/admin/invoices}" class="btn btn-default" th:text="#{invoices.editPage.card.cancel}">Отменить</a>
+                        <button type="submit" class="btn btn-success" th:text="#{invoices.editPage.card.save}">Сохранить</button>
                       </div>
                     </div>
                   </div>
@@ -281,7 +281,7 @@
             <div class="col-md-12">
               <div class="box">
                 <div class="box-header with-border" style="padding-block:15px;">
-                  <h3 class="box-title">Показания счётчиков</h3>
+                  <h3 class="box-title" th:text="#{invoices.editPage.meters.header}">Показания счётчиков</h3>
                   <div class="box-tools"></div>
                 </div>
                 <div class="box-body table-responsive">
@@ -289,19 +289,19 @@
                     <thead>
                     <tr>
                       <th style="width: 125px; min-width: 125px">№</th>
-                      <th>Статус</th>
-                      <th style="width: 125px; min-width: 125px">
+                      <th th:text="#{invoices.editPage.meters.status}">Статус</th>
+                      <th style="width: 125px; min-width: 125px" th:text="#{invoices.editPage.meters.date}">
                           Дата
                       </th>
-                      <th style="width: 125px; min-width: 125px">
+                      <th style="width: 125px; min-width: 125px" th:text="#{invoices.editPage.meters.month}">
                           Месяц
                       </th>
-                      <th style="min-width: 200px">Дом</th>
-                      <th style="min-width: 160px">Секция</th>
-                      <th style="width: 110px; min-width: 110px">№ квартиры</th>
-                      <th>Счетчик</th>
-                      <th style="width: 90px; min-width: 90px">Показания</th>
-                      <th style="width: 90px; min-width: 90px">Ед. изм.</th>
+                      <th style="min-width: 200px" th:text="#{invoices.editPage.meters.house}">Дом</th>
+                      <th style="min-width: 160px" th:text="#{invoices.editPage.meters.section}">Секция</th>
+                      <th style="width: 110px; min-width: 110px" th:text="#{invoices.editPage.meters.apartment}">№ квартиры</th>
+                      <th th:text="#{invoices.editPage.meters.service}">Счетчик</th>
+                      <th style="width: 90px; min-width: 90px" th:text="#{invoices.editPage.meters.readings}">Показания</th>
+                      <th style="width: 90px; min-width: 90px" th:text="#{invoices.editPage.meters.unit}">Ед. изм.</th>
                     </tr>
                     <tr id="w0-filters" class="filters">
                     </tr>
@@ -321,7 +321,7 @@
                       <td style="background-color: #DFD5; font-weight: normal" th:text="${row.service.unit.name}">m²</td>
                     </tr>
                     <tr th:if="${meters.size() == 0}">
-                      <td colspan="10">Показания отсутствуют</td>
+                      <td colspan="10" th:text="#{search.results.empty}"></td>
                     </tr>
                     </tbody>
                   </table>

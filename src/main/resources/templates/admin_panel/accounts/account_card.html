@@ -31,13 +31,13 @@
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0"
-                th:text="*{id != null} ? 'Лицевой счёт №' + *{id} + ' - редактирование' : 'Новый лицевой счет'"></h1>
+                th:text="*{id != null} ? #{accounts.editPage.pageNameEdit} + ' №' + *{id} : #{accounts.editPage.pageName}"></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/accounts}">Лицевые счёта</a></li>
-              <li class="breadcrumb-item active" th:text="*{id != null} ? 'Лицевой счёт №' + *{id} : 'Новый лицевой счет'"></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  <span th:text="#{accounts.editPage.breadcrumb.main}">Главная</span></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/accounts}" th:text="#{accounts.editPage.breadcrumb.previous}">Лицевые счёта</a></li>
+              <li class="breadcrumb-item active" th:text="*{id != null} ? #{accounts.editPage.pageNameEdit} + ' №' + *{id} : #{accounts.editPage.pageName}"></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -66,7 +66,7 @@
 
                   <div class="row">
                     <div class="col-md-12">
-                      <h4 style="font-weight: bold">Статус</h4>
+                      <h4 style="font-weight: bold" th:text="#{accounts.editPage.card.status}">Статус</h4>
                       <select class="selects" th:field="*{isActive}" th:style="${#fields.hasErrors('isActive')} ? 'border: 0.5px solid red;'">
                         <option value="true">Активен</option>
                         <option value="false">Неактивен</option>
@@ -76,9 +76,9 @@
                   </div>
                   <div class="row">
                     <div class="col-md-12">
-                      <h4 style="font-weight: bold">Дом</h4>
+                      <h4 style="font-weight: bold" th:text="#{accounts.editPage.card.house}">Дом</h4>
                       <select class="selects" id="house_select" th:style="${#fields.hasErrors('building')} ? 'border: 0.5px solid red;'" th:field="*{building}">
-                        <option value="">Выберите...</option>
+                        <option value="" th:text="#{select.placeholder}">Выберите...</option>
                         <option th:each="building : ${buildings}"
                                 th:value="${building.id}"
                                 th:text="${building.name}"></option>
@@ -88,31 +88,31 @@
                   </div>
                   <div class="row">
                     <div class="col-md-12">
-                      <h4 style="font-weight: bold">Секция</h4>
+                      <h4 style="font-weight: bold" th:text="#{accounts.editPage.card.section}">Секция</h4>
                       <select class="selects" id="section_select" th:style="${#fields.hasErrors('section')} ? 'border: 0.5px solid red;'" th:if="*{building != null}" th:field="*{section}">
-                        <option value="">Выберите...</option>
+                        <option value="" th:text="#{select.placeholder}">Выберите...</option>
                         <option th:each="section : *{building.getSections()}"
                                 th:value="${section}"
                                 th:text="${section}"></option>
                       </select>
                       <select class="selects" id="section_select" th:style="${#fields.hasErrors('section')} ? 'border: 0.5px solid red;'" th:if="*{building == null}" disabled th:field="*{section}">
-                        <option value="">Выберите...</option>
+                        <option value="" th:text="#{select.placeholder}">Выберите...</option>
                       </select>
                       <div style="color: #d80450; font-weight: bold;" th:if="${#fields.hasErrors('section')}" th:errors="*{section}"></div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-md-12">
-                      <h4 style="font-weight: bold">Квартира</h4>
+                      <h4 style="font-weight: bold" th:text="#{accounts.editPage.card.apartment}">Квартира</h4>
                       <input type="hidden" id="section_name" th:if="*{apartment != null}" th:value="*{section}">
                       <select class="selects" id="apartment_select" th:style="${#fields.hasErrors('apartment')} ? 'border: 0.5px solid red;'" th:if="*{building != null && building.id != null}" th:field="*{apartment}">
-                        <option value="">Выберите...</option>
+                        <option value="" th:text="#{select.placeholder}">Выберите...</option>
                         <option th:each="flat : *{building.getApartments()}"
                                 th:value="${flat.id}"
                                 th:text="${flat.number}"></option>
                       </select>
                       <select class="selects" id="apartment_select" th:style="${#fields.hasErrors('apartment')} ? 'border: 0.5px solid red;'" th:if="*{building == null || building.id == null}" disabled th:field="*{apartment}">
-                        <option value="">Выберите...</option>
+                        <option value="" th:text="#{select.placeholder}">Выберите...</option>
                       </select>
 <!--                      <h4 th:if="${fail}" th:text="${fail}" style="font-weight: bold; color: red;"></h4>-->
                       <div style="color: #d80450; font-weight: bold;" th:if="${#fields.hasErrors('apartment')}" th:errors="*{apartment}"></div>
@@ -121,13 +121,13 @@
                   <div class="row">
                     <div class="col-md-12">
                       <p id="owner_name">
-                        <b>Владелец: </b>
+                        <b th:text="#{accounts.editPage.card.owner}">Владелец: </b>
                         <span th:if="*{owner != null}">
                           <a th:href="@{/admin/owners/{id}(id=*{owner.id})}" th:text="*{owner.getFullName()}"></a>
                         </span>
                       </p>
                       <p id="owner_phone">
-                        <b>Телефон: </b>
+                        <b th:text="#{accounts.editPage.card.phone}">Телефон: </b>
                         <span th:if="*{owner != null}">
                           <a th:href="'tel:' + *{owner.phone_number}" th:text="*{owner.phone_number}"></a>
                         </span>
@@ -139,8 +139,8 @@
                   <div class="row justify-content-end">
                     <div class="col-xs-12">
                       <div class="form-group">
-                        <a th:href="@{/admin/accounts}" class="btn btn-default">Отменить</a>
-                        <button type="submit" class="btn btn-success">Сохранить</button>
+                        <a th:href="@{/admin/accounts}" class="btn btn-default" th:text="#{accounts.editPage.card.cancel}">Отменить</a>
+                        <button type="submit" class="btn btn-success" th:text="#{accounts.editPage.card.save}">Сохранить</button>
                       </div>
                     </div>
                   </div>

@@ -26,13 +26,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Квитанция</h1>
+            <h1 class="m-0" th:text="#{invoices.infoPage.pageName}">Квитанция</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/invoices}">Квитанции</a></li>
-              <li class="breadcrumb-item active">Квитанция №<span th:text="${T(java.lang.String).format('%010d', invoice.id)}"></span></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  <span th:text="#{invoices.infoPage.breadcrumbMenuMain}">Главная</span></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/invoices}"><span th:text="#{invoices.infoPage.breadcrumbMainTablePageName}">Квитанции</span></a></li>
+              <li class="breadcrumb-item active"><span th:text="#{invoices.infoPage.pageName}">Квитанция</span> №<span th:text="${T(java.lang.String).format('%010d', invoice.id)}"></span></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -52,7 +52,7 @@
                 th:value="${T(java.lang.String).format('%010d',invoice.id)}">
           </div>
           <div class="col-md-3">
-            <span style="display:inline;">от </span>
+            <span style="display:inline;" th:text="#{invoices.infoPage.datePrefix}">от </span>
             <input style="width: 90%; display:inline;" disabled th:value="${invoice.date}" class="form-control">
           </div>
           <div class="col-md-6"></div>
@@ -62,16 +62,16 @@
           <div class="col-md-12">
             <div class="box" style="caret-color:transparent; padding:0; padding-inline: 10px;">
               <div class="box-header with-border" style="padding-top: 15px; padding-bottom: 15px;">
-                <h3 class="box-title" style="margin: 0; padding: 0">Просмотр квитанции</h3>
+                <h3 class="box-title" style="margin: 0; padding: 0" th:text="#{invoices.infoPage.card.header}">Просмотр квитанции</h3>
                 <div class="box-tools">
                   <a th:href="@{/admin/invoices/print/{id}(id=${invoice.id})}" class="btn btn-default btn-sm">
-                    <span class="hidden-xs"> Печать </span>
+                    <span class="hidden-xs" th:text="#{invoices.infoPage.card.printText}"> Печать </span>
                   </a>
                   <a th:href="@{/admin/invoices/email/{id}(id=${invoice.id})}" class="btn btn-default btn-sm">
-                    <i class="fa fa-files visible-xs" aria-hidden="true"></i><span class="hidden-xs"> Отправить на e-mail </span>
+                    <i class="fa fa-files visible-xs" aria-hidden="true"></i><span class="hidden-xs" th:text="#{invoices.infoPage.card.emailText}"> Отправить на e-mail </span>
                   </a>
                   <a th:href="@{/admin/invoices/update/{id}(id=${invoice.id})}" class="btn btn-primary btn-sm">
-                    <span class="hidden-xs"> Редактировать квитанцию </span><i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                    <span class="hidden-xs" th:text="#{invoices.infoPage.card.editText}"> Редактировать квитанцию </span><i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
                   </a>
                 </div>
               </div>
@@ -81,14 +81,14 @@
                     <table class="table table-bordered table-striped table-view">
                       <tbody>
                       <tr>
-                        <td style="font-weight:bold">Проведена</td>
+                        <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.completed}">Проведена</td>
                         <td>
                           <small class="label label-success" th:if="${invoice.completed}">Проведена</small>
                           <small class="label label-danger" th:if="${!invoice.completed}">Не проведена</small>
                         </td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Статус</td>
+                        <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.status}">Статус</td>
                         <td>
                           <small th:class="'label ' +
                             ${invoice.status == T(com.example.myhome.home.model.InvoiceStatus).PAID ? 'label-success' :
@@ -97,19 +97,19 @@
                         </td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Период</td>
+                        <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.period}">Период</td>
                         <td th:text="${invoice.dateFrom != null && invoice.dateTo != null} ?
                             ${invoice.dateFrom} + ' - ' + ${invoice.dateTo} : '--не указан--'"></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Владелец</td>
+                        <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.owner}">Владелец</td>
                         <td th:if="${invoice.apartment.owner != null}"><a th:href="@{/admin/owners/{id}(id=${invoice.apartment.owner.id})}"
                             th:text="${invoice.apartment.owner.getFullName()}"></a></td>
                         <td th:if="${invoice.apartment.owner == null}"
                             th:text="--отсутствует--"></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Лицевой счёт</td>
+                        <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.account}">Лицевой счёт</td>
                         <td th:if="${invoice.apartment.account != null}">
                           <a  th:href="@{/admin/accounts/{id}(id=${invoice.apartment.account.id})}"
                               th:text="${T(java.lang.String).format('%010d', invoice.apartment.account.id)}"></a>
@@ -118,11 +118,11 @@
                             th:text="--отсутствует--"></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Телефон</td>
+                        <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.phone}">Телефон</td>
                         <td th:text="${invoice.apartment.owner.phone_number == null || invoice.apartment.owner.phone_number.isEmpty()} ? '--не указан--' : ${invoice.apartment.owner.phone_number}"></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Дом</td>
+                        <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.house}">Дом</td>
                         <td th:if="${invoice.apartment.building != null}">
                           <a th:href="@{/admin/buildings/{id}(id=${invoice.apartment.building.id})}"
                              th:text="${invoice.apartment.building.name}"></a>
@@ -131,18 +131,18 @@
                             th:text="--не указан--"></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Секция</td>
+                        <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.section}">Секция</td>
                         <td th:if="${invoice.apartment.building != null}"
                             th:text="${invoice.apartment.section}"></td>
                         <td th:if="${invoice.apartment.building == null}"
                             th:text="--не указана--"></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Квартира</td>
+                        <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.apartment}">Квартира</td>
                         <td><a th:href="@{/admin/apartments/{id}(id=${invoice.apartment.id})}" th:text="${invoice.apartment.number}"></a></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Тариф</td>
+                        <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.tariff}">Тариф</td>
                         <td th:if="${invoice.tariff != null}">
                           <a th:href="@{/admin/tariffs/{id}(id=${invoice.tariff.id})}"
                              th:text="${invoice.tariff.name}"></a>
@@ -161,11 +161,11 @@
                       <thead>
                       <tr>
                         <th>#</th>
-                        <th>Услуга</th>
-                        <th>Ед.изм</th>
-                        <th>Цена за ед., грн</th>
-                        <th>Количество потребления(расход)</th>
-                        <th>Стоимость, грн.</th>
+                        <th th:text="#{invoices.editPage.card.service}">Услуга</th>
+                        <th th:text="#{invoices.editPage.card.unit}">Ед.изм</th>
+                        <th th:text="#{invoices.editPage.card.unitPrice}">Цена за ед., грн</th>
+                        <th th:text="#{invoices.editPage.card.unitAmount}">Количество потребления(расход)</th>
+                        <th th:text="#{invoices.editPage.card.price}">Стоимость, грн.</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -183,7 +183,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td><span style="font-weight: bold" th:text="'Итого: ' + ${total_price}"></span></td>
+                        <td><span style="font-weight: bold" th:text="#{invoices.editPage.card.total} + ': ' + ${total_price}"></span></td>
                       </tr>
                       </tbody>
                     </table>

@@ -27,7 +27,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Редактирование услуг</h1>
+            <h1 class="m-0" th:text="#{settings.system.services.pageName}">Редактирование услуг</h1>
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -47,8 +47,8 @@
                     <div class="col-xs-12 col-lg-7">
                       <div class="nav-tabs-custom">
                         <ul class="nav nav-tabs">
-                          <li class="active" id="service_tab" style="padding: 15px;"><a href="#tab_service" data-toggle="tab" aria-expanded="true">Услуги</a></li>
-                          <li class="" id="service_unit_tab" style="padding: 15px;"><a href="#tab_serviceunit" data-toggle="tab" aria-expanded="false">Единицы измерения</a></li>
+                          <li class="active" id="service_tab" style="padding: 15px;"><a href="#tab_service" data-toggle="tab" aria-expanded="true" th:text="#{settings.system.services.service-category}">Услуги</a></li>
+                          <li class="" id="service_unit_tab" style="padding: 15px;"><a href="#tab_serviceunit" data-toggle="tab" aria-expanded="false" th:text="#{settings.system.services.unit-category}">Единицы измерения</a></li>
                         </ul>
                         <div class="tab-content">
 
@@ -61,20 +61,20 @@
                               <div th:each="service, iter : *{serviceList}" class="row s form-service">
                                 <div class="col-xs-12 col-sm-7">
                                   <div class="form-group">
-                                    <label for="service-0-name">Услуга</label>
+                                    <label for="service-0-name" th:text="#{settings.system.services.service-name}">Услуга</label>
                                     <input type="hidden" th:field="*{serviceList[__${iter.index}__].id}">
                                     <input type="text" class="form-control" th:field="*{serviceList[__${iter.index}__].name}">
                                   </div>
                                 </div>
                                 <div class="col-xs-12 col-sm-5">
                                   <div class="form-group">
-                                    <label for="service-0-service_unit_id">Ед. изм.</label>
+                                    <label th:text="#{settings.system.services.unit-name}">Ед. изм.</label>
                                     <div class="input-group">
                                       <p th:text="*{serviceList[__${iter.index}__].unit.name}" style="display:none;"></p>
                                       <select th:field="*{serviceList[__${iter.index}__].unit}"
                                               class="form-control" name="service_unit_names">
 <!--                                        <option value="undefined">Выберите...</option>-->
-                                        <option value="0">Выберите...</option>
+                                        <option value="0" th:text="#{select.placeholder}">Выберите...</option>
                                         <option th:each="unit : *{unitList}"
                                                 th:if="${unit.id != 0}"
                                                 th:value="${unit.id}"
@@ -99,23 +99,23 @@
                                   <input type="checkbox"
                                                 th:field="*{serviceList[__${iter.index}__].show_in_meters}"
                                                 name="show_in_meters"
-                                                th:checked="${service.show_in_meters}"> Показывать в счетчиках
+                                                th:checked="${service.show_in_meters}" th:text="#{settings.system.services.show-in-meters}"> Показывать в счетчиках
                                     <div style="margin-bottom: 16px;"></div>
                                 </div>
                               </div>
                               <div id="service_template" style="display:none;" class="row form-service">
                                 <div class="col-xs-12 col-sm-7">
                                   <div class="form-group">
-                                    <label for="service-0-name">Услуга</label>
+                                    <label for="service-0-name" th:text="#{settings.system.services.service-name}">Услуга</label>
                                     <input type="text" id="service-0-name" class="form-control" name="new_service_names">
                                   </div>
                                 </div>
                                 <div class="col-xs-12 col-sm-5">
                                   <div class="form-group">
-                                    <label>Ед. изм.</label>
+                                    <label th:text="#{settings.system.services.unit-name}">Ед. изм.</label>
                                     <div class="input-group">
                                       <select class="form-control" name="new_service_unit_names" value="undefined">
-                                        <option value="undefined">Выберите...</option>
+                                        <option value="undefined" th:text="#{select.placeholder}">Выберите...</option>
                                         <option th:each="unit : *{unitList}" th:value="${unit.name}" th:text="${unit.name}"></option>
                                       </select>
                                       <span class="input-group-btn">
@@ -131,14 +131,14 @@
                                 </div>
                                 <div class="col-xs-12 col-sm-12">
                                     <input type="checkbox" onclick="if(this.checked) this.nextElementSibling.value='true'; else this.nextElementSibling.value='false'" checked>
-                                    <input type="hidden" style="display:none;" name="new_service_show_in_meters" value="true">
+                                    <input type="hidden" style="display:none;" name="new_service_show_in_meters" value="true" th:text="#{settings.system.services.show-in-meters}">
                                     Показывать в счетчиках
                                   <div style="margin-bottom: 16px;"></div>
                                 </div>
                               </div>
 
                             </div>
-                            <button type="button" id="add_service_button" class="btn btn-default btn-hover-change pull-left form-row-add-service-btn">Добавить</button>
+                            <button type="button" id="add_service_button" class="btn btn-default btn-hover-change pull-left form-row-add-service-btn" th:text="#{settings.system.services.add}">Добавить</button>
                           </div>
 
                           <div class="tab-pane clearfix" id="tab_serviceunit">
@@ -150,7 +150,7 @@
                               <div th:each="unit, iter : *{unitList}" th:if="${unit.id != 0}" class="row form-serviceunit">
                                 <div class="col-xs-12">
                                   <div class="form-group">
-                                    <label for="serviceunit-0-name">Ед. изм.</label>
+                                    <label for="serviceunit-0-name" th:text="#{settings.system.services.unit-name}">Ед. изм.</label>
                                     <div class="input-group">
                                         <input type="hidden" th:field="*{unitList[__${iter.index}__].id}">
                                       <input type="text" id="serviceunit-0-name" class="form-control"
@@ -169,7 +169,7 @@
 
                               <div id="service_unit_template" style="display:none;" class="row form-serviceunit">
                                 <div class="col-xs-12">
-                                  <label for="serviceunit-0-name">Ед. изм.</label>
+                                  <label for="serviceunit-0-name" th:text="#{settings.system.services.unit-name}">Ед. изм.</label>
                                   <div class="input-group">
                                     <input type="text" class="form-control" name="new_unit_names">
                                     <span class="input-group-btn">
@@ -184,7 +184,7 @@
                             </div>
 
 
-                            <button type="button" id="add_service_unit_button" class="btn btn-default btn-hover-change pull-left form-row-add-serviceunit-btn">Добавить</button>
+                            <button type="button" id="add_service_unit_button" class="btn btn-default btn-hover-change pull-left form-row-add-serviceunit-btn" th:text="#{settings.system.services.add}">Добавить</button>
 
                           </div>
 
@@ -195,8 +195,8 @@
 
                   <div class="row">
                     <div class="form-group submit-buttons">
-                      <a href="admin/website/home" class="btn btn-default">Отменить</a>
-                      <button type="submit" class="btn btn-success">Сохранить</button>
+                      <a href="admin/website/home" class="btn btn-default" th:text="#{settings.system.services.cancel}">Отменить</a>
+                      <button type="submit" class="btn btn-success" th:text="#{settings.system.services.save}">Сохранить</button>
                     </div>
                   </div>
 

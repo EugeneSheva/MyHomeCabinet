@@ -26,13 +26,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Лицевой счёт</h1>
+            <h1 class="m-0" th:text="#{accounts.infoPage.pageName}">Лицевой счёт</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/accounts}">Лицевые счета</a></li>
-              <li class="breadcrumb-item active">Лицевой счёт №<span th:text="${T(java.lang.String).format('%010d', account.id)}"></span></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  <span th:text="#{accounts.infoPage.breadcrumb.main}">Главная</span></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/accounts}" th:text="#{accounts.infoPage.breadcrumb.previous}">Лицевые счета</a></li>
+              <li class="breadcrumb-item active" th:text="#{accounts.infoPage.card.header}">Лицевой счёт №<span th:text="${T(java.lang.String).format('%010d', account.id)}"></span></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -61,16 +61,16 @@
           <div class="col-md-12">
             <div class="box" style="caret-color:transparent; padding:0; padding-inline: 10px;">
               <div class="box-header with-border" style="padding-top: 15px; padding-bottom: 15px;">
-                <h3 class="box-title" style="margin: 0; padding: 0">Просмотр лицевого счёта</h3>
+                <h3 class="box-title" style="margin: 0; padding: 0" th:text="#{accounts.infoPage.card.header}">Просмотр лицевого счёта</h3>
                 <div class="box-tools">
                   <a th:href="@{/admin/cashbox/newIncome?account_id={account_id}(account_id=${account.id})}" class="btn btn-default btn-sm">
-                    <i class="fa fa-dollar visible-xs" aria-hidden="true"></i><span class="hidden-xs"> Принять платёж </span>
+                    <i class="fa fa-dollar visible-xs" aria-hidden="true"></i><span class="hidden-xs" th:text="#{accounts.infoPage.card.payment}"> Принять платёж </span>
                   </a>
                   <a th:href="@{/admin/invoices/create?flat_id={flat_id}(flat_id=${account.apartment.id})}" class="btn btn-default btn-sm">
-                    <i class="fa fa-files-o visible-xs" aria-hidden="true"></i><span class="hidden-xs"> Оформить квитанцию </span>
+                    <i class="fa fa-files-o visible-xs" aria-hidden="true"></i><span class="hidden-xs" th:text="#{accounts.infoPage.card.invoice.new}"> Оформить квитанцию </span>
                   </a>
                   <a th:href="@{/admin/accounts/update/{id}(id=${account.id})}" class="btn btn-primary btn-sm">
-                    <span class="hidden-xs"> Редактировать счёт </span><i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                    <span class="hidden-xs" th:text="#{accounts.infoPage.card.edit}"> Редактировать счёт </span><i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
                   </a>
                 </div>
               </div>
@@ -80,32 +80,32 @@
                     <table class="table table-bordered table-striped table-view">
                       <tbody>
                       <tr>
-                        <td style="font-weight:bold">Статус</td>
+                        <td style="font-weight:bold" th:text="#{accounts.infoPage.card.status}">Статус</td>
                         <td>
                           <small class="label label-success" th:if="${account.isActive}">Активен</small>
                           <small class="label label-danger" th:if="${!account.isActive}">Неактивен</small>
                         </td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Дом</td>
+                        <td style="font-weight:bold" th:text="#{accounts.infoPage.card.house}">Дом</td>
                         <td><a th:href="@{/admin/buildings/{id}(id=${account.building.id})}" th:text="${account.building.name}"></a></td>
 
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Секция</td>
+                        <td style="font-weight:bold" th:text="#{accounts.infoPage.card.section}">Секция</td>
                         <td th:text="${account.section}"></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Квартира</td>
+                        <td style="font-weight:bold" th:text="#{accounts.infoPage.card.apartment}">Квартира</td>
                         <td><a th:href="@{/admin/apartments/{id}(id=${account.apartment.id})}" th:text="${account.apartment.fullName}"></a></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Владелец</td>
+                        <td style="font-weight:bold" th:text="#{accounts.infoPage.card.owner}">Владелец</td>
                         <td ><a th:href="@{/admin/owners/{id}(id=${account.owner.id})}"
                                 th:text="${account.owner.fullName}"></a></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Остаток, грн.</td>
+                        <td style="font-weight:bold" th:text="#{accounts.infoPage.card.balance}">Остаток, грн.</td>
                         <td th:text="${account.balance}"></td>
                       </tr>
                       </tbody>
@@ -113,13 +113,13 @@
 
                     <div class="col-xs-12">
                       <p style="margin-bottom: 5px;">
-                        <a th:href="@{/admin/meters/data?flat_id={flat_id}(flat_id=${account.apartment.id})}">Посмотреть показания счётчиков</a>
+                        <a th:href="@{/admin/meters/data?flat_id={flat_id}(flat_id=${account.apartment.id})}" th:text="#{accounts.infoPage.card.meters.list}">Посмотреть показания счётчиков</a>
                       </p>
                       <p style="margin-bottom: 5px;">
-                        <a th:href="@{/admin/cashbox/show-incomes?account_id={account_id}(account_id=${account.id})}">Посмотреть приходы</a>
+                        <a th:href="@{/admin/cashbox/show-incomes?account_id={account_id}(account_id=${account.id})}" th:text="#{accounts.infoPage.card.transactions.list}">Посмотреть приходы</a>
                       </p>
                       <p style="margin-bottom: 5px;">
-                        <a th:href="@{/admin/invoices?apartment={flat_id}&page=1(flat_id=${account.apartment.id})}">Посмотреть квитанции</a>
+                        <a th:href="@{/admin/invoices?apartment={flat_id}&page=1(flat_id=${account.apartment.id})}" th:text="#{accounts.infoPage.card.invoice.list}">Посмотреть квитанции</a>
                       </p>
                     </div>
 

@@ -17,12 +17,19 @@
     </ul>
     <!-- Right navbar links -->
     <aside class="navbar-nav ml-auto align-items-center" >
-        <form id="languageForm" action="#" th:action="@{/change-language}" method="post" style="padding-right: 10px">
-            <select class="form-group" name="language" onchange="document.getElementById('languageForm').submit()" style="margin-bottom: 0">
-                <option th:selected="${#locale.language == 'uk'}" value="uk_UA">Укр</option>
-                <option th:selected="${#locale.language == 'ru'}" value="ru_UA">Рус</option>
-            </select>
-        </form>
+      <div class="language">
+        <i class="fa-solid fa-globe"></i>
+        <select class="form-group" id="languageSelector" name="language" style="margin-bottom: 0">
+          <option th:selected="${#locale.language == 'uk'}" value="uk_UA">
+            <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 30 20" viewBox="0 0 30 20" id="ukraine-flag"><rect width="30" height="20"></rect><rect width="28" height="9" x="1" y="1" fill="#005bbb"></rect><rect width="28" height="9" x="1" y="10" fill="#ffd500"></rect></svg>
+            UA
+          </option>
+          <option th:selected="${#locale.language == 'ru'}" value="ru_UA">
+            <i class="fa-solid fa-globe"></i>
+            RU
+          </option>
+        </select>
+      </div>
       <li class="dropdown user user-menu">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
           <i class="fa fa-user-circle text-purple"></i>
@@ -64,6 +71,9 @@
   <aside th:fragment="sidebar"
          class="main-sidebar sidebar-light-primary"
          style="color: #444444; font-weight: 600; box-shadow: none;" >
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500&family=Recursive:wght@300;500&display=swap" rel="stylesheet">
+
     <!-- Brand Logo -->
     <a th:href="@{/}" class="brand-link" style="margin-bottom: 20px; padding: 3px; border-right: 1px solid #dee2e6;">
       <img th:src="@{/images/namelogo.png}" alt="AdminLTE Logo"
@@ -248,10 +258,51 @@
         <!-- /.sidebar-menu -->
       </div>
     </form>
+    <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+    <script>
+
+      let langSelector = document.getElementById('languageSelector');
+      langSelector.addEventListener('change', () => {
+        let lang = langSelector.value;
+        console.log('selected language: ' + lang);
+        console.log(lang);
+        let postData = {language: lang};
+        let postDataJSON = JSON.stringify(postData);
+
+        const url = "/change-language";
+
+        $.post(url, {language:lang}, function(data){
+          console.log(data);
+          location.reload();
+        });
+
+      });
+
+
+    </script>
     <!-- /.sidebar -->
     <style>
       * {
         font-family: 'Source Sans Pro';
+      }
+
+      .language {
+        font-family: Recursive;
+        cursor: pointer;
+      }
+
+      #languageSelector {
+        margin-right: 20px;
+        border: none;
+        padding:2px;
+        -webkit-appearance: none;
+      }
+
+      .language:hover>* {
+        color: blue;
+        font-weight: bold;
+        transition: 0.3s;
+        cursor: pointer;
       }
     </style>
   </aside>

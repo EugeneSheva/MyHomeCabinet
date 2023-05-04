@@ -9,6 +9,7 @@ import com.example.myhome.home.model.InvoiceStatus;
 import com.example.myhome.home.model.Tariff;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class InvoiceDTO {
 
     private Long id;
@@ -38,7 +40,7 @@ public class InvoiceDTO {
     private LocalDate dateTo;
     private double total_price;
 
-    private List<InvoiceComponents> components = new ArrayList<>();
+    private List<InvoiceComponents> components;
     private Tariff tariff;
 
 

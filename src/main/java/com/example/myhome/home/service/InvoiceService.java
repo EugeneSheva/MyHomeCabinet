@@ -1,6 +1,7 @@
 package com.example.myhome.home.service;
 
 import com.example.myhome.home.dto.InvoiceDTO;
+import com.example.myhome.home.mapper.InvoiceDTOMapper;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.InvoiceComponentRepository;
@@ -51,6 +52,8 @@ public class InvoiceService {
 
     @Autowired private ExcelHelper excelHelper;
 
+    @Autowired private InvoiceDTOMapper mapper;
+
 
     public List<Invoice> findAllInvoices() {return invoiceRepository.findAll();}
 
@@ -82,12 +85,8 @@ public class InvoiceService {
         List<InvoiceDTO> listDTO = new ArrayList<>();
         Pageable pageable = PageRequest.of(page-1, size);
         Page<Invoice>invoiceList = invoiceRepository.findByFilters(filters.getDate() != null ? LocalDate.parse(filters.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null, filters.getStatus() != null ? InvoiceStatus.valueOf(filters.getStatus()) : null, pageable);
-        for (Invoice invoice : invoiceList) {
-            listDTO.add(new InvoiceDTO(invoice.getId(), invoice.getDate(), apartmentService.convertApartmentsToApartmentsDTO(invoice.getApartment()),
-                    buildingService.convertBuildingToBuildingDTO(invoice.getBuilding()), apartmentAccountService.convertApartAccountToApartAccountDTO(invoice.getAccount()),
-                    ownerService.convertOwnerToOwnerDTO(invoice.getOwner()), invoice.getCompleted(), invoice.getStatus(), invoice.getDateFrom(), invoice.getDateTo(),
-                    invoice.getTotal_price(), invoice.getComponents(), invoice.getTariff()));
-        }
+        invoiceList.forEach(inv -> listDTO.add(mapper.fromInvoiceToDTO(inv)));
+
         return new PageImpl<>(listDTO, pageable, invoiceList.getTotalElements());
     }
 

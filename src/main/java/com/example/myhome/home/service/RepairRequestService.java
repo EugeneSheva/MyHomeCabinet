@@ -192,12 +192,11 @@ public class RepairRequestService {
     public Page<RepairRequestDTO> findAll(Pageable pageable){
         List<RepairRequestDTO>listDTO= new ArrayList<>();
         Page<RepairRequest>repairRequests = repairRequestRepository.findAll(pageable);
+
+        repairRequests.forEach(req -> listDTO.add(mapper.fromRequestToDTO(req)));
+
         System.out.println("service "+repairRequests.getTotalElements());
-        for (RepairRequest rr : repairRequests) {
-            listDTO.add(new RepairRequestDTO(rr.getId(), rr.getBest_time_request().toString(), rr.getMaster_type().getName(), rr.getDescription(), rr.getApartment().getId(),
-                    rr.getApartment().getNumber(), rr.getApartment().getBuilding().getName(), rr.getOwner().getId(), rr.getOwner().getFullName(),
-                    rr.getOwner().getPhone_number(), rr.getMaster().getId(), rr.getMaster().getFullName(),rr.getStatus().getName()));
-        }
+
         return new PageImpl<>(listDTO, pageable, repairRequests.getTotalElements());
     }
 

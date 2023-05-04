@@ -31,13 +31,13 @@
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0"
-                th:text="*{id != null} ? 'Заявка №' + *{id} + ' - редактирование' : 'Новая заявка'"></h1>
+                th:text="*{id != null} ? 'Заявка №' + *{id} + ' - редактирование' : #{requests.editPage.pageName}"></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/requests}">Вызовы мастера</a></li>
-              <li class="breadcrumb-item active" th:text="*{id != null} ? 'Заявка №' + *{id} + ' - редактирование' : 'Новая заявка'"></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i> <span th:text="#{requests.editPage.breadcrumb.main}"> Главная</span></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/requests}" th:text="#{requests.editPage.breadcrumb.previous}">Вызовы мастера</a></li>
+              <li class="breadcrumb-item active" th:text="*{id != null} ? 'Заявка №' + *{id} + ' - редактирование' : #{requests.editPage.pageName}"></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -54,7 +54,7 @@
               <input style="width: 90%;" th:value="${date}" th:readonly="*{id != null}" name="date" id="date" type="date" class="form-control">
             </div>
             <div class="col-md-3">
-              <span style="display:inline;">от </span>
+              <span style="display:inline;" th:text="#{requests.editPage.datePrefix}">от </span>
               <input style="width: 90%; display:inline-block;" th:readonly="*{id != null}" th:value="${#temporals.format(time, 'HH:mm')}" name="time" id="time" type="time" class="form-control">
             </div>
             <div class="col-md-6"></div>
@@ -67,7 +67,7 @@
 
                   <div class="row">
                     <div class="col-md-6">
-                      <h5>Владелец квартиры</h5>
+                      <h5 th:text="#{requests.editPage.card.owner}">Владелец квартиры</h5>
                       <select class="selects" th:field="*{ownerID}">
                         <option value="0">Выберите...</option>
                         <option th:each="owner : ${owners}"
@@ -77,7 +77,7 @@
                       <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('ownerID')}" th:errors="*{ownerID}"></h4>
                     </div>
                     <div class="col-md-6">
-                      <h5>Удобное время</h5>
+                      <h5 th:text="#{requests.editPage.card.time}">Удобное время</h5>
                       <input type="date" style="padding-block:10px" name="best_date" th:value="${best_date}" id="">
                       <input type="time" style="padding-block:10px" name="best_time" th:value="${best_time}" id="">
                       <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('best_time')}" th:errors="*{best_time}"></h4>
@@ -86,39 +86,39 @@
 
                   <div class="row">
                     <div class="col-md-6">
-                      <h4 style="font-weight:bold">Описание</h4>
+                      <h4 style="font-weight:bold" th:text="#{requests.editPage.card.description}">Описание</h4>
                       <textarea class="textareas" th:field="*{description}" style="width: 100%;" rows="12"></textarea>
                       <h4 style="color: red; font-weight: bold; margin-top: -5px" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></h4>
                     </div>
                     <div class="col-md-6">
-                      <h4 style="font-weight:bold">Квартира</h4>
+                      <h4 style="font-weight:bold" th:text="#{requests.editPage.card.apartment}">Квартира</h4>
                       <select th:if="*{ownerID != null}" class="selects mb-3" th:field="*{apartmentID}">
-                        <option value="0">Выберите...</option>
+                        <option value="0" th:text="#{select.placeholder}">Выберите...</option>
 <!--                        <option th:each="(flat : *{owner.getApartments()})"-->
 <!--                                th:value="${flat.id}"-->
 <!--                                th:text="'кв. ' + ${flat.number} + ', ' + ${flat.building.name}"></option>-->
                       </select>
                       <select th:if="*{ownerID == null}" disabled class="selects mb-3" th:field="*{apartmentID}">
-                        <option value="0">Выберите...</option>
+                        <option value="0" th:text="#{select.placeholder}">Выберите...</option>
                       </select>
                       <h4 style="color: red; font-weight: bold; margin-top: -15px" th:if="${#fields.hasErrors('apartmentID')}" th:errors="*{apartmentID}"></h4>
-                      <h4 style="font-weight:bold">Тип мастера</h4>
+                      <h4 style="font-weight:bold" th:text="#{requests.editPage.card.master.type}">Тип мастера</h4>
                       <select class="selects mb-3" id="master_type" th:field="*{master_type}">
                         <option th:each="type : ${T(com.example.myhome.home.model.RepairMasterType).values()}"
                                 th:value="${type}"
                                 th:text="${type.getName()}"></option>
                       </select>
                       <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('master_type')}" th:errors="*{master_type}"></h4>
-                      <h4 style="font-weight:bold">Статус</h4>
+                      <h4 style="font-weight:bold" th:text="#{requests.editPage.card.status}">Статус</h4>
                       <select class="selects mb-3" th:field="*{status}">
                         <option th:each="status : ${T(com.example.myhome.home.model.RepairStatus).values()}"
                                 th:value="${status}"
                                 th:text="${status.getName()}"></option>
                       </select>
                       <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></h4>
-                      <h4 style="font-weight:bold">Мастер</h4>
+                      <h4 style="font-weight:bold" th:text="#{requests.editPage.card.master.name}">Мастер</h4>
                       <select class="selects" id="masters" th:field="*{masterID}">
-                        <option value="">Выберите...</option>
+                        <option value="" th:text="#{select.placeholder}">Выберите...</option>
                         <option th:each="master : ${masters}"
                                 th:if="${master != null}"
                                 th:value="${master.id}"
@@ -130,7 +130,7 @@
 
                   <div class="row mt-2 mb-2">
                     <div class="col-md-12">
-                      <h4 style="font-weight:bold">Комментарий</h4>
+                      <h4 style="font-weight:bold" th:text="#{requests.editPage.card.comment}">Комментарий</h4>
                       <div class="form-group">
                         <textarea class="textareas" th:field="*{comment}" placeholder="Описание..." rows="5" style="width:100%"></textarea>
                       </div>
@@ -140,8 +140,8 @@
                   <div class="row justify-content-end">
                     <div class="col-xs-12">
                       <div class="form-group">
-                        <a th:href="@{/admin/requests}" class="btn btn-default">Отменить</a>
-                        <button type="submit" class="btn btn-success">Сохранить</button>
+                        <a th:href="@{/admin/requests}" class="btn btn-default" th:text="#{requests.editPage.card.cancel}">Отменить</a>
+                        <button type="submit" class="btn btn-success" th:text="#{requests.editPage.card.save}">Сохранить</button>
                       </div>
                     </div>
                   </div>
