@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>МойДом24</title>
+  <title th:text="#{myHome24}">МойДом24</title>
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
   <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -30,13 +30,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Сообщение</h1>
+            <h1 class="m-0" th:text="#{message}">Сообщение</h1>
           </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>  Главная</a></li>
-                    <li class="breadcrumb-item">Сообщения</li>
-                    <li class="breadcrumb-item active">Сообщение</li>
+                    <li class="breadcrumb-item"><a href="/"><i class="fa fa-home" th:text="#{homePage}"></i></a></li>
+                    <li class="breadcrumb-item" th:text="#{messages}">Сообщения</li>
+                    <li class="breadcrumb-item active" th:text="#{message}">Сообщение</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -51,16 +51,16 @@
           <div class="box">
               <div class="box-body no-padding">
                   <div class="mailbox-read-info">
-                      <h3>Предупреждение об опасности!</h3>
-                      <h5>От: Директор Тестовый                <span class="mailbox-read-time pull-right">17.08.2022 - 16:46</span>
+                      <h3 th:text="${message.subject}"> </h3>
+                      <h5 th:text="${message.sender.getFullName()}"><span class="mailbox-read-time pull-right" th:text="${message.date}">17.08.2022 - 16:46</span>
                       </h5>
                   </div>
-                  <div class="mailbox-read-message">
-                      <p>На улице идёт сильный дождь. Возьмите с собой плот, в случае выхода из дому.<br></p><p><br></p><p>персонально</p>        </div>
+                  <div class="mailbox-read-message" th:text="${message.text}">
+                  </div>
               </div>
               <div class="box-footer">
                   <a href="/cabinet/message/delete/194" data-confirm="Удалить?" data-method="post">
-                      <button type="button" class="btn btn-default"><i class="fa fa-trash-o"></i> Удалить</button>
+                      <button type="button" class="btn btn-default"><i class="fa fa-trash-o" th:text="#{delete}"></i></button>
                   </a>
               </div>
           </div>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>МойДом24</title>
+  <title th:text="#{myHome24}">МойДом24</title>
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
   <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -30,12 +30,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0" th:text="${apart != null ? 'Тариф - '+apart.building.name+' кв. ' + apart.number :'Квитанции на оплату'}">Тарифы</h1>
+            <h1 class="m-0" th:text="${apart != null } ? #{tariff} + ' - '+ ${apart.building.name}+' кв. ' + ${apart.number} : #{invoices}">Тарифы</h1>
           </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>  Главная</a></li>
-                    <li class="breadcrumb-item active">Тарифы</li>
+                    <li class="breadcrumb-item"><a href="/"><i class="fa fa-home" th:text="#{homePage}"></i></a></li>
+                    <li class="breadcrumb-item active" th:text="#{tariffs}">Тарифы</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -55,9 +55,9 @@
                               <table class="table table-bordered table-hover linkedRow">
                                   <thead>
                                       <tr>
-                                          <th>Услуга</th>
-                                          <th>Ед. изм</th>
-                                          <th>Цена за ед., грн</th>
+                                          <th th:text="#{service}">Услуга</th>
+                                          <th th:text="#{unit}">Ед. изм</th>
+                                          <th th:text="#{priceForUnit}">Цена за ед., грн</th>
                                       </tr>
                                   </thead>
                                   <tbody>

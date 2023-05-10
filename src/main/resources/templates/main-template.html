@@ -12,7 +12,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Панель администратора</a>
+        <a href="#" class="nav-link" th:text="#{adminPanel}">Панель администратора</a>
       </li>
     </ul>
     <!-- Right navbar links -->
@@ -34,7 +34,7 @@
           </li>
           <li class="user-row">
             <div >
-              <a th:href="@{/admin/admins/update/{id}(id=${auth_admin.id})}" class="btn btn-warning">Профиль</a>
+              <a th:href="@{/admin/admins/update/{id}(id=${auth_admin.id})}" class="btn btn-warning" th:text="#{profile}">Профиль</a>
             </div>
               <div >
                   <form id="languageForm" action="#" th:action="@{/change-language}" method="post" >
@@ -46,7 +46,7 @@
                   </form>
               </div>
             <div >
-              <a th:href="@{/admin/logout}" class="btn btn-danger">Выйти</a>
+              <a th:href="@{/admin/logout}" class="btn btn-danger" th:text="#{exit}">Выйти</a>
             </div>
           </li>
         </ul>

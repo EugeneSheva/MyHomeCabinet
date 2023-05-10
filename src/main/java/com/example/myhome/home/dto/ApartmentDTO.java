@@ -49,6 +49,42 @@ public class ApartmentDTO {
         this.owner = owner;
     }
 
+    public ApartmentDTO(Long id, String section, String floor, Long number, Double balance, Double square, BuildingDTO building) {
+        this.id = id;
+        this.section = section;
+        this.floor = floor;
+        this.number = number;
+        this.balance = balance;
+        this.square = square;
+        this.building = building;
+
+    }
+
+    public ApartmentDTO(Long id, String section, String floor, Long number, Double balance, Double square, BuildingDTO building, Long account) {
+        this.id = id;
+        this.section = section;
+        this.floor = floor;
+        this.number = number;
+        this.balance = balance;
+        this.square = square;
+        this.building = building;
+        this.accountNo = account;
+    }
+
+//    public ApartmentDTO(Long id, String section, String floor, Long number, Double balance, Double square, String fullName, BuildingDTO building, ApartmentAccountDTO account, OwnerDTO owner, Long accountNo) {
+//        this.id = id;
+//        this.section = section;
+//        this.floor = floor;
+//        this.number = number;
+//        this.balance = balance;
+//        this.square = square;
+//        this.fullName = fullName;
+//        this.building = building;
+//        this.account = account;
+//        this.owner = owner;
+//        this.accountNo = accountNo;
+//    }
+
     @Override
     public String toString() {
         return "ApartmentDTO{" +

@@ -19,7 +19,7 @@ public class RequestValidator implements Validator {
     public void validate(Object target, Errors e) {
         RepairRequest request = (RepairRequest) target;
         if(request.getOwner() == null) {
-            e.rejectValue(RepairRequest_.OWNER, "ownerId.empty", "Необходимо указать владельца квартиры");
+            e.rejectValue(RepairRequest_.OWNER, "owner.empty", "Необходимо указать владельца квартиры");
         } else if(request.getApartment() == null) {
             e.rejectValue(RepairRequest_.APARTMENT, "apartment.empty", "Необходимо выбрать квартиру");
         }

@@ -40,13 +40,12 @@ public interface AccountService {
     default List<ApartmentAccountDTO> toDTO(List<ApartmentAccount> accountList) {
         return accountList.stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
     }
-    default Page<ApartmentAccountDTO> toDTO(Page<ApartmentAccount> accountPage) {
-        return new PageImpl<>(
-                accountPage.getContent().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList()),
-                accountPage.getPageable(),
-                accountPage.getTotalElements()
-        );
-    }
+    ApartmentAccount getAccountWithBiggestId();
+    ApartmentAccount getAccountNumberFromFlat(long flat_id);
+    ApartmentAccount save(ApartmentAccount account);
+    void deleteAccountById(long account_id);
+    boolean apartmentHasAccount(long apartment_id);
+
 
     default Page<ApartmentAccountDTO> toPage(List<ApartmentAccountDTO> list, Pageable pageable, Long totalElements) {
         return new PageImpl<>(list, pageable, totalElements);

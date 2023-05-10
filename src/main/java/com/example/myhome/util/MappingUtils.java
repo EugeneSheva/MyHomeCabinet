@@ -75,10 +75,10 @@ public class MappingUtils {
         dto.setNumber(apartment.getNumber());
         dto.setBalance(apartment.getBalance());
         dto.setSquare(apartment.getSquare());
+        dto.setBuilding(new BuildingDTO(apartment.getBuilding().getId(),apartment.getBuilding().getName()));
 //        dto.setFullName("кв. " + dto.getNumber() + ", " + dto.getBuilding().getName());
-
 //        dto.setBuilding(fromBuildingToDTO(apartment.getBuilding()));
-//        dto.setAccount(fromAccountToDTO(apartment.getAccount()));
+        dto.setAccountNo(apartment.getAccount().getId());
 //        dto.setOwner(fromOwnerToDTO(apartment.getOwner()));
 
         return dto;

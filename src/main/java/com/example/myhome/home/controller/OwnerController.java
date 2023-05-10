@@ -171,4 +171,14 @@ public class OwnerController {
         model.addAttribute("selectWithDebt", "selectWithDebt");
         return "admin_panel/messages/message_edit";
     }
+    @GetMapping("/newTo/{id}")
+    public String sendMessageToRecipient(@PathVariable("id") Long id, Model model) {
+        Message message = new Message();
+        model.addAttribute("message", message);
+        OwnerDTO recipient = ownerService.findByIdDTO(id);
+        model.addAttribute("recipient", recipient);
+        List<BuildingDTO> buildingList = buildingService.findAllDTO();
+        model.addAttribute("buildings", buildingList);
+        return "admin_panel/messages/message_edit";
+    }
 }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>МойДом24</title>
+  <title th:text="#{myHome24}">МойДом24</title>
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
   <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -30,12 +30,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Вызов мастера</h1>
+            <h1 class="m-0" th:text="#{requestMaster}">Вызов мастера</h1>
           </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>  Главная</a></li>
-                    <li class="breadcrumb-item active">Вызов мастера</li>
+                    <li class="breadcrumb-item"><a href="/"><i class="fa fa-home" th:text="#{homePage}"></i></a></li>
+                    <li class="breadcrumb-item active" th:text="#{requestMaster}">Вызов мастера</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -52,7 +52,7 @@
           <div class="row mr-2" style="justify-content:flex-end">
               <div class="col-xs-12">
                   <div class="pull-right margin-bottom">
-                      <a class="btn btn-success" th:href="@{/cabinet/requests/create    }">Создать заявку</a>
+                      <a class="btn btn-success" th:href="@{/cabinet/requests/create    }" th:text="#{createRequest}">Создать заявку</a>
                   </div>
               </div>
           </div>
@@ -64,11 +64,11 @@
                               <table class="table table-bordered table-hover table-striped linkedRow" id="requestsTable">
                                   <thead>
                                       <tr>
-                                          <th>№ заявки</th>
-                                          <th>Тип мастера</th>
-                                          <th>Описание</th>
-                                          <th>Удобное время</th>
-                                          <th>Статус</th>
+                                          <th th:text="#{numbOfRequest}">№ заявки</th>
+                                          <th th:text="#{typeOfMaster}">Тип мастера</th>
+                                          <th th:text="#{description}">Описание</th>
+                                          <th th:text="#{convenientTime}">Удобное время</th>
+                                          <th th:text="#{status}">Статус</th>
                                           <th></th>
                                       </tr>
                                   </thead>

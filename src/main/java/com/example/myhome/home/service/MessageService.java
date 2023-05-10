@@ -35,10 +35,10 @@ public class MessageService {
     public void deleteById(Long id) { messageRepository.deleteById(id); }
 
 
-    public Page<Message> findAllBySpecification(FilterForm form, Integer page, Integer size) {
+    public Page<Message> findAllBySpecification(FilterForm form, Integer page, Integer size, Long ownerId) {
         System.out.println("service");
         Pageable pageable = PageRequest.of(page-1, size);
-        Page<Message>messageList = messageRepository.findByFilters(form.getDescription(), pageable);
+        Page<Message>messageList = messageRepository.findByFilters(form.getDescription(), ownerId, pageable);
         System.out.println("messageList" +messageList);
         return messageList;
     }

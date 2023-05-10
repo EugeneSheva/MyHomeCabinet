@@ -171,6 +171,7 @@ public class PersonalCabinetController {
         OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
         model.addAttribute("owner", ownerDTO);
         List<Message> messagesList = ownerService.findOwnerDTObyEmailWithMessages(principal.getName()).getMessages();
+        System.out.println(messagesList);
         Page<Message> messagesListPage = new PageImpl<>(messagesList, pageable, messagesList.size());
         model.addAttribute("messages", messagesListPage);
         model.addAttribute("totalPagesCount", messagesListPage.getTotalPages());
@@ -182,6 +183,9 @@ public class PersonalCabinetController {
     public String getMessageContentPage(@PathVariable long id, Model model, Principal principal) {
         OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
         model.addAttribute("owner", ownerDTO);
+
+        Message message = messageRepository.getReferenceById(id);
+        model.addAttribute("message", message);
         return "cabinet/message_card";
     }
 
@@ -307,10 +311,11 @@ public class PersonalCabinetController {
     @GetMapping("/get-messages")
     public @ResponseBody Page<Message> getOwners(@RequestParam Integer page,
                                                   @RequestParam Integer size,
-                                                  @RequestParam String filters) throws JsonProcessingException {
+                                                  @RequestParam String filters, Principal principal) throws JsonProcessingException {
+        Owner owner = ownerService.findByLogin(principal.getName());
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);
         System.out.println("controller "+form);
-        return messageService.findAllBySpecification(form, page, size);
+        return messageService.findAllBySpecification(form, page, size, owner.getId());
     }
 }

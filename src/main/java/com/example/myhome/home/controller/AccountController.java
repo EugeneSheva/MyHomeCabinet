@@ -150,14 +150,14 @@ public class AccountController {
         return String.format("%010d", accountService.getAccountNumberFromFlat(flat_id).getId());
     }
 
-    @GetMapping("/get-accounts")
-    public @ResponseBody Page<ApartmentAccountDTO> getAccounts(@RequestParam Integer page,
-                                                               @RequestParam Integer size,
-                                                               @RequestParam String filters) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        FilterForm form = mapper.readValue(filters, FilterForm.class);
-        return accountService.toDTO(accountService.findAllAccountsByFiltersAndPage(form, PageRequest.of(page, size)));
-    }
+//    @GetMapping("/get-accounts")
+//    public @ResponseBody Page<ApartmentAccountDTO> getAccounts(@RequestParam Integer page,
+//                                                               @RequestParam Integer size,
+//                                                               @RequestParam String filters) throws JsonProcessingException {
+//        ObjectMapper mapper = new ObjectMapper();
+//        FilterForm form = mapper.readValue(filters, FilterForm.class);
+//        return accountService.toDTO(accountService.findAllAccountsByFiltersAndPage(form, PageRequest.of(page, size)));
+//    }
 
     @ModelAttribute
     public void addAttributes(Model model) {

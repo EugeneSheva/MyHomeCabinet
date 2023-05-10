@@ -1,8 +1,12 @@
 package com.example.myhome.home.specification;
 
+import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Message;
+import com.example.myhome.home.model.Owner;
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 
 
@@ -20,6 +24,12 @@ public class MessageSpecifications {
                 );
             }
             return builder.and(predicates);
+        };
+    }
+    public static Specification<Message> receiverContains(Long id) {
+        return (root, query, builder) -> {
+            Join<Message, Owner> receiverJoin = root.join("receivers", JoinType.INNER);
+            return builder.equal(receiverJoin.get("id"), id);
         };
     }
 

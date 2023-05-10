@@ -160,4 +160,10 @@ public class AccountServiceImpl implements AccountService {
     public ApartmentAccountDTO convertApartAccountToApartAccountDTO(ApartmentAccount account) {
        return new ApartmentAccountDTO(account.getId(),account.getIsActive(),account.getNumber(),account.getBalance());
     }
+
+    public ApartmentAccount getAccountWithBiggestId() {return accountRepository.findFirstByOrderByIdDesc().orElseThrow();}
+    public ApartmentAccount getAccountNumberFromFlat(long flat_id) {return accountRepository.findByApartmentId(flat_id).orElseThrow();}
+    public ApartmentAccount save(ApartmentAccount account) {return accountRepository.save(account);}
+    public void deleteAccountById(long account_id) {accountRepository.deleteById(account_id);}
+
 }

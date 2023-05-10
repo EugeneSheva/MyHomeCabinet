@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>МойДом24</title>
+  <title th:text="#{myHome24}">МойДом24</title>
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
   <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -33,13 +33,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Новая заявка</h1>
+            <h1 class="m-0" th:text="#{newRequest}">Новая заявка</h1>
           </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>  Главная</a></li>
-                    <li class="breadcrumb-item">Вызов мастера</li>
-                    <li class="breadcrumb-item active">Новая заявка</li>
+                    <li class="breadcrumb-item"><a href="/"><i class="fa fa-home" th:text="#{homePage}"></i></a></li>
+                    <li class="breadcrumb-item" th:text="#{requestMaster}">Вызов мастера</li>
+                    <li class="breadcrumb-item active" th:text="#{newRequest}">Новая заявка</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -56,7 +56,7 @@
               <div class="box-body">
                   <div class="modal-body">
                       <div class="form-group">
-                          <h4 class="control-label">Тип мастера</h4>
+                          <h4 class="control-label" th:text="#{typeOfMaster}">Тип мастера</h4>
                           <select th:field="*{master}" id="master_select" class="my_selects">
                               <option th:each="type : ${T(com.example.myhome.home.model.RepairMasterType).values()}"
                                       th:value="${type}"
@@ -64,7 +64,7 @@
                           </select>
                       </div>
                       <div class="form-group">
-                          <h4 class="control-label">Квартира</h4>
+                          <h4 class="control-label" th:text="#{apartment}">Квартира</h4>
                           <select th:field="*{apartment}" id="apartment_select" class="my_selects">
                               <option th:each="apart : ${owner.apartments}"
                                       th:value="${apart.id}"
@@ -74,27 +74,27 @@
                       <div class="row">
                           <div class="col-md-6">
                               <div class="form-group">
-                                  <h4 class="control-label">Дата работ</h4>
+                                  <h4 class="control-label" th:text="#{dateOfWork}">Дата работ</h4>
                                   <input type="text" id="date_picker" th:field="*{date}">
                                   <span class="input-group-addon kv-date-calendar" title="Выбрать дату"><i class="fa fa-calendar"></i></span>
                               </div>
                           </div>
                           <div class="col-md-6">
                               <div class="form-group">
-                                  <h4 class="control-label">Время работ</h4>
+                                  <h4 class="control-label" th:text="#{timeOfWork}">Время работ</h4>
                                   <input type="text" id="time_picker" th:field="*{time}">
                                   <span class="input-group-addon kv-date-calendar" title="Выбрать дату"><i class="fa fa-clock"></i></span>
                               </div>
                           </div>
                       </div>
                       <div class="form-group">
-                          <h4 class="control-label">Описание</h4>
+                          <h4 class="control-label" th:text="#{description}">Описание</h4>
                           <textarea th:field="*{description}" style="width:100%" rows="5"></textarea>
                       </div>
                   </div>
                   <div class="modal-footer">
                       <div class="row" style="justify-content:flex-end">
-                          <button type="submit" class="btn btn-success">Отправить заявку</button>
+                          <button type="submit" class="btn btn-success" th:text="#{sendRequest}">Отправить заявку</button>
                       </div>
                   </div>
               </div>

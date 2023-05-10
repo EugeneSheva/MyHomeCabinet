@@ -24,12 +24,16 @@ public interface MessageRepository extends JpaRepository<Message, Long>, JpaSpec
     List<Message> findAllMessagesByOwnerId(@Param("ownerId") Long ownerId);
 
     Page<Message> findAll(Pageable pageable);
-    default Page<Message> findByFilters(String text, Pageable pageable) {
+    default Page<Message> findByFilters(String text, Long reciverId, Pageable pageable) {
         Specification<Message> spec = Specification.where(null);
 
+        if (reciverId != null && reciverId>0) {
+            spec = spec.and(MessageSpecifications.receiverContains(reciverId));
+        }
         if (text != null && !text.isEmpty()) {
             spec = spec.and(MessageSpecifications.textContains(text));
         }
+
         return findAll(spec,pageable);
     }
 

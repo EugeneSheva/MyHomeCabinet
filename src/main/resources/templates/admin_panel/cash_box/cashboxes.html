@@ -329,7 +329,7 @@
         let month = date.getMonth() + 1;
         let year = date.getFullYear();
 
-        let table = document.getElementById("table");
+        let table = document.getElementById("cashboxTable");
         let excel_file = XLSX.utils.table_to_book(table);
         XLSX.writeFile(excel_file, "Касса " + `${day}-${month}-${year}` + ".xlsx");
         console.log(2)

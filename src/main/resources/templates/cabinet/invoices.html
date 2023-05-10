@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>МойДом24</title>
+  <title th:text="#{myHome24}">МойДом24</title>
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
   <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -30,12 +30,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0" th:text="${apart != null ? 'Квитанции на оплату '+apart.building.name+' кв. ' + apart.number :'Квитанции на оплату'}"></h1>
+            <h1 class="m-0" th:text="${apart != null }? #{invoices}+apart.building.name+' кв. ' + apart.number : #{invoices}"></h1>
           </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>  Главная</a></li>
-                    <li class="breadcrumb-item active">Квитанции на оплату</li>
+                    <li class="breadcrumb-item"><a href="/"><i class="fa fa-home" th:text="#{homePage}"></i></a></li>
+                    <li class="breadcrumb-item active" th:text="#{invoices}">Квитанции на оплату</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -54,7 +54,7 @@
                           <h3 class="box-title"></h3>
                           <div class="box-tools" style="top: 14px;">
                               <a href="#" onclick="reset()" class="btn btn-default btn-sm">
-                                  <span class="hidden-xs">Очистить </span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                                  <span class="hidden-xs"><h7 th:text="#{clear}"></h7></span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                               </a>
                           </div>
                       </div>
@@ -64,16 +64,16 @@
                                   <thead>
                                       <tr>
                                           <th>№</th>
-                                          <th>Дата</th>
-                                          <th>Статус</th>
-                                          <th>Сумма</th>
+                                          <th th:text="#{date}">Дата</th>
+                                          <th th:text="#{status}">Статус</th>
+                                          <th th:text="#{sum}">Сумма</th>
                                       </tr>
                                       <tr class="filters">
                                           <td></td>
-                                          <td><input type="date" class="my_filters"  id="date" name="date" style="width:100%; padding-block: 10px;"></td>
+                                          <td><input type="date" class="my_filters"  id="date" name="date" style="width:100%; padding-block: 10px; padding-top: 5px; padding-bottom: 6px;"></td>
                                           <td>
                                               <select class="my_filters" id="status" name>
-                                                  <option value="">Выберите...</option>
+                                                  <option value="" th:text="#{choise}">Выберите...</option>
                                                   <option th:each="status : ${T(com.example.myhome.home.model.InvoiceStatus).values()}"
                                                           th:value="${status}"
                                                           th:text="${status.name}"></option>

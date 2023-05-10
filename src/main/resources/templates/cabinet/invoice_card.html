@@ -1,103 +1,111 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>МойДом24</title>
-  <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
-  <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
-  <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
-  <link rel="stylesheet" th:href="@{/plugins/bootstrap-datepicker/css/datepicker.css}">
-  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
-  <link rel="stylesheet" th:href="@{/dist/css/website.css}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{myHome24}">МойДом24</title>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/bootstrap-datepicker/css/datepicker.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/website.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/css/tempus-dominus.min.css" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/css/tempus-dominus.min.css"
+          crossorigin="anonymous">
     <!-- Popperjs -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+            crossorigin="anonymous"></script>
     <!-- Tempus Dominus JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/js/tempus-dominus.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/js/tempus-dominus.min.js"
+            crossorigin="anonymous"></script>
+
+
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-  <div th:insert="~{cabinet-template :: loading}"></div>
-  <nav th:insert="~{cabinet-template :: header}"></nav>
-  <aside th:insert="~{cabinet-template :: sidebar}"></aside>
-
-  <div class="content-wrapper">
-    <div class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1 class="m-0">Просмотр квитанции: #39493248932</h1>
-          </div><!-- /.col -->
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>  Главная</a></li>
-                    <li class="breadcrumb-item">Квитанции</li>
-                    <li class="breadcrumb-item active">Просмотр квитанции: #39493248932</li>
-                </ol>
-            </div><!-- /.col -->
-        </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
+    <div th:insert="~{cabinet-template :: loading}"></div>
+    <nav th:insert="~{cabinet-template :: header}"></nav>
+    <aside th:insert="~{cabinet-template :: sidebar}"></aside>
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0"
+                            th:text="#{viewInvoices} + ': #'+ ${T(java.lang.String).format('%010d',invoice.account.id)}"></h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="/"><i class="fa fa-home" th:text="#{homePage}"></i></a>
+                            </li>
+                            <li class="breadcrumb-item" th:text="#{invoices}">Квитанции</li>
+                            <li class="breadcrumb-item active"
+                                th:text="#{viewInvoices} + ': #'+ ${T(java.lang.String).format('%010d',invoice.account.id)}">
+                                Просмотр квитанции: #39493248932
+                            </li>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+        <!-- Main content -->
+        <section class="page_content">
+            <div class="container-fluid">
+                <div class="box">
+                    <div class="box-header with-border" style="padding-block: 12px">
+                        <h3 class="box-title"></h3>
+                        <div class="box-tools" style="top:15px;">
+                            <a href="#" onclick="print()" class="btn btn-info btn-sm">
+                                <i class="fa fa-print" aria-hidden="true"></i> <span class="hidden-xs"
+                                                                                     th:text="#{print}">Распечатать</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="box-body no-padding table-responsive" id="content">
+                        <div id="tab">
+                            <table class="table table-bordered table-hover linkedRow" id="myTable">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th th:text="#{service}">Услуга</th>
+                                    <th th:text="#{quantityOfConsumption}">Количество потребления (расход)</th>
+                                    <th th:text="#{unit}">Ед. изм</th>
+                                    <th th:text="#{priceForUnit}">Цена за ед., грн</th>
+                                    <th th:text="#{price}">Стоимость, грн</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="component : ${invoice.components}">
+                                    <td th:text="${component.id}"></td>
+                                    <td th:text="${component.service.name}"></td>
+                                    <td th:text="${component.unit_amount}"></td>
+                                    <td th:text="${component.service.unit.name}"></td>
+                                    <td th:text="${component.unit_price}"></td>
+                                    <td th:text="${component.totalPrice}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box-footer" style="padding-bottom: 30px">
+                        <div class="pull-right">
+                            <a href="#" onclick="savePDF()" class="btn btn-sm btn-warning"><i
+                                    class="fa fa-file-pdf-o" aria-hidden="true" th:text="#{downloadPDF}"></i></a>
+                            <a href="#" class="btn btn-sm btn-success"><i class="fa fa-credit-card" aria-hidden="true"
+                                                                          th:text="#{pay}"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
-    <!-- /.content-header -->
-
-    <!-- Main content -->
-    <section class="page_content">
-
-      <div class="container-fluid">
-          <div class="box">
-              <div class="box-header with-border" style="padding-block: 12px">
-                  <h3 class="box-title"></h3>
-                  <div class="box-tools">
-                      <a href="/cabinet/invoice/print/732" class="btn btn-info btn-sm">
-                          <i class="fa fa-print" aria-hidden="true"></i> <span class="hidden-xs">Распечатать</span>
-                      </a>
-                  </div>
-              </div>
-              <div class="box-body no-padding table-responsive">
-                  <form action="" method="get">
-                      <table class="table table-bordered table-hover linkedRow">
-                          <thead>
-                          <tr>
-                              <th>#</th>
-                              <th>Услуга</th>
-                              <th>Количество потребления (расход)</th>
-                              <th>Ед. изм</th>
-                              <th>Цена за ед., грн</th>
-                              <th>Стоимость, грн</th>
-                          </tr>
-                          </thead>
-                          <tbody>
-                          <tr th:each="component : ${invoice.components}">
-                              <td th:text="${component.id}"></td>
-                              <td th:text="${component.service.name}"></td>
-                              <td th:text="${component.unit_amount}"></td>
-                              <td th:text="${component.service.unit.name}"></td>
-                              <td th:text="${component.unit_price}"></td>
-                              <td th:text="${component.totalPrice}"></td>
-                          </tr>
-                          </tbody>
-                      </table>
-                  </form>
-              </div>
-              <div class="box-footer" style="padding-bottom: 30px">
-                  <div class="pull-right">
-                      <a href="/cabinet/invoice/download/732" class="btn btn-sm btn-warning" download=""><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Скачать в PDF</a>
-                      <a href="/cabinet/invoice/pay/732" class="btn btn-sm btn-success"><i class="fa fa-credit-card" aria-hidden="true"></i> Оплатить</a>
-                  </div>
-              </div>
-          </div>
-      </div>
-    </section>
-
-  </div>
-
-  <footer th:insert="~{cabinet-template :: footer}"></footer>
+    <footer th:insert="~{cabinet-template :: footer}"></footer>
 </div>
-
 <script src="https://kit.fontawesome.com/41663a8b50.js" crossorigin="anonymous"></script>
 <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
 <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
@@ -105,10 +113,93 @@
 <script th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
 
-
-<script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+<script type="text/javascript">
+    function savePDF() {
+        html2canvas(document.getElementById('myTable'), {
+            onrendered: function (canvas) {
+                var data = canvas.toDataURL();
+                var docDefinition = {
+                    content: [{
+                        image: data,
+                        width: 500
+                    }]
+                };
+                pdfMake.createPdf(docDefinition).download("Table.pdf");
+            }
+        });
+    }
 </script>
 
+
+<!--<script>-->
+<!--    var specialElementHandlers = {-->
+<!--        // element with id of "bypass" - jQuery style selector-->
+<!--        '.no-export': function (element, renderer) {-->
+<!--            // true = "handled elsewhere, bypass text extraction"-->
+<!--            return true;-->
+<!--        }-->
+<!--    };-->
+
+<!--    function savePDF(id) {-->
+<!--        var doc = new jsPDF('p', 'pt', 'a4');-->
+<!--        //A4 - 595x842 pts-->
+<!--        //https://www.gnu.org/software/gv/manual/html_node/Paper-Keywords-and-paper-size-in-points.html-->
+
+
+<!--        //Html source-->
+<!--        var source = document.getElementById(id);-->
+<!--        console.log(source);-->
+<!--        var margins = {-->
+<!--            top: 10,-->
+<!--            bottom: 10,-->
+<!--            left: 10,-->
+<!--            width: 595-->
+<!--        };-->
+
+<!--        doc.fromHTML(-->
+<!--            source, // HTML string or DOM elem ref.-->
+<!--            margins.left,-->
+<!--            margins.top, {-->
+<!--                'width': margins.width,-->
+<!--                'elementHandlers': specialElementHandlers-->
+<!--            },-->
+
+<!--            function (dispose) {-->
+<!--                // dispose: object with X, Y of the last line add to the PDF-->
+<!--                //          this allow the insertion of new lines after html-->
+<!--                doc.save('Test.pdf');-->
+<!--            }, margins);-->
+<!--    }-->
+<!--</script>-->
+<script>
+    function print() {
+        var sTable = document.getElementById('tab').innerHTML;
+
+        var style = "<style>";
+        style = style + "table {width: 100%;font: 17px Calibri;}";
+        style = style + "table, th, td {border: solid 1px #DDD; border-collapse: collapse;";
+        style = style + "padding: 2px 3px;text-align: center;}";
+        style = style + "</style>";
+
+        // CREATE A WINDOW OBJECT.
+        var win = window.open('', '', 'height=700,width=700');
+
+        win.document.write('<html><head>');
+        win.document.write('<title>Profile</title>');   // <title> FOR PDF HEADER.
+        win.document.write(style);          // ADD STYLE INSIDE THE HEAD TAG.
+        win.document.write('</head>');
+        win.document.write('<body>');
+        win.document.write(sTable);         // THE TABLE CONTENTS INSIDE THE BODY TAG.
+        win.document.write('</body></html>');
+
+        win.document.close(); 	// CLOSE THE CURRENT WINDOW.
+
+        win.print();    // PRINT THE CONTENTS.
+    }
+</script>
 </body>
 </html>
