@@ -1,5 +1,6 @@
 package com.example.myhome;
 
+import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.model.UserRole;
 import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.impl.InvoiceServiceImpl;
@@ -36,6 +37,12 @@ public class MyHomeApplication {
     @EventListener(ApplicationReadyEvent.class)
     @Transactional
     public void b() throws IOException {
+
+        List<Admin> list = adminRepository.findAll();
+        list.forEach(admin -> {
+            if(admin.getRole() == null) admin.setRole(repository.getReferenceById(22L));
+        });
+        adminRepository.saveAll(list);
 
 //        repository.saveAll(List.of(
 //                new UserRole(1L, "Директор"),

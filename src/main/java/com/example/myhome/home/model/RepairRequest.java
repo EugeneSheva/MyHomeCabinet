@@ -22,8 +22,9 @@ public class RepairRequest implements Cloneable{
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime best_time_request;
 
-    @Enumerated(EnumType.STRING)
-    private RepairMasterType master_type;
+    @ManyToOne
+    @JoinColumn(name="master_type")
+    private UserRole master_type;
 
     private String description, comment;
 

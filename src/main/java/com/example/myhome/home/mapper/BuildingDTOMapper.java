@@ -17,7 +17,6 @@ public class BuildingDTOMapper {
         building.setSections(dto.getSections());
         building.setAddress(dto.getAddress());
         building.setFloors(dto.getFloors());
-//        building.setApartments(dto.getApartments().stream().map(MappingUtils::fromDTOToApartment).collect(Collectors.toList()));
 
         return building;
     }
@@ -31,7 +30,6 @@ public class BuildingDTOMapper {
         dto.setSections(building.getSections());
         dto.setAddress(building.getAddress());
         dto.setFloors(building.getFloors());
-//        dto.setApartments(building.getApartments().stream().map(MappingUtils::fromApartmentToDTO).collect(Collectors.toList()));
 
         return dto;
     }

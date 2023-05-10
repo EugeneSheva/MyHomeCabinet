@@ -82,8 +82,8 @@
                       <tr>
                         <td style="font-weight:bold" th:text="#{accounts.infoPage.card.status}">Статус</td>
                         <td>
-                          <small class="label label-success" th:if="${account.isActive}">Активен</small>
-                          <small class="label label-danger" th:if="${!account.isActive}">Неактивен</small>
+                          <small class="label label-success" th:if="${account.isActive}" th:text="#{account.active}">Активен</small>
+                          <small class="label label-danger" th:if="${!account.isActive}" th:text="#{account.inactive}">Неактивен</small>
                         </td>
                       </tr>
                       <tr>

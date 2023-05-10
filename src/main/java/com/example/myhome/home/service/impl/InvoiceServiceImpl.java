@@ -1,8 +1,11 @@
 package com.example.myhome.home.service.impl;
 
+import com.example.myhome.home.dto.InvoiceDTO;
 import com.example.myhome.home.exception.NotFoundException;
+import com.example.myhome.home.mapper.InvoiceDTOMapper;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
+import com.example.myhome.home.repository.AccountRepository;
 import com.example.myhome.home.repository.InvoiceRepository;
 import com.example.myhome.home.repository.InvoiceTemplateRepository;
 import com.example.myhome.home.service.*;
@@ -11,13 +14,16 @@ import com.example.myhome.util.ExcelHelper;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Log
@@ -25,13 +31,16 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
 
     @Autowired private InvoiceRepository invoiceRepository;
     @Autowired private InvoiceTemplateRepository invoiceTemplateRepository;
+    @Autowired private InvoiceDTOMapper mapper;
 
     @Autowired private ApartmentService apartmentService;
+    @Autowired private AccountRepository accountRepository;
     @Autowired private EmailServiceImpl emailService;
     @Autowired private OwnerService ownerService;
     @Autowired private ServiceServiceImpl serviceService;
 
     @Autowired private ExcelHelper excelHelper;
+
 
     private static final String FILE_PATH = "C:\\Users\\OneSmiLe\\IdeaProjects\\MyHome\\src\\main\\resources\\static\\files\\";
 
@@ -43,13 +52,13 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
         return list;
     }
 
-    @Override
-    public Page<Invoice> findAllInvoicesByFiltersAndPage(FilterForm filters, Pageable pageable) {
+    public Page<InvoiceDTO> findAllInvoicesByFiltersAndPage(FilterForm filters, Pageable pageable) {
         log.info("Getting invoices (page " + pageable.getPageNumber() + "/size " + pageable.getPageSize() + ")");
         Specification<Invoice> specification = buildSpecFromFilters(filters);
         Page<Invoice> page = invoiceRepository.findAll(specification, pageable);
         log.info("Found " + page.getContent().size() + " elements");
-        return page;
+        List<InvoiceDTO> list = page.getContent().stream().map(mapper::fromInvoiceToDTO).collect(Collectors.toList());
+        return new PageImpl<>(list, pageable, page.getTotalElements());
     }
 
     @Override
@@ -64,6 +73,11 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
             log.severe(e.getMessage());
             return null;
         }
+    }
+
+    public InvoiceDTO findInvoiceDTOById(Long invoice_id) {
+        Invoice invoice = findInvoiceById(invoice_id);
+        return mapper.fromInvoiceToDTO(invoice);
     }
 
     @Override
@@ -163,6 +177,7 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
     }
 
     @Override
+    @Transactional
     public Invoice saveInvoice(Invoice invoice) {
         log.info("Trying to save invoice...");
         log.info(invoice.toString());
@@ -170,12 +185,28 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
             Invoice savedInvoice = invoiceRepository.save(invoice);
             log.info("Invoice successfully saved!");
             log.info(savedInvoice.toString());
+
+            log.info("Trying to update account balance now");
+            ApartmentAccount account = accountRepository.findById(savedInvoice.getAccount().getId()).orElse(null);
+            if(account != null) {
+                log.info("Found account: " + account);
+                account.setBalance(account.getBalance() - savedInvoice.getTotal_price());
+                log.info("Updated balance: " + account.getBalance());
+                accountRepository.save(account);
+                log.info("Saved account!");
+            }
+
             return savedInvoice;
         } catch (Exception e) {
             log.severe("Something went wrong during saving");
             log.severe(e.getMessage());
             return null;
         }
+    }
+
+    public Invoice saveInvoice(InvoiceDTO dto) {
+        Invoice invoice = mapper.fromDTOToInvoice(dto);
+        return saveInvoice(invoice);
     }
 
     @Override
@@ -260,36 +291,57 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
 
     // ====
 
-    public Invoice buildInvoice(Invoice invoice,
-                               String date,
-                               String[] services,
-                               String[] unit_prices,
-                               String[] unit_amounts) {
+//    public Invoice buildInvoice(Invoice invoice,
+//                               String date,
+//                               String[] services,
+//                               String[] unit_prices,
+//                               String[] unit_amounts) {
+//        log.info("Building invoice!");
+//        invoice.setDate(LocalDate.parse(date));
+//        log.info("Set date " + LocalDate.parse(date));
+//        log.info("Adding components");
+//        invoice = buildComponents(invoice, services, unit_prices, unit_amounts);
+//        log.info("Built invoice!");
+//        log.info(invoice.toString());
+//
+////        savedInvoice = buildComponents(savedInvoice, services, unit_prices, unit_amounts);
+//
+//        return invoice;
+//    }
+
+    public InvoiceDTO buildInvoice(InvoiceDTO invoice,
+                                String date,
+                                String[] services,
+                                String[] unit_prices,
+                                String[] unit_amounts) {
+
         log.info("Building invoice!");
         invoice.setDate(LocalDate.parse(date));
         log.info("Set date " + LocalDate.parse(date));
+        log.info("Clearing old components list, if present");
+        if(invoice.getComponents() != null) invoice.getComponents().clear();
+        else invoice.setComponents(new ArrayList<>());
+        log.info("Old components cleared");
         log.info("Adding components");
-        invoice = buildComponents(invoice, services, unit_prices, unit_amounts);
+        List<InvoiceComponents> componentsList = buildComponents(services, unit_prices, unit_amounts);
+        invoice.setComponents(componentsList);
+        Double total_price = componentsList.stream().map(InvoiceComponents::getTotalPrice).reduce(Double::sum).orElse(0.0);
+        invoice.setTotal_price(total_price);
+        log.info("Total price of an invoice: " + total_price);
         log.info("Built invoice!");
         log.info(invoice.toString());
-
-//        savedInvoice = buildComponents(savedInvoice, services, unit_prices, unit_amounts);
 
         return invoice;
     }
 
-    public Invoice buildComponents(Invoice invoice,
-                                   String[] services,
+    public List<InvoiceComponents> buildComponents(String[] services,
                                    String[] unit_prices,
                                    String[] unit_amounts) {
 
-        log.info("Clearing old components list, if present");
-        invoice.getComponents().clear();
-        log.info("Old components cleared");
+        List<InvoiceComponents> list = new ArrayList<>();
 
         for (int i = 1; i < services.length; i++) {
 
-            //checking component integrity
             if(services[i].isEmpty() || unit_amounts[i].isEmpty() || unit_prices[i].isEmpty()) continue;
             try {
                 Double.parseDouble(unit_prices[i]);
@@ -300,17 +352,14 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
             }
 
             InvoiceComponents component = new InvoiceComponents();
-            component.setInvoice(invoice);
             component.setService(serviceService.findServiceById(Long.parseLong(services[i])));
             component.setUnit_price(Double.parseDouble(unit_prices[i]));
             component.setUnit_amount(Double.parseDouble(unit_amounts[i]));
-            invoice.getComponents().add(component);
+            list.add(component);
         }
-        log.info("New components set!");
-        Double total_price = invoice.getComponents().stream().map(InvoiceComponents::getTotalPrice).reduce(Double::sum).orElse(0.0);
-        invoice.setTotal_price(total_price);
-        log.info("Total price of an invoice: " + total_price);
-        return invoice;
+        log.info("List of new components created!");
+
+        return list;
     }
 
 

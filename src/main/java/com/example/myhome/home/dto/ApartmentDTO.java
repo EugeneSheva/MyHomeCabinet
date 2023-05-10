@@ -23,6 +23,7 @@ public class ApartmentDTO {
     private ApartmentAccountDTO account;
     private OwnerDTO owner;
     private Long accountNo;
+
     public ApartmentDTO(Long id, BuildingDTO building, String section, String floor, Long number, Long account, OwnerDTO owner, Double balance) {
         this.id = id;
         this.section = section;
@@ -49,15 +50,4 @@ public class ApartmentDTO {
         this.owner = owner;
     }
 
-    @Override
-    public String toString() {
-        return "ApartmentDTO{" +
-                "id=" + id +
-                ", section=" + section +
-                ", floor=" + floor +
-                ", number=" + number +
-                ", owner=" + owner +
-                ", balance=" + balance +
-                "}\n";
-    }
 }

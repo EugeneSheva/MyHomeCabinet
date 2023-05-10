@@ -178,7 +178,6 @@ function getTableData(url, pageNumber, pageSize, pageFiltersString) {
     return tableData;
 }
 
-
 //Функции, рисующие таблицы в зависимости от выбранной страницы
 function drawApartmentsTable() {
 
@@ -250,15 +249,15 @@ function drawInvoicesTable(){
                                '</td>' +
                                 '<td>' + date.toISOString().split('T')[0] + '</td>' +
                                 '<td>' + month_string + '</td>' +
-                                '<td>' + invoice.apartment.number.toString() + ', ' + invoice.apartment.building.name.toString() + '</td>' +
-                                '<td>' + invoice.apartment.owner.fullName.toString() + '</td>' +
+                                '<td>' + invoice.apartment.fullName + '</td>' +
+                                '<td>' + invoice.owner.fullName + '</td>' +
                                 '<td><span>' + (invoice.completed ? 'Проведена' : 'Не проведена') + '</span></td>' +
-                                '<td><span>' + invoice.total_price.toString() + '</span></td>' +
+                                '<td><span>' + invoice.total_price + '</span></td>' +
                                 '<td>'+
                                     '<div class="btn-group pull-right">' +
-                                        '<a class="btn btn-default btn-sm" href="/admin/invoices/update/' + invoice.id.toString() + '"><i class="fa fa-pencil"></i></a>' +
+                                        '<a class="btn btn-default btn-sm" href="/admin/invoices/update/' + invoice.id + '"><i class="fa fa-pencil"></i></a>' +
                                         '<a class="btn btn-default btn-sm"' +
-                                           'data-url="/admin/invoices/delete/' + invoice.id.toString() + '"' +
+                                           'data-url="/admin/invoices/delete/' + invoice.id + '"' +
                                            'onclick="if(confirm(\'Удалить квитанцию?\')) window.location.href=this.dataset.url"><i class="fa fa-trash"></i></a>' +
                                     '</div>' +
                                 '</td>';
@@ -273,7 +272,7 @@ function drawInvoicesTable(){
     }
     if(data.content.length === 0) {
         let newTableRow = document.createElement('tr');
-        newTableRow.innerHTML = '<td colspan=10>Ничего не найдено...</td>';
+        newTableRow.innerHTML = '<td colspan=10>'+notFoundText+'</td>';
         $invoicesTableBody.append(newTableRow);
     }
 
@@ -332,7 +331,6 @@ function drawMessagesTableCabinet(){
     drawPagination();
 
 }
-
 function drawMessagesTableAdmin() {
     let pageFiltersString = JSON.stringify(gatherFilters());
     let data = getTableData('/admin/messages/get-messages', currentPageNumber, currentPageSize, pageFiltersString);
@@ -380,9 +378,7 @@ function drawMessagesTableAdmin() {
     }
     drawPagination();
 }
-
-
-    function drawInvoicesInCabinetTable(){
+function drawInvoicesInCabinetTable(){
 
     let pageFiltersString = JSON.stringify(gatherFilters());
     let data = getTableData('/cabinet/get-invoices-cabinet', currentPageNumber, currentPageSize, pageFiltersString);
@@ -423,7 +419,6 @@ function drawMessagesTableAdmin() {
     drawPagination();
 
 }
-
 function drawAccountsTable(){
     let pageFiltersString = JSON.stringify(gatherFilters());
     let data = getTableData('/admin/accounts/get-accounts', currentPageNumber, currentPageSize, pageFiltersString);
@@ -444,7 +439,7 @@ function drawAccountsTable(){
 
                                 '<td>' +
                                     '<small class="label ' + ((account.isActive) ? 'label-success' : 'label-danger') + '">' +
-                                                             ((account.isActive) ? 'Активен' : 'Неактивен') + '</small>' +
+                                                             ((account.isActive) ? activeText : inactiveText) + '</small>' +
                                 '</td>' +
                                 '<td>' + apartName + '</td>' +
                                 '<td>' + buildingName + '</td>' +
@@ -461,7 +456,7 @@ function drawAccountsTable(){
                                 '</td>' +
                                 '<input type="hidden" value=' + account.id + '>';
         let row_children = newTableRow.children;
-        for(let j = 1; j < row_children.length - 1; j++) {
+        for(let j = 0; j < row_children.length - 2; j++) {
             row_children[j].addEventListener('click', function(){
                 window.location.href = '/admin/accounts/'+account.id;
             });
@@ -515,6 +510,65 @@ function drawMetersTable(){
     }
     drawPagination();
 }
+function drawMeterDataTable(){
+    let params = new URL(document.location).searchParams;
+    let apartment_id = params.get("flat_id");
+    let service_id = params.get("service_id");
+    console.log('apart id ' + apartment_id);
+    console.log('service id ' + service_id);
+    let singleMeterFilters = {
+        apartment:apartment_id,
+        service:service_id,
+        id:$("#id").val(),
+        status:$("#status").val(),
+        date:$("#datetime").val()
+    };
+    console.log('filters: ');
+    console.log(singleMeterFilters);
+    let pageFiltersString = JSON.stringify(singleMeterFilters);
+    let data = getTableData('/admin/meters/get-meter-data', currentPageNumber, currentPageSize, pageFiltersString);
+    console.log(data);
+    let $metersTable = $("#metersTable tbody");
+    $metersTable.html('');
+    for(const meter of data.content) {
+        let newTableRow = document.createElement('tr');
+        newTableRow.style.cursor = 'pointer';
+        newTableRow.class = 'meter_row';
+        let meter_date = new Date(meter.date);
+        let meter_month = '' + (meter_date.getMonth()+1) + '-' + meter_date.getFullYear();
+        newTableRow.innerHTML =   '<td>' + meter.id + '</td>' +
+                                  '<td>' + meter.status + '</td>' +
+                                  '<td>' + meter_date.toISOString().split('T')[0] + '</td>' +
+                                  '<td>' + meter_month + '</td>' +
+                                  '<td>' + meter.buildingName + '</td>' +
+                                  '<td>' + meter.section + '</td>' +
+                                  '<td>' + meter.apartmentNumber + '</td>' +
+                                  '<td>' + meter.serviceName + '</td>' +
+                                  '<td style="background-color: #DFD5; font-weight:bold; text-decoration:underline">' + meter.readings + '</td>' +
+                                  '<td style="background-color: #DFD5; font-weight:bold; text-decoration:underline">' + meter.serviceUnitName + '</td>' +
+                                  '<td>' +
+                                      '<div class="btn-group pull-right">' +
+                                          '<a class="btn btn-default btn-sm" href="/admin/meters/create-add?flat_id=' + meter.apartmentID + '&service_id=' + meter.serviceID + '" title="Снять новое показание счетчика" target="_blank" data-toggle="tooltip"><i class="fa fa-dashboard"></i></a>' +
+                                          '<a class="btn btn-default btn-sm" href="/admin/meters/data?flat_id=' + meter.apartmentID + '&service_id=' + meter.serviceID + '" title="Открыть историю показаний для счетчика" data-toggle="tooltip"><i class="fa fa-eye"></i></a>' +
+                                      '</div>' +
+                                  '</td>';
+        let row_children = newTableRow.children;
+        for(let j = 0; j < row_children.length - 1; j++) {
+            row_children[j].addEventListener('click', function(){
+                window.location.href = '/admin/meters/info/' + meter.id;
+            });
+        }
+
+        $metersTable.append(newTableRow);
+    }
+    if(data.content.length === 0) {
+        let newTableRow = document.createElement('tr');
+        newTableRow.innerHTML = '<td colspan=7>Ничего не найдено...</td>';
+        $metersTable.append(newTableRow);
+    }
+
+    drawPagination();
+}
 function drawRequestsTable() {
     let pageFiltersString = JSON.stringify(gatherFilters());
     let data = getTableData('/admin/requests/get-requests', currentPageNumber, currentPageSize, pageFiltersString);
@@ -527,7 +581,7 @@ function drawRequestsTable() {
         newTableRow.class = 'request_row';
         newTableRow.innerHTML =   '<td>' + request.id + '</td>' +
                                   '<td>' + request.best_time + '</td>' +
-                                  '<td>' + request.master_type + '</td>' +
+                                  '<td>' + request.masterTypeName + '</td>' +
                                   '<td style="max-width: 200px; text-overflow: ellipsis; white-space: nowrap; overflow:hidden">' + request.description + '</td>' +
                                   '<td><a href="/admin/apartments/' + request.apartmentID +'">кв. ' + request.apartmentNumber + ', ' + request.apartmentBuildingName + '</a></td>' +
                                   '<td><a href="/admin/owners/' + request.ownerID + '">' + request.ownerFullName + '</a></td>' +
@@ -551,12 +605,11 @@ function drawRequestsTable() {
     }
     if(data.content.length === 0) {
         let newTableRow = document.createElement('tr');
-        newTableRow.innerHTML = '<td colspan=10>Ничего не найдено...</td>';
+        newTableRow.innerHTML = '<td colspan=10>'+notFoundText+'</td>';
         $requestsTable.append(newTableRow);
     }
     drawPagination();
 }
-
 function drawRequestsTableCabinet() {
     console.log('2')
     let pageFiltersString = '';
@@ -597,7 +650,6 @@ function drawRequestsTableCabinet() {
     }
     drawPagination();
 }
-
 function drawOwnersTable(){
     let pageFiltersString = JSON.stringify(gatherFilters());
     let data = getTableData('/admin/owners/get-owners', currentPageNumber, currentPageSize, pageFiltersString);
@@ -696,13 +748,16 @@ function drawTransactionsTable() {
         let newTableRow = document.createElement('tr');
         newTableRow.style.cursor = 'pointer';
         newTableRow.class = 'cashbox_row';
+        let incomeExpenseItem = (cashbox.incomeExpenseItems) ? cashbox.incomeExpenseItems : notFoundText;
+        let ownerFullName = (cashbox.ownerFullName) ? cashbox.ownerFullName : notFoundText;
+        let apartmentAccount = (cashbox.apartmentAccount) ? cashbox.apartmentAccount : notFoundText;
         newTableRow.innerHTML =   '<td>' + cashbox.id + '</td>' +
                                   '<td>' + date.toISOString().split('T')[0] + '</td>' +
                                   '<td>' + ((cashbox.completed) ? 'Проведен' : 'Не проведен') + '</td>' +
-                                  '<td>' + cashbox.transactionItemName + '</td>' +
-                                  '<td>' + cashbox.ownerFullName + '</td>' +
-                                  '<td>' + cashbox.accountNumber + '</td>' +
-                                  '<td style="color: ' + (cashbox.amount > 0 ? 'green' : 'red') + '">' + cashbox.transactionType + '</td>' +
+                                  '<td>' + incomeExpenseItem + '</td>' +
+                                  '<td>' + ownerFullName + '</td>' +
+                                  '<td>' + apartmentAccount + '</td>' +
+                                  '<td style="color: ' + (cashbox.amount > 0 ? 'green' : 'red') + '">' + cashbox.incomeExpenseType + '</td>' +
                                   '<td style="color: ' + (cashbox.amount > 0 ? 'green' : 'red') + '">' + cashbox.amount + '</td>' +
                                   '<td>' +
                                       '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
@@ -737,6 +792,7 @@ function drawTable() {
     else if(tableType === 'apartments') drawApartmentsTable();
     else if(tableType === 'accounts') drawAccountsTable();
     else if(tableType === 'meters') drawMetersTable();
+    else if(tableType === 'meter_data') drawMeterDataTable();
     else if(tableType === 'requests') drawRequestsTable();
     else if(tableType === 'requestsCabinet') drawRequestsTableCabinet();
     else if(tableType === 'owners') drawOwnersTable();
@@ -747,7 +803,6 @@ function drawTable() {
 }
 //Функции, рисующие таблицы в зависимости от выбранной страницы
 
-
 //Функции, перерисовывающие таблицы после изменений фильтров/номера страниц/размера страниц
 function changeFilterData() {
     pageFiltersString = gatherFilters();
@@ -756,25 +811,21 @@ function changeFilterData() {
     saveState();
     drawTable();
 }
-
 function changePageNumber(newPageNumber) {
     currentPageNumber = newPageNumber;
     saveState();
     drawTable();
 }
-
 function increasePageByOne() {
     if(currentPageNumber < totalPagesCount) currentPageNumber++;
     saveState();
     drawTable();
 }
-
 function decreasePageByOne() {
     if(currentPageNumber > 0) currentPageNumber--;
     saveState();
     drawTable();
 }
-
 function changePageSize(newPageSize) {
     currentPageSize = newPageSize;
     currentPageNumber = 1;
@@ -786,7 +837,6 @@ function changePageSize(newPageSize) {
     saveState();
     drawTable();
 }
-
 function saveState() {
     let pageState = {
         page: currentPageNumber,
@@ -797,7 +847,6 @@ function saveState() {
     history.replaceState(pageState, null, window.location.href);
     console.log(pageState);
 }
-
 function reset() {
     setFilters(null);
     currentPageNumber = 1;
@@ -806,7 +855,6 @@ function reset() {
     drawTable();
 }
 //Функции, перерисовывающие таблицы после изменений фильтров/номера страниц/размера страниц
-
 
 //Отрисовка пагинации
 function drawPagination() {
@@ -926,7 +974,6 @@ function drawPagination() {
 
     $pagination.append(ul);
 }
-
 
 //Установка слушателей на фильтры
 $(document).ready(function(){

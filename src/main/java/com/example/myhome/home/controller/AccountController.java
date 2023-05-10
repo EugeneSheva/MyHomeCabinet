@@ -76,7 +76,7 @@ public class AccountController {
     @GetMapping("/create")
     public String showCreateAccountPage(Model model) {
         ApartmentAccountDTO dto = new ApartmentAccountDTO();
-        log.info(dto.toString());
+
         model.addAttribute("apartmentAccountDTO", dto);
         model.addAttribute("id", accountService.getMaxAccountId()+1);
         model.addAttribute("buildings", buildingService.findAll());
@@ -99,11 +99,15 @@ public class AccountController {
             log.info(bindingResult.getAllErrors().toString());
 
             ApartmentAccountDTO dto = (ApartmentAccountDTO) bindingResult.getTarget();
-            if(dto != null) dto.setId(accountService.getMaxAccountId()+1);
 
-            model.addAttribute("apartmentAccountDTO", bindingResult.getTarget());
+            if(dto != null && dto.getBuilding() != null && dto.getBuilding().getId() != null) {
+                dto.setBuilding(buildingService.findBuildingDTObyId(dto.getBuilding().getId()));
+            }
+
+            model.addAttribute("apartmentAccountDTO", dto);
+            model.addAttribute("id", accountService.getMaxAccountId()+1);
             model.addAttribute("buildings", buildingService.findAllDTO());
-            log.info(buildingService.findAllDTO().toString());
+
             return "admin_panel/accounts/account_card";
         } else {
             accountService.saveAccount(apartmentAccountDTO);
@@ -115,6 +119,7 @@ public class AccountController {
 
     @GetMapping("/update/{id}")
     public String showUpdateAccountPage(@PathVariable long id, Model model) {
+
         model.addAttribute("apartmentAccountDTO", accountService.findAccountDTOById(id));
         model.addAttribute("id", id);
         model.addAttribute("buildings", buildingService.findAllDTO());
@@ -148,8 +153,8 @@ public class AccountController {
     }
 
     @GetMapping("/get-flat-account")
-    public @ResponseBody String getAccountNumberFromFlat(@RequestParam long flat_id) {
-        return String.format("%010d", accountService.getAccountNumberFromFlat(flat_id).getId());
+    public @ResponseBody Long getAccountNumberFromFlat(@RequestParam long flat_id) {
+        return accountService.getAccountNumberFromFlat(flat_id).getId();
     }
 
     @GetMapping("/get-accounts")

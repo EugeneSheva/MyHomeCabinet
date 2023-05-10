@@ -109,7 +109,7 @@
                       <input type="hidden" th:id="'input-' + ${iter.index}" th:value="${admin.id}">
                       <td th:text="${iter.index+1}">1</td>
                       <td th:text="${admin.first_name + ' ' + admin.last_name}">Elon Musk</td>
-                      <td th:text="${admin.role != null} ? ${admin.role.getName()}"></td>
+                      <td th:text="${admin.role}"></td>
                       <td th:text="${admin.phone_number}">+380990010101</td>
                       <td th:text="${admin.email}">admin@admin.com</td>
                       <td>
@@ -167,7 +167,10 @@
 <script th:src="@{/dist/js/filter.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<script>
+<script th:inline="javascript">
+
+  let placeholderText = [[#{select.placeholder}]]
+
   $(document).ready(function() {
 
     let user_rows = document.getElementsByClassName("user-row");
@@ -187,7 +190,7 @@
     });
 
     $(".my_select").select2({
-      placeholder: 'Выберите...',
+      placeholder: placeholderText,
       width: 'resolve'
     });
 

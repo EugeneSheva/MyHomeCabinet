@@ -1,6 +1,5 @@
 package com.example.myhome.home.configuration;
-import com.example.myhome.home.converters.StringToApartmentDTOConverter;
-import com.example.myhome.home.converters.StringToBuildingDTOConverter;
+import com.example.myhome.home.converters.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -43,6 +42,10 @@ public class WebConfig implements WebMvcConfigurer {
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new StringToApartmentDTOConverter());
         registry.addConverter(new StringToBuildingDTOConverter());
+        registry.addConverter(new StringToAccountDTOConverter());
+        registry.addConverter(new StringToOwnerDTOConverter());
+        registry.addConverter(new AccountDTOToStringConverter());
+        registry.addConverter(new OwnerDTOToStringConverter());
     }
 
 // translater

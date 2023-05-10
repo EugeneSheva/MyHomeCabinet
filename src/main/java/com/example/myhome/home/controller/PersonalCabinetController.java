@@ -243,7 +243,7 @@ public class PersonalCabinetController {
         RepairRequest repairRequest = new RepairRequest();
         repairRequest.setId(id);
         repairRequest.setApartment(apartmentService.findById(apartmentId));
-        repairRequest.setMaster_type(RepairMasterType.valueOf(master));
+//        repairRequest.setMaster_type(RepairMasterType.valueOf(master));
         repairRequest.setDescription(description);
         repairRequest.setDate(date);
         repairRequest.setTime(time);

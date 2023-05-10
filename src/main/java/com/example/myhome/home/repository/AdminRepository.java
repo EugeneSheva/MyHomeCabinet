@@ -18,10 +18,9 @@ public interface AdminRepository extends JpaRepository<Admin, Long>, JpaSpecific
 
     List<Admin> getAdminsByRole(UserRole role);
     Optional<Admin> findByEmail(String email);
+    Boolean existsByEmail(String email);
 
     @Query(value="SELECT a FROM Admin a WHERE a.first_name LIKE %:name% OR a.last_name LIKE %:name%")
     Page<Admin> findByName(String name, Pageable pageable);
-
-//    List<Admin> findAllBySpecificationAndPage(Specification<Admin> specification, Pageable pageable);
 
 }

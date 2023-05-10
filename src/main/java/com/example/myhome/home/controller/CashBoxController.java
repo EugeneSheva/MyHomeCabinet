@@ -110,35 +110,6 @@ public class CashBoxController {
         return "admin_panel/cash_box/cashboxes";
     }
 
-//    @PostMapping("/filter")
-//    public String filterApartments(Model model, @ModelAttribute FilterForm filterForm, @RequestParam(name = "id",required = false) Long id, @RequestParam(name = "date",required = false) String date,
-//                                   @RequestParam(name = "isCompleted",required = false) String isCompleted, @RequestParam(name = "incomeExpenseItem",required = false) String incomeExpenseItem,
-//                                   @RequestParam(name = "owner", required = false) Long owner,  @RequestParam(name = "accountNumber", required = false) Long accountNumber,
-//                                   @RequestParam(name = "incomeExpenseType",required = false) String incomeExpenseType,
-//                                   @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) throws IOException {
-//        filterForm.setOwnerEntity(ownerService.findByIdDTO(owner));
-//        String[] dateArray = date.split(" - ");
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-//        LocalDate startDate = LocalDate.parse(dateArray[0], formatter);
-//        LocalDate endDate = LocalDate.parse(dateArray[1], formatter);
-//
-//        Page<CashBox> cashBoxList = cashBoxRepository.findByFilters(id,startDate, endDate, cashBoxService.getIsCompleteFromString(isCompleted), incomeExpenseItem,owner,accountNumber, cashBoxService.getIncomeExpenseTypeFromString(incomeExpenseType), pageable);
-//
-//        model.addAttribute("cashBoxList", cashBoxList);
-//        model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount());
-//        model.addAttribute("accountBalance", accountRepository.getSumOfAccountBalances());
-//        model.addAttribute("sumDebt", accountRepository.getSumOfAccountDebts());
-//        List<OwnerDTO>ownerDTOList=ownerService.findAllDTO();
-//        model.addAttribute("owners", ownerDTOList);
-//
-//        List<IncomeExpenseItems>incomeExpenseItems=incomeExpenseItemService.findAll();
-//        model.addAttribute("incomeExpenseItems", incomeExpenseItems);
-//        model.addAttribute("filterForm", filterForm);
-//
-//        return "admin_panel/cash_box/cashboxes";
-//
-//
-//        }
 
     @GetMapping("/{id}")
     public String getCashBox(@PathVariable("id") Long id, Model model) {
@@ -152,16 +123,12 @@ public class CashBoxController {
         List<IncomeExpenseItems>incomeItemsList=incomeExpenseRepository.findAllByIncomeExpenseType(IncomeExpenseType.INCOME);
         model.addAttribute("incomeItemsList", incomeItemsList);
 
-        List<AdminDTO>adminDTOList = adminService.findAllDTO();
-
+        List<AdminDTO>adminDTOList = adminService.findAllManagers();
+        System.out.println(adminDTOList);
         // получение только юзеров с ролями "админ", "директор", "бухгалтер", без сантехников и т.д.
-        adminDTOList = adminDTOList.stream()
-                .filter(admin -> admin.getRole() == UserRole.ROLE_ADMIN ||
-                        admin.getRole() == UserRole.ROLE_DIRECTOR ||
-                        admin.getRole() == UserRole.ROLE_MANAGER ||
-                        admin.getRole() == UserRole.ROLE_ACCOUNTANT)
-                .collect(Collectors.toList());
         model.addAttribute("admins", adminDTOList);
+
+        System.out.println(adminDTOList);
 
         List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
         model.addAttribute("owners", ownerDTOList);
@@ -192,13 +159,8 @@ public class CashBoxController {
 
         model.addAttribute("nextId", cashBoxService.getMaxId()+1);
 
-        List<AdminDTO>adminDTOList = adminService.findAllDTO();
-        adminDTOList = adminDTOList.stream()
-                .filter(admin -> admin.getRole() == UserRole.ROLE_ADMIN ||
-                        admin.getRole() == UserRole.ROLE_DIRECTOR ||
-                        admin.getRole() == UserRole.ROLE_MANAGER ||
-                        admin.getRole() == UserRole.ROLE_ACCOUNTANT)
-                .collect(Collectors.toList());
+        List<AdminDTO>adminDTOList = adminService.findAllManagers();
+
         model.addAttribute("admins", adminDTOList);
 
         CashBox cashBox = new CashBox();
@@ -228,15 +190,8 @@ public class CashBoxController {
 
         model.addAttribute("nextId", cashBoxService.getMaxId()+1);
 
-        List<AdminDTO>adminDTOList = adminService.findAllDTO();
+        List<AdminDTO>adminDTOList = adminService.findAllManagers();
 
-        // получение только юзеров с ролями "админ", "директор", "бухгалтер", без сантехников и т.д.
-        adminDTOList = adminDTOList.stream()
-                .filter(admin -> admin.getRole() == UserRole.ROLE_ADMIN ||
-                        admin.getRole() == UserRole.ROLE_DIRECTOR ||
-                        admin.getRole() == UserRole.ROLE_MANAGER ||
-                        admin.getRole() == UserRole.ROLE_ACCOUNTANT)
-                .collect(Collectors.toList());
         model.addAttribute("admins", adminDTOList);
 
         model.addAttribute("cashBoxItem", cashBox);
@@ -264,15 +219,8 @@ public class CashBoxController {
         }
 
 
-        List<AdminDTO>adminDTOList = adminService.findAllDTO();
+        List<AdminDTO>adminDTOList = adminService.findAllManagers();
 
-        // получение только юзеров с ролями "админ", "директор", "бухгалтер", без сантехников и т.д.
-        adminDTOList = adminDTOList.stream()
-                .filter(admin -> admin.getRole() == UserRole.ROLE_ADMIN ||
-                        admin.getRole() == UserRole.ROLE_DIRECTOR ||
-                        admin.getRole() == UserRole.ROLE_MANAGER ||
-                        admin.getRole() == UserRole.ROLE_ACCOUNTANT)
-                .collect(Collectors.toList());
         model.addAttribute("admins", adminDTOList);
 
         cashBox.setId(null);
@@ -324,7 +272,6 @@ public class CashBoxController {
             return "redirect:/admin/cashbox/";
         }
     }
-//
 
     @PostMapping("/newIncome")
     public String saveNewIncome(@ModelAttribute CashBox cashBoxItem, BindingResult bindingResult, Model model) {

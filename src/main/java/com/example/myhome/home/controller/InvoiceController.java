@@ -1,9 +1,9 @@
 package com.example.myhome.home.controller;
 
-import com.example.myhome.home.model.Apartment;
-import com.example.myhome.home.model.Invoice;
-import com.example.myhome.home.model.InvoiceComponents;
-import com.example.myhome.home.model.InvoiceTemplate;
+import com.example.myhome.home.controller.socket.WebsocketController;
+import com.example.myhome.home.dto.ApartmentDTO;
+import com.example.myhome.home.dto.InvoiceDTO;
+import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.service.*;
 import com.example.myhome.home.service.impl.InvoiceServiceImpl;
@@ -75,23 +75,19 @@ public class InvoiceController {
     @Autowired
     private FileDownloadUtil fileDownloadUtil;
 
+    @Autowired private WebsocketController websocketController;
+
     @GetMapping
     public String showInvoicePage(Model model,
                                   FilterForm form) {
-
-        Page<Invoice> invoices;
-        Pageable pageable = PageRequest.of((form.getPage() == null) ? 1 : form.getPage()-1 ,5);
-
-        invoices = invoiceService.findAllInvoicesByFiltersAndPage(form, pageable);
 
         model.addAttribute("owners", ownerService.findAllDTO());
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
         model.addAttribute("account_balance", accountService.getSumOfAccountBalances());
         model.addAttribute("account_debt", accountService.getSumOfAccountDebts());
 
-        model.addAttribute("totalPagesCount", invoices.getTotalPages());
-
         model.addAttribute("filter_form", form);
+
         return "admin_panel/invoices/invoices";
     }
 
@@ -105,25 +101,30 @@ public class InvoiceController {
 
     @GetMapping("/{id}")
     public String showInvoiceInfo(@PathVariable long id, Model model) {
-        Invoice invoice = invoiceService.findInvoiceById(id);
-        Double total_price = invoice.getComponents()
-                .stream()
-                .map(InvoiceComponents::getTotalPrice)
-                .reduce(Double::sum)
-                .orElse(0.0);
+        InvoiceDTO invoice = invoiceService.findInvoiceDTOById(id);
+        log.info("PROFILE INFO");
+        log.info(invoice.toString());
         model.addAttribute("invoice", invoice);
-        model.addAttribute("total_price", total_price);
+        model.addAttribute("total_price", invoice.getTotal_price());
         model.addAttribute("current_date", LocalDate.now());
         return "admin_panel/invoices/invoice_profile";
     }
 
     @GetMapping("/create")
     public String showCreateInvoicePage(@RequestParam(required = false) Long flat_id, Model model) {
-        Invoice invoice = new Invoice();
-        if(flat_id != null) invoice.setApartment(apartmentService.findById(flat_id));
+        InvoiceDTO invoiceDTO = new InvoiceDTO();
+        if(flat_id != null) {
+            ApartmentDTO apartment = apartmentService.findApartmentDto(flat_id);
+            System.out.println(apartment.toString());
+            invoiceDTO.setApartment(apartment);
+            invoiceDTO.setBuilding(apartment.getBuilding());
+            invoiceDTO.setOwner(apartment.getOwner());
+            invoiceDTO.setAccount(apartment.getAccount());
+            invoiceDTO.setSection(apartment.getSection());
+        }
         model.addAttribute("id", invoiceService.getMaxInvoiceId()+1L);
-
-        model.addAttribute("invoice", invoice);
+        model.addAttribute("flat", invoiceDTO.getApartment());
+        model.addAttribute("invoiceDTO", invoiceDTO);
         model.addAttribute("meters", (flat_id == null) ? meterDataService.findAllMeters() : meterDataService.findSingleMeterData(flat_id, null));
         model.addAttribute("current_date", LocalDate.now());
         return "admin_panel/invoices/invoice_card";
@@ -132,29 +133,29 @@ public class InvoiceController {
     @GetMapping("/update/{id}")
     public String showUpdateInvoicePage(@PathVariable long id, Model model) {
 
-        Invoice invoice = invoiceService.findInvoiceById(id);
+        InvoiceDTO invoiceDTO = invoiceService.findInvoiceDTOById(id);
 
-        model.addAttribute("flat", invoice.getApartment());
+        model.addAttribute("flat", invoiceDTO.getApartment());
         model.addAttribute("id", id);
-        model.addAttribute("invoice", invoice);
-        model.addAttribute("meters", meterDataService.findSingleMeterData(invoice.getApartment().getId(), null));
+        model.addAttribute("invoiceDTO", invoiceDTO);
+        model.addAttribute("meters", meterDataService.findSingleMeterData(invoiceDTO.getApartment().getId(), null));
         model.addAttribute("current_date", LocalDate.now());
         return "admin_panel/invoices/invoice_card";
     }
 
     @PostMapping("/create")
-    public String createInvoice(@ModelAttribute Invoice invoice,
+    public String createInvoice(@ModelAttribute InvoiceDTO invoiceDTO,
                                 BindingResult bindingResult,
                                 @RequestParam String date,
                                 @RequestParam String[] services,
                                 @RequestParam String[] unit_prices,
                                 @RequestParam String[] unit_amounts,
                                 Model model) {
-        log.info(invoice.toString());
+        log.info(invoiceDTO.toString());
 
-        invoice = invoiceService.buildInvoice(invoice, date, services, unit_prices, unit_amounts);
+        invoiceDTO = invoiceService.buildInvoice(invoiceDTO, date, services, unit_prices, unit_amounts);
 
-        validator.validate(invoice, bindingResult);
+        validator.validate(invoiceDTO, bindingResult);
         if(bindingResult.hasErrors()) {
             log.info("Errors found");
             log.info(bindingResult.getAllErrors().toString());
@@ -165,14 +166,14 @@ public class InvoiceController {
             return "admin_panel/invoices/invoice_card";
         }
 
-        invoiceService.saveInvoice(invoice);
+        Invoice invoice = invoiceService.saveInvoice(invoiceDTO);
 
         return "redirect:/admin/invoices";
     }
 
     @PostMapping("/update/{id}")
     public String updateInvoice(@PathVariable long id,
-                                @ModelAttribute Invoice invoice,
+                                @ModelAttribute InvoiceDTO invoiceDTO,
                                 BindingResult bindingResult,
                                 @RequestParam String date,
                                 @RequestParam String[] services,
@@ -180,22 +181,22 @@ public class InvoiceController {
                                 @RequestParam String[] unit_amounts,
                                 Model model) {
 
-        log.info(invoice.toString());
+        log.info(invoiceDTO.toString());
 
-        invoice = invoiceService.buildInvoice(invoice, date, services, unit_prices, unit_amounts);
+        invoiceDTO = invoiceService.buildInvoice(invoiceDTO, date, services, unit_prices, unit_amounts);
 
-        validator.validate(invoice, bindingResult);
+        validator.validate(invoiceDTO, bindingResult);
         if(bindingResult.hasErrors()) {
             log.info("Errors found");
             log.info(bindingResult.getAllErrors().toString());
-            model.addAttribute("flat", invoice.getApartment());
-            model.addAttribute("id", id);
-            model.addAttribute("meters", meterDataService.findSingleMeterData(id, null));
+            model.addAttribute("id", invoiceService.getMaxInvoiceId()+1L);
+            model.addAttribute("meters",  meterDataService.findAllMeters());
             model.addAttribute("current_date", LocalDate.now());
+
             return "admin_panel/invoices/invoice_card";
         }
 
-        invoiceService.saveInvoice(invoice);
+        invoiceService.saveInvoice(invoiceDTO);
 
         return "redirect:/admin/invoices";
     }
@@ -234,11 +235,6 @@ public class InvoiceController {
             return "redirect:/admin/invoices/print/" + id;
         }
     }
-
-//    @GetMapping("/email/{id}")
-//    public String sendEmail(@PathVariable long id, Model model) {
-//
-//    }
 
     @GetMapping("/download/{fileName}")
     public void downloadFile(@PathVariable String fileName,
@@ -283,7 +279,7 @@ public class InvoiceController {
     }
 
     @GetMapping(value="/get-invoices")
-    public @ResponseBody Page<Invoice> getInvoices(@RequestParam Integer page,
+    public @ResponseBody Page<InvoiceDTO> getInvoices(@RequestParam Integer page,
                                                    @RequestParam Integer size,
                                                    @RequestParam String filters) throws JsonProcessingException {
 

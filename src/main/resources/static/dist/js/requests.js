@@ -5,7 +5,6 @@ function loadApartments(input) {
     $("#apartmentID").prop("disabled", (owner_id != '0') ? false : true);
 
     $.get('/admin/owners/get-apartments/' + owner_id, function(data){
-      alert("получил квартиры");
       console.log(data);
 
       $("#apartmentID").html('');
@@ -21,7 +20,6 @@ function loadApartments(input) {
 
   $(document).ready(function(){
     $("#date, #time").change(function(){
-      alert("change");
       console.log($(this).val());
     });
 
@@ -40,12 +38,11 @@ function loadApartments(input) {
             },
 
         },
-        placeholder: 'Выберите...',
-        minimumInputLength: 2
+        placeholder: placeholderText,
+        minimumResultsForSearch: 2
     });
 
-    $("#apartmentID, #master_type, #status, #masters").select2({placeholder:'Выберите...', minimumResultsForSearch:Infinity});
-
+    $("#apartmentID, #masterTypeID, #status, #masters").select2({placeholder:placeholderText, minimumResultsForSearch:Infinity});
 
     $("#ownerID").change(function(){
       let owner_id = $("#ownerID").val();
@@ -53,8 +50,7 @@ function loadApartments(input) {
 
       $("#apartmentID").prop("disabled", (owner_id != '0') ? false : true);
 
-      $.get('/admin/owners/get-apartment/' + owner_id, function(data){
-        alert("получил квартиры");
+      $.get('/admin/owners/get-apartments/' + owner_id, function(data){
         console.log(data);
 
         $("#apartmentID").html('');
@@ -68,14 +64,10 @@ function loadApartments(input) {
       });
     });
 
-    $("#master_type").change(function(){
+    $("#masterTypeID").change(function(){
       let master_type = $(this).val();
-      let master_type_name = $( "#master_type option:selected" ).text();
-      console.log(master_type.toLowerCase());
-      console.log(master_type_name);
 
-      $.get('/admin/admins/get-masters-by-type', {type:master_type}, function(data){
-        alert("получил мастеров типа: " + master_type_name);
+      $.get('/admin/admins/get-masters-by-type', {typeID:master_type}, function(data){
         console.log(data);
 
         $("#masters").html('');
@@ -84,8 +76,15 @@ function loadApartments(input) {
           let option = document.createElement("option");
           console.log(data[i].role);
           option.value = data[i].id;
-          option.text = master_type_name + ' - ' + data[i].first_name + ' ' + data[i].last_name;
+          option.text = data[i].role + ' - ' + data[i].first_name + ' ' + data[i].last_name;
           $("#masters").append(option);
+        }
+
+        if(data.length === 0) {
+            let option = document.createElement("option");
+            option.value = -1;
+            option.text = notFoundText;
+            $("#masters").append(option);
         }
       })
     });

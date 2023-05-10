@@ -78,9 +78,9 @@
                       <br>
                       <br>
                       <h4><b th:text="#{settings.system.users.editPage.password}">Пароль</b></h4>
-                      <input type="password" placeholder="********" style="width: 70%;" data-value="0" class="form_control" name="password" id="password">
+                      <input type="password" placeholder="********" style="width: 70%;" data-value="0" class="form_control" th:field="*{password}">
                       <span class="input-group-btn">
-                        <button style="padding-block:2px;" class="btn btn-default" type="button" id="generate">
+                        <button style="padding-block:2px;" class="btn btn-default" type="button" id="generate" th:text="#{generate}">
                             Сгенерировать
                         </button>
                         <button style="padding-block:2px;" type="button" class="btn btn-primary" id="showPass">
@@ -91,17 +91,17 @@
                       <br>
                       <br>
                       <h4><b th:text="#{settings.system.users.editPage.confirm-password}">Повторить пароль</b></h4>
-                      <input type="password" placeholder="********" data-value="0" style="width: 100%;" class="form_control" name="repeat_password" id="repeat_password">
+                      <input type="password" placeholder="********" data-value="0" style="width: 100%;" class="form_control" th:field="*{confirm_password}">
                     </div>
                   </div>
 
                   <div class="row mt-3 mb-3">
                     <div class="col-xs-12 col-md-6">
                       <h4><b th:text="#{settings.system.users.editPage.role}">Роль</b></h4>
-                      <select style="width: 100%; padding-block: 2px" th:field="*{role}">
-                        <option th:each="r : ${T(com.example.myhome.util.UserRole).values()}"
-                                th:value="${r}"
-                                th:text="${r.getName()}"></option>
+                      <select style="width: 100%; padding-block: 2px" th:field="*{userRoleID}">
+                        <option th:each="r : ${roles}"
+                                th:value="${r.id}"
+                                th:text="${r.name}"></option>
                       </select>
                     </div>
                     <div class="col-xs-12 col-md-6"></div>

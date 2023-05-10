@@ -14,14 +14,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/css/tempus-dominus.min.css" crossorigin="anonymous">
-    <!-- Popperjs -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-    <!-- Tempus Dominus JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/js/tempus-dominus.min.js" crossorigin="anonymous"></script>
-<!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
-<!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-<!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">-->
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -56,7 +53,7 @@
                     <div class="col-xs-12 col-md-4">
                         <div class="small-box bg-green overflow-hidden">
                             <div class="inner">
-                                <h3 th:text="${T(java.lang.String).format(T(java.util.Locale).ROOT, '%.2f',cashbox_balance) + ' грн'}">-3 811 220.06 грн</h3>
+                                <h3 id="cashboxBalance" th:text="${T(java.lang.String).format(T(java.util.Locale).ROOT, '%.2f',cashbox_balance) + ' грн'}">-3 811 220.06 грн</h3>
                                 <p th:text="#{invoices.mainTablePage.cashBoxBalanceName}">Состояние кассы</p>
                             </div>
                             <div class="icon">
@@ -68,7 +65,7 @@
                     <div class="col-xs-12 col-md-4">
                         <div class="small-box bg-blue overflow-hidden">
                             <div class="inner">
-                                <h3 th:text="${T(java.lang.String).format(T(java.util.Locale).ROOT, '%.2f',account_balance) + ' грн'}">346 259.62 грн</h3>
+                                <h3 id="accountBalance" th:text="${T(java.lang.String).format(T(java.util.Locale).ROOT, '%.2f',account_balance) + ' грн'}">346 259.62 грн</h3>
                                 <p th:text="#{invoices.mainTablePage.accountBalanceName}">Баланс по счетам</p>
                             </div>
                             <div class="icon">
@@ -80,7 +77,7 @@
                     <div class="col-xs-12 col-md-4">
                         <div class="small-box bg-red overflow-hidden">
                             <div class="inner">
-                                <h3 th:text="${T(java.lang.String).format(T(java.util.Locale).ROOT, '%.2f',account_debt) + ' грн'}">568 914.00 грн</h3>
+                                <h3 id="accountDebts" th:text="${T(java.lang.String).format(T(java.util.Locale).ROOT, '%.2f',account_debt) + ' грн'}">568 914.00 грн</h3>
                                 <p th:text="#{invoices.mainTablePage.accountDebtName}">Задолженность по счетам</p>
                             </div>
                             <div class="icon">
@@ -112,7 +109,7 @@
 
                 <h3 class="box-title"></h3>
 
-                <div class="box-tools">
+                <div class="box-tools" style="top:45px;">
                   <a href="#" onclick="reset()" class="btn btn-default btn-sm">
                     <span class="hidden-xs" th:text="#{invoices.mainTablePage.eraseButtonText}">Очистить </span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                   </a>
@@ -224,11 +221,15 @@
 
 <script th:src="@{/dist/js/pagination.js}"></script>
 
-<script>
+<script th:src="@{/dist/js/websocket.js}"></script>
+
+<script th:inline="javascript">
     let tableData;
-    let totalPagesCount = [[${totalPagesCount}]];
+    let totalPagesCount = 1;
 
     let globalTableName = 'invoices';
+    let placeholderText = [[#{select.placeholder}]];
+    let notFoundText = [[#{search.results.empty}]];
 
     $(document).ready(function(){
 
@@ -275,7 +276,7 @@
         flatpickr("#datetime", config);
         flatpickr("#month", config2);
 
-        $("#status, #completed").select2({placeholder:'Выберите...',minimumResultsForSearch:Infinity});
+        $("#status, #completed").select2({placeholder:placeholderText,minimumResultsForSearch:Infinity});
         $("#owner").select2({
             ajax: {
                 url: '/admin/owners/get-all-owners',
@@ -288,7 +289,7 @@
                 },
 
             },
-            placeholder: 'Выберите...',
+            placeholder: placeholderText,
             minimumInputLength: 2
         });
 

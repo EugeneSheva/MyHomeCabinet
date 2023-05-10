@@ -89,7 +89,11 @@ public class AccountServiceImpl implements AccountService {
         log.info("Searching for account with ID: " + account_id);
         ApartmentAccount account = accountRepository.findById(account_id).orElseThrow();
         log.info("Found account! " + account);
-        return mapper.fromAccountToDTO(account);
+        ApartmentAccountDTO dto = mapper.fromAccountToDTO(account);
+        if(dto != null && dto.getBuilding() != null && dto.getBuilding().getId() != null) {
+            dto.setBuilding(buildingService.findBuildingDTObyId(dto.getBuilding().getId()));
+        }
+        return dto;
     }
 
     public ApartmentAccount getAccountNumberFromFlat(Long flat_id) {return accountRepository.findByApartmentId(flat_id).orElseThrow();}

@@ -21,7 +21,7 @@
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
-    <div th:if="${page == 1}" th:insert="~{main-template :: loading}"></div>
+    <div th:insert="~{main-template :: loading}"></div>
   <nav th:insert="~{main-template :: header}"></nav>
   <aside th:insert="~{main-template :: sidebar}"></aside>
 
@@ -58,7 +58,7 @@
                         <div class="box" style="padding:0;">
                             <div class="box-header with-border" >
                                 <h3 class="box-title"></h3>
-                                <div class="box-tools">
+                                <div class="box-tools" style="top:45px">
                                     <a href="#" onclick="reset()" class="btn btn-default btn-sm">
                                         <span class="hidden-xs" th:text="#{requests.mainTablePage.table.erase}">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                                     </a>
@@ -104,10 +104,10 @@
                                         </td>
                                         <td style="padding: 10px">
                                             <select autocomplete="off" style="width: 100%; padding-block: 10px" th:field="*{master_type}" data-name="master_type" class="my_filters">
-                                                <option value=""></option>
-                                                <option th:each="master_type : ${T(com.example.myhome.home.model.RepairMasterType).values()}"
-                                                        th:value="${master_type}"
-                                                        th:text="${master_type.getName()}"></option>
+                                                <option value="-1" th:text="#{any_specialist}"></option>
+                                                <option th:each="master_type : ${master_types}"
+                                                        th:value="${master_type.id}"
+                                                        th:text="${master_type.name}"></option>
                                             </select>
                                         </td>
                                         <td style="padding: 10px">
@@ -186,6 +186,7 @@
 
     let globalTableName = 'requests';
     let totalPagesCount = [[${totalPagesCount}]];
+    let notFoundText = [[#{search.results.empty}]];
     let tableData;
 
     $(document).ready(function(){
@@ -197,6 +198,8 @@
 </script>
 
 <script th:inline="javascript">
+
+    let placeholderText = [[#{select.placeholder}]]
 
     let config = {
         enableTime: true,
@@ -212,7 +215,7 @@
     document.getElementById('datetime').disabled = false;
 
     $(document).ready(function(){
-        $("#master_type, #status").select2({placeholder: 'Выберите...', minimumResultsForSearch:Infinity});
+        $("#master_type, #status").select2({placeholder: placeholderText, minimumResultsForSearch:Infinity});
 
         $("#owner").select2({
             ajax: {
@@ -226,7 +229,7 @@
                 },
 
             },
-            placeholder: 'Выберите...',
+            placeholder: placeholderText,
             minimumInputLength: 2
         });
 
@@ -242,7 +245,7 @@
                 },
 
             },
-            placeholder: 'Выберите...'
+            placeholder: placeholderText
         });
 
         $("#datetime").prop('readonly', false);

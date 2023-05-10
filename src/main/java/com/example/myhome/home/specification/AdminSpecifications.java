@@ -2,9 +2,12 @@ package com.example.myhome.home.specification;
 
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.model.Admin_;
-import com.example.myhome.util.UserRole;
+import com.example.myhome.home.model.UserRole;
+import com.example.myhome.home.model.UserRole_;
 import com.example.myhome.util.UserStatus;
 import org.springframework.data.jpa.domain.Specification;
+
+import javax.persistence.criteria.Join;
 
 public class AdminSpecifications {
 
@@ -15,7 +18,10 @@ public class AdminSpecifications {
 
     public static Specification<Admin> hasRole(UserRole role) {
         if(role == null) return (root, query, criteriaBuilder) -> null;
-        return (root, query, cb) -> cb.equal(root.get(Admin_.ROLE), role);
+        return (root, query, cb) -> {
+            Join<Admin, UserRole> roleJoin = root.join(Admin_.ROLE);
+            return cb.equal(roleJoin.get(UserRole_.ID), role.getId());
+        };
     }
 
     public static Specification<Admin> hasPhoneLike(String s) {

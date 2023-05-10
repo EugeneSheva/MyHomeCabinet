@@ -5,10 +5,7 @@ import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.mapper.RepairRequestDTOMapper;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
-import com.example.myhome.home.repository.AdminRepository;
-import com.example.myhome.home.repository.ApartmentRepository;
-import com.example.myhome.home.repository.OwnerRepository;
-import com.example.myhome.home.repository.RepairRequestRepository;
+import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.impl.AdminServiceImpl;
 import com.example.myhome.home.specification.RequestSpecifications;
 import com.example.myhome.util.MappingUtils;
@@ -44,6 +41,7 @@ public class RepairRequestService {
     private final ApartmentRepository apartmentRepository;
     private final OwnerRepository ownerRepository;
     private final AdminRepository adminRepository;
+    private final UserRoleRepository userRoleRepository;
 
     private final RepairRequestDTOMapper mapper;
 
@@ -79,11 +77,9 @@ public class RepairRequestService {
 
     public Specification<RepairRequest> buildSpecFromFilters(FilterForm filters) {
 
-        log.info("Building specification from filters");
-
         Long id = filters.getId();
         String description = filters.getDescription();
-        RepairMasterType masterType = (filters.getMaster_type() != null) ? RepairMasterType.valueOf(filters.getMaster_type()) : null;
+        UserRole masterType = (filters.getMaster_type() != null && filters.getMaster_type() > 0) ? userRoleRepository.getReferenceById(filters.getMaster_type()) : null;
         String phone = filters.getPhone();
         RepairStatus status = (filters.getStatus() != null) ? RepairStatus.valueOf(filters.getStatus()) : null;
         Apartment apartment = (filters.getApartment() != null) ? apartmentService.findByNumber(filters.getApartment()) : null;
@@ -104,7 +100,7 @@ public class RepairRequestService {
                             LocalTime.parse(datetime_to.split(" ")[1]));
         }
 
-        Specification<RepairRequest> spec = Specification.where(RequestSpecifications.hasId(id)
+        return Specification.where(RequestSpecifications.hasId(id)
                 .and(RequestSpecifications.hasMasterType(masterType))
                 .and(RequestSpecifications.hasDescriptionLike(description))
                 .and(RequestSpecifications.hasApartment(apartment))
@@ -113,10 +109,6 @@ public class RepairRequestService {
                 .and(RequestSpecifications.hasMaster(master))
                 .and(RequestSpecifications.hasStatus(status))
                 .and(RequestSpecifications.datesBetween(from, to)));
-
-        log.info("Final specification for use: " + spec);
-
-        return spec;
     }
 
     public Long getMaxId() {return repairRequestRepository.getMaxId().orElse(0L);}

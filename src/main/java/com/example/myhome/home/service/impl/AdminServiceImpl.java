@@ -1,29 +1,25 @@
 package com.example.myhome.home.service.impl;
 
+import com.example.myhome.home.mapper.AdminDTOMapper;
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.dto.AdminDTO;
 
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.AdminRepository;
 
+import com.example.myhome.home.repository.UserRoleRepository;
 import com.example.myhome.home.service.AdminService;
 import com.example.myhome.home.specification.AdminSpecifications;
 import com.example.myhome.util.MappingUtils;
-import com.example.myhome.util.UserRole;
+import com.example.myhome.home.model.UserRole;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,6 +37,8 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserRoleRepository userRoleRepository;
+    private final AdminDTOMapper mapper;
 
     @Override
     public Admin findAdminById (Long id) {
@@ -54,6 +52,12 @@ public class AdminServiceImpl implements AdminService {
             log.severe("Admin not found!");
             return null;
         }
+    }
+
+    @Override
+    public AdminDTO findAdminDTOById(Long id) {
+        Admin admin = findAdminById(id);
+        return mapper.fromAdminToDTO(admin);
     }
 
     @Override
@@ -91,7 +95,8 @@ public class AdminServiceImpl implements AdminService {
         log.info("Getting all admins...");
         List<Admin> initialList = adminRepository.findAll();
         log.info("Found " + initialList.size() + " elements");
-        return initialList.stream().map(MappingUtils::fromAdminToDTO).collect(Collectors.toList());
+        initialList.forEach(System.out::println);
+        return initialList.stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -99,7 +104,7 @@ public class AdminServiceImpl implements AdminService {
         log.info("Getting all admins...");
         Page<Admin> initialPage = adminRepository.findAll(pageable);
         log.info("Found " + initialPage.getContent().size() + " elements (page " + pageable.getPageNumber()+1 + "/" + initialPage.getTotalPages() + ")");
-        List<AdminDTO> listDTO = initialPage.getContent().stream().map(MappingUtils::fromAdminToDTO).collect(Collectors.toList());
+        List<AdminDTO> listDTO = initialPage.getContent().stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
         log.info("Turned admins from DB into DTOs");
         return new PageImpl<>(listDTO, pageable, initialPage.getTotalPages());
     }
@@ -109,7 +114,7 @@ public class AdminServiceImpl implements AdminService {
         log.info("Getting admins by specified filters and page...");
         Page<Admin> initialPage = adminRepository.findAll(buildSpecFromFilters(filters), pageable);
         log.info("Found " + initialPage.getContent().size() + " elements (page " + pageable.getPageNumber()+1 + "/" + initialPage.getTotalPages() + ")");
-        List<AdminDTO> listDTO = initialPage.getContent().stream().map(MappingUtils::fromAdminToDTO).collect(Collectors.toList());
+        List<AdminDTO> listDTO = initialPage.getContent().stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
         log.info("Turned admins from DB into DTOs");
         return new PageImpl<>(listDTO, pageable, initialPage.getTotalPages());
     }
@@ -117,12 +122,35 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Long countAllMasters() {
 
-        Specification<Admin> spec = Specification.not(AdminSpecifications.hasRole(UserRole.ROLE_ADMIN)
-                                                .and(AdminSpecifications.hasRole(UserRole.ROLE_MANAGER))
-                                                .and(AdminSpecifications.hasRole(UserRole.ROLE_DIRECTOR))
-                                                .and(AdminSpecifications.hasRole(UserRole.ROLE_ACCOUNTANT)));
+        Specification<Admin> spec = Specification.not(
+                        AdminSpecifications.hasRole(userRoleRepository.findByName("Директор").orElse(null))
+                                .or(AdminSpecifications.hasRole(userRoleRepository.findByName("Управляющий").orElse(null)))
+                                .or(AdminSpecifications.hasRole(userRoleRepository.findByName("Бухгалтер").orElse(null))));
 
         return adminRepository.count(spec);
+    }
+
+    @Override
+    public Long countAllManagers() {
+        Specification<Admin> spec = Specification.where(
+                AdminSpecifications.hasRole(userRoleRepository.findByName("Директор").orElse(null))
+                        .or(AdminSpecifications.hasRole(userRoleRepository.findByName("Управляющий").orElse(null)))
+                        .or(AdminSpecifications.hasRole(userRoleRepository.findByName("Бухгалтер").orElse(null))));
+
+        return adminRepository.count(spec);
+    }
+
+    @Override
+    public List<UserRole> getAllRoles() {
+        return userRoleRepository.findAll();
+    }
+
+    public List<UserRole> getMasterRoles() {
+        return userRoleRepository.findAllMasterRoles();
+    }
+
+    public List<UserRole> getManagerRoles() {
+        return userRoleRepository.findAllManagerRoles();
     }
 
     @Override
@@ -136,23 +164,19 @@ public class AdminServiceImpl implements AdminService {
             Admin savedAdmin = adminRepository.save(admin);
             log.info("Save successful!");
             log.info(savedAdmin.toString());
-
-//            String currentlyLoggedInAdminEmail = ((CustomAdminDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-//
-//            if(savedAdmin.getEmail().equalsIgnoreCase(currentlyLoggedInAdminEmail)) {
-//                log.info("Updated currently logged user's credentials, changing role to " + savedAdmin.getRole().name());
-//                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//                List<GrantedAuthority> updatedAuthorities = List.of(new SimpleGrantedAuthority(savedAdmin.getRole().name()));
-//                Authentication newAuth = new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(), updatedAuthorities);
-//                SecurityContextHolder.getContext().setAuthentication(newAuth);
-//            }
-
             return savedAdmin;
         } catch (Exception e) {
             log.severe("Something went wrong during saving!");
             log.severe(e.getMessage());
             return null;
         }
+    }
+
+    @Override
+    public Admin saveAdmin(AdminDTO dto) {
+        Admin admin = mapper.fromDTOToAdmin(dto);
+        admin.setRole(userRoleRepository.getReferenceById(dto.getUserRoleID()));
+        return saveAdmin(admin);
     }
 
     @Override
@@ -171,20 +195,53 @@ public class AdminServiceImpl implements AdminService {
     public List<AdminDTO> findAllMasters(String search, Integer page) {
         Pageable pageable = PageRequest.of(page, 5);
 
-        Specification<Admin> spec = Specification.not(AdminSpecifications.hasRole(UserRole.ROLE_ADMIN)
-                        .and(AdminSpecifications.hasRole(UserRole.ROLE_MANAGER))
-                        .and(AdminSpecifications.hasRole(UserRole.ROLE_DIRECTOR))
-                        .and(AdminSpecifications.hasRole(UserRole.ROLE_ACCOUNTANT)))
-                .and(AdminSpecifications.hasNameLike(search));
+        Specification<Admin> spec = Specification.not(
+                AdminSpecifications.hasRole(userRoleRepository.findByName("Директор").orElse(null))
+            .or(AdminSpecifications.hasRole(userRoleRepository.findByName("Управляющий").orElse(null)))
+            .or(AdminSpecifications.hasRole(userRoleRepository.findByName("Бухгалтер").orElse(null))))
+            .and(AdminSpecifications.hasNameLike(search));
 
         return adminRepository.findAll(spec, pageable)
                 .stream()
-                .map(admin -> new AdminDTO(admin.getId(), admin.getFirst_name(), admin.getLast_name()))
+                .map(mapper::fromAdminToDTO)
                 .collect(Collectors.toList());
     }
 
+    public List<AdminDTO> findAllMasters() {
+        Specification<Admin> spec = Specification.not(AdminSpecifications.hasRole(userRoleRepository.findByName("Директор").orElse(null))
+                                .or(AdminSpecifications.hasRole(userRoleRepository.findByName("Управляющий").orElse(null)))
+                                .or(AdminSpecifications.hasRole(userRoleRepository.findByName("Бухгалтер").orElse(null))));
+
+        return adminRepository.findAll(spec).stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
+    }
+
     @Override
-    public List<Admin> getAdminsByRole(UserRole role) { return adminRepository.getAdminsByRole(role);}
+    public List<AdminDTO> findAllManagers(String search, Integer page) {
+        Pageable pageable = PageRequest.of(page, 5);
+
+        Specification<Admin> spec = Specification.where(
+                AdminSpecifications.hasRole(userRoleRepository.findByName("Директор").orElse(null))
+            .or(AdminSpecifications.hasRole(userRoleRepository.findByName("Управляющий").orElse(null)))
+            .or(AdminSpecifications.hasRole(userRoleRepository.findByName("Администратор").orElse(null))))
+            .and(AdminSpecifications.hasNameLike(search));
+
+        return adminRepository.findAll(spec, pageable)
+                .stream()
+                .map(mapper::fromAdminToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<AdminDTO> findAllManagers() {
+        Specification<Admin> spec = Specification.where(
+                        AdminSpecifications.hasRole(userRoleRepository.findByName("Директор").orElse(null))
+                        .or(AdminSpecifications.hasRole(userRoleRepository.findByName("Управляющий").orElse(null)))
+                        .or(AdminSpecifications.hasRole(userRoleRepository.findByName("Администратор").orElse(null))));
+
+        return adminRepository.findAll(spec).stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
+    }
+
+//    @Override
+//    public List<Admin> getAdminsByRole(UserRole role) { return adminRepository.getAdminsByRole(role);}
 
     @Override
     public Specification<Admin> buildSpecFromFilters(FilterForm filters) throws IllegalAccessException {
@@ -194,7 +251,7 @@ public class AdminServiceImpl implements AdminService {
         log.info("Building specification from filters: " + filters.toString());
 
         String name = filters.getName();
-        UserRole role = (filters.getRole() != null) ? UserRole.valueOf(filters.getRole()) : null;
+        UserRole role = userRoleRepository.findByName(filters.getRole()).orElse(null);
         String phone = filters.getPhone();
         String email = filters.getEmail();
         Boolean active = filters.getActive();
@@ -208,6 +265,13 @@ public class AdminServiceImpl implements AdminService {
         log.info("Specification built! " + specification);
 
         return specification;
+    }
+
+    @Override
+    public List<AdminDTO> findMastersByType(Long typeID) {
+        UserRole role = userRoleRepository.getReferenceById(typeID);
+        Specification<Admin> spec = AdminSpecifications.hasRole(role);
+        return adminRepository.findAll(spec).stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
     }
 
 

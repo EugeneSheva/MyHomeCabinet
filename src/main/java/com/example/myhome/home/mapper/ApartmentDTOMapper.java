@@ -1,7 +1,13 @@
 package com.example.myhome.home.mapper;
 
+import com.example.myhome.home.dto.ApartmentAccountDTO;
 import com.example.myhome.home.dto.ApartmentDTO;
+import com.example.myhome.home.dto.BuildingDTO;
+import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.model.Apartment;
+import com.example.myhome.home.model.ApartmentAccount;
+import com.example.myhome.home.model.Building;
+import com.example.myhome.home.model.Owner;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,10 +25,6 @@ public class ApartmentDTOMapper {
         apartment.setBalance(dto.getBalance());
         apartment.setSquare(dto.getSquare());
 
-//        apartment.setBuilding(fromDTOToBuilding(dto.getBuilding()));
-//        apartment.setAccount(fromDTOToAccount(dto.getAccount()));
-//        apartment.setOwner(fromDTOToOwner(dto.getOwner()));
-
         return apartment;
     }
     public ApartmentDTO fromApartmentToDTO(Apartment apartment) {
@@ -38,9 +40,29 @@ public class ApartmentDTOMapper {
         dto.setSquare(apartment.getSquare());
         dto.setFullName("кв. " + apartment.getNumber() + ", " + apartment.getBuilding().getName());
 
-//        dto.setBuilding(fromBuildingToDTO(apartment.getBuilding()));
-//        dto.setAccount(fromAccountToDTO(apartment.getAccount()));
-//        dto.setOwner(fromOwnerToDTO(apartment.getOwner()));
+        Building building = apartment.getBuilding();
+        if(building != null) {
+            dto.setBuilding(BuildingDTO.builder()
+                    .id(building.getId())
+                    .name(building.getName())
+                    .sections(building.getSections())
+                    .build());
+        }
+
+        Owner owner = apartment.getOwner();
+        if(owner != null) {
+            dto.setOwner(OwnerDTO.builder()
+                            .id(owner.getId())
+                            .fullName(owner.getFullName())
+                    .build());
+        }
+
+        ApartmentAccount account = apartment.getAccount();
+        if(account != null) {
+            dto.setAccount(ApartmentAccountDTO.builder()
+                            .id(account.getId())
+                    .build());
+        }
 
         return dto;
     }

@@ -4,6 +4,7 @@ import com.example.myhome.home.dto.ApartmentDTO;
 import com.example.myhome.home.dto.BuildingDTO;
 import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.exception.NotFoundException;
+import com.example.myhome.home.mapper.ApartmentDTOMapper;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.OwnerRepository;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OwnerService {
+
     @Value("${upload.path}")
     private String uploadPath;
     private String localPath = "/img/ownerId/";
@@ -41,6 +43,8 @@ public class OwnerService {
     private final BuildingService buildingService;
     private final ApartmentService apartmentService;
     private final FileUploadUtil fileUploadUtil;
+
+    private final ApartmentDTOMapper apartmentDTOMapper;
 
 
 
@@ -59,7 +63,13 @@ public class OwnerService {
     public Owner findByLogin(String login) {return ownerRepository.findByEmail(login).orElseThrow(NotFoundException::new);}
 
     public List<Owner> findAll() { return ownerRepository.findAll(); }
+
     public Page<Owner> findAll(Pageable pageable) { return ownerRepository.findAll(pageable); }
+
+    public List<ApartmentDTO> findOwnerApartments(Long ownerID) {
+        Owner owner = ownerRepository.findById(ownerID).orElseThrow();
+        return owner.getApartments().stream().map(apartmentDTOMapper::fromApartmentToDTO).collect(Collectors.toList());
+    }
 
     public List<OwnerDTO> findAllDTO() {
         List<OwnerDTO>ownerDTOList=new ArrayList<>();

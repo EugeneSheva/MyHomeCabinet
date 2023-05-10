@@ -86,7 +86,7 @@ public class MeterController {
         Pageable pageable = PageRequest.of((form.getPage() == null) ? 0 : form.getPage()-1 ,5);
 
         Page<MeterDataDTO> meterDataPage = meterDataService.findSingleMeterData(form, pageable);
-
+        log.info(meterDataPage.getContent().toString());
         model.addAttribute("meter_data_rows", meterDataPage);
         model.addAttribute("filter_form", form);
         model.addAttribute("flat_id", flat_id);
@@ -104,20 +104,23 @@ public class MeterController {
         model.addAttribute("id",meterDataService.getMaxId()+1);
         model.addAttribute("meterDataDTO", new MeterDataDTO());
         model.addAttribute("services", serviceService.findAllServices());
-        model.addAttribute("buildings", buildingService.findAll());
+        model.addAttribute("buildings", buildingService.findAllDTO());
         model.addAttribute("now", LocalDate.now());
 
         return "admin_panel/meters/meter_card";
     }
 
     @PostMapping("/create")
-    public String createMeter(@ModelAttribute MeterDataDTO meterDataDTO, Model model) {
-//        validator.validate(meterDataDTO, bindingResult);
-//        log.info(bindingResult.getAllErrors().toString());
-//        if(bindingResult.hasErrors()) {
-//            model.addAttribute("id",meterDataService.getMaxId()+1);
-//            return "admin_panel/meters/meter_card";
-//        }
+    public String createMeter(@ModelAttribute MeterDataDTO meterDataDTO,BindingResult bindingResult, Model model) {
+        validator.validate(meterDataDTO, bindingResult);
+        log.info(bindingResult.getAllErrors().toString());
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("id",meterDataService.getMaxId()+1);
+            model.addAttribute("building", buildingService.findBuildingDTObyId(meterDataDTO.getBuildingID()));
+            model.addAttribute("services", serviceService.findAllServices());
+            model.addAttribute("buildings", buildingService.findAllDTO());
+            return "admin_panel/meters/meter_card";
+        }
         MeterData savedMeter = meterDataService.saveMeterData(meterDataDTO);
         return "redirect:/admin/meters/data?flat_id="+savedMeter.getApartment().getId()+"&service_id="+savedMeter.getService().getId();
     }
@@ -128,17 +131,28 @@ public class MeterController {
         List<MeterData> meterDataList = meterDataService.findSingleMeterData(flat_id, service_id);
         MeterData meter = (meterDataList.isEmpty()) ? new MeterData() : meterDataList.get(meterDataList.size()-1);
         meter.setId(null);
+
         model.addAttribute("id",meterDataService.getMaxId()+1);
         model.addAttribute("meterDataDTO", MappingUtils.fromMeterToDTO(meter));
         model.addAttribute("services", serviceService.findAllServices());
         model.addAttribute("buildings", buildingService.findAll());
+        model.addAttribute("building", buildingService.findBuildingDTObyId(meter.getBuilding().getId()));
         model.addAttribute("now", LocalDate.now());
         return "admin_panel/meters/meter_card";
     }
 
     @PostMapping("/create-add")
-    public String alo(@Valid @ModelAttribute MeterData meterData) {
-        MeterData savedMeter = meterDataService.saveMeterData(meterData);
+    public String alo(@ModelAttribute MeterDataDTO meterDataDTO,BindingResult bindingResult,Model model) {
+        validator.validate(meterDataDTO, bindingResult);
+        log.info(bindingResult.getAllErrors().toString());
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("id",meterDataService.getMaxId()+1);
+            model.addAttribute("building", buildingService.findBuildingDTObyId(meterDataDTO.getBuildingID()));
+            model.addAttribute("services", serviceService.findAllServices());
+            model.addAttribute("buildings", buildingService.findAllDTO());
+            return "admin_panel/meters/meter_card";
+        }
+        MeterData savedMeter = meterDataService.saveMeterData(meterDataDTO);
         return "redirect:/admin/meters/data?flat_id="+savedMeter.getApartment().getId()+"&service_id="+savedMeter.getService().getId();
     }
 
@@ -215,7 +229,7 @@ public class MeterController {
 
     @GetMapping("/info/{id}")
     public String showInfo(@PathVariable long id, Model model) {
-        model.addAttribute("meter", MappingUtils.fromMeterToDTO(meterDataService.findMeterDataById(id)));
+        model.addAttribute("meter", meterDataService.findMeterDataDTOById(id));
         return "admin_panel/meters/meter_profile";
     }
 
@@ -226,6 +240,15 @@ public class MeterController {
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);
         return meterDataService.findAllBySpecification(form, page, size);
+    }
+
+    @GetMapping("/get-meter-data")
+    public @ResponseBody Page<MeterDataDTO> getMeterData(@RequestParam Integer page,
+                                                         @RequestParam Integer size,
+                                                         @RequestParam String filters) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        FilterForm form = mapper.readValue(filters, FilterForm.class);
+        return meterDataService.findSingleMeterData(form, PageRequest.of(page-1, size));
     }
 
     @ModelAttribute

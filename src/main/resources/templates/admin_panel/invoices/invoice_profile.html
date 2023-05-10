@@ -99,47 +99,49 @@
                       <tr>
                         <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.period}">Период</td>
                         <td th:text="${invoice.dateFrom != null && invoice.dateTo != null} ?
-                            ${invoice.dateFrom} + ' - ' + ${invoice.dateTo} : '--не указан--'"></td>
+                            ${invoice.dateFrom} + ' - ' + ${invoice.dateTo} : #{not-found}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.owner}">Владелец</td>
-                        <td th:if="${invoice.apartment.owner != null}"><a th:href="@{/admin/owners/{id}(id=${invoice.apartment.owner.id})}"
-                            th:text="${invoice.apartment.owner.getFullName()}"></a></td>
-                        <td th:if="${invoice.apartment.owner == null}"
-                            th:text="--отсутствует--"></td>
+                        <td th:if="${invoice.owner != null}"><a th:href="@{/admin/owners/{id}(id=${invoice.owner.id})}"
+                            th:text="${invoice.owner.getFullName()}"></a></td>
+                        <td th:if="${invoice.owner == null}"
+                            th:text="#{not-found}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.account}">Лицевой счёт</td>
-                        <td th:if="${invoice.apartment.account != null}">
-                          <a  th:href="@{/admin/accounts/{id}(id=${invoice.apartment.account.id})}"
-                              th:text="${T(java.lang.String).format('%010d', invoice.apartment.account.id)}"></a>
+                        <td th:if="${invoice.account != null}">
+                          <a  th:href="@{/admin/accounts/{id}(id=${invoice.account.id})}"
+                              th:text="${T(java.lang.String).format('%010d', invoice.account.id)}"></a>
                         </td>
-                        <td th:if="${invoice.apartment.account == null}"
-                            th:text="--отсутствует--"></td>
+                        <td th:if="${invoice.account == null}"
+                            th:text="#{not-found}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.phone}">Телефон</td>
-                        <td th:text="${invoice.apartment.owner.phone_number == null || invoice.apartment.owner.phone_number.isEmpty()} ? '--не указан--' : ${invoice.apartment.owner.phone_number}"></td>
+                        <td th:text="${invoice.owner.phone_number == null || invoice.owner.phone_number.isEmpty()} ? #{not-found} : ${invoice.owner.phone_number}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.house}">Дом</td>
-                        <td th:if="${invoice.apartment.building != null}">
-                          <a th:href="@{/admin/buildings/{id}(id=${invoice.apartment.building.id})}"
-                             th:text="${invoice.apartment.building.name}"></a>
+                        <td th:if="${invoice.building != null}">
+                          <a th:href="@{/admin/buildings/{id}(id=${invoice.building.id})}"
+                             th:text="${invoice.building.name}"></a>
                         </td>
-                        <td th:if="${invoice.apartment.building == null}"
-                            th:text="--не указан--"></td>
+                        <td th:if="${invoice.building == null}"
+                            th:text="#{not-found}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.section}">Секция</td>
-                        <td th:if="${invoice.apartment.building != null}"
-                            th:text="${invoice.apartment.section}"></td>
-                        <td th:if="${invoice.apartment.building == null}"
-                            th:text="--не указана--"></td>
+                        <td th:if="${invoice.section != null}"
+                            th:text="${invoice.section}"></td>
+                        <td th:if="${invoice.section == null}"
+                            th:text="#{not-found}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.apartment}">Квартира</td>
-                        <td><a th:href="@{/admin/apartments/{id}(id=${invoice.apartment.id})}" th:text="${invoice.apartment.number}"></a></td>
+                        <td th:if="${invoice.apartment != null}"><a th:href="@{/admin/apartments/{id}(id=${invoice.apartment.id})}" th:text="${invoice.apartment.fullName}"></a></td>
+                        <td th:if="${invoice.apartment == null}"
+                            th:text="#{not-found}"></td>
                       </tr>
                       <tr>
                         <td style="font-weight:bold" th:text="#{invoices.infoPage.card.content.tariff}">Тариф</td>
@@ -148,7 +150,7 @@
                              th:text="${invoice.tariff.name}"></a>
                         </td>
                         <td th:if="${invoice.tariff == null}"
-                            th:text="--отсутствует--"></td>
+                            th:text="#{not-found}"></td>
                       </tr>
                       </tbody>
                     </table>

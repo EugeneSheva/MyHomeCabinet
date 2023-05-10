@@ -63,7 +63,7 @@
                     <ul style="list-style-type: none; padding-left: 5px;">
                       <li th:if="${default_template != null}">
                         <input type="radio" name="template" th:value="${default_template.id}" checked>
-                        <label class="pl-1" th:text="${default_template.name} + ' (по умолчанию)'"></label>
+                        <label class="pl-1" th:text="${default_template.name} + #{default}"></label>
                       </li>
                       <li th:each="template : ${templates}" th:if="${!template._default_}">
                         <input type="radio" name="template" th:value="${template.id}">

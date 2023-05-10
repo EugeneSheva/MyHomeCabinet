@@ -12,10 +12,9 @@
     <link rel="stylesheet" th:href="@{/dist/css/website.css}">
     <link rel="stylesheet" th:href="@{/plugins/select2/css/select2.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css}">
-    <!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"-->
-    <!--        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">-->
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -49,7 +48,7 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="small-box bg-green overflow-hidden">
                                 <div class="inner">
-                                    <h3 th:text="${T(java.lang.String).format(T(java.util.Locale).ROOT, '%.2f',cashbox_balance) + ' грн'}">
+                                    <h3 id="cashboxBalance" th:text="${T(java.lang.String).format(T(java.util.Locale).ROOT, '%.2f',cashbox_balance) + ' грн'}">
                                         -3 811 220.06 грн</h3>
                                     <p th:text="#{accounts.mainTablePage.cashbox}">Состояние кассы</p>
                                 </div>
@@ -62,7 +61,7 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="small-box bg-blue overflow-hidden">
                                 <div class="inner">
-                                    <h3 th:text="${T(java.lang.String).format(T(java.util.Locale).ROOT, '%.2f',account_balance) + ' грн'}">
+                                    <h3 id="accountBalance" th:text="${T(java.lang.String).format(T(java.util.Locale).ROOT, '%.2f',account_balance) + ' грн'}">
                                         346 259.62 грн</h3>
                                     <p th:text="#{accounts.mainTablePage.account.balance}">Баланс по счетам</p>
                                 </div>
@@ -75,7 +74,7 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="small-box bg-red overflow-hidden">
                                 <div class="inner">
-                                    <h3 th:text="${T(java.lang.String).format(T(java.util.Locale).ROOT, '%.2f',account_debt) + ' грн'}">
+                                    <h3 id="accountDebts" th:text="${T(java.lang.String).format(T(java.util.Locale).ROOT, '%.2f',account_debt) + ' грн'}">
                                         568 914.00 грн</h3>
                                     <p th:text="#{accounts.mainTablePage.account.debt}">Задолженность по счетам</p>
                                 </div>
@@ -111,7 +110,7 @@
             <div class="box" style="padding:0;">
               <div class="box-header with-border">
                 <h3 class="box-title"></h3>
-                <div class="box-tools">
+                <div class="box-tools" style="top:45px">
                   <a href="#" onclick="reset()" class="btn btn-default btn-sm">
                     <span class="hidden-xs" th:text="#{accounts.mainTablePage.erase.title}">Очистить </span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                   </a>
@@ -140,8 +139,8 @@
                           <td style="padding: 10px">
                               <select style="width: 100%; padding-block: 10px" autocomplete="off" th:field="*{active}" data-name="active" class="my_filters">
                                   <option value=""></option>
-                                  <option value="true">Активен</option>
-                                  <option value="false">Не активен</option>
+                                  <option value="true" th:text="#{account.active}">Активен</option>
+                                  <option value="false" th:text="#{account.inactive}">Не активен</option>
                               </select>
                           </td>
                           <td style="padding: 10px">
@@ -178,8 +177,8 @@
                           <td style="padding: 10px">
                               <select style="width: 100%; padding-block: 10px" autocomplete="off" th:field="*{debt}" class="my_filters">
                                   <option value=""></option>
-                                  <option value="true">Есть долг</option>
-                                  <option value="false">Нет долга</option>
+                                  <option value="true" th:text="#{account.has_debt}">Есть долг</option>
+                                  <option value="false" th:text="#{account.has_no_debt}">Нет долга</option>
                               </select>
                           </td>
                           <td></td>
@@ -229,10 +228,15 @@
 
 <script th:src="@{/dist/js/pagination.js}"></script>
 
+<script th:src="@{/dist/js/websocket.js}"></script>
+
 <script th:inline="javascript">
 
     let globalTableName = 'accounts';
     let totalPagesCount = [[${totalPagesCount}]];
+    let placeholderText = [[#{select.placeholder}]];
+    let activeText = [[#{account.active}]];
+    let inactiveText = [[#{account.inactive}]];
     let tableData;
 
     $(document).ready(function(){
@@ -248,7 +252,7 @@
 
     // ФИЛЬТРЫ
     $(document).ready(function(){
-        $("#active, #debt, #section").select2({placeholder: 'Выберите...', minimumResultsForSearch:Infinity});
+        $("#active, #debt, #section").select2({placeholder: placeholderText, minimumResultsForSearch:Infinity});
         $("#owner").select2({
             ajax: {
                 url: '/admin/owners/get-all-owners',
@@ -261,7 +265,7 @@
                 },
 
             },
-            placeholder: 'Выберите...',
+            placeholder: placeholderText,
             minimumInputLength: 2
         });
 
@@ -276,7 +280,7 @@
                     }
                 },
             },
-            placeholder: 'Выберите...'
+            placeholder: placeholderText
         });
     });
 </script>

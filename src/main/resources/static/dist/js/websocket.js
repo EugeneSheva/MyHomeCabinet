@@ -6,7 +6,15 @@ function connect() {
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/cashbox', function (cashboxItem) {
-            processReceivedItem(cashboxItem);
+            processReceivedItem('cashbox',cashboxItem);
+        });
+
+        stompClient.subscribe('/topic/invoices', function (invoiceItem) {
+            processReceivedItem('invoice',invoiceItem);
+        });
+
+        stompClient.subscribe('/topic/accounts', function (accountItem) {
+            processReceivedItem('account',accountItem);
         });
 
         stompClient.subscribe('/topic/messages', function (messageItem) {
@@ -17,9 +25,11 @@ function connect() {
     });
 }
 
-function processReceivedItem(item) {
+function processReceivedItem(itemType, item) {
     console.log('2' +JSON.parse(item.body));
-    drawNewCashboxRow(JSON.parse(item.body));
+//    if(itemType === 'cashbox') drawNewCashboxRow(JSON.parse(item.body));
+//    else if (itemType === 'invoice') drawNewInvoiceRow(JSON.parse(item.body));
+//    else if (itemType === 'account') drawNewAccountRow(JSON.parse(item.body));
     recountCashboxBalance();
     recountAccountBalance();
     recountAccountDebts();

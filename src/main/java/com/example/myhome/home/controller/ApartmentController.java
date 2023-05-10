@@ -230,15 +230,8 @@ public class ApartmentController {
         List<IncomeExpenseItems>incomeItemsList=incomeExpenseRepository.findAllByIncomeExpenseType(IncomeExpenseType.INCOME);
         model.addAttribute("incomeItemsList", incomeItemsList);
 
-        List<AdminDTO>adminDTOList = adminService.findAllDTO();
+        List<AdminDTO>adminDTOList = adminService.findAllManagers();
 
-        // получение только юзеров с ролями "админ", "директор", "бухгалтер", без сантехников и т.д.
-        adminDTOList = adminDTOList.stream()
-                .filter(admin -> admin.getRole() == UserRole.ROLE_ADMIN ||
-                        admin.getRole() == UserRole.ROLE_DIRECTOR ||
-                        admin.getRole() == UserRole.ROLE_MANAGER ||
-                        admin.getRole() == UserRole.ROLE_ACCOUNTANT)
-                .collect(Collectors.toList());
         model.addAttribute("admins", adminDTOList);
 
         List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();

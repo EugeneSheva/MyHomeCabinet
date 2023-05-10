@@ -1,12 +1,10 @@
 let house_selector = $("#house_select");
 let section_selector = $("#section_select");
 let apartment_selector = $("#apartment_select");
-let account = $("#account");
-let accountDisplay = $("#account_display");
 
 $(document).ready(function(){
 
-    $("#isActive, #status, #tariff").select2({placeholder:placeholderText, minimumResultsForSearch:Infinity});
+    $("#isActive").select2({placeholder:placeholderText, minimumResultsForSearch:Infinity});
 
     house_selector.select2({
         ajax: {
@@ -38,8 +36,6 @@ $(document).ready(function(){
         section_selector.html('');
         apartment_selector.html('');
         apartment_selector.prop('disabled', true);
-
-        accountDisplay.val('----------');
 
         if(this.value === 0) {
           section_selector.prop('disabled', true);
@@ -73,8 +69,6 @@ $(document).ready(function(){
 
 // изменение секции перезагружает квартиры
     section_selector.change(function(){
-
-        accountDisplay.val('----------');
 
        if(section_selector.val() != 0) {
             apartment_selector.html('');
@@ -110,8 +104,7 @@ $(document).ready(function(){
             $.get("/admin/apartments/get-owner", {flat_id:apartment_selector.val()}, function(data){
               owner = data;
               console.log(data);
-
-              $("#owner").val(owner.id);
+              console.log(owner);
 
               $("#owner_name").html('<b>'+ownerText+': </b>');
               $("#owner_phone").html('<b>'+ownerPhoneText+': </b>');
@@ -126,54 +119,11 @@ $(document).ready(function(){
 
               $("#owner_name").append(name);
               $("#owner_phone").append(phone);
-
-              // Получение номера лицевого счета
-                $.get('/admin/accounts/get-flat-account',{flat_id:apartment_selector.val()}, function(data){
-                    console.log(data);
-                    account.val(data.toString());
-                    accountDisplay.val(data.toString().padStart(10,'0'));
-                })
-                .fail(function(){accountDisplay.val('----------');});
-
-                // Получение счетчиков для выбранной квартиры
-                $.get('/admin/apartments/get-meters', {flat_id:apartment_selector.val()}, function(data){
-
-                  console.log(data);
-
-                  let $table_body = $('#meter_table tbody');
-                  $table_body.html('');
-
-                  for(const meter of data) {
-                      console.log(meter);
-
-                      let table_row = document.createElement("tr");
-                      table_row.classList.add("meter_data_row");
-
-                      const date = new Date(meter.date);
-
-                      table_row.innerHTML += '<td>'+meter.id.toString().padStart(10,'0')+'</td>';
-                      table_row.innerHTML += '<td>'+meter.status+'</td>';
-                      table_row.innerHTML += '<td>'+date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+'</td>';
-                      table_row.innerHTML += '<td>'+(date.getMonth()+1)+'.'+date.getFullYear()+'</td>';
-                      table_row.innerHTML += '<td>'+meter.apartment.building.name+'</td>';
-                      table_row.innerHTML += '<td>'+meter.apartment.section+'</td>';
-                      table_row.innerHTML += '<td>'+meter.apartment.number+'</td>';
-                      table_row.innerHTML += '<td>'+meter.service.name+'</td>';
-                      table_row.innerHTML += '<td>'+parseFloat(meter.currentReadings)+'</td>';
-                      table_row.innerHTML += '<td>'+meter.service.unit.name+'</td>';
-
-                      $table_body.append(table_row);
-                  }
-
-                });
-
             });
         } else {
             $("#owner_name").html('<b>'+ownerText+': </b>');
             $("#owner_phone").html('<b>'+ownerPhoneText+': </b>');
         }
-
-
 
     });
 
@@ -184,9 +134,6 @@ $(document).ready(function(){
       url: '/admin/buildings/get-building/',
       data: {building_id: buildingID},
       success: function(data) {
-
-            console.log(data);
-
           let option = new Option(data.name, data.id, true, true);
           house_selector.append(option).trigger('change');
 
@@ -208,30 +155,11 @@ $(document).ready(function(){
 
                }
            });
-        },
-        error: function(data) {
-            console.log(data);
-            console.log('building could not be loaded');
-
-            section_selector.select2({placeholder:selectHouseText, minimumResultsForSearch:Infinity});
-            apartment_selector.select2({placeholder:selectSectionText, minimumResultsForSearch:Infinity});
-            apartment_selector.html('');
-            apartment_selector.prop('disabled', true);
-            section_selector.html('');
-            section_selector.prop('disabled', true);
         }
       });
 
-// Получение номера лицевого счета
-$.get('/admin/accounts/get-flat-account',{flat_id:apartment_selector.val()}, function(data){
-    console.log(data);
-    account.val(data);
-    accountDisplay.val(data.toString().padStart(10,'0'));
-})
-.fail(function(){
-accountDisplay.val('----------');
+
+ $("#isActive").change(function(){
+      $("#changedState").val(true);
+    });
 });
-
-
-});
-

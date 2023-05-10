@@ -29,13 +29,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0"><span th:text="${meterDataDTO.id == null} ? #{meters.editPage.pageName} : #{meters.editPage.pageNameEdit} + meterDataDTO.id">Новое показание</span></h1>
+            <h1 class="m-0"><span th:text="${meterDataDTO.id == null} ? #{meters.editPage.pageName} : #{meters.editPage.pageNameEdit} + ${meterDataDTO.id}">Новое показание</span></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  <span th:text="#{meters.editPage.breadcrumb.main}">Главная</span></a></li>
               <li class="breadcrumb-item"><a th:href="@{/admin/meters}" th:text="#{meters.editPage.breadcrumb.previous}">Счётчики</a></li>
-              <li class="breadcrumb-item active"><span th:text="${meterDataDTO.id == null} ? #{meters.editPage.pageName} : #{meters.editPage.pageNameEdit} + meterDataDTO.id">Новое показание</span></li>
+              <li class="breadcrumb-item active"><span th:text="${meterDataDTO.id == null} ? #{meters.editPage.pageName} : #{meters.editPage.pageNameEdit} + ${meterDataDTO.id}">Новое показание</span></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->

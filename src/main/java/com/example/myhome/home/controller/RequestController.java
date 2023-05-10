@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
@@ -44,31 +45,26 @@ public class RequestController {
     public String showRequestsPage(Model model,
                                    FilterForm filterForm) throws IllegalAccessException {
 
-        if(filterForm.getPage() == null) return "redirect:/admin/requests?page=1";
-
-        Page<RepairRequest> requestList;
-
-        requestList = repairRequestService.findAllBySpecification(filterForm);
-
-        model.addAttribute("requests", requestList);
-        model.addAttribute("totalPagesCount", requestList.getTotalPages());
         model.addAttribute("owners", ownerService.findAllDTO());
-        model.addAttribute("masters", adminService.findAllDTO());
-
-        log.info(filterForm.toString());
-
+        model.addAttribute("masters", adminService.findAllMasters());
+        model.addAttribute("master_types", adminService.getMasterRoles());
         model.addAttribute("filter_form", filterForm);
-        model.addAttribute("page", filterForm.getPage());
+
         return "admin_panel/requests/requests";
     }
 
     @GetMapping("/create")
     public String showCreateRequestPage(Model model) {
 
-        model.addAttribute("repairRequest", new RepairRequestDTO());
+        RepairRequestDTO repairRequestDTO = new RepairRequestDTO();
+        repairRequestDTO.setRequest_time(LocalTime.now());
+        repairRequestDTO.setRequest_date(LocalDate.now());
+
+        model.addAttribute("repairRequestDTO", repairRequestDTO);
         model.addAttribute("id", repairRequestService.getMaxId()+1);
         model.addAttribute("owners", ownerService.findAllDTO());
-        model.addAttribute("masters", adminService.findAllDTO());
+        model.addAttribute("masters", adminService.findAllMasters());
+        model.addAttribute("master_types", adminService.getMasterRoles());
 
         model.addAttribute("date", LocalDate.now());
         model.addAttribute("time", LocalTime.now());
@@ -78,17 +74,19 @@ public class RequestController {
 
     @GetMapping("/update/{id}")
     public String showUpdateRequestPage(@PathVariable long id, Model model) {
-        RepairRequest repairRequest = repairRequestService.findRequestById(id);
-        if(repairRequest.getBest_time_request() == null) repairRequest.setBest_time_request(LocalDateTime.now());
-        log.info(repairRequest.toString());
-        model.addAttribute("repairRequest", repairRequest);
+        RepairRequestDTO request = repairRequestService.findRequestDTOById(id);
+        if(request.getBest_time() == null) request.setBest_time(LocalDateTime.now().toString());
+        log.info(request.toString());
+        model.addAttribute("repairRequestDTO", request);
         model.addAttribute("id", id);
-        model.addAttribute("date", repairRequest.getRequest_date().toLocalDate());
-        model.addAttribute("time", repairRequest.getRequest_date().toLocalTime());
-        model.addAttribute("best_date", repairRequest.getBest_time_request().toLocalDate());
-        model.addAttribute("best_time", repairRequest.getBest_time_request().toLocalTime());
+        model.addAttribute("date", request.getRequest_date());
+        model.addAttribute("time", request.getRequest_time());
+        model.addAttribute("best_date", LocalDateTime.parse(request.getBest_time(), DateTimeFormatter.ofPattern("yyyy-MM-dd - HH:mm")).toLocalDate());
+        model.addAttribute("best_time", LocalDateTime.parse(request.getBest_time(), DateTimeFormatter.ofPattern("yyyy-MM-dd - HH:mm")).toLocalTime());
         model.addAttribute("owners", ownerService.findAll());
-        model.addAttribute("masters", adminService.findAll());
+        model.addAttribute("masters", adminService.findAllMasters());
+        model.addAttribute("master_types", adminService.getMasterRoles());
+        model.addAttribute("owner_apartments", ownerService.findOwnerApartments(request.getOwnerID()));
 
         return "admin_panel/requests/request_card";
     }
@@ -103,46 +101,56 @@ public class RequestController {
     }
 
     @PostMapping("/create")
-    public String createRequest(@ModelAttribute RepairRequest repairRequest,
+    public String createRequest(@ModelAttribute RepairRequestDTO repairRequestDTO,
                                 BindingResult bindingResult,
-                                @RequestParam(required = false) String date,
-                                @RequestParam(required = false) String time,
+//                                @RequestParam(required = false) String date,
+//                                @RequestParam(required = false) String time,
                                 @RequestParam(required = false) String best_date,
-                                @RequestParam(required = false) String best_time) {
+                                @RequestParam(required = false) String best_time,
+                                Model model) {
 
         if(best_date == null || best_date.isEmpty()) best_date = LocalDate.now().plusDays(2).toString();
         if(best_time == null || best_time.isEmpty()) best_time = LocalTime.of(12, 0).toString();
+        if(repairRequestDTO.getMasterTypeID() == null || repairRequestDTO.getMasterTypeID() < 0) repairRequestDTO.setMasterTypeID(null);
 
-        repairRequest.setRequest_date(LocalDateTime.of(LocalDate.parse(date), LocalTime.parse(time)));
-        repairRequest.setBest_time_request(LocalDateTime.of(LocalDate.parse(best_date), LocalTime.parse(best_time)));
+//        repairRequestDTO.setRequest_date(LocalDate.parse(date));
+//        repairRequestDTO.setRequest_time(LocalTime.parse(time));
+        repairRequestDTO.setBest_time(best_date + " - " + best_time);
 
-        validator.validate(repairRequest, bindingResult);
+        validator.validate(repairRequestDTO, bindingResult);
         log.info(bindingResult.getAllErrors().toString());
-        if(bindingResult.hasErrors()) return "admin_panel/requests/request_card";
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("masters", adminService.findAllMasters());
+            model.addAttribute("master_types", adminService.getMasterRoles());
+            return "admin_panel/requests/request_card";
+        }
 
-        repairRequestService.saveRequest(repairRequest);
+        repairRequestService.saveRequest(repairRequestDTO);
         return "redirect:/admin/requests";
     }
 
     @PostMapping("/update/{id}")
     public String updateRequest(@PathVariable long id,
-                                @ModelAttribute RepairRequest repairRequest,
+                                @ModelAttribute RepairRequestDTO repairRequestDTO,
                                 BindingResult bindingResult,
                                 @RequestParam(required = false) String best_date,
-                                @RequestParam(required = false) String best_time) {
+                                @RequestParam(required = false) String best_time,
+                                Model model) {
 
         if(best_date == null) best_date = LocalDate.now().plusDays(2).toString();
         if(best_time == null) best_time = LocalTime.of(12, 0).toString();
 
-        RepairRequest originalRequest = repairRequestService.findRequestById(id);
-        repairRequest.setRequest_date(originalRequest.getRequest_date());
-        repairRequest.setBest_time_request(LocalDateTime.of(LocalDate.parse(best_date), LocalTime.parse(best_time)));
+        repairRequestDTO.setBest_time(best_date + " - " + best_time);
 
-        validator.validate(repairRequest, bindingResult);
+        validator.validate(repairRequestDTO, bindingResult);
         log.info(bindingResult.getAllErrors().toString());
-        if(bindingResult.hasErrors()) return "admin_panel/requests/request_card";
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("masters", adminService.findAllMasters());
+            model.addAttribute("master_types", adminService.getMasterRoles());
+            return "admin_panel/requests/request_card";
+        }
 
-        repairRequestService.saveRequest(repairRequest);
+        repairRequestService.saveRequest(repairRequestDTO);
         return "redirect:/admin/requests";
     }
 

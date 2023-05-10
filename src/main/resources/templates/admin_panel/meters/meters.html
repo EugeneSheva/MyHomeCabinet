@@ -55,7 +55,7 @@
             <div class="box" style="padding:0;">
               <div class="box-header with-border" >
                 <h3 class="box-title"></h3>
-                <div class="box-tools">
+                <div class="box-tools"  style="top:45px">
                   <a href="#" onclick="reset()" class="btn btn-default btn-sm">
                     <span class="hidden-xs" th:text="#{meters.mainTablePage.table.erase}">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                   </a>
@@ -166,6 +166,7 @@
     let globalTableName = 'meters';
     let totalPagesCount = [[${totalPagesCount}]];
     let tableData;
+    let placeholderText = [[#{select.placeholder}]]
 
     $(document).ready(function(){
 
@@ -180,7 +181,7 @@
     // ФИЛЬТРЫ
     $(document).ready(function(){
 
-        $("#section, #service").select2({placeholder: 'Выберите...', minimumResultsForSearch:Infinity});
+        $("#section, #service").select2({placeholder: placeholderText, minimumResultsForSearch:Infinity});
 
         $("#building").select2({
             ajax: {
@@ -193,7 +194,7 @@
                     }
                 },
             },
-            placeholder: 'Выберите...'
+            placeholder: placeholderText
         });
 
     });

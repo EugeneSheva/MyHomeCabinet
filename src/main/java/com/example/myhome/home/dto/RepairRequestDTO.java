@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,10 +19,12 @@ public class RepairRequestDTO {
 
     private Long id;
     private String best_time;
-    private String master_type;
+    private Long masterTypeID;
+    private String masterTypeName;
     private String description;
     private String comment;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate request_date;
     private LocalTime request_time;
 

@@ -4,6 +4,7 @@ import com.example.myhome.home.dto.AdminDTO;
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.service.AdminService;
+import com.example.myhome.home.validator.AdminValidator;
 import com.example.myhome.util.MappingUtils;
 import com.example.myhome.util.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
+    @Autowired private AdminValidator validator;
+
     @Autowired private AuthenticationManager authenticationManager;
 
     @GetMapping
@@ -48,7 +51,7 @@ public class AdminController {
 
     @GetMapping("/{id}")
     public String showAdminProfile(@PathVariable long id, Model model) {
-        AdminDTO admin = MappingUtils.fromAdminToDTO(adminService.findAdminById(id));
+        AdminDTO admin = adminService.findAdminDTOById(id);
         model.addAttribute("admin", admin);
         return "admin_panel/system_settings/admin_profile";
     }
@@ -56,37 +59,41 @@ public class AdminController {
     @GetMapping("/create")
     public String showCreateAdminPage(Model model) {
         model.addAttribute("adminDTO", new AdminDTO());
+        model.addAttribute("roles", adminService.getAllRoles());
         return "admin_panel/system_settings/admin_card";
     }
 
     @GetMapping("/update/{id}")
     public String showUpdateAdminPage(@PathVariable long id, Model model) {
-        AdminDTO admin = MappingUtils.fromAdminToDTO(adminService.findAdminById(id));
+        AdminDTO admin = adminService.findAdminDTOById(id);
         model.addAttribute("adminDTO", admin);
+        model.addAttribute("roles", adminService.getAllRoles());
         return "admin_panel/system_settings/admin_card";
     }
 
     @PostMapping("/create")
-    public String createAdmin(@Valid @ModelAttribute AdminDTO dto, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()) return "admin_panel/system_settings/admin_card";
+    public String createAdmin(@ModelAttribute AdminDTO dto, BindingResult bindingResult, Model model) {
+        validator.validate(dto, bindingResult);
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("roles", adminService.getAllRoles());
+            return "admin_panel/system_settings/admin_card";
+        }
         else {
-            Admin admin = MappingUtils.fromDTOToAdmin(dto);
-            adminService.saveAdmin(admin);
+            adminService.saveAdmin(dto);
             return "redirect:/admin/admins";
         }
     }
 
     @PostMapping("/update/{id}")
-    public String updateAdmin(@PathVariable long id, @Valid @ModelAttribute AdminDTO dto, BindingResult bindingResult) {
+    public String updateAdmin(@PathVariable long id, @ModelAttribute AdminDTO dto, BindingResult bindingResult, Model model) {
         dto.setId(id);
-
-        if(bindingResult.hasErrors()) return "admin_panel/system_settings/admin_card";
+        validator.validate(dto, bindingResult);
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("roles", adminService.getAllRoles());
+            return "admin_panel/system_settings/admin_card";
+        }
         else {
-            Admin admin = MappingUtils.fromDTOToAdmin(dto);
-            adminService.saveAdmin(admin);
-
-
-
+            adminService.saveAdmin(dto);
             return "redirect:/admin/admins";
         }
     }
@@ -104,15 +111,6 @@ public class AdminController {
 
     // =========
 
-//    @GetMapping("/get-masters-by-type")
-//    public @ResponseBody List<Admin> getMastersByType(@RequestParam String type) {
-//        if(type.equalsIgnoreCase(UserRole.ROLE_ANY.name()))
-//            return adminService.findAll().stream()
-//                    .filter(admin -> admin.getRole() != UserRole.ROLE_ADMIN && admin.getRole() != UserRole.ROLE_DIRECTOR
-//                    && admin.getRole() != UserRole.ROLE_MANAGER).collect(Collectors.toList());
-//        else return adminService.getAdminsByRole(UserRole.valueOf(type.toUpperCase()));
-//    }
-
     @GetMapping("/get-all-masters")
     public @ResponseBody Map<String, Object> getAllMasters(@RequestParam String search, @RequestParam int page) {
         Map<String, Object> map = new HashMap<>();
@@ -123,6 +121,23 @@ public class AdminController {
         System.out.println(map.get("results").toString());
         System.out.println(map.get("pagination").toString());
         return map;
+    }
+
+    @GetMapping("/get-managers")
+    public @ResponseBody Map<String, Object> getAllManagers(@RequestParam String search, @RequestParam int page) {
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Boolean> pagination = new HashMap<>();
+        pagination.put("more", (page*5L) < adminService.countAllManagers());
+        map.put("results", adminService.findAllMasters(search, page-1));
+        map.put("pagination", pagination);
+        System.out.println(map.get("results").toString());
+        System.out.println(map.get("pagination").toString());
+        return map;
+    }
+
+    @GetMapping("/get-masters-by-type")
+    public @ResponseBody List<AdminDTO> getMastersByType(@RequestParam Long typeID) {
+        return (typeID > 0) ? adminService.findMastersByType(typeID) : adminService.findAllMasters();
     }
 
 }

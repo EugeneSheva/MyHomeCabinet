@@ -20,6 +20,8 @@ public class UserRole {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> permissions = new HashSet<>();
 
+    private Boolean master = false;
+
     public UserRole() {
     }
 

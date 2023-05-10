@@ -132,6 +132,7 @@ public class MappingUtils {
         dto.setFirst_name(admin.getFirst_name());
         dto.setLast_name(admin.getLast_name());
         dto.setEmail(admin.getEmail());
+        dto.setText(admin.getRole().getName() + " - " + admin.getFullName());
 //        dto.setRole(admin.getRole());
         dto.setPhone_number(admin.getPhone_number());
 

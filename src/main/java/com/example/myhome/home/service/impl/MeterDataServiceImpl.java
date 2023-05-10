@@ -59,7 +59,14 @@ public class MeterDataServiceImpl implements MeterDataService {
     @Override
     public Page<MeterDataDTO> findSingleMeterData(FilterForm form, Pageable pageable) {
         log.info("Searching for single meter data (Apartment ID: " + form.getApartment() + ", Service ID: " + form.getService() + ")");
-        Page<MeterData> initialPage = meterDataRepository.findAll(buildSpecFromFilters(form), pageable);
+
+        MeterPaymentStatus status = (form.getStatus() != null && !form.getStatus().isEmpty()) ? MeterPaymentStatus.valueOf(form.getStatus()) : null;
+        Specification<MeterData> spec = Specification.where(MeterSpecifications.hasApartment(apartmentRepository.getReferenceById(form.getApartment()))
+                                                    .and(MeterSpecifications.hasService(serviceRepository.getReferenceById(form.getService())))
+                .and(MeterSpecifications.hasId(form.getId()))
+                .and(MeterSpecifications.hasStatus(status)));
+
+        Page<MeterData> initialPage = meterDataRepository.findAll(spec, pageable);
         log.info("Found " + initialPage.getContent().size() + " elements(page " + pageable.getPageNumber() + "/ " + initialPage.getTotalPages() + ")");
         List<MeterDataDTO> listDTO = initialPage.getContent().stream().map(MappingUtils::fromMeterToDTO).collect(Collectors.toList());
         return new PageImpl<>(listDTO, pageable, initialPage.getTotalElements());
@@ -93,13 +100,13 @@ public class MeterDataServiceImpl implements MeterDataService {
         com.example.myhome.home.model.Service service = (form.getService() != null) ? serviceService.findServiceById(form.getService()) : null;
 
         Specification<MeterData> spec = Specification.where(MeterSpecifications.hasId(id)
-                .and(MeterSpecifications.hasStatus(status))
-                .and(MeterSpecifications.datesBetween(date_from, date_to))
-                .and(MeterSpecifications.hasBuilding(building))
-                .and(MeterSpecifications.hasSection(section))
-                .and(MeterSpecifications.hasApartment(apartment))
-                .and(MeterSpecifications.hasService(service))
-                .and(MeterSpecifications.groupTest()));
+                                                        .and(MeterSpecifications.hasStatus(status))
+                                                        .and(MeterSpecifications.datesBetween(date_from, date_to))
+                                                        .and(MeterSpecifications.hasBuilding(building))
+                                                        .and(MeterSpecifications.hasSection(section))
+                                                        .and(MeterSpecifications.hasApartment(apartment))
+                                                        .and(MeterSpecifications.hasService(service))
+                                                        .and(MeterSpecifications.groupTest()));
 
         log.info("Specification ready!");
 

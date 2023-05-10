@@ -270,6 +270,8 @@
 
     let globalTableName = 'transactions';
     let totalPagesCount = [[${totalPagesCount}]];
+    let placeholderText = [[#{select.placeholder}]];
+    let notFoundText = [[#{not-found}]];
     let tableData;
 
     $(document).ready(function(){
@@ -365,7 +367,7 @@
 
 
 
-        $("#isCompleted, #incomeExpenseItem, #incomeExpenseType").select2({placeholder: "Выберите...", minimumResultsForSearch: Infinity});
+        $("#isCompleted, #incomeExpenseItem, #incomeExpenseType").select2({placeholder: placeholderText, minimumResultsForSearch: Infinity});
 
         $('#ownerId').select2({
             ajax: {

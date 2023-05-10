@@ -1,14 +1,11 @@
 package com.example.myhome.home.mapper;
 
 import com.example.myhome.home.dto.RepairRequestDTO;
-import com.example.myhome.home.model.Apartment;
-import com.example.myhome.home.model.RepairMasterType;
-import com.example.myhome.home.model.RepairRequest;
-import com.example.myhome.home.repository.AdminRepository;
-import com.example.myhome.home.repository.ApartmentRepository;
-import com.example.myhome.home.repository.BuildingRepository;
-import com.example.myhome.home.repository.OwnerRepository;
+import com.example.myhome.home.model.*;
+import com.example.myhome.home.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -18,22 +15,21 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 public class RepairRequestDTOMapper {
 
-//    private final ApartmentRepository apartmentRepository;
-//    private final OwnerRepository ownerRepository;
-//    private final AdminRepository adminRepository;
+    private final UserRoleRepository repository;
+    private final MessageSource messageSource;
 
     public RepairRequest fromDTOToRequest(RepairRequestDTO dto) {
         if(dto == null) return null;
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd - HH:mm");
         RepairRequest request = new RepairRequest();
+        UserRole masterType = (dto.getMasterTypeID() != null && dto.getMasterTypeID() > 0) ? repository.getReferenceById(dto.getMasterTypeID()) : null;
         request.setId(dto.getId());
-        request.setBest_time_request(LocalDateTime.parse(dto.getBest_time()));
-        request.setMaster_type(RepairMasterType.valueOf(dto.getMaster_type()));
+        request.setBest_time_request(LocalDateTime.parse(dto.getBest_time(), formatter));
+        request.setRequest_date(LocalDateTime.of(dto.getRequest_date(), dto.getRequest_time()));
+        request.setStatus(dto.getStatus());
+        request.setMaster_type(masterType);
         request.setDescription(dto.getDescription());
-
-//        request.setApartment(apartmentRepository.getReferenceById(dto.getApartmentID()));
-//        request.setOwner(ownerRepository.getReferenceById(dto.getOwnerID()));
-//        request.setMaster(adminRepository.getReferenceById(dto.getMasterID()));
+        request.setComment(dto.getComment());
 
         return request;
     }
@@ -48,11 +44,14 @@ public class RepairRequestDTOMapper {
         String ownerPhoneNumber = (request.getApartment().getOwner() != null) ? request.getApartment().getOwner().getPhone_number() : null;
         Long masterID = (request.getMaster() != null) ? request.getMaster().getId() : null;
         String masterFullName = (request.getMaster() != null) ? request.getMaster().getFullName() : null;
+        Long masterTypeID = (request.getMaster_type() != null) ? request.getMaster_type().getId() : null;
+        String masterTypeName = (request.getMaster_type() != null) ? request.getMaster_type().getName() : messageSource.getMessage("any_specialist", null, LocaleContextHolder.getLocale());
 
         return RepairRequestDTO.builder()
                 .id(request.getId())
                 .best_time(request.getBest_time_request().format(DateTimeFormatter.ofPattern("yyyy-MM-dd - HH:mm")))
-                .master_type(request.getMaster_type().getName())
+                .masterTypeID(masterTypeID)
+                .masterTypeName(masterTypeName)
                 .description(request.getDescription())
                 .request_date(request.getRequest_date().toLocalDate())
                 .request_time(request.getRequest_date().toLocalTime())
@@ -66,6 +65,7 @@ public class RepairRequestDTOMapper {
                 .masterFullName(masterFullName)
                 .status(request.getStatus())
                 .statusName(request.getStatus().getName())
+                .comment(request.getComment())
                 .build();
     }
 

@@ -99,7 +99,7 @@
                                   <input type="checkbox"
                                                 th:field="*{serviceList[__${iter.index}__].show_in_meters}"
                                                 name="show_in_meters"
-                                                th:checked="${service.show_in_meters}" th:text="#{settings.system.services.show-in-meters}"> Показывать в счетчиках
+                                                th:checked="${service.show_in_meters}"> <span th:text="#{settings.system.services.show-in-meters}">Показывать в счетчиках</span>
                                     <div style="margin-bottom: 16px;"></div>
                                 </div>
                               </div>
@@ -131,8 +131,8 @@
                                 </div>
                                 <div class="col-xs-12 col-sm-12">
                                     <input type="checkbox" onclick="if(this.checked) this.nextElementSibling.value='true'; else this.nextElementSibling.value='false'" checked>
-                                    <input type="hidden" style="display:none;" name="new_service_show_in_meters" value="true" th:text="#{settings.system.services.show-in-meters}">
-                                    Показывать в счетчиках
+                                    <input type="hidden" style="display:none;" name="new_service_show_in_meters" value="true" >
+                                    <span th:text="#{settings.system.services.show-in-meters}">Показывать в счетчиках</span>
                                   <div style="margin-bottom: 16px;"></div>
                                 </div>
                               </div>
