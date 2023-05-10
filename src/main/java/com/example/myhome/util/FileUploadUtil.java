@@ -20,6 +20,12 @@ import java.nio.file.StandardCopyOption;
 @Log
 public class FileUploadUtil {
 
+    /*
+
+    Класс для сохранения файлов от клиента
+
+     */
+
     @Value("${upload.path}")
     private String uploadPath;
 

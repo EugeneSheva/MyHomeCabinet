@@ -10,6 +10,12 @@ import java.util.stream.Collectors;
 
 public class MappingUtils {
 
+    /*
+
+    Устаревший вспом. класс , вместо него используем ...DTOMapper классы
+
+     */
+
     //APARTMENT
     public static Apartment fromDTOToApartment(ApartmentDTO dto) {
 

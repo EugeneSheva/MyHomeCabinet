@@ -12,8 +12,6 @@ import com.example.myhome.home.service.impl.AdminServiceImpl;
 import com.example.myhome.home.service.impl.MeterDataServiceImpl;
 import com.example.myhome.home.service.impl.TariffServiceImpl;
 import com.example.myhome.home.validator.ApartmentValidator;
-import com.example.myhome.util.MappingUtils;
-import com.example.myhome.util.UserRole;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

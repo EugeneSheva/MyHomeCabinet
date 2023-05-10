@@ -1,18 +1,15 @@
 package com.example.myhome.home.controller;
 
-import com.example.myhome.home.model.RepairRequest;
 import com.example.myhome.home.dto.RepairRequestDTO;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.service.impl.AdminServiceImpl;
 import com.example.myhome.home.service.OwnerService;
 import com.example.myhome.home.service.RepairRequestService;
 import com.example.myhome.home.validator.RequestValidator;
-import com.example.myhome.util.UserRole;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,8 +20,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/requests")
