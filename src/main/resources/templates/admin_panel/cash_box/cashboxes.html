@@ -71,7 +71,7 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="small-box bg-green overflow-hidden">
                                 <div class="inner">
-                                    <h3 id="cashboxBalance" th:text="${cashBoxSum}+' грн.'"></h3>
+                                    <h3 id="cashboxBalance" th:text="${T(java.lang.String).format(T(java.util.Locale).ROOT, '%.2f',cashBoxSum) + ' грн'}"></h3>
                                     <p th:text="#{cashBoxBalanceL}">Состояние кассы</p>
                                 </div>
                                 <div class="icon">
@@ -83,7 +83,7 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="small-box bg-blue overflow-hidden">
                                 <div class="inner">
-                                    <h3 id="accountBalance" th:text="${accountBalance}+' грн.'"></h3>
+                                    <h3 id="accountBalance" th:text="${T(java.lang.String).format(T(java.util.Locale).ROOT, '%.2f',accountBalance) + ' грн'}"></h3>
                                     <p th:text="#{balanceOnAccountL}">Баланс по счетам</p>
                                 </div>
                                 <div class="icon">
@@ -95,7 +95,7 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="small-box bg-red overflow-hidden">
                                 <div class="inner">
-                                    <h3 id="accountDebts" th:text="${sumDebt}+' грн.'"></h3>
+                                    <h3 id="accountDebts" th:text="${T(java.lang.String).format(T(java.util.Locale).ROOT, '%.2f',sumDebt) + ' грн'}"></h3>
                                     <p th:text="#{debtOnAccountsL}">Задолженность по счетам</p>
                                 </div>
                                 <div class="icon">

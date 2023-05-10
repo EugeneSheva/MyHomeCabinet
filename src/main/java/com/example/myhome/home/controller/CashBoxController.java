@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 
@@ -344,18 +345,18 @@ public class CashBoxController {
     }
 
     @GetMapping("/get-cashbox-balance")
-    public @ResponseBody Double getCashboxBalance() {
-        return cashBoxService.calculateBalance();
+    public @ResponseBody String getCashboxBalance() {
+        return String.format(Locale.ROOT, "%.2f", cashBoxService.calculateBalance());
     }
 
     @GetMapping("/get-account-balance")
-    public @ResponseBody Double getAccountBalance() {
-        return accountServiceImpl.getSumOfAccountBalances();
+    public @ResponseBody String getAccountBalance() {
+        return String.format(Locale.ROOT, "%.2f", accountServiceImpl.getSumOfAccountBalances());
     }
 
     @GetMapping("/get-account-debts")
-    public @ResponseBody Double getAccountDebts() {
-        return accountServiceImpl.getSumOfAccountDebts();
+    public @ResponseBody String getAccountDebts() {
+        return String.format(Locale.ROOT,   "%.2f", accountServiceImpl.getSumOfAccountDebts());
     }
 
 

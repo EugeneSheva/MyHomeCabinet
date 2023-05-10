@@ -1,5 +1,6 @@
 package com.example.myhome.home.controller;
 
+import com.example.myhome.home.controller.socket.WebsocketController;
 import com.example.myhome.home.mapper.AccountDTOMapper;
 import com.example.myhome.home.model.ApartmentAccount;
 import com.example.myhome.home.dto.ApartmentAccountDTO;
@@ -44,6 +45,8 @@ public class AccountController {
     @Autowired private AccountValidator validator;
 
     @Autowired private AccountDTOMapper mapper;
+
+    @Autowired private WebsocketController websocketController;
 
     // показать все счета
     @GetMapping
@@ -110,7 +113,10 @@ public class AccountController {
 
             return "admin_panel/accounts/account_card";
         } else {
-            accountService.saveAccount(apartmentAccountDTO);
+            ApartmentAccount account = accountService.saveAccount(apartmentAccountDTO);
+
+            websocketController.sendAccountItem(account);
+
             return "redirect:/admin/accounts";
         }
 
@@ -141,7 +147,9 @@ public class AccountController {
             log.info(buildingService.findAllDTO().toString());
             return "admin_panel/accounts/account_card";
         }
-        accountService.saveAccount(apartmentAccountDTO);
+        ApartmentAccount account = accountService.saveAccount(apartmentAccountDTO);
+
+        websocketController.sendAccountItem(account);
 
         return "redirect:/admin/accounts";
     }

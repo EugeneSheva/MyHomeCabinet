@@ -168,6 +168,8 @@ public class InvoiceController {
 
         Invoice invoice = invoiceService.saveInvoice(invoiceDTO);
 
+        websocketController.sendInvoiceItem(invoice);
+
         return "redirect:/admin/invoices";
     }
 
@@ -196,7 +198,9 @@ public class InvoiceController {
             return "admin_panel/invoices/invoice_card";
         }
 
-        invoiceService.saveInvoice(invoiceDTO);
+        Invoice invoice = invoiceService.saveInvoice(invoiceDTO);
+
+        websocketController.sendInvoiceItem(invoice);
 
         return "redirect:/admin/invoices";
     }
