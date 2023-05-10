@@ -26,12 +26,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Платежные реквизиты</h1>
+            <h1 class="m-0" th:text="#{settings.system.payment-details.pageName}">Платежные реквизиты</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item active">Платежные реквизиты</li>
+              <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i>  <span th:text="#{settings.system.payment-details.breadcrumb.main}">Главная</span></a></li>
+              <li class="breadcrumb-item active" th:text="#{settings.system.payment-details.pageName}">Платежные реквизиты</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -53,13 +53,13 @@
                     <div class="col-md-12">
                       <div class="form-group field-websitehomeform-homemetatitle">
 
-                        <label class="control-label" for="websitehomeform-homemetatitle">Название компании</label>
+                        <label class="control-label" for="websitehomeform-homemetatitle" th:text="#{settings.system.payment-details.name}">Название компании</label>
                         <input type="text" id="websitehomeform-homemetatitle" class="form-control" name="WebsiteHomeForm[homeMetaTitle]" th:field="*{name}">
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></h4>
                       </div>
                       <div class="form-group field-websitehomeform-homemetadescription">
 
-                        <label class="control-label" for="websitehomeform-homemetadescription">Информация</label>
+                        <label class="control-label" for="websitehomeform-homemetadescription" th:text="#{settings.system.payment-details.info}">Информация</label>
                         <textarea id="websitehomeform-homemetadescription" class="form-control" name="WebsiteHomeForm[homeMetaDescription]" th:field="*{description}" rows="6">
                         </textarea>
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></h4>
@@ -68,8 +68,8 @@
                   </div>
                   <div class="row">
                     <div class="form-group submit-buttons">
-                      <a href="admin/website/home" class="btn btn-default">Отменить</a>
-                      <button type="submit" class="btn btn-success">Сохранить</button>
+                      <a href="admin/website/home" class="btn btn-default" th:text="#{settings.system.payment-details.cancel}">Отменить</a>
+                      <button type="submit" class="btn btn-success" th:text="#{settings.system.payment-details.save}">Сохранить</button>
                     </div>
                     <div style="text-align: center; color: green; font-size: 20px; width: 100%">
                       <span th:text="${success_message}"></span>

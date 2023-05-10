@@ -31,13 +31,13 @@
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0"
-                th:text="*{id != null} ? 'Лицевой счёт №' + *{id} + ' - редактирование' : 'Новый лицевой счет'"></h1>
+                th:text="*{id != null} ? #{accounts.editPage.pageNameEdit} + ' №' + *{id} : #{accounts.editPage.pageName}"></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/accounts}">Лицевые счёта</a></li>
-              <li class="breadcrumb-item active" th:text="*{id != null} ? 'Лицевой счёт №' + *{id} : 'Новый лицевой счет'"></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  <span th:text="#{accounts.editPage.breadcrumb.main}">Главная</span></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/accounts}" th:text="#{accounts.editPage.breadcrumb.previous}">Лицевые счёта</a></li>
+              <li class="breadcrumb-item active" th:text="*{id != null} ? #{accounts.editPage.pageNameEdit} + ' №' + *{id} : #{accounts.editPage.pageName}"></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -53,7 +53,7 @@
           <div class="row">
             <div class="col-md-3">
               №
-              <input style="width: 95%;" th:value="${T(java.lang.String).format('%010d',id)}" disabled class="form-control">
+              <input style="width: 90%; display:inline-block" th:value="${T(java.lang.String).format('%010d',id)}" disabled class="form-control">
             </div>
             <div class="col-md-3"></div>
             <div class="col-md-6"></div>
@@ -66,19 +66,19 @@
 
                   <div class="row">
                     <div class="col-md-12">
-                      <h4 style="font-weight: bold">Статус</h4>
+                      <h4 style="font-weight: bold" th:text="#{accounts.editPage.card.status}">Статус</h4>
                       <select class="selects" th:field="*{isActive}" th:style="${#fields.hasErrors('isActive')} ? 'border: 0.5px solid red;'">
-                        <option value="true">Активен</option>
-                        <option value="false">Неактивен</option>
+                        <option value="true" th:text="#{account.active}">Активен</option>
+                        <option value="false" th:text="#{account.inactive}">Неактивен</option>
                       </select>
                       <div style="color: #d80450; font-weight: bold;" th:if="${#fields.hasErrors('isActive')}" th:errors="*{isActive}"></div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-md-12">
-                      <h4 style="font-weight: bold">Дом</h4>
+                      <h4 style="font-weight: bold" th:text="#{accounts.editPage.card.house}">Дом</h4>
                       <select class="selects" id="house_select" th:style="${#fields.hasErrors('building')} ? 'border: 0.5px solid red;'" th:field="*{building}">
-                        <option value="">Выберите...</option>
+                        <option value="" th:text="#{select.placeholder}">Выберите...</option>
                         <option th:each="building : ${buildings}"
                                 th:value="${building.id}"
                                 th:text="${building.name}"></option>
@@ -88,31 +88,31 @@
                   </div>
                   <div class="row">
                     <div class="col-md-12">
-                      <h4 style="font-weight: bold">Секция</h4>
-                      <select class="selects" id="section_select" th:style="${#fields.hasErrors('section')} ? 'border: 0.5px solid red;'" th:if="*{building != null}" th:field="*{section}">
-                        <option value="">Выберите...</option>
-                        <option th:each="section : *{building.getSections()}"
-                                th:value="${section}"
-                                th:text="${section}"></option>
+                      <h4 style="font-weight: bold" th:text="#{accounts.editPage.card.section}">Секция</h4>
+                      <select class="selects" id="section_select" th:style="${#fields.hasErrors('section')} ? 'border: 0.5px solid red;'" th:if="*{building != null && building.id != null}" th:field="*{section}">
+                        <option value="" th:text="#{select.placeholder}">Выберите...</option>
+<!--                        <option th:each="section : *{building.getSections()}"-->
+<!--                                th:value="${section}"-->
+<!--                                th:text="${section} + 'updated'"></option>-->
                       </select>
-                      <select class="selects" id="section_select" th:style="${#fields.hasErrors('section')} ? 'border: 0.5px solid red;'" th:if="*{building == null}" disabled th:field="*{section}">
-                        <option value="">Выберите...</option>
+                      <select class="selects" id="section_select" th:style="${#fields.hasErrors('section')} ? 'border: 0.5px solid red;'" th:if="*{building == null || building.id == null}" disabled th:field="*{section}">
+                        <option value="" th:text="#{select.placeholder}">Выберите...</option>
                       </select>
                       <div style="color: #d80450; font-weight: bold;" th:if="${#fields.hasErrors('section')}" th:errors="*{section}"></div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-md-12">
-                      <h4 style="font-weight: bold">Квартира</h4>
+                      <h4 style="font-weight: bold" th:text="#{accounts.editPage.card.apartment}">Квартира</h4>
                       <input type="hidden" id="section_name" th:if="*{apartment != null}" th:value="*{section}">
                       <select class="selects" id="apartment_select" th:style="${#fields.hasErrors('apartment')} ? 'border: 0.5px solid red;'" th:if="*{building != null && building.id != null}" th:field="*{apartment}">
-                        <option value="">Выберите...</option>
-                        <option th:each="flat : *{building.getApartments()}"
-                                th:value="${flat.id}"
-                                th:text="${flat.number}"></option>
+                        <option value="" th:text="#{select.placeholder}">Выберите...</option>
+<!--                        <option th:each="flat : *{building.getApartments()}"-->
+<!--                                th:value="${flat.id}"-->
+<!--                                th:text="'кв. ' + ${flat.number} + ' updated'"></option>-->
                       </select>
                       <select class="selects" id="apartment_select" th:style="${#fields.hasErrors('apartment')} ? 'border: 0.5px solid red;'" th:if="*{building == null || building.id == null}" disabled th:field="*{apartment}">
-                        <option value="">Выберите...</option>
+                        <option value="" th:text="#{select.placeholder}">Выберите...</option>
                       </select>
 <!--                      <h4 th:if="${fail}" th:text="${fail}" style="font-weight: bold; color: red;"></h4>-->
                       <div style="color: #d80450; font-weight: bold;" th:if="${#fields.hasErrors('apartment')}" th:errors="*{apartment}"></div>
@@ -121,13 +121,13 @@
                   <div class="row">
                     <div class="col-md-12">
                       <p id="owner_name">
-                        <b>Владелец: </b>
+                        <b th:text="#{accounts.editPage.card.owner} + ': '">Владелец: </b>
                         <span th:if="*{owner != null}">
                           <a th:href="@{/admin/owners/{id}(id=*{owner.id})}" th:text="*{owner.getFullName()}"></a>
                         </span>
                       </p>
                       <p id="owner_phone">
-                        <b>Телефон: </b>
+                        <b th:text="#{accounts.editPage.card.phone} + ': '">Телефон: </b>
                         <span th:if="*{owner != null}">
                           <a th:href="'tel:' + *{owner.phone_number}" th:text="*{owner.phone_number}"></a>
                         </span>
@@ -139,8 +139,8 @@
                   <div class="row justify-content-end">
                     <div class="col-xs-12">
                       <div class="form-group">
-                        <a th:href="@{/admin/accounts}" class="btn btn-default">Отменить</a>
-                        <button type="submit" class="btn btn-success">Сохранить</button>
+                        <a th:href="@{/admin/accounts}" class="btn btn-default" th:text="#{accounts.editPage.card.cancel}">Отменить</a>
+                        <button type="submit" class="btn btn-success" th:text="#{accounts.editPage.card.save}">Сохранить</button>
                       </div>
                     </div>
                   </div>
@@ -173,183 +173,21 @@
 <script th:src="@{/plugins/select2/js/select2.full.min.js}"></script>
 
 <script th:inline="javascript">
-  $(document).ready(function(){
 
-    $("#house_select").change(function(){
-        console.log(this);
-        console.log(this.value);
+  let id = [[${apartmentAccountDTO.id}]];
+  let buildingID = [[${apartmentAccountDTO.building.id}]];
+  let apartmentID = [[${apartmentAccountDTO.apartment.id}]];
+  let apartmentSection = [[${apartmentAccountDTO.section}]];
+  let placeholderText = [[#{select.placeholder}]];
+  let ownerText = [[#{accounts.editPage.card.owner}]];
+  let ownerPhoneText = [[#{accounts.editPage.card.phone}]];
+  let selectHouseText = [[#{accounts.editPage.card.selectHouse}]];
+  let selectSectionText = [[#{accounts.editPage.card.selectSection}]];
+  let notFoundText = [[#{not-found}]];
 
-        let section_select = document.getElementById("section_select");
-        section_select.innerHTML = '';
-
-        let apartment_select = document.getElementById("apartment_select");
-        apartment_select.innerHTML = '';
-
-        if(this.value === '0') {
-
-          console.log("IF");
-
-          section_select.disabled = true;
-          let o = document.createElement("option");
-          o.value = 0;
-          o.text = 'Сначала выберите дом';
-          o.selected = true;
-
-          section_select.appendChild(o);
-
-          apartment_select.disabled = true;
-          o = document.createElement("option");
-          o.value = 0;
-          o.text = 'Сначала выберите секцию';
-          o.selected = true;
-
-          apartment_select.appendChild(o);
-        } else {
-
-          console.log("ELSE");
-
-          section_select.disabled = false;
-          apartment_select.disabled = true;
-
-          let option = document.createElement("option");
-          option.value = 0;
-          option.text = 'Выберите...';
-          option.selected = true;
-
-          section_select.appendChild(option);
-
-          option = document.createElement("option");
-          option.value = 0;
-          option.text = 'Сначала выберите секцию';
-          option.selected = true;
-
-          apartment_select.appendChild(option);
-
-          $.get('/admin/buildings/get-sections/'+this.value, function(data){
-
-            console.log(data);
-
-            for(let i = 0; i < data.length; i++) {
-              option = document.createElement("option");
-              option.value = data[i];
-              option.text = data[i];
-              section_select.appendChild(option);
-            }
-          });
-        };
-    });
-
-    $("#section_select").change(function(){
-        console.log(this);
-        console.log(this.value);
-
-        let house_select = document.getElementById("house_select");
-        console.log(house_select.value);
-
-        let apartment_select = document.getElementById("apartment_select");
-        apartment_select.innerHTML = '';
-        apartment_select.disabled = false;
-
-        let option = document.createElement("option");
-        option.value = 0;
-        option.text = 'Выберите...';
-        option.selected = true;
-
-        apartment_select.appendChild(option);
-
-        $.get('/admin/buildings/get-section-apartments/'+house_select.value, {section_name:this.value}, function(data){
-
-          console.log(data);
-
-          for(let i = 0; i < data.length; i++) {
-            let option = document.createElement("option");
-            option.value = data[i].id;
-            option.text = 'кв. ' + data[i].number;
-            apartment_select.appendChild(option);
-          }
-
-        });
-    });
-
-    $("#apartment_select").change(function(){
-
-      let flat_id = $(this).val();
-
-      $.get('/admin/apartments/get-owner', {flat_id:flat_id}, function(data){
-
-        console.log(data);
-
-        $("#owner_name").html('<b>Владелец: </b>');
-        $("#owner_phone").html('<b>Телефон: </b>');
-
-        let name = document.createElement("a");
-        name.href = '/admin/owners/'+data.id;
-        name.text = data.fullName;
-
-        let phone = document.createElement("a");
-        phone.href = (data.phone_number != null) ? 'tel:' + data.phone_number : '#';
-        phone.text = (data.phone_number != null) ? data.phone_number : '--отсутствует--';
-
-        $("#owner_name").append(name);
-        $("#owner_phone").append(phone);
-
-      });
-
-    });
-
-  })
-
-  $(document).ready(function(){
-
-        $("#isActive, #section_select, #apartment_select").select2({placeholder:'Выберите...', minimumResultsForSearch:Infinity});
-        $("#house_select").select2({
-            ajax: {
-                url: '/admin/buildings/get-buildings',
-                data: function(params){
-                    console.log(params.page);
-                    return {
-                        search: params.term || "",
-                        page: params.page || 1
-                    }
-                },
-            },
-            placeholder: 'Выберите...'
-        });
-
-        if($("#apartment_select").val() != null) {
-
-          if($("#apartment_select").val() == 0 || $("#apartment_select").val() == '') {
-            $("#owner_name").html('<b>Владелец: </b>');
-            $("#owner_phone").html('<b>Телефон: </b>');
-          } else {
-            let apartment;
-            $.get("/admin/apartments/get-owner", {flat_id:$("#apartment_select").val()}, function(data){
-              owner = data;
-              console.log(data);
-              console.log(owner);
-
-              $("#owner_name").html('<b>Владелец: </b>');
-              $("#owner_phone").html('<b>Телефон: </b>');
-
-              let name = document.createElement("a");
-              name.href = '/admin/owners/'+data.id;
-              name.text = data.fullName;
-
-              let phone = document.createElement("a");
-              phone.href = (data.phone_number != null) ? 'tel:' + data.phone_number : '#';
-              phone.text = (data.phone_number != null) ? data.phone_number : '--отсутствует--';
-
-              $("#owner_name").append(name);
-              $("#owner_phone").append(phone);
-            })
-          }
-        }
-
-        $("#isActive").change(function(){
-          $("#changedState").val(true);
-        });
-    });
 </script>
+
+<script th:src="@{/dist/js/account_card.js}"></script>
 
 <!-- PAGE PLUGINS -->
 <!--&lt;!&ndash; jQuery Mapael &ndash;&gt;-->

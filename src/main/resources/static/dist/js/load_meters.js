@@ -1,166 +1,237 @@
+let house_selector = $("#house_select");
+let section_selector = $("#section_select");
+let apartment_selector = $("#apartment_select");
+let account = $("#account");
+let accountDisplay = $("#account_display");
+
 $(document).ready(function(){
 
-    $("#house_select").change(function(){
-        console.log(this);
-        console.log(this.value);
+    $("#isActive, #status, #tariff").select2({placeholder:placeholderText, minimumResultsForSearch:Infinity});
 
-        let section_select = document.getElementById("section_select");
-        section_select.innerHTML = '';
+    house_selector.select2({
+        ajax: {
+            url: '/admin/buildings/get-buildings',
+            data: function(params){
+                console.log(params.page);
+                return {
+                    search: params.term || "",
+                    page: params.page || 1
+                }
+            },
+        },
+        placeholder: placeholderText
+    });
 
-        let apartment_select = document.getElementById("apartment_select");
-        apartment_select.innerHTML = '';
+// селекторы секций и квартир сначала появляются нерабочими
+    section_selector.select2({placeholder:selectHouseText});
+    apartment_selector.select2({placeholder:selectSectionText});
 
-        if(this.value === '0') {
+// изменение дома сбрасывает квартиры и перезагружает секции
+    house_selector.change(function(){
 
-          console.log("IF");
+        console.log('house selector change triggered');
+        console.log('house selector value is ' + this.value);
+        buildingID = $(this).val();
 
-          section_select.disabled = true;
-          let o = document.createElement("option");
-          o.value = 0;
-          o.text = 'Сначала выберите дом';
-          o.selected = true;
+        section_selector.select2({placeholder:selectHouseText, minimumResultsForSearch:Infinity});
+        apartment_selector.select2({placeholder:selectSectionText, minimumResultsForSearch:Infinity});
+        section_selector.html('');
+        apartment_selector.html('');
+        apartment_selector.prop('disabled', true);
 
-          section_select.appendChild(o);
+        accountDisplay.val('----------');
 
-          apartment_select.disabled = true;
-          o = document.createElement("option");
-          o.value = 0;
-          o.text = 'Сначала выберите секцию';
-          o.selected = true;
+        if(this.value === 0) {
+          section_selector.prop('disabled', true);
 
-          apartment_select.appendChild(o);
         } else {
 
-          console.log("ELSE");
+          console.log('looking for sections');
 
-          section_select.disabled = false;
-          apartment_select.disabled = true;
-
-          let option = document.createElement("option");
-          option.value = 0;
-          option.text = 'Выберите...';
-          option.selected = true;
-
-          section_select.appendChild(option);
-
-          option = document.createElement("option");
-          option.value = 0;
-          option.text = 'Сначала выберите секцию';
-          option.selected = true;
-
-          apartment_select.appendChild(option);
+          section_selector.prop('disabled', false);
 
           $.get('/admin/buildings/get-sections/'+this.value, function(data){
 
-            console.log(data);
+            option = document.createElement("option");
+            option.value = 0;
+            option.text = placeholderText;
+            section_selector.append(option);
 
             for(let i = 0; i < data.length; i++) {
               option = document.createElement("option");
               option.value = data[i];
               option.text = data[i];
-              section_select.appendChild(option);
+              section_selector.append(option);
             }
+
+            section_selector.val(0);
+            section_selector.trigger('change');
+
           });
         };
     });
 
-    $("#section_select").change(function(){
-        console.log(this);
-        console.log(this.value);
+// изменение секции перезагружает квартиры
+    section_selector.change(function(){
 
-        let house_select = document.getElementById("house_select");
-        console.log(house_select.value);
+        accountDisplay.val('----------');
 
-        let apartment_select = document.getElementById("apartment_select");
-        apartment_select.innerHTML = '';
-        apartment_select.disabled = false;
+       if(section_selector.val() != 0) {
+            apartment_selector.html('');
+            apartment_selector.prop('disabled', false);
+            $.ajax({
+                type:'GET',
+                url:'/admin/buildings/get-section-apartments',
+                data:{id:buildingID, section_name:section_selector.val()},
+                success: function(data){
 
-        let option = document.createElement("option");
-        option.value = 0;
-        option.text = 'Выберите...';
-        option.selected = true;
+                    apartment_selector.append(new Option(placeholderText, 0, true, true));
 
-        apartment_select.appendChild(option);
+                    for(const apart of data) {
+                        let option = new Option('кв. ' + apart.number, apart.id, true, true);
+                        apartment_selector.append(option);
+                    }
 
-        $.get('/admin/buildings/get-section-apartments/'+house_select.value, {section_name:this.value}, function(data){
+                    if(apartmentID != null && apartmentID != 0) apartment_selector.val(apartmentID)
+                    else apartment_selector.val(0);
+                    apartment_selector.trigger('change');
+                }
+            });
+       }
 
-          console.log(data);
-
-          for(let i = 0; i < data.length; i++) {
-            let option = document.createElement("option");
-            option.value = data[i].id;
-            option.text = 'кв. ' + data[i].number;
-            apartment_select.appendChild(option);
-          }
-
-        });
     });
 
-    $("#apartment_select").change(function(){
+// изменение квартиры перезагружает владельца
+    apartment_selector.change(function(){
 
-      let flat_id = $(this).val();
+        apartmentID = 0;
 
-      // Получение данных о владельце
-      $.get('/admin/apartments/get-owner', {flat_id:flat_id}, function(data){
+        if(apartment_selector.val() != 0) {
+            $.get("/admin/apartments/get-owner", {flat_id:apartment_selector.val()}, function(data){
+              owner = data;
+              console.log(data);
 
-        console.log(data);
+              $("#owner").val(owner.id);
 
-        $("#owner_name").html('<b>Владелец: </b>');
-        $("#owner_phone").html('<b>Телефон: </b>');
+              $("#owner_name").html('<b>'+ownerText+': </b>');
+              $("#owner_phone").html('<b>'+ownerPhoneText+': </b>');
 
-        let name = document.createElement("a");
-        name.href = '/admin/owners/'+data.id;
-        name.text = data.fullName;
+              let name = document.createElement("a");
+              name.href = (data != null) ? '/admin/owners/'+data.id : '#';
+              name.text = (data != null) ? data.fullName : notFoundText;
 
-        let phone = document.createElement("a");
-        phone.href = (data.phone_number != null) ? 'tel:' + data.phone_number : '#';
-        phone.text = (data.phone_number != null) ? data.phone_number : '--отсутствует--';
+              let phone = document.createElement("a");
+              phone.href = (data.phone_number != null) ? 'tel:' + data.phone_number : '#';
+              phone.text = (data.phone_number != null) ? data.phone_number : notFoundText;
 
-        $("#owner_name").append(name);
-        $("#owner_phone").append(phone);
+              $("#owner_name").append(name);
+              $("#owner_phone").append(phone);
 
-      });
+              // Получение номера лицевого счета
+                $.get('/admin/accounts/get-flat-account',{flat_id:apartment_selector.val()}, function(data){
+                    console.log(data);
+                    account.val(data.toString());
+                    accountDisplay.val(data.toString().padStart(10,'0'));
+                })
+                .fail(function(){accountDisplay.val('----------');});
 
-      // Получение номера лицевого счета
-      $.get('/admin/accounts/get-flat-account',{flat_id:flat_id}, function(data){
-          console.log(data);
+                // Получение счетчиков для выбранной квартиры
+                $.get('/admin/apartments/get-meters', {flat_id:apartment_selector.val()}, function(data){
 
-          document.getElementById("account").value = data;
-      })
-      .fail(function(){document.getElementById("account").value = ''});
+                  console.log(data);
 
-      // Получение счетчиков для выбранной квартиры
-      $.get('/admin/apartments/get-meters', {flat_id:flat_id}, function(data){
+                  let $table_body = $('#meter_table tbody');
+                  $table_body.html('');
 
-        console.log(data);
+                  for(const meter of data) {
+                      console.log(meter);
 
-        let $table_body = $('#meter_table tbody');
-        $table_body.html('');
+                      let table_row = document.createElement("tr");
+                      table_row.classList.add("meter_data_row");
 
-        for(const meter of data) {
-            console.log(meter);
+                      const date = new Date(meter.date);
 
-            let table_row = document.createElement("tr");
-            table_row.classList.add("meter_data_row");
+                      table_row.innerHTML += '<td>'+meter.id.toString().padStart(10,'0')+'</td>';
+                      table_row.innerHTML += '<td>'+meter.status+'</td>';
+                      table_row.innerHTML += '<td>'+date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+'</td>';
+                      table_row.innerHTML += '<td>'+(date.getMonth()+1)+'.'+date.getFullYear()+'</td>';
+                      table_row.innerHTML += '<td>'+meter.apartment.building.name+'</td>';
+                      table_row.innerHTML += '<td>'+meter.apartment.section+'</td>';
+                      table_row.innerHTML += '<td>'+meter.apartment.number+'</td>';
+                      table_row.innerHTML += '<td>'+meter.service.name+'</td>';
+                      table_row.innerHTML += '<td>'+parseFloat(meter.currentReadings)+'</td>';
+                      table_row.innerHTML += '<td>'+meter.service.unit.name+'</td>';
 
-            const date = new Date(meter.date);
+                      $table_body.append(table_row);
+                  }
 
-            table_row.innerHTML += '<td>'+meter.id.toString().padStart(10,'0')+'</td>';
-            table_row.innerHTML += '<td>'+meter.status+'</td>';
-            table_row.innerHTML += '<td>'+date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+'</td>';
-            table_row.innerHTML += '<td>'+(date.getMonth()+1)+'.'+date.getFullYear()+'</td>';
-            table_row.innerHTML += '<td>'+meter.apartment.building.name+'</td>';
-            table_row.innerHTML += '<td>'+meter.apartment.section+'</td>';
-            table_row.innerHTML += '<td>'+meter.apartment.number+'</td>';
-            table_row.innerHTML += '<td>'+meter.service.name+'</td>';
-            table_row.innerHTML += '<td>'+parseFloat(meter.currentReadings)+'</td>';
-            table_row.innerHTML += '<td>'+meter.service.unit.name+'</td>';
+                });
 
-            $table_body.append(table_row);
+            });
+        } else {
+            $("#owner_name").html('<b>'+ownerText+': </b>');
+            $("#owner_phone").html('<b>'+ownerPhoneText+': </b>');
         }
 
-      });
+
 
     });
 
-  })
+
+// получение дома
+    $.ajax({
+      type:'GET',
+      url: '/admin/buildings/get-building/',
+      data: {building_id: buildingID},
+      success: function(data) {
+
+            console.log(data);
+
+          let option = new Option(data.name, data.id, true, true);
+          house_selector.append(option).trigger('change');
+
+            // к найденному дому сразу грузит его секции
+           $.get('/admin/buildings/get-sections/'+house_selector.val(), function(data){
+
+               for(let i = 0; i < data.length; i++) {
+                 option = document.createElement("option");
+                 option.value = data[i];
+                 option.text = data[i];
+                 section_selector.append(option);
+               }
+                // пробует подставить существующую секцию, если есть
+               console.log('trying to insert correct section ' + apartmentSection);
+               if(apartmentSection != null) {
+
+                   section_selector.val(apartmentSection);
+                   section_selector.trigger('change');
+
+               }
+           });
+        },
+        error: function(data) {
+            console.log(data);
+            console.log('building could not be loaded');
+
+            section_selector.select2({placeholder:selectHouseText, minimumResultsForSearch:Infinity});
+            apartment_selector.select2({placeholder:selectSectionText, minimumResultsForSearch:Infinity});
+            apartment_selector.html('');
+            apartment_selector.prop('disabled', true);
+            section_selector.html('');
+            section_selector.prop('disabled', true);
+        }
+      });
+
+// Получение номера лицевого счета
+$.get('/admin/accounts/get-flat-account',{flat_id:apartment_selector.val()}, function(data){
+    console.log(data);
+    account.val(data);
+    accountDisplay.val(data.toString().padStart(10,'0'));
+})
+.fail(function(){
+accountDisplay.val('----------');
+});
+
+
+});
+

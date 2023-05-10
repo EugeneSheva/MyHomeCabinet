@@ -58,9 +58,9 @@ public class ApartmentAccountServiceImpl {
                 .reduce(Double::sum).orElse(0.0);
     }
 
-    public ApartmentAccountDTO convertApartAccountToApartAccountDTO(ApartmentAccount account) {
-        return new ApartmentAccountDTO(account.getId(), account.getIsActive(), account.getNumber(), account.getBalance());
-    }
+//    public ApartmentAccountDTO convertApartAccountToApartAccountDTO(ApartmentAccount account) {
+//        return new ApartmentAccountDTO(account.getId(), account.getIsActive(), account.getNumber(), account.getBalance());
+//    }
 
 
 }

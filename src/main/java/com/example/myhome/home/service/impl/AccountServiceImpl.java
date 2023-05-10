@@ -1,10 +1,13 @@
 package com.example.myhome.home.service.impl;
 
 import com.example.myhome.home.dto.ApartmentAccountDTO;
+import com.example.myhome.home.mapper.AccountDTOMapper;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.AccountRepository;
 import com.example.myhome.home.repository.ApartmentRepository;
+import com.example.myhome.home.repository.BuildingRepository;
+import com.example.myhome.home.repository.OwnerRepository;
 import com.example.myhome.home.service.AccountService;
 import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
@@ -33,10 +36,14 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private ApartmentRepository apartmentRepository;
+    @Autowired private OwnerRepository ownerRepository;
+    @Autowired private BuildingRepository buildingRepository;
 
     @Autowired private ApartmentService apartmentService;
     @Autowired private BuildingService buildingService;
     @Autowired private OwnerService ownerService;
+
+    @Autowired private AccountDTOMapper mapper;
 
     @Override
     public List<ApartmentAccount> findAllAccounts() {
@@ -55,12 +62,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Page<ApartmentAccount> findAllAccountsByFiltersAndPage(FilterForm filters, Pageable pageable) {
+    public Page<ApartmentAccountDTO> findAllAccountsByFiltersAndPage(FilterForm filters, Pageable pageable) {
         log.info("Searching for accounts(page "+pageable.getPageNumber()+"/size "+pageable.getPageSize() + ") and specification");
-        Specification<ApartmentAccount> spec = buildSpecFromFilters(filters);
-        Page<ApartmentAccount> page = accountRepository.findAll(spec, pageable);
-        log.info("Found " + page.getContent().size() + " accounts");
-        return page;
+        Page<ApartmentAccount> initialPage = accountRepository.findAll(buildSpecFromFilters(filters), pageable);
+        log.info("Found " + initialPage.getContent().size() + " accounts");
+        List<ApartmentAccountDTO> listDTO = initialPage.getContent().stream().map(mapper::fromAccountToDTO).collect(Collectors.toList());
+        return new PageImpl<>(listDTO, pageable, initialPage.getTotalElements());
     }
 
     @Override
@@ -78,6 +85,17 @@ public class AccountServiceImpl implements AccountService {
         return account;
     }
 
+    public ApartmentAccountDTO findAccountDTOById(Long account_id) {
+        log.info("Searching for account with ID: " + account_id);
+        ApartmentAccount account = accountRepository.findById(account_id).orElseThrow();
+        log.info("Found account! " + account);
+        ApartmentAccountDTO dto = mapper.fromAccountToDTO(account);
+        if(dto != null && dto.getBuilding() != null && dto.getBuilding().getId() != null) {
+            dto.setBuilding(buildingService.findBuildingDTObyId(dto.getBuilding().getId()));
+        }
+        return dto;
+    }
+
     public ApartmentAccount getAccountNumberFromFlat(Long flat_id) {return accountRepository.findByApartmentId(flat_id).orElseThrow();}
 
     @Override
@@ -93,6 +111,19 @@ public class AccountServiceImpl implements AccountService {
             log.severe(e.getMessage());
             return null;
         }
+    }
+
+    @Override
+    public ApartmentAccount saveAccount(ApartmentAccountDTO dto) {
+
+        log.info("Forming account data to save from DTO");
+        ApartmentAccount account = mapper.fromDTOToAccount(dto);
+        Apartment apartment = apartmentRepository.getReferenceById(dto.getApartment().getId());
+        account.setApartment(apartment);
+        account.setOwner(apartment.getOwner());
+        account.setBuilding(apartment.getBuilding());
+        return saveAccount(account);
+
     }
 
     @Override
@@ -166,4 +197,7 @@ public class AccountServiceImpl implements AccountService {
     public ApartmentAccount save(ApartmentAccount account) {return accountRepository.save(account);}
     public void deleteAccountById(long account_id) {accountRepository.deleteById(account_id);}
 
+//    public ApartmentAccountDTO convertApartAccountToApartAccountDTO(ApartmentAccount account) {
+//       return new ApartmentAccountDTO(account.getId(),account.getIsActive(),account.getNumber(),account.getBalance());
+//    }
 }

@@ -25,7 +25,7 @@ public class FilterForm {
     private String datetime;
     private String description;
 
-    private String master_type;
+    private Long master_type;
     private Long master;
 
     private Long owner;

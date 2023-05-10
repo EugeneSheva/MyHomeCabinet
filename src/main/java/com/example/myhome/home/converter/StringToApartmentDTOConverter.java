@@ -1,4 +1,4 @@
-package com.example.myhome.home.converters;
+package com.example.myhome.home.converter;
 
 import com.example.myhome.home.dto.ApartmentDTO;
 import org.springframework.core.convert.converter.Converter;
@@ -11,7 +11,7 @@ public class StringToApartmentDTOConverter implements Converter<String, Apartmen
             Long id = Long.parseLong(source);
             dto.setId(id);
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            System.out.println(e.getLocalizedMessage());
         }
         System.out.println(dto);
         return dto;

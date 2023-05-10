@@ -26,13 +26,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Новая статья</h1>
+            <h1 class="m-0" th:text="#{settings.system.transactions.editPage.pageName}">Новая статья</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/income-expense}">Статьи приходов/расходов</a></li>
-              <li class="breadcrumb-item active">Новая статья</li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  <span th:text="#{settings.system.transactions.editPage.breadcrumb.main}">Главная</span></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/income-expense}" th:text="#{settings.system.transactions.editPage.breadcrumb.previous}">Статьи приходов/расходов</a></li>
+              <li class="breadcrumb-item active" th:text="#{settings.system.transactions.editPage.pageName}">Новая статья</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -51,11 +51,11 @@
                   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                   <div class="row">
                     <div class="col-xs-12 col-lg-7">
-                      <h4><b>Название</b></h4>
+                      <h4><b th:text="#{settings.system.transactions.editPage.name}">Название</b></h4>
                       <input style="width: 100%" type="text" class="form_control" th:field="*{name}" id="trans_name">
                       <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></h4>
                       <br>
-                      <h4 class="mt-3"><b>Приход/расход</b></h4>
+                      <h4 class="mt-3"><b th:text="#{settings.system.transactions.editPage.type}">Приход/расход</b></h4>
                       <select style="width: 100%; padding-block: 1px; padding-inline: 10px;"
                               class="form_control"
                               th:field="*{incomeExpenseType}" id="trans_type">
@@ -67,8 +67,8 @@
                   <div class="row">
                     <div class="col-xs-12 col-lg-7">
                       <div class="form-group">
-                        <a th:href="@{/admin/income-expense}" class="btn btn-default">Отменить</a>
-                        <button type="submit" class="btn btn-success">Сохранить</button>
+                        <a th:href="@{/admin/income-expense}" class="btn btn-default" th:text="#{settings.system.transactions.editPage.cancel}">Отменить</a>
+                        <button type="submit" class="btn btn-success" th:text="#{settings.system.transactions.editPage.save}">Сохранить</button>
                       </div>
                     </div>
                   </div>

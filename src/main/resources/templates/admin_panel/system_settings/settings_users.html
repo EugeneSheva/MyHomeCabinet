@@ -28,12 +28,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Пользователи</h1>
+            <h1 class="m-0" th:text="#{settings.system.users.mainPage.pageName}">Пользователи</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item active">Пользователи</li>
+              <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i>  <span th:text="#{settings.system.users.mainPage.breadcrumb.main}">Главная</span></a></li>
+              <li class="breadcrumb-item active" th:text="#{settings.system.users.mainPage.pageName}">Пользователи</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -46,7 +46,7 @@
       <div class="row mr-2" style="justify-content: flex-end">
         <div class="col-xs-12">
           <div class="pull-right margin-bottom">
-            <a class="btn btn-success" th:href="@{/admin/admins/create}">Создать пользователя</a>
+            <a class="btn btn-success" th:href="@{/admin/admins/create}" th:text="#{settings.system.users.mainPage.add-user}">Создать пользователя</a>
           </div>
         </div>
       </div>
@@ -58,7 +58,7 @@
                 <h3 class="box-title"></h3>
                 <div class="box-tools" style="top: 5px;">
                   <a th:href="@{/admin/admins}" class="btn btn-default btn-sm">
-                    <span class="hidden-xs">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                    <span class="hidden-xs" th:text="#{settings.system.users.mainPage.table.clear}">Очистить</span><i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
                   </a>
                 </div>
               </div>
@@ -68,11 +68,11 @@
                     <thead>
                       <tr>
                         <th>#</th>
-                        <th>Пользователь</th>
-                        <th>Роль</th>
-                        <th>Телефон</th>
-                        <th>Email (логин)</th>
-                        <th>Статус</th>
+                        <th th:text="#{settings.system.users.mainPage.table.user}">Пользователь</th>
+                        <th th:text="#{settings.system.users.mainPage.table.role}">Роль</th>
+                        <th th:text="#{settings.system.users.mainPage.table.phone}">Телефон</th>
+                        <th th:text="#{settings.system.users.mainPage.table.email}">Email (логин)</th>
+                        <th th:text="#{settings.system.users.mainPage.table.status}">Статус</th>
                         <th style="width: 114px; min-width: 114px">&nbsp;</th>
                       </tr>
                       <tr>
@@ -109,7 +109,7 @@
                       <input type="hidden" th:id="'input-' + ${iter.index}" th:value="${admin.id}">
                       <td th:text="${iter.index+1}">1</td>
                       <td th:text="${admin.first_name + ' ' + admin.last_name}">Elon Musk</td>
-                      <td th:text="${admin.role != null} ? ${admin.role.getName()}"></td>
+                      <td th:text="${admin.role}"></td>
                       <td th:text="${admin.phone_number}">+380990010101</td>
                       <td th:text="${admin.email}">admin@admin.com</td>
                       <td>
@@ -167,7 +167,10 @@
 <script th:src="@{/dist/js/filter.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<script>
+<script th:inline="javascript">
+
+  let placeholderText = [[#{select.placeholder}]]
+
   $(document).ready(function() {
 
     let user_rows = document.getElementsByClassName("user-row");
@@ -187,7 +190,7 @@
     });
 
     $(".my_select").select2({
-      placeholder: 'Выберите...',
+      placeholder: placeholderText,
       width: 'resolve'
     });
 

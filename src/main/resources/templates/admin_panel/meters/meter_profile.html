@@ -26,16 +26,16 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Показание счётчика</h1>
+            <h1 class="m-0" th:text="#{meters.infoPage.pageName}">Показание счётчика</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/meters}">Счётчики</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  <span th:text="#{meters.infoPage.breadcrumb.main}">Главная</span></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/meters}" th:text="#{meters.infoPage.breadcrumb.table}">Счётчики</a></li>
               <li class="breadcrumb-item"><a th:href="@{/admin/meters/data
               ?flat_id={flat_id}&service_id={service_id}
-              (flat_id=${flat_id}, service_id=${service_id})}">Показания счётчиков, кв. <span th:text="${meter.apartmentNumber}"></span></a></li>
-              <li class="breadcrumb-item active">Показание счётчика №<span th:text="${T(java.lang.String).format('%010d', meter.id)}"></span></li>
+              (flat_id=${flat_id}, service_id=${service_id})}"><span th:text="#{meters.infoPage.breadcrumb.previous}">Показания счётчиков, кв.</span> <span th:text="${meter.apartmentNumber}"></span></a></li>
+              <li class="breadcrumb-item active"><span th:text="#{meters.infoPage.pageName}">Показание счётчика</span> №<span th:text="${T(java.lang.String).format('%010d', meter.id)}"></span></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -57,7 +57,7 @@
                 th:text="${T(java.lang.String).format('%010d',meter.id)}"></h3>
           </div>
           <div class="col-md-3">
-            <span style="display:inline-block">от</span>
+            <span style="display:inline-block" th:text="#{meters.infoPage.datePrefix}">от</span>
             <div class="input-group" style="width:90%; display:inline-block">
                 <span class="input-group-addon kv-date-calendar" title="Выбрать дату">
                   <i class="glyphicon glyphicon-calendar"></i>
@@ -75,7 +75,7 @@
                 <h3 class="box-title"></h3>
                 <div class="box-tools" style="top: 15px;">
                   <a th:href="@{/admin/meters/update/{id}(id=${meter.id})}" class="btn btn-primary btn-sm">
-                    <span class="hidden-xs">Редактировать показание  </span><i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                    <span class="hidden-xs" th:text="#{meters.infoPage.card.edit}">Редактировать показание  </span><i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
                   </a>
                 </div>
               </div>
@@ -85,36 +85,36 @@
                     <table class="table table-bordered table-striped table-view">
                       <tbody>
                       <tr>
-                        <td style="font-weight:bold">Счётчик</td>
+                        <td style="font-weight:bold" th:text="#{meters.infoPage.card.service}">Счётчик</td>
                         <td th:text="${meter.serviceName}"></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Дом</td>
+                        <td style="font-weight:bold" th:text="#{meters.infoPage.card.house}">Дом</td>
                         <td th:text="${meter.buildingName}"></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Секция</td>
+                        <td style="font-weight:bold" th:text="#{meters.infoPage.card.section}">Секция</td>
                         <td th:text="${meter.section}"></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Квартира</td>
+                        <td style="font-weight:bold" th:text="#{meters.infoPage.card.apartment}">Квартира</td>
                         <td th:text="${meter.apartmentNumber}"></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Пользователь</td>
+                        <td style="font-weight:bold" th:text="#{meters.infoPage.card.owner}">Пользователь</td>
                         <td ><a th:href="@{/admin/owners/{id}(id=${meter.apartmentOwnerID})}"
                                 th:text="${meter.apartmentOwnerFullName}"></a></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Текущие показания</td>
+                        <td style="font-weight:bold" th:text="#{meters.infoPage.card.readings}">Текущие показания</td>
                         <td th:text="${meter.readings}"></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Ед.изм</td>
+                        <td style="font-weight:bold" th:text="#{meters.infoPage.card.unit}">Ед.изм</td>
                         <td th:text="${meter.serviceUnitName}"></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Статус</td>
+                        <td style="font-weight:bold" th:text="#{meters.infoPage.card.status}">Статус</td>
                         <td><small class="label label-success" th:text="${meter.status}">Активен</small></td>
                       </tr>
                       </tbody>

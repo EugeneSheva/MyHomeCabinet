@@ -42,7 +42,7 @@
 .box-header>.box-tools {
     position: absolute;
     right: 10px;
-    top: 45px;
+    top: 15px;
 }
 
 .box {
@@ -136,15 +136,6 @@
 .pull-right {
     float:right;
 }
-
-.user-row {
-    padding: 2px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-}
-
 .user-header {
     background-color: rgba(255,0,0,0.4);
 }
@@ -253,6 +244,12 @@ textarea {
 
 .select2-results__options {
     max-height: 120px !important;
+}
+
+#return_button {
+    width:540px;
+    font-size:40px;
+    font-weight:bold;
 }
 
 

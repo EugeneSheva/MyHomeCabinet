@@ -1,27 +1,26 @@
 package com.example.myhome.home.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 // --- ЛИЦЕВЫЕ СЧЕТА ---
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "apartment_account")
-public class ApartmentAccount {
+public class ApartmentAccount implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private Long number;
 
     private Boolean isActive;
 
@@ -63,26 +62,6 @@ public class ApartmentAccount {
         this.id = id;
         this.isActive = isActive;
         this.balance = balance;
-    }
-
-    @PreRemove
-    public void removeApartmentLink() {
-        this.apartment.setAccount(null);
-    }
-
-    public double getAccountBalance() {
-        return
-                this.transactions.stream()
-                .filter(CashBox::getCompleted)
-                .map(CashBox::getAmount)
-                .reduce(Double::sum)
-                .orElse(0.0)
-
-                - this.apartment.getInvoiceList().stream()
-                .filter(Invoice::getCompleted)
-                .map(Invoice::getTotal_price)
-                .reduce(Double::sum)
-                .orElse(0.0);
     }
 
     public void addToBalance(double amount) {

@@ -26,12 +26,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Статьи приходов/расходов</h1>
+            <h1 class="m-0" th:text="#{settings.system.transactions.mainPage.pageName}">Статьи приходов/расходов</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item active">Статьи приходов/расходов</li>
+              <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i> <span th:text="#{settings.system.transactions.mainPage.breadcrumb.main}"> Главная</span></a></li>
+              <li class="breadcrumb-item active" th:text="#{settings.system.transactions.mainPage.pageName}">Статьи приходов/расходов</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -44,7 +44,7 @@
       <div class="row mr-2" style="justify-content: flex-end">
         <div class="col-xs-12">
           <div class="pull-right margin-bottom">
-            <a class="btn btn-success" th:href="@{/admin/income-expense/create}">Добавить статью</a>
+            <a class="btn btn-success" th:href="@{/admin/income-expense/create}" th:text="#{settings.system.transactions.mainPage.add}">Добавить статью</a>
           </div>
         </div>
       </div>
@@ -56,8 +56,8 @@
                 <table class="table table-bordered table-hover table-striped linkedRow">
                   <thead>
                   <tr>
-                    <th>Название</th>
-                    <th><a th:href="@{'/admin/income-expense?sort='+${type}}">Приход/расход</a></th>
+                    <th th:text="#{settings.system.transactions.mainPage.table.name}">Название</th>
+                    <th><a th:href="@{'/admin/income-expense?sort='+${type}}" th:text="#{settings.system.transactions.mainPage.table.type}">Приход/расход</a></th>
                     <th style="width: 80px; min-width: 80px">&nbsp;</th>
                   </tr>
                   </thead>

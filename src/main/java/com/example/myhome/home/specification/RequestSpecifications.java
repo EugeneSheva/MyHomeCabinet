@@ -13,7 +13,7 @@ public class RequestSpecifications {
         return (root, query, cb) -> cb.equal(root.get(RepairRequest_.ID), id);
     }
 
-    public static Specification<RepairRequest> hasMasterType(RepairMasterType type) {
+    public static Specification<RepairRequest> hasMasterType(UserRole type) {
         if(type == null) return (root, query, criteriaBuilder) -> null;
         return (root, query, cb) -> cb.equal(root.get(RepairRequest_.MASTER_TYPE), type);
     }

@@ -28,12 +28,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Редактирование страницы</h1>
+            <h1 class="m-0" th:text="#{settings.website.pageName}">Редактирование страницы</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item active">Редактирование страницы</li>
+              <li class="breadcrumb-item"><a href="#"><i class="fa fa-home"></i>  <span th:text="#{settings.website.breadcrumb.main}">Главная</span></a></li>
+              <li class="breadcrumb-item active" th:text="#{settings.website.pageName}">Редактирование страницы</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -48,32 +48,32 @@
           <div class="col-md-12">
             <div class="box">
               <div class="box-header with-border">
-                <h3 class="box-title">Редактирование страницы "О нас"</h3>
+                <h3 class="box-title" th:text="#{settings.website.about.card.header}">Редактирование страницы "О нас"</h3>
               </div>
               <div class="box-body">
                 <form method="post" th:object="${page}" enctype="multipart/form-data">
                   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                  <h3 class="page-header">Информация</h3>
+                  <h3 class="page-header" th:text="#{settings.website.about.card.info.header}">Информация</h3>
                   <div class="row">
                     <div class="col-md-8">
                       <div class="form-group">
-                        <label for="websitehomeform-hometitle" class="control-label">Заголовок</label>
+                        <label for="websitehomeform-hometitle" class="control-label" th:text="#{settings.website.about.card.info.title}">Заголовок</label>
                         <input type="text" class="form-control" th:field="*{title}" id="websitehomeform-hometitle">
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></h4>
                       </div>
                       <div class="form-group field-websitehomeform-homedescription">
-                        <label class="control-label" for="description">Краткий текст</label>
+                        <label class="control-label" for="description" th:text="#{settings.website.about.card.info.description}">Краткий текст</label>
                         <textarea th:field="*{description}" id="description"></textarea>
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></h4>
                       </div>
                     </div>
                     <div class="col-md-4">
-                      <h4>Фото директора</h4>
+                      <h4 th:text="#{settings.website.about.card.info.photo.title}">Фото директора</h4>
                       <img th:src="${page.director_photo != null && !page.director_photo.isEmpty()} ?
                                    @{/images/{url}(url=${page.director_photo})} :
                                    @{/images/placeholder.jpg}" alt="">
                       <div class="form-group mb-30">
-                        <label for="websitehomeslide-1-imagefile" class="control-label">Рекомендуемый размер: (1920х800)</label>
+                        <label for="websitehomeslide-1-imagefile" class="control-label" th:text="#{settings.website.about.card.info.photo.size}">Рекомендуемый размер: (1920х800)</label>
                         <input type="hidden" name="WebsiteHomeSlide[1][imageFile]" id="">
                         <input type="file" name="page_director_photo" id="director_photo" accept="image/*">
                       </div>
@@ -81,7 +81,7 @@
                   </div>
                   <div class="row">
                     <div class="col-xs-12" style="width: 100%">
-                      <h3 class="page-header">Фотогалерея</h3>
+                      <h3 class="page-header" th:text="#{settings.website.about.card.gallery.header}">Фотогалерея</h3>
                     </div>
                     <div style="width: 100%;" th:each="photo, iter : ${photos}" class="col-xs-4 col-sm-3 text-center">
                       <img style="width: 100%;" th:src="@{/images/{url}(url=${photo})}" alt="" class="margin-bottom-15 img-thumbnail">
@@ -93,23 +93,23 @@
                     </div>
                     <div class="col-xs-12" style="width: 100%">
 
-                      <label for="websitehomeslide-1-imagefile" class="control-label">Рекомендуемый размер: (1200x1200)</label>
+                      <label for="websitehomeslide-1-imagefile" class="control-label" th:text="#{settings.website.about.card.gallery.photo.size}">Рекомендуемый размер: (1200x1200)</label>
                       <br>
                       <input type="file" name="page_photos" id="photos" accept="image/*" multiple>
 
                     </div>
                   </div>
 
-                  <h3 class="page-header">Дополнительная информация</h3>
+                  <h3 class="page-header" th:text="#{settings.website.about.card.additional.header}">Дополнительная информация</h3>
                   <div class="row">
                     <div class="col-md-12">
                       <div class="form-group">
-                        <label for="websitehomeform-hometitle" class="control-label">Заголовок</label>
+                        <label for="websitehomeform-hometitle" class="control-label" th:text="#{settings.website.about.card.additional.title}">Заголовок</label>
                         <input type="text" class="form-control" th:field="*{add_title}" id="websitehomeform-homeaddtitle">
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('add_title')}" th:errors="*{add_title}"></h4>
                       </div>
                       <div class="form-group">
-                        <label class="control-label" for="websitehomeform-homedescription">Краткий текст</label>
+                        <label class="control-label" th:text="#{settings.website.about.card.additional.description}">Краткий текст</label>
                         <textarea style="width: 100%" rows="4" th:field="*{add_description}" id="add_description"></textarea>
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('add_description')}" th:errors="*{add_description}"></h4>
                       </div>
@@ -118,7 +118,7 @@
 
                   <div class="row">
                     <div class="col-xs-12" style="width: 100%">
-                      <h3 class="page-header">Дополнительная фотогалерея</h3>
+                      <h3 class="page-header" th:text="#{settings.website.about.card.additional.gallery.header}">Дополнительная фотогалерея</h3>
                     </div>
                     <div style="width: 100%;" th:each="photo, iter : ${add_photos}" class="col-xs-4 col-sm-3 text-center">
                       <img style="width: 100%;" th:src="@{/images/{url}(url=${photo})}" alt="" class="margin-bottom-15 img-thumbnail">
@@ -130,7 +130,7 @@
                     </div>
                     <div class="col-xs-12" style="width: 100%">
 
-                      <label for="" class="control-label">Рекомендуемый размер: (1200x1200)</label>
+                      <label for="" class="control-label" th:text="#{settings.website.about.card.additional.gallery.photo.size}">Рекомендуемый размер: (1200x1200)</label>
                       <br>
                       <input type="hidden" name="WebsiteHomeSlide[1][imageFile]" id="">
                       <input type="file" name="page_add_photos" id="add_photos" multiple accept="image/*">
@@ -140,7 +140,7 @@
 
                   <div class="row">
                     <div class="col-xs-12" style="width: 100%">
-                      <h3 class="page-header">Документы</h3>
+                      <h3 class="page-header" th:text="#{settings.website.about.card.documents.header}">Документы</h3>
                     </div>
                     <div class="col-xs-12 col-md-6">
                       <div id="documents">
@@ -153,12 +153,12 @@
                                  class="fa fa-3x pull-left"
                                  th:src="@{/images/placeholder.jpg}"
                                  alt="">
-                            <label> PDF, JPG (макс. размер 20 Mb)</label>
+                            <label th:text="#{settings.website.about.card.documents.size}"> PDF, JPG (макс. размер 20 Mb)</label>
                             <input type="file" name="document_files">
                           </div>
 
                           <div class="form-group">
-                            <label>Название документа</label>
+                            <label th:text="#{settings.website.about.card.documents.name}">Название документа</label>
                             <input type="text" class="form-control" placeholder="Введите название" name="document_names">
                           </div>
                         </div>
@@ -174,18 +174,19 @@
                                  @{/images/documents/{url}(url=${document.file})} :
                                  @{/images/placeholder.jpg}"
                                  alt="">
-                            <label> PDF, JPG (макс. размер 20 Mb)</label>
+                            <label th:text="#{settings.website.about.card.documents.size}"> PDF, JPG (макс. размер 20 Mb)</label>
                             <input type="file" name="document_files" accept="application/pdf, image/jpeg">
                           </div>
 
                           <div class="form-group">
-                            <label>Название документа</label>
+                            <label th:text="#{settings.website.about.card.documents.name}">Название документа</label>
                             <input type="text" class="form-control" th:value="${document.name}" name="document_names">
                           </div>
                         </div>
                       </div>
                       <div class="btn-group">
-                        <button type="button" id="add_document_button" class="btn btn-success margin-bottom-15 form-row-add-websitedocument-btn">
+                        <button type="button" id="add_document_button" class="btn btn-success margin-bottom-15 form-row-add-websitedocument-btn"
+                        th:text="#{settings.website.about.card.documents.add}">
                           Добавить документ
                         </button>
                       </div>
@@ -193,22 +194,22 @@
                   </div>
                   <div class="row">
                     <div class="col-md-12">
-                      <h3 class="page-header">Настройки SEO</h3>
+                      <h3 class="page-header" th:text="#{settings.website.seo.header}">Настройки SEO</h3>
                       <div class="form-group field-websitehomeform-homemetatitle">
 
-                        <label class="control-label" for="websitehomeform-homemetatitle">Title</label>
+                        <label class="control-label" for="websitehomeform-homemetatitle" th:text="#{settings.website.seo.title}">Title</label>
                         <input th:field="*{seo_title}" type="text" id="websitehomeform-homemetatitle" class="form-control">
 
                       </div>
                       <div class="form-group field-websitehomeform-homemetadescription">
 
-                        <label class="control-label" for="websitehomeform-homemetadescription">Description</label>
+                        <label class="control-label" for="websitehomeform-homemetadescription" th:text="#{settings.website.seo.description}">Description</label>
                         <textarea th:field="*{seo_description}" id="websitehomeform-homemetadescription" class="form-control" name="WebsiteHomeForm[homeMetaDescription]" rows="6"></textarea>
 
                       </div>
                       <div class="form-group field-websitehomeform-homemetakeywords">
 
-                        <label class="control-label" for="websitehomeform-homemetakeywords">Keywords</label>
+                        <label class="control-label" for="websitehomeform-homemetakeywords" th:text="#{settings.website.seo.keywords}">Keywords</label>
                         <textarea th:field="*{seo_keywords}" id="websitehomeform-homemetakeywords" class="form-control" name="WebsiteHomeForm[homeMetaKeywords]" rows="6"></textarea>
 
                       </div>
@@ -216,8 +217,8 @@
                   </div>
                   <div class="row">
                     <div class="form-group submit-buttons">
-                      <a href="admin/website/home" class="btn btn-default">Отменить</a>
-                      <button type="submit" class="btn btn-success">Сохранить</button>
+                      <a href="admin/website/home" class="btn btn-default" th:text="#{settings.website.cancel}">Отменить</a>
+                      <button type="submit" class="btn btn-success" th:text="#{settings.website.save}">Сохранить</button>
                     </div>
                   </div>
                 </form>

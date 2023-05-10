@@ -24,20 +24,20 @@
   <aside th:insert="~{main-template :: sidebar}"></aside>
 
   <div class="content-wrapper">
-    <form method="post" th:object="${repairRequest}">
+    <form method="post" th:object="${repairRequestDTO}">
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
     <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0"
-                th:text="${id != null} ? 'Заявка №' + ${id} + ' - редактирование' : 'Новая заявка'"></h1>
+                th:text="*{id != null} ? 'Заявка №' + *{id} + ' - редактирование' : #{requests.editPage.pageName}"></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/requests}">Вызовы мастера</a></li>
-              <li class="breadcrumb-item active" th:text="${id != null} ? 'Заявка №' + ${id} + ' - редактирование' : 'Новая заявка'"></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i> <span th:text="#{requests.editPage.breadcrumb.main}"> Главная</span></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/requests}" th:text="#{requests.editPage.breadcrumb.previous}">Вызовы мастера</a></li>
+              <li class="breadcrumb-item active" th:text="*{id != null} ? 'Заявка №' + *{id} + ' - редактирование' : #{requests.editPage.pageName}"></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -51,11 +51,11 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-3">
-              <input style="width: 90%;" th:value="${date}" th:readonly="${id != null}" name="date" id="date" type="date" class="form-control">
+              <input style="width: 90%;" id="request_date" name="request_date" th:value="*{#temporals.format(request_date, 'yyyy-MM-dd')}" th:readonly="*{id != null}" type="date" class="form-control">
             </div>
             <div class="col-md-3">
-              <span style="display:inline;">от </span>
-              <input style="width: 90%; display:inline-block;" th:readonly="${id != null}" th:value="${#temporals.format(time, 'HH:mm')}" name="time" id="time" type="time" class="form-control">
+              <span style="display:inline;" th:text="#{requests.editPage.datePrefix}">от </span>
+              <input style="width: 90%; display:inline-block;" th:readonly="*{id != null}" th:field="*{request_time}" th:value="${#temporals.format(time, 'HH:mm')}" type="time" class="form-control">
             </div>
             <div class="col-md-6"></div>
           </div>
@@ -67,70 +67,71 @@
 
                   <div class="row">
                     <div class="col-md-6">
-                      <h5>Владелец квартиры</h5>
-                      <select class="selects" th:field="*{owner}">
-                        <option value="0">Выберите...</option>
+                      <h5 th:text="#{requests.editPage.card.owner}">Владелец квартиры</h5>
+                      <select class="selects" th:field="*{ownerID}">
+                        <option value="0" th:text="#{select.placeholder}">Выберите...</option>
                         <option th:each="owner : ${owners}"
                                 th:value="${owner.id}"
                                 th:text="${owner.getFullName()} + ' (ID: ' + ${owner.id} + ')'"></option>
                       </select>
-                      <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('owner')}" th:errors="*{owner}"></h4>
+                      <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('ownerID')}" th:errors="*{ownerID}"></h4>
                     </div>
                     <div class="col-md-6">
-                      <h5>Удобное время</h5>
+                      <h5 th:text="#{requests.editPage.card.time}">Удобное время</h5>
                       <input type="date" style="padding-block:10px" name="best_date" th:value="${best_date}" id="">
                       <input type="time" style="padding-block:10px" name="best_time" th:value="${best_time}" id="">
-                      <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('best_time_request')}" th:errors="*{best_time_request}"></h4>
+                      <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('best_time')}" th:errors="*{best_time}"></h4>
                     </div>
                   </div>
 
                   <div class="row">
                     <div class="col-md-6">
-                      <h4 style="font-weight:bold">Описание</h4>
+                      <h4 style="font-weight:bold" th:text="#{requests.editPage.card.description}">Описание</h4>
                       <textarea class="textareas" th:field="*{description}" style="width: 100%;" rows="12"></textarea>
                       <h4 style="color: red; font-weight: bold; margin-top: -5px" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></h4>
                     </div>
                     <div class="col-md-6">
-                      <h4 style="font-weight:bold">Квартира</h4>
-                      <select th:if="*{owner != null}" class="selects mb-3" th:field="*{apartment}">
-                        <option value="0">Выберите...</option>
-                        <option th:each="(flat : *{owner.getApartments()})"
+                      <h4 style="font-weight:bold" th:text="#{requests.editPage.card.apartment}">Квартира</h4>
+                      <select th:if="*{ownerID != null}" class="selects mb-3" th:field="*{apartmentID}">
+                        <option value="0" th:text="#{select.placeholder}">Выберите(h)...</option>
+                        <option th:each="(flat : ${owner_apartments})"
                                 th:value="${flat.id}"
-                                th:text="'кв. ' + ${flat.number} + ', ' + ${flat.building.name}"></option>
+                                th:text="${flat.fullName}"></option>
                       </select>
-                      <select th:if="*{owner == null}" disabled class="selects mb-3" th:field="*{apartment}">
-                        <option value="0">Выберите...</option>
+                      <select th:if="*{ownerID == null}" disabled class="selects mb-3" th:field="*{apartmentID}">
+                        <option value="0" th:text="#{select.placeholder}">Выберите...</option>
                       </select>
-                      <h4 style="color: red; font-weight: bold; margin-top: -15px" th:if="${#fields.hasErrors('apartment')}" th:errors="*{apartment}"></h4>
-                      <h4 style="font-weight:bold">Тип мастера</h4>
-                      <select class="selects mb-3" id="master_type" th:field="*{master_type}">
-                        <option th:each="type : ${T(com.example.myhome.home.model.RepairMasterType).values()}"
-                                th:value="${type}"
-                                th:text="${type.getName()}"></option>
+                      <h4 style="color: red; font-weight: bold; margin-top: -10px" th:if="${#fields.hasErrors('apartmentID')}" th:errors="*{apartmentID}"></h4>
+                      <h4 style="font-weight:bold" th:text="#{requests.editPage.card.master.type}">Тип мастера</h4>
+                      <select class="selects mb-3" id="masterTypeID" th:field="*{masterTypeID}">
+                        <option value="-1" th:text="#{any_specialist}"></option>
+                        <option th:each="type : ${master_types}"
+                                th:value="${type.id}"
+                                th:text="${type.name}"></option>
                       </select>
-                      <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('master_type')}" th:errors="*{master_type}"></h4>
-                      <h4 style="font-weight:bold">Статус</h4>
+                      <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('masterTypeID')}" th:errors="*{masterTypeID}"></h4>
+                      <h4 style="font-weight:bold" th:text="#{requests.editPage.card.status}">Статус</h4>
                       <select class="selects mb-3" th:field="*{status}">
                         <option th:each="status : ${T(com.example.myhome.home.model.RepairStatus).values()}"
                                 th:value="${status}"
                                 th:text="${status.getName()}"></option>
                       </select>
                       <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></h4>
-                      <h4 style="font-weight:bold">Мастер</h4>
-                      <select class="selects" id="masters" th:field="*{master}">
-                        <option value="">Выберите...</option>
+                      <h4 style="font-weight:bold" th:text="#{requests.editPage.card.master.name}">Мастер</h4>
+                      <select class="selects" id="masters" th:field="*{masterID}">
+                        <option value="" th:text="#{select.placeholder}">Выберите...</option>
                         <option th:each="master : ${masters}"
                                 th:if="${master != null}"
                                 th:value="${master.id}"
-                                th:text="${master.role.getName()} + ' - ' + ${master.getFullName()}"></option>
+                                th:text="${(master.role != null) ? master.role : 'XXX'} + ' - ' + ${master.getFullName()}"></option>
                       </select>
-                      <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('master')}" th:errors="*{master}"></h4>
+                      <h4 style="color: red; font-weight: bold; margin-top: -10px" th:if="${#fields.hasErrors('masterID')}" th:errors="*{masterID}"></h4>
                     </div>
                   </div>
 
                   <div class="row mt-2 mb-2">
                     <div class="col-md-12">
-                      <h4 style="font-weight:bold">Комментарий</h4>
+                      <h4 style="font-weight:bold" th:text="#{requests.editPage.card.comment}">Комментарий</h4>
                       <div class="form-group">
                         <textarea class="textareas" th:field="*{comment}" placeholder="Описание..." rows="5" style="width:100%"></textarea>
                       </div>
@@ -140,8 +141,8 @@
                   <div class="row justify-content-end">
                     <div class="col-xs-12">
                       <div class="form-group">
-                        <a th:href="@{/admin/requests}" class="btn btn-default">Отменить</a>
-                        <button type="submit" class="btn btn-success">Сохранить</button>
+                        <a th:href="@{/admin/requests}" class="btn btn-default" th:text="#{requests.editPage.card.cancel}">Отменить</a>
+                        <button type="submit" class="btn btn-success" th:text="#{requests.editPage.card.save}">Сохранить</button>
                       </div>
                     </div>
                   </div>
@@ -174,102 +175,17 @@
 <script th:src="@{/summernote/summernote.min.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+<script th:inline="javascript">
+  let placeholderText = [[#{select.placeholder}]];
+  let notFoundText = [[#{search.results.empty}]];
+</script>
+
+
+<script th:src="@{/dist/js/requests.js}"></script>
+
 <script>
 
-  function loadApartments(input) {
-    let owner_id = input.value;
-    console.log(owner_id);
 
-    $("#apartment").prop("disabled", (owner_id != '0') ? false : true);
-
-    $.get('/admin/owners/get-apartments/' + owner_id, function(data){
-      alert("получил квартиры");
-      console.log(data);
-
-      $("#apartment").html('');
-
-      for(let i = 0; i < data.length; i++) {
-        let option = document.createElement("option");
-        option.value = data[i].id;
-        option.text = 'кв. ' + data[i].number + ', ' + data[i].building.name;
-        $("#apartment").append(option);
-      }
-    });
-  }
-
-  $(document).ready(function(){
-    $("#date, #time").change(function(){
-      alert("change");
-      console.log($(this).val());
-    });
-
-    let owner_input = document.getElementById("owner");
-    owner_input.addEventListener('change', () => loadApartments(owner_input));
-
-    $("#owner").select2({
-        ajax: {
-            url: '/admin/owners/get-all-owners',
-            data: function(params){
-                console.log(params.page);
-                return {
-                    search: params.term || "",
-                    page: params.page || 1
-                }
-            },
-
-        },
-        placeholder: 'Выберите...',
-        minimumInputLength: 2
-    });
-
-    $("#apartment, #master_type, #status, #masters").select2({placeholder:'Выберите...', minimumResultsForSearch:Infinity});
-
-
-    $("#owner").change(function(){
-      let owner_id = $("#owner").val();
-      console.log(owner_id);
-
-      $("#apartment").prop("disabled", (owner_id != '0') ? false : true);
-
-      $.get('/admin/owners/get-apartment/' + owner_id, function(data){
-        alert("получил квартиры");
-        console.log(data);
-
-        $("#apartment").html('');
-
-        for(let i = 0; i < data.length; i++) {
-          let option = document.createElement("option");
-          option.value = data[i].id;
-          option.text = 'кв. ' + data[i].number + ', ' + data[i].building.name;
-          $("#apartment").append(option);
-        }
-      });
-    });
-
-    $("#master_type").change(function(){
-      let master_type = $(this).val();
-      let master_type_name = $( "#master_type option:selected" ).text();
-      console.log(master_type.toLowerCase());
-      console.log(master_type_name);
-
-      $.get('/admin/admins/get-masters-by-type', {type:master_type}, function(data){
-        alert("получил мастеров типа: " + master_type_name);
-        console.log(data);
-
-        $("#masters").html('');
-
-        for(let i = 0; i < data.length; i++) {
-          let option = document.createElement("option");
-          console.log(data[i].role);
-          option.value = data[i].id;
-          option.text = master_type_name + ' - ' + data[i].first_name + ' ' + data[i].last_name;
-          $("#masters").append(option);
-        }
-      })
-    });
-
-    $("#comment").summernote({height:150});
-  })
 </script>
 
 <!-- PAGE PLUGINS -->

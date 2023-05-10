@@ -6,6 +6,7 @@ import com.example.myhome.home.service.impl.ServiceServiceImpl;
 import com.example.myhome.home.service.TariffService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,12 +20,14 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/admin/tariffs")
+@RequiredArgsConstructor
 @Log
 public class TariffController {
 
-    @Autowired private ServiceServiceImpl serviceService;
-    @Autowired private TariffService tariffService;
+    private final ServiceServiceImpl serviceService;
+    private final TariffService tariffService;
 
+    // Открыть страничку с таблицей всех тарифов
     @GetMapping
     public String showTariffsPage(@RequestParam(required = false) String sort, Model model) {
         List<Tariff> tariffs = new ArrayList<>();
@@ -45,12 +48,14 @@ public class TariffController {
         return "admin_panel/system_settings/settings_tariffs";
     }
 
+    // Открыть страничку профиля конкретного тарифа
     @GetMapping("/{id}")
     public String showTariffInfoPage(@PathVariable long id, Model model) {
         model.addAttribute("tariff", tariffService.findTariffById(id));
         return "admin_panel/system_settings/tariff_profile";
     }
 
+    // Открыть страничку создания нового тарифа
     @GetMapping("/create")
     public String showCreateTariffCard(Model model){
         model.addAttribute("tariff", new Tariff());
@@ -59,6 +64,18 @@ public class TariffController {
         return "admin_panel/system_settings/tariff_card";
     }
 
+    // Открыть табличку обновления тарифа
+    @GetMapping("/update/{id}")
+    public String showUpdateTariffPage(@PathVariable long id, Model model) {
+        Tariff tariff = tariffService.findTariffById(id);
+        model.addAttribute("tariff", tariff);
+        model.addAttribute("components", tariff.getTariffComponents().entrySet());
+        model.addAttribute("services", serviceService.findAllServices());
+        model.addAttribute("units", serviceService.findAllUnits());
+        return "admin_panel/system_settings/tariff_card";
+    }
+
+    // Сохранить созданный тариф
     @PostMapping("/create")
     public String createTariff(@Valid @ModelAttribute Tariff tariff,
                                BindingResult bindingResult,
@@ -82,16 +99,7 @@ public class TariffController {
         return "redirect:/admin/tariffs";
     }
 
-    @GetMapping("/update/{id}")
-    public String showUpdateTariffPage(@PathVariable long id, Model model) {
-        Tariff tariff = tariffService.findTariffById(id);
-        model.addAttribute("tariff", tariff);
-        model.addAttribute("components", tariff.getTariffComponents().entrySet());
-        model.addAttribute("services", serviceService.findAllServices());
-        model.addAttribute("units", serviceService.findAllUnits());
-        return "admin_panel/system_settings/tariff_card";
-    }
-
+    // Сохранить обновленный тариф
     @PostMapping("/update/{id}")
     public String updateTariff(@PathVariable long id,
                                @Valid @ModelAttribute Tariff tariff,
@@ -117,14 +125,14 @@ public class TariffController {
         return "redirect:/admin/tariffs";
     }
 
+    // Удалить тариф по его ID
     @GetMapping("/delete/{id}")
     public String deleteTariff(@PathVariable long id) {
         tariffService.deleteTariffById(id);
         return "redirect:/admin/tariffs";
     }
 
-    // ===========
-
+    // Получать все компоненты тарифа (услуги + цены)
     @GetMapping("/get-components")
     public @ResponseBody Map<String, Double> getTariffComponents(@RequestParam long tariff_id) throws JsonProcessingException {
         Map<Service, Double> components = tariffService.findTariffById(tariff_id).getTariffComponents();

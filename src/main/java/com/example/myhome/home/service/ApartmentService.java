@@ -3,6 +3,7 @@ package com.example.myhome.home.service;
 import com.example.myhome.home.dto.BuildingDTO;
 import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.exception.NotFoundException;
+import com.example.myhome.home.mapper.ApartmentDTOMapper;
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.dto.ApartmentDTO;
 import com.example.myhome.home.model.*;
@@ -35,6 +36,7 @@ public class ApartmentService {
     private final FileUploadUtil fileUploadUtil;
     private final BuildingService buildingService;
 
+    private final ApartmentDTOMapper mapper;
 
     public Apartment findById(Long id) {
         return (id == null) ? null : apartmentRepository.findById(id).orElseThrow(NotFoundException::new);
@@ -80,7 +82,7 @@ public class ApartmentService {
 
     public ApartmentDTO findApartmentDto(Long id) {
         Apartment apartment = apartmentRepository.findById(id).orElseThrow();
-        return MappingUtils.fromApartmentToDTO(apartment);
+        return mapper.fromApartmentToDTO(apartment);
     }
 
 

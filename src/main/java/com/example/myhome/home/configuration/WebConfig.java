@@ -1,6 +1,5 @@
 package com.example.myhome.home.configuration;
-import com.example.myhome.home.converters.StringToApartmentDTOConverter;
-import com.example.myhome.home.converters.StringToBuildingDTOConverter;
+import com.example.myhome.home.converter.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +20,7 @@ import java.util.Locale;
 @Configuration
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
+
     @Value("${upload.path}")
     private String uploadPath;
     @Value("${prefix}")
@@ -28,6 +28,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        System.out.println("CONFIG UPLOAD PATH " + uploadPath);
+        System.out.println("CONFIG PREFIX " + prefix);
         registry
                 .addResourceHandler("/img/**")
                 .addResourceLocations(prefix + uploadPath + "/", prefix + uploadPath + "/img/");
@@ -43,9 +45,12 @@ public class WebConfig implements WebMvcConfigurer {
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new StringToApartmentDTOConverter());
         registry.addConverter(new StringToBuildingDTOConverter());
+        registry.addConverter(new StringToAccountDTOConverter());
+        registry.addConverter(new StringToOwnerDTOConverter());
+        registry.addConverter(new AccountDTOToStringConverter());
+        registry.addConverter(new OwnerDTOToStringConverter());
     }
 
-// translater
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();

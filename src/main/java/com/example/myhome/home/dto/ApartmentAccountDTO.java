@@ -6,7 +6,6 @@ import lombok.*;
 // --- ЛИЦЕВЫЕ СЧЕТА ---
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ApartmentAccountDTO {
@@ -21,6 +20,12 @@ public class ApartmentAccountDTO {
     private ApartmentDTO apartment;
     private BuildingDTO building;
     private OwnerDTO owner;
+
+    public ApartmentAccountDTO() {
+        this.apartment = new ApartmentDTO();
+        this.building = new BuildingDTO();
+        this.owner = new OwnerDTO();
+    }
 
     public ApartmentAccountDTO(Long id, Boolean isActive, Long number, Double balance) {
         this.id = id;

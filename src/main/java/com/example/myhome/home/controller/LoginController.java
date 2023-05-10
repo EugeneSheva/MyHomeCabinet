@@ -5,6 +5,7 @@ import com.example.myhome.home.service.registration.RegistrationRequest;
 import com.example.myhome.home.service.registration.RegisterService;
 import com.example.myhome.home.validator.LoginRequestValidator;
 import com.example.myhome.home.validator.RegistrationRequestValidator;
+
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -124,12 +125,6 @@ public class LoginController {
         cookie.setMaxAge(0);
         cookie.setPath(StringUtils.hasLength(request.getContextPath()) ? request.getContextPath() : "/");
         response.addCookie(cookie);
-    }
-
-    void clearRememberMeTokens() {
-        CustomUserDetails details = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = details.getUsername();
-        repository.removeUserTokens(username);
     }
 
 }

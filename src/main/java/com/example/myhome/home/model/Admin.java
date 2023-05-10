@@ -5,13 +5,17 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
-import com.example.myhome.util.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 // --- ПОЛЬЗОВАТЕЛИ ---
@@ -19,7 +23,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "admins")
-public class Admin {
+public class Admin implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +43,8 @@ public class Admin {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfRegistry;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name="user_role_id")
     private UserRole role;
 
     @JsonIgnore
@@ -72,6 +77,40 @@ public class Admin {
 
     public String getFullName() {
         return this.first_name + ' ' + this.last_name;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for(String permission : this.role.getPermissions()) {
+            authorities.add(new SimpleGrantedAuthority(permission));
+        }
+        return authorities;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.active;
     }
 }
 

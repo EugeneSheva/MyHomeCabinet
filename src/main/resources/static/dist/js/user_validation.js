@@ -6,7 +6,7 @@ $(document).ready(function() {
     let phone_number = document.getElementById('phone_number');
     let email = document.getElementById('email');
     let password = document.getElementById('password');
-    let repeat_password = document.getElementById('repeat_password');
+    let repeat_password = document.getElementById('confirm_password');
 
     let show_password = false;
 
@@ -18,13 +18,13 @@ $(document).ready(function() {
         + parseInt(phone_number.dataset.value) + parseInt(email.dataset.value) + parseInt(password.dataset.value)
         + parseInt(repeat_password.dataset.value);
 
-        if(correct_field_count != 6) {
-            save_button.classList.add('btn-default');
-            save_button.classList.remove('btn-success');
-        } else {
-            save_button.classList.add('btn-success');
-            save_button.classList.remove('btn-default');
-        }
+//        if(correct_field_count != 6) {
+//            save_button.classList.add('btn-default');
+//            save_button.classList.remove('btn-success');
+//        } else {
+//            save_button.classList.add('btn-success');
+//            save_button.classList.remove('btn-default');
+//        }
     }
 
     first_name.addEventListener('focusout', (input) => {
@@ -257,12 +257,12 @@ $(document).ready(function() {
            password += chars.substring(randomNumber, randomNumber +1);
           }
         document.getElementById("password").value = password;
-        document.getElementById("repeat_password").value = password;
+        document.getElementById("confirm_password").value = password;
 
-        document.getElementById("repeat_password").classList.remove('incorrect-input');
-        document.getElementById("repeat_password").classList.add('correct-input');
-        document.getElementById("repeat_password").previousElementSibling.innerHTML = '<b>Повторить пароль</b>'
-        document.getElementById("repeat_password").dataset.value = 1;
+        document.getElementById("confirm_password").classList.remove('incorrect-input');
+        document.getElementById("confirm_password").classList.add('correct-input');
+        document.getElementById("confirm_password").previousElementSibling.innerHTML = '<b>Повторить пароль</b>'
+        document.getElementById("confirm_password").dataset.value = 1;
         document.getElementById("password").classList.remove('incorrect-input');
         document.getElementById("password").classList.add('correct-input');
         document.getElementById("password").previousElementSibling.innerHTML = '<b>Пароль</b>'

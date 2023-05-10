@@ -2,6 +2,8 @@ package com.example.myhome.home.controller;
 
 import com.example.myhome.home.dto.*;
 import com.example.myhome.home.dto.OwnerDTO;
+import com.example.myhome.home.mapper.AccountDTOMapper;
+import com.example.myhome.home.mapper.ApartmentDTOMapper;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.*;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,6 +60,9 @@ public class ApartmentController {
     private  final IncomeExpenseRepository incomeExpenseRepository;
     private  final AdminServiceImpl adminService;
     private  final MeterDataServiceImpl meterDataService;
+
+    private final AccountDTOMapper accountDTOMapper;
+    private final ApartmentDTOMapper apartmentDTOMapper;
 
 
     @GetMapping
@@ -101,7 +107,7 @@ public class ApartmentController {
         model.addAttribute("buildings", buildingList);
         List<Tariff>tariffs = tariffService.findAllTariffs();
         model.addAttribute("tariffs", tariffs);
-        List<ApartmentAccountDTO> accountDTOList = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
+        List<ApartmentAccountDTO> accountDTOList = accountService.findAllAccounts().stream().map(accountDTOMapper::fromAccountToDTO).collect(Collectors.toList());
         model.addAttribute("accounts", accountDTOList);
         return "admin_panel/apartments/apartment_edit";
     }
@@ -121,7 +127,7 @@ public class ApartmentController {
         }
         List<Tariff>tariffs = tariffService.findAllTariffs();
         model.addAttribute("tariffs", tariffs);
-        List<ApartmentAccountDTO> accountDTOList = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
+        List<ApartmentAccountDTO> accountDTOList = accountService.findAllAccounts().stream().map(accountDTOMapper::fromAccountToDTO).collect(Collectors.toList());
         model.addAttribute("accounts", accountDTOList);
         return "admin_panel/apartments/apartment_edit";
     }
@@ -224,21 +230,14 @@ public class ApartmentController {
         List<IncomeExpenseItems>incomeItemsList=incomeExpenseRepository.findAllByIncomeExpenseType(IncomeExpenseType.INCOME);
         model.addAttribute("incomeItemsList", incomeItemsList);
 
-        List<AdminDTO>adminDTOList = adminService.findAllDTO();
+        List<AdminDTO>adminDTOList = adminService.findAllManagers();
 
-        // получение только юзеров с ролями "админ", "директор", "бухгалтер", без сантехников и т.д.
-        adminDTOList = adminDTOList.stream()
-                .filter(admin -> admin.getRole() == UserRole.ROLE_ADMIN ||
-                        admin.getRole() == UserRole.ROLE_DIRECTOR ||
-                        admin.getRole() == UserRole.ROLE_MANAGER ||
-                        admin.getRole() == UserRole.ROLE_ACCOUNTANT)
-                .collect(Collectors.toList());
         model.addAttribute("admins", adminDTOList);
 
         List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
         model.addAttribute("owners", ownerDTOList);
 
-        List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
+        List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(accountDTOMapper::fromAccountToDTO).collect(Collectors.toList());
         model.addAttribute("accounts", apartmentAccountDTOS);
 
         CashBox cashBox = new CashBox();
@@ -294,5 +293,19 @@ public class ApartmentController {
         return apartmentService.findBySpecificationAndPage(page, size, form);
 
 
+    }
+
+    @GetMapping("/get-section")
+    public @ResponseBody String getApartmentSection(@RequestParam Long id) {
+        String section = apartmentService.findById(id).getSection();
+        System.out.println("Found section " + section);
+        byte[] bytes = section.getBytes(StandardCharsets.UTF_8);
+        return new String(bytes, StandardCharsets.UTF_8);
+    }
+
+    @GetMapping("/get-apartment")
+    public @ResponseBody ApartmentDTO getSingleApartment(@RequestParam Long id) {
+        Apartment apartment = apartmentService.findById(id);
+        return apartmentDTOMapper.fromApartmentToDTO(apartment);
     }
 }

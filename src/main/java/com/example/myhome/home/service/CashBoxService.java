@@ -2,6 +2,7 @@ package com.example.myhome.home.service;
 
 import com.example.myhome.home.dto.CashBoxDTO;
 import com.example.myhome.home.exception.NotFoundException;
+import com.example.myhome.home.mapper.CashboxDTOMapper;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.CashBoxRepository;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CashBoxService {
     private final CashBoxRepository cashBoxRepository;
-
+    private final CashboxDTOMapper mapper;
 
     public CashBox findById (Long id) { return cashBoxRepository.findById(id).orElseThrow(NotFoundException::new);}
 
@@ -104,10 +105,9 @@ public Page<CashBoxDTO> findAllBySpecification2(FilterForm filters, Integer page
     }
     Page<CashBox> cashBoxList = cashBoxRepository.findByFilters(filters.getId(),startDate, endDate, getIsCompleteFromString(filters.getIsCompleted()), filters.getIncomeExpenseItem(), filters.getOwner(), filters.getAccountId(), getIncomeExpenseTypeFromString(filters.getIncomeExpenseType()), pageable);
 
-    for (CashBox cashBox : cashBoxList) {
-        listDTO.add(new CashBoxDTO(cashBox.getId(), cashBox.getDate(), cashBox.getCompleted(), cashBox.getIncomeExpenseType(), cashBox.getOwner()!=null ? cashBox.getOwner().getFullName() : null,
-                cashBox.getApartmentAccount()!=null ?  cashBox.getApartmentAccount().getId() : null, cashBox.getIncomeExpenseItems().getName(), cashBox.getManager().getFullName(), cashBox.getAmount(), cashBox.getDescription()));
-    }
+    cashBoxList.getContent().forEach(item -> listDTO.add(mapper.fromCashboxToDTO(item)));
+    System.out.println(listDTO);
+
     return new PageImpl<>(listDTO, pageable, cashBoxList.getTotalElements());
 }
     public void deleteById(Long id) { cashBoxRepository.deleteById(id); }

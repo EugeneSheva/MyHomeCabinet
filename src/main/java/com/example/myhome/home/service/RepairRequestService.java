@@ -2,11 +2,14 @@ package com.example.myhome.home.service;
 
 import com.example.myhome.home.dto.RepairRequestDTO;
 import com.example.myhome.home.exception.NotFoundException;
+import com.example.myhome.home.mapper.RepairRequestDTOMapper;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
-import com.example.myhome.home.repository.RepairRequestRepository;
+import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.impl.AdminServiceImpl;
 import com.example.myhome.home.specification.RequestSpecifications;
+import com.example.myhome.util.MappingUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,15 +28,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 @Log
 public class RepairRequestService {
 
-    @Autowired
-    private RepairRequestRepository repairRequestRepository;
+    private final RepairRequestRepository repairRequestRepository;
 
-    @Autowired private ApartmentService apartmentService;
-    @Autowired private OwnerService ownerService;
-    @Autowired private AdminServiceImpl adminService;
+    private final ApartmentService apartmentService;
+    private final OwnerService ownerService;
+    private final AdminServiceImpl adminService;
+
+    private final ApartmentRepository apartmentRepository;
+    private final OwnerRepository ownerRepository;
+    private final AdminRepository adminRepository;
+    private final UserRoleRepository userRoleRepository;
+
+    private final RepairRequestDTOMapper mapper;
 
     public List<RepairRequest> findAllRequests() {
         log.info("Searching for requests");
@@ -59,32 +69,7 @@ public class RepairRequestService {
         Page<RepairRequest> initialPage = repairRequestRepository.findAll(buildSpecFromFilters(filters), pageable);
 
         List<RepairRequestDTO> listDTO = initialPage.getContent().stream()
-                .map(request -> {
-                    Long apartmentID = (request.getApartment() != null) ? request.getApartment().getId() : null;
-                    Long apartmentNumber = (request.getApartment() != null) ? request.getApartment().getNumber() : null;
-                    String apartmentBuildingName = (request.getApartment() != null) ? request.getApartment().getBuilding().getName() : null;
-                    Long ownerID = (request.getOwner() != null) ? request.getOwner().getId() : null;
-                    String ownerFullName = (request.getOwner() != null) ? request.getOwner().getFullName() : null;
-                    String ownerPhoneNumber = (request.getOwner() != null) ? request.getOwner().getPhone_number() : null;
-                    Long masterID = (request.getMaster() != null) ? request.getMaster().getId() : null;
-                    String masterFullName = (request.getMaster() != null) ? request.getMaster().getFullName() : null;
-
-                    return RepairRequestDTO.builder()
-                            .id(request.getId())
-                            .best_time(request.getBest_time_request().format(DateTimeFormatter.ofPattern("yyyy-MM-dd - HH:mm")))
-                            .master_type(request.getMaster_type().getName())
-                            .description(request.getDescription())
-                            .apartmentID(apartmentID)
-                            .apartmentNumber(apartmentNumber)
-                            .apartmentBuildingName(apartmentBuildingName)
-                            .ownerID(ownerID)
-                            .ownerFullName(ownerFullName)
-                            .ownerPhoneNumber(ownerPhoneNumber)
-                            .masterID(masterID)
-                            .masterFullName(masterFullName)
-                            .status(request.getStatus().getName())
-                            .build();
-                })
+                .map(mapper::fromRequestToDTO)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(listDTO, pageable, initialPage.getTotalElements());
@@ -92,11 +77,9 @@ public class RepairRequestService {
 
     public Specification<RepairRequest> buildSpecFromFilters(FilterForm filters) {
 
-        log.info("Building specification from filters");
-
         Long id = filters.getId();
         String description = filters.getDescription();
-        RepairMasterType masterType = (filters.getMaster_type() != null) ? RepairMasterType.valueOf(filters.getMaster_type()) : null;
+        UserRole masterType = (filters.getMaster_type() != null && filters.getMaster_type() > 0) ? userRoleRepository.getReferenceById(filters.getMaster_type()) : null;
         String phone = filters.getPhone();
         RepairStatus status = (filters.getStatus() != null) ? RepairStatus.valueOf(filters.getStatus()) : null;
         Apartment apartment = (filters.getApartment() != null) ? apartmentService.findByNumber(filters.getApartment()) : null;
@@ -117,7 +100,7 @@ public class RepairRequestService {
                             LocalTime.parse(datetime_to.split(" ")[1]));
         }
 
-        Specification<RepairRequest> spec = Specification.where(RequestSpecifications.hasId(id)
+        return Specification.where(RequestSpecifications.hasId(id)
                 .and(RequestSpecifications.hasMasterType(masterType))
                 .and(RequestSpecifications.hasDescriptionLike(description))
                 .and(RequestSpecifications.hasApartment(apartment))
@@ -126,10 +109,6 @@ public class RepairRequestService {
                 .and(RequestSpecifications.hasMaster(master))
                 .and(RequestSpecifications.hasStatus(status))
                 .and(RequestSpecifications.datesBetween(from, to)));
-
-        log.info("Final specification for use: " + spec);
-
-        return spec;
     }
 
     public Long getMaxId() {return repairRequestRepository.getMaxId().orElse(0L);}
@@ -147,12 +126,40 @@ public class RepairRequestService {
         }
     }
 
+    public RepairRequestDTO findRequestDTOById(Long request_id) {
+        RepairRequest request = findRequestById(request_id);
+        if(request != null) return mapper.fromRequestToDTO(request);
+        else return null;
+    }
+
     public RepairRequest saveRequest(RepairRequest request) {
         log.info("Trying to save request...");
         log.info(request.toString());
         RepairRequest savedRequest;
         try {
             savedRequest = repairRequestRepository.save(request);
+            log.info("Request successfully saved! Saved request: ");
+            log.info(savedRequest.toString());
+            return savedRequest;
+        } catch (Exception e) {
+            log.severe("Request couldn't be saved");
+            log.severe(e.getMessage());
+            return null;
+        }
+    }
+
+    public RepairRequest saveRequest(RepairRequestDTO dto) {
+
+        log.info("Forming repair request to save from DTO");
+        RepairRequest request = mapper.fromDTOToRequest(dto);
+        request.setApartment(apartmentRepository.getReferenceById(dto.getApartmentID()));
+        request.setOwner(ownerRepository.getReferenceById(dto.getOwnerID()));
+        request.setMaster(adminRepository.getReferenceById(dto.getMasterID()));
+        log.info("Request formation finished, trying to save...");
+        log.info(request.toString());
+
+        try {
+            RepairRequest savedRequest = repairRequestRepository.save(request);
             log.info("Request successfully saved! Saved request: ");
             log.info(savedRequest.toString());
             return savedRequest;
@@ -177,12 +184,11 @@ public class RepairRequestService {
     public Page<RepairRequestDTO> findAll(Pageable pageable){
         List<RepairRequestDTO>listDTO= new ArrayList<>();
         Page<RepairRequest>repairRequests = repairRequestRepository.findAll(pageable);
+
+        repairRequests.forEach(req -> listDTO.add(mapper.fromRequestToDTO(req)));
+
         System.out.println("service "+repairRequests.getTotalElements());
-        for (RepairRequest rr : repairRequests) {
-            listDTO.add(new RepairRequestDTO(rr.getId(), rr.getBest_time_request().toString(), rr.getMaster_type().getName(), rr.getDescription(), rr.getApartment().getId(),
-                    rr.getApartment().getNumber(), rr.getApartment().getBuilding().getName(), rr.getOwner().getId(), rr.getOwner().getFullName(),
-                    rr.getOwner().getPhone_number(), rr.getMaster().getId(), rr.getMaster().getFullName(),rr.getStatus().getName()));
-        }
+
         return new PageImpl<>(listDTO, pageable, repairRequests.getTotalElements());
     }
 

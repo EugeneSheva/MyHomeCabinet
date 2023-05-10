@@ -11,6 +11,7 @@ import com.example.myhome.home.validator.MeterValidator;
 import com.example.myhome.util.MappingUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,24 +34,18 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/meters")
+@RequiredArgsConstructor
 @Log
 public class MeterController {
 
-    @Autowired
-    private MeterDataServiceImpl meterDataService;
+    private final MeterDataServiceImpl meterDataService;
+    private final ServiceServiceImpl serviceService;
+    private final BuildingService buildingService;
+    private final ApartmentService apartmentService;
 
-    @Autowired
-    private ServiceServiceImpl serviceService;
+    private final MeterValidator validator;
 
-    @Autowired
-    private BuildingService buildingService;
-
-    @Autowired
-    private ApartmentService apartmentService;
-
-    @Autowired private MeterValidator validator;
-
-    //Получить все счетчики
+    // Открыть страничку показаний всех счетчиков (сгруппированных по ID квартиры+услуги)
     @GetMapping
     public String showMetersPage(Model model,
                                  FilterForm form) {
@@ -73,7 +68,7 @@ public class MeterController {
         return "admin_panel/meters/meters";
     }
 
-    //Получить показания из какого-то одного счетчика
+    // Открыть страничку показаний какого-то одного счетчика(ID квартиры + ID услуги)
     @GetMapping("/data")
     public String showSingleMeterData(@RequestParam(required = false) Long flat_id,
                                       @RequestParam(required = false) Long service_id,
@@ -86,7 +81,7 @@ public class MeterController {
         Pageable pageable = PageRequest.of((form.getPage() == null) ? 0 : form.getPage()-1 ,5);
 
         Page<MeterDataDTO> meterDataPage = meterDataService.findSingleMeterData(form, pageable);
-
+        log.info(meterDataPage.getContent().toString());
         model.addAttribute("meter_data_rows", meterDataPage);
         model.addAttribute("filter_form", form);
         model.addAttribute("flat_id", flat_id);
@@ -97,51 +92,112 @@ public class MeterController {
         return "admin_panel/meters/meter_flat_data";
     }
 
-    //Создать абсолютно новое показание
+    // Открыть страницу профиля конкретного показания
+    @GetMapping("/info/{id}")
+    public String showInfo(@PathVariable long id, Model model) {
+        model.addAttribute("meter", meterDataService.findMeterDataDTOById(id));
+        return "admin_panel/meters/meter_profile";
+    }
+
+    // Открыть страничку создания показания
     @GetMapping("/create")
     public String showCreateMeterPage(Model model) {
 
         model.addAttribute("id",meterDataService.getMaxId()+1);
         model.addAttribute("meterDataDTO", new MeterDataDTO());
         model.addAttribute("services", serviceService.findAllServices());
-        model.addAttribute("buildings", buildingService.findAll());
+        model.addAttribute("buildings", buildingService.findAllDTO());
         model.addAttribute("now", LocalDate.now());
 
         return "admin_panel/meters/meter_card";
     }
 
-    @PostMapping("/create")
-    public String createMeter(@ModelAttribute MeterData meterData, BindingResult bindingResult, Model model) {
-        validator.validate(meterData, bindingResult);
-        log.info(bindingResult.getAllErrors().toString());
-        if(bindingResult.hasErrors()) {
-            model.addAttribute("id",meterDataService.getMaxId()+1);
-            return "admin_panel/meters/meter_card";
-        }
-        MeterData savedMeter = meterDataService.saveMeterData(meterData);
-        return "redirect:/admin/meters/data?flat_id="+savedMeter.getApartment().getId()+"&service_id="+savedMeter.getService().getId();
-    }
-
-    //Создать новое показание для существующего счетчика
+    // Открыть страницу создания дополнительного нового показания для существующего счетчика
     @GetMapping("/create-add")
     public String showCreateAdditionalMeterPage(@RequestParam long flat_id, @RequestParam long service_id, Model model) {
         List<MeterData> meterDataList = meterDataService.findSingleMeterData(flat_id, service_id);
         MeterData meter = (meterDataList.isEmpty()) ? new MeterData() : meterDataList.get(meterDataList.size()-1);
         meter.setId(null);
+
         model.addAttribute("id",meterDataService.getMaxId()+1);
         model.addAttribute("meterDataDTO", MappingUtils.fromMeterToDTO(meter));
         model.addAttribute("services", serviceService.findAllServices());
         model.addAttribute("buildings", buildingService.findAll());
+        model.addAttribute("building", buildingService.findBuildingDTObyId(meter.getBuilding().getId()));
         model.addAttribute("now", LocalDate.now());
         return "admin_panel/meters/meter_card";
     }
 
-    @PostMapping("/create-add")
-    public String alo(@Valid @ModelAttribute MeterData meterData) {
-        MeterData savedMeter = meterDataService.saveMeterData(meterData);
+    // Открытие странички обновления показания
+    @GetMapping("/update/{id}")
+    public String showUpdateMeterPage(@PathVariable long id, Model model) {
+        MeterDataDTO meter = meterDataService.findMeterDataDTOById(id);
+        log.info(meter.toString());
+        model.addAttribute("meterDataDTO", meter);
+        model.addAttribute("id",meter.getId());
+        model.addAttribute("services", serviceService.findAllServices());
+        model.addAttribute("building", buildingService.findBuildingDTObyId(meter.getBuildingID()));
+        model.addAttribute("buildings", buildingService.findAll());
+        model.addAttribute("now", LocalDate.now());
+        System.out.println(meter.getSection());
+        System.out.println(buildingService.findBuildingDTObyId(meter.getBuildingID()));
+        return "admin_panel/meters/meter_card";
+    }
+
+    // Сохранить созданное показание
+    @PostMapping("/create")
+    public String createMeter(@ModelAttribute MeterDataDTO meterDataDTO,BindingResult bindingResult, Model model) {
+        validator.validate(meterDataDTO, bindingResult);
+        log.info(bindingResult.getAllErrors().toString());
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("id",meterDataService.getMaxId()+1);
+            model.addAttribute("building", buildingService.findBuildingDTObyId(meterDataDTO.getBuildingID()));
+            model.addAttribute("services", serviceService.findAllServices());
+            model.addAttribute("buildings", buildingService.findAllDTO());
+            return "admin_panel/meters/meter_card";
+        }
+        MeterData savedMeter = meterDataService.saveMeterData(meterDataDTO);
         return "redirect:/admin/meters/data?flat_id="+savedMeter.getApartment().getId()+"&service_id="+savedMeter.getService().getId();
     }
 
+    // Сохранить созданное дополнительное показание
+    @PostMapping("/create-add")
+    public String alo(@ModelAttribute MeterDataDTO meterDataDTO,BindingResult bindingResult,Model model) {
+        validator.validate(meterDataDTO, bindingResult);
+        log.info(bindingResult.getAllErrors().toString());
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("id",meterDataService.getMaxId()+1);
+            model.addAttribute("building", buildingService.findBuildingDTObyId(meterDataDTO.getBuildingID()));
+            model.addAttribute("services", serviceService.findAllServices());
+            model.addAttribute("buildings", buildingService.findAllDTO());
+            return "admin_panel/meters/meter_card";
+        }
+        MeterData savedMeter = meterDataService.saveMeterData(meterDataDTO);
+        return "redirect:/admin/meters/data?flat_id="+savedMeter.getApartment().getId()+"&service_id="+savedMeter.getService().getId();
+    }
+
+    // Сохранение обновленного показания
+    @PostMapping("/update/{id}")
+    public String updateMeter(@PathVariable long id, @ModelAttribute MeterDataDTO meterDataDTO, BindingResult bindingResult, Model model) {
+        validator.validate(meterDataDTO, bindingResult);
+        log.info(bindingResult.getAllErrors().toString());
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("id",meterDataService.getMaxId()+1);
+            return "admin_panel/meters/meter_card";
+        }
+        MeterData savedMeter = meterDataService.saveMeterData(meterDataDTO);
+        return "redirect:/admin/meters/data?flat_id="+savedMeter.getApartment().getId()+"&service_id="+savedMeter.getService().getId();
+    }
+
+    // Удаление показания счетчика
+    @GetMapping("/delete/{id}")
+    public String deleteMeter(@PathVariable long id,
+                              @RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer) {
+        meterDataService.deleteMeterById(id);
+        return "redirect:" + referrer;
+    }
+
+    // Сохранение показания через AJAX (для кнопки Сохранить и создать новое показание)
     @PostMapping("/save-meter")
     public @ResponseBody List<String> saveMeter(@RequestParam(required = false) Long id,    // <-- если хочешь обновить существующий
                                               @RequestParam String building,
@@ -176,49 +232,7 @@ public class MeterController {
         return null;
     }
 
-
-
-
-    @GetMapping("/update/{id}")
-    public String showUpdateMeterPage(@PathVariable long id, Model model) {
-        MeterData meter = meterDataService.findMeterDataById(id);
-        log.info(meter.toString());
-        log.info(MappingUtils.fromMeterToDTO(meter).toString());
-        model.addAttribute("meterDataDTO", MappingUtils.fromMeterToDTO(meter));
-        model.addAttribute("id",meter.getId());
-        model.addAttribute("services", serviceService.findAllServices());
-        model.addAttribute("building", MappingUtils.fromBuildingToDTO(meter.getBuilding()));
-        model.addAttribute("buildings", buildingService.findAll());
-        model.addAttribute("now", LocalDate.now());
-
-        return "admin_panel/meters/meter_card";
-    }
-
-    @PostMapping("/update/{id}")
-    public String updateMeter(@PathVariable long id, @ModelAttribute MeterData meterData, BindingResult bindingResult, Model model) {
-        validator.validate(meterData, bindingResult);
-        log.info(bindingResult.getAllErrors().toString());
-        if(bindingResult.hasErrors()) {
-            model.addAttribute("id",meterDataService.getMaxId()+1);
-            return "admin_panel/meters/meter_card";
-        }
-        MeterData savedMeter = meterDataService.saveMeterData(meterData);
-        return "redirect:/admin/meters/data?flat_id="+savedMeter.getApartment().getId()+"&service_id="+savedMeter.getService().getId();
-    }
-
-    @GetMapping("/delete/{id}")
-    public String deleteMeter(@PathVariable long id,
-                              @RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer) {
-        meterDataService.deleteMeterById(id);
-        return "redirect:" + referrer;
-    }
-
-    @GetMapping("/info/{id}")
-    public String showInfo(@PathVariable long id, Model model) {
-        model.addAttribute("meter", MappingUtils.fromMeterToDTO(meterDataService.findMeterDataById(id)));
-        return "admin_panel/meters/meter_profile";
-    }
-
+    // Получение всех показаний счетчиков через AJAX
     @GetMapping("/get-meters")
     public @ResponseBody Page<MeterDataDTO> getMeters(@RequestParam Integer page,
                                                       @RequestParam Integer size,
@@ -226,6 +240,16 @@ public class MeterController {
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);
         return meterDataService.findAllBySpecification(form, page, size);
+    }
+
+    // Получение показаний одного счетчика через AJAX
+    @GetMapping("/get-meter-data")
+    public @ResponseBody Page<MeterDataDTO> getMeterData(@RequestParam Integer page,
+                                                         @RequestParam Integer size,
+                                                         @RequestParam String filters) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        FilterForm form = mapper.readValue(filters, FilterForm.class);
+        return meterDataService.findSingleMeterData(form, PageRequest.of(page-1, size));
     }
 
     @ModelAttribute

@@ -4,46 +4,11 @@ import com.example.myhome.home.dto.*;
 import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.model.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class MappingUtils {
-
-    //ACCOUNT
-    public static ApartmentAccount fromDTOToAccount(ApartmentAccountDTO dto) {
-
-        if(dto == null) return null;
-
-        ApartmentAccount account = new ApartmentAccount();
-        account.setId(dto.getId());
-        account.setIsActive(dto.getIsActive());
-        account.setChangedState(dto.getChangedState());
-        account.setSection(dto.getSection());
-        account.setBalance(dto.getBalance());
-
-//        account.setApartment((dto.getApartment() != null) ? fromDTOToApartment(dto.getApartment()) : null);
-//        account.setBuilding((dto.getBuilding() != null) ? fromDTOToBuilding(dto.getBuilding()) : null);
-//        account.setOwner((dto.getOwner() != null) ? fromDTOToOwner(dto.getOwner()) : null);
-
-        return account;
-    }
-    public static ApartmentAccountDTO fromAccountToDTO(ApartmentAccount account) {
-
-        if(account == null) return null;
-
-        ApartmentAccountDTO dto = new ApartmentAccountDTO();
-        dto.setId(account.getId());
-        dto.setIsActive(account.getIsActive());
-        dto.setBalance(account.getBalance());
-        dto.setNumber(account.getNumber());
-        dto.setChangedState(account.getChangedState());
-        dto.setSection(account.getSection());
-
-//        dto.setApartment(fromApartmentToDTO(account.getApartment()));
-//        dto.setOwner(fromOwnerToDTO(account.getOwner()));
-
-        return dto;
-    }
 
     //APARTMENT
     public static Apartment fromDTOToApartment(ApartmentDTO dto) {
@@ -154,7 +119,7 @@ public class MappingUtils {
         admin.setLast_name(dto.getLast_name());
         admin.setEmail(dto.getEmail());
         admin.setPassword(dto.getPassword());
-        admin.setRole(dto.getRole());
+//        admin.setRole(dto.getRole());
         admin.setPhone_number(dto.getPhone_number());
 
         return admin;
@@ -167,7 +132,8 @@ public class MappingUtils {
         dto.setFirst_name(admin.getFirst_name());
         dto.setLast_name(admin.getLast_name());
         dto.setEmail(admin.getEmail());
-        dto.setRole(admin.getRole());
+        dto.setText(admin.getRole().getName() + " - " + admin.getFullName());
+//        dto.setRole(admin.getRole());
         dto.setPhone_number(admin.getPhone_number());
 
         return dto;
@@ -203,5 +169,36 @@ public class MappingUtils {
 
         return dto;
     }
+
+//    //REQUEST
+////    public static RepairRequest fromDTOToRequest(RepairRequestDTO dto) {}
+//    public static RepairRequestDTO fromRequestToDTO(RepairRequest request) {
+//        if(request == null) return null;
+//
+//        Long apartmentID = (request.getApartment() != null) ? request.getApartment().getId() : null;
+//        Long apartmentNumber = (request.getApartment() != null) ? request.getApartment().getNumber() : null;
+//        String apartmentBuildingName = (request.getApartment() != null) ? request.getApartment().getBuilding().getName() : null;
+//        Long ownerID = (request.getApartment().getOwner() != null) ? request.getApartment().getOwner().getId() : null;
+//        String ownerFullName = (request.getApartment().getOwner() != null) ? request.getApartment().getOwner().getFullName() : null;
+//        String ownerPhoneNumber = (request.getApartment().getOwner() != null) ? request.getApartment().getOwner().getPhone_number() : null;
+//        Long masterID = (request.getMaster() != null) ? request.getMaster().getId() : null;
+//        String masterFullName = (request.getMaster() != null) ? request.getMaster().getFullName() : null;
+//
+//        return RepairRequestDTO.builder()
+//                .id(request.getId())
+//                .best_time(request.getBest_time_request().format(DateTimeFormatter.ofPattern("yyyy-MM-dd - HH:mm")))
+//                .master_type(request.getMaster_type().getName())
+//                .description(request.getDescription())
+//                .apartmentID(apartmentID)
+//                .apartmentNumber(apartmentNumber)
+//                .apartmentBuildingName(apartmentBuildingName)
+//                .ownerID(ownerID)
+//                .ownerFullName(ownerFullName)
+//                .ownerPhoneNumber(ownerPhoneNumber)
+//                .masterID(masterID)
+//                .masterFullName(masterFullName)
+//                .status(request.getStatus().getName())
+//                .build();
+//    }
 
 }

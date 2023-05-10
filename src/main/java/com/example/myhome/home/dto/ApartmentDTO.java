@@ -23,6 +23,7 @@ public class ApartmentDTO {
     private ApartmentAccountDTO account;
     private OwnerDTO owner;
     private Long accountNo;
+
     public ApartmentDTO(Long id, BuildingDTO building, String section, String floor, Long number, Long account, OwnerDTO owner, Double balance) {
         this.id = id;
         this.section = section;

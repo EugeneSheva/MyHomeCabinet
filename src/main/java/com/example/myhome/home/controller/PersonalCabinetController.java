@@ -1,6 +1,6 @@
 package com.example.myhome.home.controller;
 
-import com.example.myhome.home.configuration.security.CustomUserDetails;
+
 import com.example.myhome.home.dto.ApartmentDTO;
 import com.example.myhome.home.dto.InvoiceDTO;
 import com.example.myhome.home.dto.OwnerDTO;
@@ -247,7 +247,7 @@ public class PersonalCabinetController {
         RepairRequest repairRequest = new RepairRequest();
         repairRequest.setId(id);
         repairRequest.setApartment(apartmentService.findById(apartmentId));
-        repairRequest.setMaster_type(RepairMasterType.valueOf(master));
+//        repairRequest.setMaster_type(RepairMasterType.valueOf(master));
         repairRequest.setDescription(description);
         repairRequest.setDate(date);
         repairRequest.setTime(time);

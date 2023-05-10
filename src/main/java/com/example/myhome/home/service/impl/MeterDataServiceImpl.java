@@ -1,9 +1,13 @@
 package com.example.myhome.home.service.impl;
 
 import com.example.myhome.home.dto.MeterDataDTO;
+import com.example.myhome.home.mapper.MeterDTOMapper;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
+import com.example.myhome.home.repository.ApartmentRepository;
+import com.example.myhome.home.repository.BuildingRepository;
 import com.example.myhome.home.repository.MeterDataRepository;
+import com.example.myhome.home.repository.ServiceRepository;
 import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.MeterDataService;
@@ -38,7 +42,12 @@ public class MeterDataServiceImpl implements MeterDataService {
     @Autowired private ServiceServiceImpl serviceService;
     @Autowired private BuildingService buildingService;
 
+    @Autowired private ApartmentRepository apartmentRepository;
+    @Autowired private ServiceRepository serviceRepository;
+    @Autowired private BuildingRepository buildingRepository;
+
     @Autowired private MeterValidator validator;
+    @Autowired private MeterDTOMapper mapper;
 
     @Override
     public List<MeterData> findAllMeters() {return meterDataRepository.findAll();}
@@ -50,7 +59,14 @@ public class MeterDataServiceImpl implements MeterDataService {
     @Override
     public Page<MeterDataDTO> findSingleMeterData(FilterForm form, Pageable pageable) {
         log.info("Searching for single meter data (Apartment ID: " + form.getApartment() + ", Service ID: " + form.getService() + ")");
-        Page<MeterData> initialPage = meterDataRepository.findAll(buildSpecFromFilters(form), pageable);
+
+        MeterPaymentStatus status = (form.getStatus() != null && !form.getStatus().isEmpty()) ? MeterPaymentStatus.valueOf(form.getStatus()) : null;
+        Specification<MeterData> spec = Specification.where(MeterSpecifications.hasApartment(apartmentRepository.getReferenceById(form.getApartment()))
+                                                    .and(MeterSpecifications.hasService(serviceRepository.getReferenceById(form.getService())))
+                .and(MeterSpecifications.hasId(form.getId()))
+                .and(MeterSpecifications.hasStatus(status)));
+
+        Page<MeterData> initialPage = meterDataRepository.findAll(spec, pageable);
         log.info("Found " + initialPage.getContent().size() + " elements(page " + pageable.getPageNumber() + "/ " + initialPage.getTotalPages() + ")");
         List<MeterDataDTO> listDTO = initialPage.getContent().stream().map(MappingUtils::fromMeterToDTO).collect(Collectors.toList());
         return new PageImpl<>(listDTO, pageable, initialPage.getTotalElements());
@@ -84,13 +100,13 @@ public class MeterDataServiceImpl implements MeterDataService {
         com.example.myhome.home.model.Service service = (form.getService() != null) ? serviceService.findServiceById(form.getService()) : null;
 
         Specification<MeterData> spec = Specification.where(MeterSpecifications.hasId(id)
-                .and(MeterSpecifications.hasStatus(status))
-                .and(MeterSpecifications.datesBetween(date_from, date_to))
-                .and(MeterSpecifications.hasBuilding(building))
-                .and(MeterSpecifications.hasSection(section))
-                .and(MeterSpecifications.hasApartment(apartment))
-                .and(MeterSpecifications.hasService(service))
-                .and(MeterSpecifications.groupTest()));
+                                                        .and(MeterSpecifications.hasStatus(status))
+                                                        .and(MeterSpecifications.datesBetween(date_from, date_to))
+                                                        .and(MeterSpecifications.hasBuilding(building))
+                                                        .and(MeterSpecifications.hasSection(section))
+                                                        .and(MeterSpecifications.hasApartment(apartment))
+                                                        .and(MeterSpecifications.hasService(service))
+                                                        .and(MeterSpecifications.groupTest()));
 
         log.info("Specification ready!");
 
@@ -160,8 +176,21 @@ public class MeterDataServiceImpl implements MeterDataService {
     @Override
     public MeterData findMeterDataById(Long meter_id) {return meterDataRepository.findById(meter_id).orElseThrow();}
 
+    public MeterDataDTO findMeterDataDTOById(Long meter_id) {
+        MeterData meter = meterDataRepository.findById(meter_id).orElseThrow();
+        return mapper.fromMeterToDTO(meter);
+    }
+
     @Override
     public MeterData saveMeterData(MeterData meterData) {return meterDataRepository.save(meterData);}
+    public MeterData saveMeterData(MeterDataDTO dto) {
+        log.info("Forming meter to save from DTO");
+        MeterData meterData = mapper.fromDTOToMeter(dto);
+        meterData.setApartment(apartmentRepository.getReferenceById(dto.getApartmentID()));
+        meterData.setBuilding(buildingRepository.getReferenceById(dto.getBuildingID()));
+        meterData.setService(serviceRepository.getReferenceById(dto.getServiceID()));
+        return saveMeterData(meterData);
+    }
     public MeterData saveMeterDataAJAX(Long id,    // <-- если хочешь обновить существующий
                                        String building_id,
                                        String section_name,

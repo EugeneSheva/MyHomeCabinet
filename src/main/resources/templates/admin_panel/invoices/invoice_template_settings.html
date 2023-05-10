@@ -26,13 +26,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Настройка шаблонов</h1>
+            <h1 class="m-0" th:text="#{invoices.templatesPage.pageName}">Настройка шаблонов</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/invoices}">Квитанции</a></li>
-              <li class="breadcrumb-item active">Настройка шаблонов</li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  <span th:text="#{invoices.templatesPage.breadcrumbMenuMain}">Главная</span></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/invoices}" th:text="#{invoices.templatesPage.breadcrumbMainTablePageName}">Квитанции</a></li>
+              <li class="breadcrumb-item active" th:text="#{invoices.templatesPage.pageName}">Настройка шаблонов</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -48,35 +48,35 @@
           <div class="col-md-12">
             <div class="box" style="caret-color:transparent; padding:0; padding-inline: 10px;">
               <div class="box-header with-border" style="padding-top: 15px; padding-bottom: 15px;">
-                <h3 class="box-title" style="margin: 0; padding: 0">Список шаблонов</h3>
+                <h3 class="box-title" style="margin: 0; padding: 0" th:text="#{invoices.templatesPage.card.header}">Список шаблонов</h3>
                 <div class="box-tools"></div>
               </div>
               <div class="box-body">
                 <div class="row">
                   <div class="col-xs-12 col-lg-12">
                     <div class="template" th:if="${default_template != null}">
-                      <p><span th:text="${default_template.name}"></span> <b>(по умолчанию)</b></p>
-                      <a th:href="@{/files/{url}(url=${default_template.file})}" download><i class="fa fa-download" aria-hidden="true"></i> Скачать шаблон</a>
-                      <a th:href="@{/admin/invoices/template?default_id={id}(id=${default_template.id})}" class="text-success">• Назначить шаблоном по умоланию</a>
-                      <a th:href="@{/admin/invoices/template?delete_id={id}(id=${default_template.id})}" class="text-danger" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash" aria-hidden="true"></i> Удалить шаблон</a>
+                      <p><span th:text="${default_template.name}"></span> <b th:text="#{default}">(по умолчанию)</b></p>
+                      <a th:href="@{/files/{url}(url=${default_template.file})}" download><i class="fa fa-download" aria-hidden="true"></i> <span th:text="#{invoices.templatesPage.card.downloadTemplate}">Скачать шаблон</span></a>
+                      <a th:href="@{/admin/invoices/template?default_id={id}(id=${default_template.id})}" class="text-success">• <span th:text="#{invoices.templatesPage.card.defaultTemplate}">Назначить шаблоном по умоланию</span></a>
+                      <a th:href="@{/admin/invoices/template?delete_id={id}(id=${default_template.id})}" class="text-danger" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash" aria-hidden="true"></i> <span th:text="#{invoices.templatesPage.card.deleteTemplate}">Удалить шаблон</span></a>
                     </div>
                     <div class="template" th:each="template : ${templates}" th:if="${!template._default_}">
                       <p th:text="${template.name}">33333333 </p>
-                      <a th:href="@{/files/{url}(url=${template.file})}" download><i class="fa fa-download" aria-hidden="true"></i> Скачать шаблон</a>
-                      <a th:href="@{/admin/invoices/template?default_id={id}(id=${template.id})}" class="text-success">• Назначить шаблоном по умоланию</a>
-                      <a th:href="@{/admin/invoices/template?delete_id={id}(id=${template.id})}" class="text-danger" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash" aria-hidden="true"></i> Удалить шаблон</a>
+                      <a th:href="@{/files/{url}(url=${template.file})}" download><i class="fa fa-download" aria-hidden="true"></i> <span th:text="#{invoices.templatesPage.card.downloadTemplate}">Скачать шаблон</span></a>
+                      <a th:href="@{/admin/invoices/template?default_id={id}(id=${template.id})}" class="text-success">• <span th:text="#{invoices.templatesPage.card.defaultTemplate}">Назначить шаблоном по умоланию</span></a>
+                      <a th:href="@{/admin/invoices/template?delete_id={id}(id=${template.id})}" class="text-danger" data-confirm="Вы уверены, что хотите удалить этот элемент?"><i class="fa fa-trash" aria-hidden="true"></i> <span th:text="#{invoices.templatesPage.card.deleteTemplate}">Удалить шаблон</span></a>
                     </div>
                     <form method="post" th:object="${template}" enctype="multipart/form-data">
                       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                       <div class="row">
                       <div class="col-xs-12 col-sm-6">
                         <div class="form-group field-invoicetemplateform-file">
-                          <label class="control-label">Загрузить пользовательский шаблон</label>
+                          <label class="control-label" th:text="#{invoices.templatesPage.card.uploadNewTemplate}">Загрузить пользовательский шаблон</label>
                           <input type="file" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
 
                           <div class="help-block"></div>
                         </div>                    <div class="form-group field-invoicetemplateform-title required">
-                        <label class="control-label">Название</label>
+                        <label class="control-label" th:text="#{invoices.templatesPage.card.newTemplateName}">Название</label>
                         <input type="text" name="name" class="form-control">
 
                         <div class="help-block"></div>
@@ -85,8 +85,8 @@
                     </div>
                       <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
-                          <a th:href="@{/admin/invoices/template}" class="btn btn-default">Отменить</a>
-                          <button type="submit" class="btn btn-success">Сохранить</button>
+                          <a th:href="@{/admin/invoices/template}" class="btn btn-default" th:text="#{invoices.templatesPage.card.cancel}">Отменить</a>
+                          <button type="submit" class="btn btn-success" th:text="#{invoices.templatesPage.card.save}">Сохранить</button>
                         </div>
                       </div>
                     </form>

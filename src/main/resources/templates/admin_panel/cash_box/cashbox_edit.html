@@ -150,7 +150,7 @@
                                             <select class="form-select" id="admin" name="manager">
                                                 <option selected="" disabled="" value="" th:text="#{choise}"></option>
                                                 <option th:each="admin, item : ${admins}"
-                                                        th:text="${admins[__${item.index}__].role.getName()}+' - '+${admins[__${item.index}__].first_name}+' '+${admins[__${item.index}__].last_name}"
+                                                        th:text="${admins[__${item.index}__].role}+' - '+${admins[__${item.index}__].first_name}+' '+${admins[__${item.index}__].last_name}"
                                                         th:value="${admins[__${item.index}__].id}"
                                                         th:selected="${admins[__${item.index}__].id == (cashBoxItem.manager != null ? cashBoxItem.manager.id:0)}"></option>
                                             </select>
@@ -195,7 +195,22 @@
     var choise = [[#{choise}]];
     $(function () {
         //Initialize Select2 Elements
-        $('#admin, #incomeExpenseItem, #account_select').select2({placeholder: choise, minimumResultsForSearch: Infinity});
+        $('#incomeExpenseItem, #account_select').select2({placeholder: choise, minimumResultsForSearch: Infinity});
+
+        $('#admin').select2({
+            placeholder: choise,
+            minimumResultsForSearch:Infinity,
+<!--            ajax: {-->
+<!--                url: '/admin/admins/get-managers',-->
+<!--                data: function(params) {-->
+<!--                    console.log(params.page);-->
+<!--                    return {-->
+<!--                        search: params.term || "",-->
+<!--                        page: params.page || 1-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+        });
 
         let $owner_select = $("#owner_select");
 

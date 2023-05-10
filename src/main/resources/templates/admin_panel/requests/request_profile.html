@@ -26,13 +26,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Заявка №<span th:text="${request.id}"></span></h1>
+            <h1 class="m-0"><span th:text="#{requests.infoPage.pageName}">Заявка №</span><span th:text="${request.id}"></span></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/meters}">Заявки вызова мастера</a></li>
-              <li class="breadcrumb-item active">Заявка №<span th:text="${request.id}"></span></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  <span th:text="#{requests.infoPage.breadcrumb.main}">Главная</span></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/meters}" th:text="#{requests.infoPage.breadcrumb.previous}">Заявки вызова мастера</a></li>
+              <li class="breadcrumb-item active"><span th:text="#{requests.infoPage.pageName}">Заявка №</span><span th:text="${request.id}"></span></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -49,7 +49,7 @@
             <input type="date" disabled style="width: 90%;" th:value="${request_date}" class="form-control">
           </div>
           <div class="col-md-3">
-            <span style="display:inline;">от </span>
+            <span style="display:inline;" th:text="#{requests.infoPage.datePrefix}">от </span>
             <input type="text" disabled style="width: 90%; display:inline;" th:value="${request_time}" class="form-control">
           </div>
           <div class="col-md-6"></div>
@@ -62,7 +62,7 @@
                 <h3 class="box-title"></h3>
                 <div class="box-tools">
                   <a th:href="@{/admin/requests/update/{id}(id=${request.id})}" class="btn btn-primary btn-sm">
-                    <span class="hidden-xs">Редактировать заявку  </span><i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                    <span class="hidden-xs" th:text="#{requests.infoPage.card.edit}">Редактировать заявку  </span><i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
                   </a>
                 </div>
               </div>
@@ -72,38 +72,38 @@
                     <table class="table table-bordered table-striped table-view">
                       <tbody>
                       <tr>
-                        <td style="font-weight:bold">Статус</td>
+                        <td style="font-weight:bold" th:text="#{requests.infoPage.card.status}">Статус</td>
                         <td><small class="label"
                                    th:classappend="${request.status == T(com.example.myhome.home.model.RepairStatus).ACCEPTED ?
                                    'label-primary' : request.status == T(com.example.myhome.home.model.RepairStatus).IN_WORK ?
                                    'label-warning' : 'label-success'}" th:text="${request.status.getName()}"></small></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Владелец</td>
-                        <td><a th:href="@{/admin/owners/{id}(id=${request.apartment.owner.id})}" th:text="${request.apartment.owner.getFullName()}"></a></td>
+                        <td style="font-weight:bold" th:text="#{requests.infoPage.card.owner}">Владелец</td>
+                        <td><a th:href="@{/admin/owners/{id}(id=${request.ownerID})}" th:text="${request.ownerFullName}"></a></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Телефон</td>
-                        <td th:text="${request.apartment.owner.phone_number}"></td>
+                        <td style="font-weight:bold" th:text="#{requests.infoPage.card.phone}">Телефон</td>
+                        <td th:text="${request.ownerPhoneNumber}"></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Квартира</td>
-                        <td><a th:href="@{/admin/apartments/{id}(id=${request.apartment.id})}" th:text="${request.apartment.number} + ', ' + ${request.apartment.building.name}"></a></td>
+                        <td style="font-weight:bold" th:text="#{requests.infoPage.card.apartment}">Квартира</td>
+                        <td><a th:href="@{/admin/apartments/{id}(id=${request.apartmentID})}" th:text="${request.apartmentNumber} + ', ' + ${request.apartmentBuildingName}"></a></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Тип мастера</td>
-                        <td th:text="${request.master_type.getName()}"></td>
+                        <td style="font-weight:bold" th:text="#{requests.infoPage.card.master.type}">Тип мастера</td>
+                        <td th:text="${request.masterTypeName}"></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Мастер</td>
-                        <td><a th:href="@{/admin/admins/{id}(id=${request.master.id})}" th:text="${request.master.getFullName()}"></a></td>
+                        <td style="font-weight:bold" th:text="#{requests.infoPage.card.master.name}">Мастер</td>
+                        <td><a th:href="@{/admin/admins/{id}(id=${request.masterID})}" th:text="${request.masterFullName}"></a></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Описание</td>
-                        <td style="overflow-wrap: anywhere; overflow: hidden; max-width:400px" th:text="${request.description.equals('') ? '--отсутствует--' : request.description}"></td>
+                        <td style="font-weight:bold" th:text="#{requests.infoPage.card.description}">Описание</td>
+                        <td style="overflow-wrap: anywhere; overflow: hidden; max-width:400px" th:text="${request.description.equals('')} ? #{not-found} : ${request.description}"></td>
                       </tr>
                       <tr>
-                        <td style="font-weight:bold">Добавлено</td>
+                        <td style="font-weight:bold" th:text="#{requests.infoPage.card.added}">Добавлено</td>
                         <td th:text="${#temporals.format(request.request_date, 'yyyy-MM-dd - HH:mm')}"></td>
                       </tr>
                       </tbody>

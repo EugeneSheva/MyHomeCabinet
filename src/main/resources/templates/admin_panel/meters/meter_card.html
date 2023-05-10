@@ -29,13 +29,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0"><span th:text="${meterDataDTO.id == null ? 'Новое показание' : 'Показание счётчика №' + meterDataDTO.id + ' - редактирование'}">Новое показание</span></h1>
+            <h1 class="m-0"><span th:text="${meterDataDTO.id == null} ? #{meters.editPage.pageName} : #{meters.editPage.pageNameEdit} + ${meterDataDTO.id}">Новое показание</span></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/meters}">Счётчики</a></li>
-              <li class="breadcrumb-item active"><span th:text="${meterDataDTO.id == null ? 'Новое показание' : 'Показание счётчика №' + meterDataDTO.id + ' - редактирование'}">Новое показание</span></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  <span th:text="#{meters.editPage.breadcrumb.main}">Главная</span></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/meters}" th:text="#{meters.editPage.breadcrumb.previous}">Счётчики</a></li>
+              <li class="breadcrumb-item active"><span th:text="${meterDataDTO.id == null} ? #{meters.editPage.pageName} : #{meters.editPage.pageNameEdit} + ${meterDataDTO.id}">Новое показание</span></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -59,14 +59,13 @@
                      th:value="${T(java.lang.String).format('%010d',id)}" aria-required="true">
             </div>
             <div class="col-md-3">
-              <span>от</span>
+              <span th:text="#{meters.editPage.datePrefix}">от</span>
               <div class="input-group">
                 <span class="input-group-addon kv-date-calendar" title="Выбрать дату">
                   <i class="glyphicon glyphicon-calendar"></i>
                 </span>
                 <input type="hidden" th:value="${now}">
-                <input style="width: 90%;" type="date" id="date" class="form-control" th:field="*{date}" th:if="*{date != null}">
-                <input style="width: 90%;" type="date" id="date" data-bl="1" class="form-control" th:field="*{date}" th:value="${now}" th:if="*{date == null}">
+                <input style="width: 90%;" type="date" id="date" class="form-control" name="date" th:value="*{date != null} ? *{date} : ${now}">
                 <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></h4>
               </div>
             </div>
@@ -81,28 +80,28 @@
                     <div class="row">
                       <div class="col-xs-12 col-md-6">
                         <input type="hidden" id="apartment_exists" th:value="*{(apartmentID != null)} ? 1 : 0">
-                        <h4><b>Дом</b></h4>
+                        <h4><b th:text="#{meters.editPage.card.house}">Дом</b></h4>
                         <select class="selects"
                                 th:field="*{buildingID}"
                                 id="house_select">
-                          <option value="0">Выберите...</option>
+                          <option value="0" th:text="#{select.placeholder}">Выберите...</option>
                           <option th:each="building : ${buildings}"
                                   th:value="${building.id}"
                                   th:text="${building.name}"></option>
                         </select>
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('buildingID')}" th:errors="*{buildingID}"></h4>
-                        <h4 class="mt-4"><b>Секция</b></h4>
+                        <h4 class="mt-4"><b th:text="#{meters.editPage.card.section}">Секция</b></h4>
                         <select class="selects" th:field="*{section}" disabled th:if="*{buildingID == null}" id="section_select">
                           <option value="">Сначала выберите дом</option>
                         </select>
                         <select class="selects" th:field="*{section}" th:if="*{buildingID != null}" id="section_select">
-                          <option value="">Выберите...</option>
+                          <option value="" th:text="#{select.placeholder}">Выберите...</option>
                           <option th:each="section : ${building.getSections()}"
                                   th:value="${section}"
                                   th:text="${section}"></option>
                         </select>
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('section')}" th:errors="*{section}"></h4>
-                        <h4 class="mt-4"><b>Квартира</b></h4>
+                        <h4 class="mt-4"><b th:text="#{meters.editPage.card.apartment}">Квартира</b></h4>
                         <input type="hidden" id="section_name" th:if="*{apartmentID != null}" th:value="*{section}">
                         <select class="selects" disabled th:field="*{apartmentID}" th:if="*{section == null}" id="apartment_select">
                           <option value="">Сначала выберите секцию</option>
@@ -114,9 +113,9 @@
                                   th:text="'кв. ' + ${flat.number}"></option>
                         </select>
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('apartmentID')}" th:errors="*{apartmentID}"></h4>
-                        <h4 class="mt-4"><b>Счётчик</b></h4>
+                        <h4 class="mt-4"><b th:text="#{meters.editPage.card.service}">Счётчик</b></h4>
                         <select class="selects" th:field="*{serviceID}">
-                          <option value="">Выберите услугу...</option>
+                          <option value="" th:text="#{select.placeholder}">Выберите услугу...</option>
                           <option th:each="s_service : ${services}"
                                   th:if="${s_service.show_in_meters}"
                                   th:value="${s_service.id}"
@@ -125,13 +124,13 @@
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('serviceID')}" th:errors="*{serviceID}"></h4>
                       </div>
                       <div class="col-xs-12 col-md-6">
-                        <h4><b>Статус</b></h4>
+                        <h4><b th:text="#{meters.editPage.card.status}">Статус</b></h4>
                         <select class="selects" id="status" th:field="*{status}">
                           <option th:each="status : ${T(com.example.myhome.home.model.MeterPaymentStatus).values()}"
                                   th:value="${status}" th:text="${status.getName()}"></option>
                         </select>
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></h4>
-                        <h4 class="mt-4"><b>Показания счётчика</b></h4>
+                        <h4 class="mt-4"><b th:text="#{meters.editPage.card.readings}">Показания счётчика</b></h4>
                         <input type="number" step="0.1" th:field="*{readings}" style="width: 100%; padding-block:10px;">
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('readings')}" th:errors="*{readings}"></h4>
                       </div>
@@ -139,9 +138,9 @@
                     <div class="row mt-3">
                       <div class="col-md-12">
                         <div class="form-group">
-                          <a th:href="@{/admin/meters}" class="btn btn-default">Отменить</a>
-                          <button type="submit" class="btn btn-success">Сохранить</button>
-                          <button type="button" id="new_meter_btn" class="btn btn-warning">Сохранить и добавить новые показания</button>
+                          <a th:href="@{/admin/meters}" class="btn btn-default" th:text="#{meters.editPage.card.cancel}">Отменить</a>
+                          <button type="submit" class="btn btn-success" th:text="#{meters.editPage.card.save}">Сохранить</button>
+                          <button type="button" id="new_meter_btn" class="btn btn-warning" th:text="#{meters.editPage.card.additional}">Сохранить и добавить новые показания</button>
                         </div>
                       </div>
                     </div>
@@ -185,6 +184,8 @@
 
 <script th:inline="javascript">
 
+  let apartmentID = [[${meterDataDTO.apartmentID}]];
+
   function utf8_decode (aa) {
     var bb = '', c = 0;
     for (var i = 0; i < aa.length; i++) {
@@ -221,7 +222,24 @@
         placeholder: 'Выберите...'
     });
 
-    $("#section_select, #apartment_select, #service, #status").select2({placeholder: 'Выберите...', minimumResultsForSearch:Infinity});
+    $("#section_select, #apartment_select, #serviceID, #status").select2({placeholder: 'Выберите...', minimumResultsForSearch:Infinity});
+
+<!--    let apartment_select = $("#apartment_select");-->
+<!--      $.ajax({-->
+<!--        type:'GET',-->
+<!--        url: '/admin/apartments/get-apartment/',-->
+<!--        data: {id: apartmentID}-->
+<!--      }).then(function(data){-->
+<!--        let option = new Option('кв. ' + data.number, data.id, true, true);-->
+<!--        apartment_select.append(option).trigger('change');-->
+
+<!--        apartment_select.trigger({-->
+<!--          type:'select2:select',-->
+<!--          params: {-->
+<!--            data: data-->
+<!--          }-->
+<!--        });-->
+<!--      });-->
 
     $("#house_select").change(function(){
         console.log(this);
@@ -325,9 +343,9 @@
       let section_name = document.getElementById("section_select").value;
       let date = document.getElementById("date").value;
       let apartment_id = document.getElementById("apartment_select").value;
-      let service_id = document.getElementById("service").value;
+      let service_id = document.getElementById("serviceID").value;
       let stat = document.getElementById("status").value;
-      let readings = document.getElementById("currentReadings").value;
+      let readings = document.getElementById("readings").value;
 
       let meter = {
         'id': initial_meter_id,

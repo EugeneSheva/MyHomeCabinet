@@ -4,6 +4,7 @@ import com.example.myhome.home.dto.AdminDTO;
 import com.example.myhome.home.dto.ApartmentAccountDTO;
 import com.example.myhome.home.dto.CashBoxDTO;
 import com.example.myhome.home.dto.OwnerDTO;
+import com.example.myhome.home.mapper.AccountDTOMapper;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.AccountRepository;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 
@@ -55,6 +57,8 @@ public class CashBoxController {
     private final CashBoxtValidator cashBoxtValidator;
 
     private final WebsocketController websocketController;
+
+    private final AccountDTOMapper accountDTOMapper;
 
 
     @GetMapping
@@ -107,35 +111,6 @@ public class CashBoxController {
         return "admin_panel/cash_box/cashboxes";
     }
 
-//    @PostMapping("/filter")
-//    public String filterApartments(Model model, @ModelAttribute FilterForm filterForm, @RequestParam(name = "id",required = false) Long id, @RequestParam(name = "date",required = false) String date,
-//                                   @RequestParam(name = "isCompleted",required = false) String isCompleted, @RequestParam(name = "incomeExpenseItem",required = false) String incomeExpenseItem,
-//                                   @RequestParam(name = "owner", required = false) Long owner,  @RequestParam(name = "accountNumber", required = false) Long accountNumber,
-//                                   @RequestParam(name = "incomeExpenseType",required = false) String incomeExpenseType,
-//                                   @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) throws IOException {
-//        filterForm.setOwnerEntity(ownerService.findByIdDTO(owner));
-//        String[] dateArray = date.split(" - ");
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-//        LocalDate startDate = LocalDate.parse(dateArray[0], formatter);
-//        LocalDate endDate = LocalDate.parse(dateArray[1], formatter);
-//
-//        Page<CashBox> cashBoxList = cashBoxRepository.findByFilters(id,startDate, endDate, cashBoxService.getIsCompleteFromString(isCompleted), incomeExpenseItem,owner,accountNumber, cashBoxService.getIncomeExpenseTypeFromString(incomeExpenseType), pageable);
-//
-//        model.addAttribute("cashBoxList", cashBoxList);
-//        model.addAttribute("cashBoxSum", cashBoxRepository.sumAmount());
-//        model.addAttribute("accountBalance", accountRepository.getSumOfAccountBalances());
-//        model.addAttribute("sumDebt", accountRepository.getSumOfAccountDebts());
-//        List<OwnerDTO>ownerDTOList=ownerService.findAllDTO();
-//        model.addAttribute("owners", ownerDTOList);
-//
-//        List<IncomeExpenseItems>incomeExpenseItems=incomeExpenseItemService.findAll();
-//        model.addAttribute("incomeExpenseItems", incomeExpenseItems);
-//        model.addAttribute("filterForm", filterForm);
-//
-//        return "admin_panel/cash_box/cashboxes";
-//
-//
-//        }
 
     @GetMapping("/{id}")
     public String getCashBox(@PathVariable("id") Long id, Model model) {
@@ -149,21 +124,17 @@ public class CashBoxController {
         List<IncomeExpenseItems>incomeItemsList=incomeExpenseRepository.findAllByIncomeExpenseType(IncomeExpenseType.INCOME);
         model.addAttribute("incomeItemsList", incomeItemsList);
 
-        List<AdminDTO>adminDTOList = adminService.findAllDTO();
-
+        List<AdminDTO>adminDTOList = adminService.findAllManagers();
+        System.out.println(adminDTOList);
         // получение только юзеров с ролями "админ", "директор", "бухгалтер", без сантехников и т.д.
-        adminDTOList = adminDTOList.stream()
-                .filter(admin -> admin.getRole() == UserRole.ROLE_ADMIN ||
-                        admin.getRole() == UserRole.ROLE_DIRECTOR ||
-                        admin.getRole() == UserRole.ROLE_MANAGER ||
-                        admin.getRole() == UserRole.ROLE_ACCOUNTANT)
-                .collect(Collectors.toList());
         model.addAttribute("admins", adminDTOList);
+
+        System.out.println(adminDTOList);
 
         List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
         model.addAttribute("owners", ownerDTOList);
 
-        List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
+        List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(accountDTOMapper::fromAccountToDTO).collect(Collectors.toList());
         model.addAttribute("accounts", apartmentAccountDTOS);
 
         model.addAttribute("nextId", cashBoxService.getMaxId()+1);
@@ -189,13 +160,8 @@ public class CashBoxController {
 
         model.addAttribute("nextId", cashBoxService.getMaxId()+1);
 
-        List<AdminDTO>adminDTOList = adminService.findAllDTO();
-        adminDTOList = adminDTOList.stream()
-                .filter(admin -> admin.getRole() == UserRole.ROLE_ADMIN ||
-                        admin.getRole() == UserRole.ROLE_DIRECTOR ||
-                        admin.getRole() == UserRole.ROLE_MANAGER ||
-                        admin.getRole() == UserRole.ROLE_ACCOUNTANT)
-                .collect(Collectors.toList());
+        List<AdminDTO>adminDTOList = adminService.findAllManagers();
+
         model.addAttribute("admins", adminDTOList);
 
         CashBox cashBox = new CashBox();
@@ -215,7 +181,7 @@ public class CashBoxController {
             List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
             model.addAttribute("owners", ownerDTOList);
 
-            List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
+            List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(accountDTOMapper::fromAccountToDTO).collect(Collectors.toList());
             model.addAttribute("accounts", apartmentAccountDTOS);
 
         } else if (cashBox.getIncomeExpenseType().equals(IncomeExpenseType.EXPENSE)){
@@ -225,15 +191,8 @@ public class CashBoxController {
 
         model.addAttribute("nextId", cashBoxService.getMaxId()+1);
 
-        List<AdminDTO>adminDTOList = adminService.findAllDTO();
+        List<AdminDTO>adminDTOList = adminService.findAllManagers();
 
-        // получение только юзеров с ролями "админ", "директор", "бухгалтер", без сантехников и т.д.
-        adminDTOList = adminDTOList.stream()
-                .filter(admin -> admin.getRole() == UserRole.ROLE_ADMIN ||
-                        admin.getRole() == UserRole.ROLE_DIRECTOR ||
-                        admin.getRole() == UserRole.ROLE_MANAGER ||
-                        admin.getRole() == UserRole.ROLE_ACCOUNTANT)
-                .collect(Collectors.toList());
         model.addAttribute("admins", adminDTOList);
 
         model.addAttribute("cashBoxItem", cashBox);
@@ -252,7 +211,7 @@ public class CashBoxController {
             List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
             model.addAttribute("owners", ownerDTOList);
 
-            List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
+            List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(accountDTOMapper::fromAccountToDTO).collect(Collectors.toList());
             model.addAttribute("accounts", apartmentAccountDTOS);
 
         } else if (cashBox.getIncomeExpenseType().equals(IncomeExpenseType.EXPENSE)){
@@ -261,15 +220,8 @@ public class CashBoxController {
         }
 
 
-        List<AdminDTO>adminDTOList = adminService.findAllDTO();
+        List<AdminDTO>adminDTOList = adminService.findAllManagers();
 
-        // получение только юзеров с ролями "админ", "директор", "бухгалтер", без сантехников и т.д.
-        adminDTOList = adminDTOList.stream()
-                .filter(admin -> admin.getRole() == UserRole.ROLE_ADMIN ||
-                        admin.getRole() == UserRole.ROLE_DIRECTOR ||
-                        admin.getRole() == UserRole.ROLE_MANAGER ||
-                        admin.getRole() == UserRole.ROLE_ACCOUNTANT)
-                .collect(Collectors.toList());
         model.addAttribute("admins", adminDTOList);
 
         cashBox.setId(null);
@@ -293,7 +245,7 @@ public class CashBoxController {
                 List<OwnerDTO> ownerDTOList = ownerService.findAllDTO();
                 model.addAttribute("owners", ownerDTOList);
 
-                List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
+                List<ApartmentAccountDTO> apartmentAccountDTOS = accountService.findAllAccounts().stream().map(accountDTOMapper::fromAccountToDTO).collect(Collectors.toList());
                 model.addAttribute("accounts", apartmentAccountDTOS);
             } else if (cashBoxItem.getIncomeExpenseType().equals(IncomeExpenseType.EXPENSE)){
                 List<IncomeExpenseItems>expenseItemsList=incomeExpenseRepository.findAllByIncomeExpenseType(IncomeExpenseType.EXPENSE);
@@ -321,7 +273,6 @@ public class CashBoxController {
             return "redirect:/admin/cashbox/";
         }
     }
-//
 
     @PostMapping("/newIncome")
     public String saveNewIncome(@ModelAttribute CashBox cashBoxItem, BindingResult bindingResult, Model model) {
@@ -394,18 +345,18 @@ public class CashBoxController {
     }
 
     @GetMapping("/get-cashbox-balance")
-    public @ResponseBody Double getCashboxBalance() {
-        return cashBoxService.calculateBalance();
+    public @ResponseBody String getCashboxBalance() {
+        return String.format(Locale.ROOT, "%.2f", cashBoxService.calculateBalance());
     }
 
     @GetMapping("/get-account-balance")
-    public @ResponseBody Double getAccountBalance() {
-        return accountServiceImpl.getSumOfAccountBalances();
+    public @ResponseBody String getAccountBalance() {
+        return String.format(Locale.ROOT, "%.2f", accountServiceImpl.getSumOfAccountBalances());
     }
 
     @GetMapping("/get-account-debts")
-    public @ResponseBody Double getAccountDebts() {
-        return accountServiceImpl.getSumOfAccountDebts();
+    public @ResponseBody String getAccountDebts() {
+        return String.format(Locale.ROOT,   "%.2f", accountServiceImpl.getSumOfAccountDebts());
     }
 
 

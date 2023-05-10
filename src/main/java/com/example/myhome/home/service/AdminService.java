@@ -1,20 +1,22 @@
 package com.example.myhome.home.service;
 
-import com.example.myhome.home.configuration.security.CustomAdminDetails;
 import com.example.myhome.home.dto.AdminDTO;
 import com.example.myhome.home.model.Admin;
+import com.example.myhome.home.model.UserRole;
 import com.example.myhome.home.model.filter.FilterForm;
-import com.example.myhome.util.UserRole;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface AdminService {
+public interface AdminService extends UserDetailsService {
 
     Admin findAdminById(Long admin_id);
     Admin findAdminByLogin(String login);
+
+    AdminDTO findAdminDTOById(Long admin_id);
 
     List<Admin> findAll();
     List<AdminDTO> findAllDTO();
@@ -24,17 +26,22 @@ public interface AdminService {
     Page<AdminDTO> findAllByFiltersAndPage(FilterForm filters, Pageable pageable) throws IllegalAccessException;
 
     Admin saveAdmin(Admin admin);
+    Admin saveAdmin(AdminDTO dto);
 
     void deleteAdminById(Long admin_id);
 
-    public List<AdminDTO> findAllMasters(String search, Integer page);
+    List<AdminDTO> findAllMasters(String search, Integer page);
+    List<AdminDTO> findAllManagers(String search, Integer page);
 
-    public Long countAllMasters();
+    List<AdminDTO> findAllMasters();
+    List<AdminDTO> findAllManagers();
 
-    public List<Admin> getAdminsByRole(UserRole role);
+    Long countAllMasters();
+    Long countAllManagers();
 
-    Admin fromCustomAdminDetailsToAdmin(CustomAdminDetails details);
+    List<UserRole> getAllRoles();
 
     Specification<Admin> buildSpecFromFilters(FilterForm filters) throws IllegalAccessException;
 
+    List<AdminDTO> findMastersByType(Long typeID);
 }

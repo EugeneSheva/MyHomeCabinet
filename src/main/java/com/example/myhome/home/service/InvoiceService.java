@@ -1,6 +1,7 @@
 package com.example.myhome.home.service;
 
 import com.example.myhome.home.dto.InvoiceDTO;
+import com.example.myhome.home.mapper.InvoiceDTOMapper;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.InvoiceComponentRepository;
@@ -51,6 +52,8 @@ public class InvoiceService {
 
     @Autowired private ExcelHelper excelHelper;
 
+    @Autowired private InvoiceDTOMapper mapper;
+
 
     public List<Invoice> findAllInvoices() {return invoiceRepository.findAll();}
 
@@ -82,12 +85,8 @@ public class InvoiceService {
         List<InvoiceDTO> listDTO = new ArrayList<>();
         Pageable pageable = PageRequest.of(page-1, size);
         Page<Invoice>invoiceList = invoiceRepository.findByFilters(filters.getDate() != null ? LocalDate.parse(filters.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null, filters.getStatus() != null ? InvoiceStatus.valueOf(filters.getStatus()) : null, pageable);
-        for (Invoice invoice : invoiceList) {
-            listDTO.add(new InvoiceDTO(invoice.getId(), invoice.getDate(), apartmentService.convertApartmentsToApartmentsDTO(invoice.getApartment()),
-                    buildingService.convertBuildingToBuildingDTO(invoice.getBuilding()), apartmentAccountService.convertApartAccountToApartAccountDTO(invoice.getAccount()),
-                    ownerService.convertOwnerToOwnerDTO(invoice.getOwner()), invoice.getCompleted(), invoice.getStatus(), invoice.getDateFrom(), invoice.getDateTo(),
-                    invoice.getTotal_price(), invoice.getComponents(), invoice.getTariff()));
-        }
+        invoiceList.forEach(inv -> listDTO.add(mapper.fromInvoiceToDTO(inv)));
+
         return new PageImpl<>(listDTO, pageable, invoiceList.getTotalElements());
     }
 
@@ -201,7 +200,7 @@ public class InvoiceService {
         invoice.setDate(LocalDate.parse(date));
         log.info("Set date " + LocalDate.parse(date));
         log.info("Adding components");
-        invoice = buildComponents(invoice, services, unit_prices, unit_amounts);
+//        invoice = buildComponents(invoice, services, unit_prices, unit_amounts);
         log.info("Built invoice!");
         log.info(invoice.toString());
 
@@ -210,39 +209,40 @@ public class InvoiceService {
         return invoice;
     }
 
-    public Invoice buildComponents(Invoice invoice,
+
+    public List<InvoiceComponents> buildComponents(Invoice invoice,
                                    String[] services,
                                    String[] unit_prices,
                                    String[] unit_amounts) {
 
-        log.info("Clearing old components list, if present");
-        invoice.getComponents().clear();
-        log.info("Old components cleared");
-
-        for (int i = 1; i < services.length; i++) {
-
-            //checking component integrity
-            if(services[i].isEmpty() || unit_amounts[i].isEmpty() || unit_prices[i].isEmpty()) continue;
-            try {
-                Double.parseDouble(unit_prices[i]);
-                Double.parseDouble(unit_amounts[i]);
-            } catch (NumberFormatException e) {
-                log.info("Incorrect component found, skipping");
-                continue;
-            }
-
-            InvoiceComponents component = new InvoiceComponents();
-            component.setInvoice(invoice);
-            component.setService(serviceService.findServiceById(Long.parseLong(services[i])));
-            component.setUnit_price(Double.parseDouble(unit_prices[i]));
-            component.setUnit_amount(Double.parseDouble(unit_amounts[i]));
-            invoice.getComponents().add(component);
-        }
-        log.info("New components set!");
-        Double total_price = invoice.getComponents().stream().map(InvoiceComponents::getTotalPrice).reduce(Double::sum).orElse(0.0);
-        invoice.setTotal_price(total_price);
-        log.info("Total price of an invoice: " + total_price);
-        return invoice;
+//        log.info("Clearing old components list, if present");
+//        invoice.getComponents().clear();
+//        log.info("Old components cleared");
+//
+//        for (int i = 1; i < services.length; i++) {
+//
+//            //checking component integrity
+//            if(services[i].isEmpty() || unit_amounts[i].isEmpty() || unit_prices[i].isEmpty()) continue;
+//            try {
+//                Double.parseDouble(unit_prices[i]);
+//                Double.parseDouble(unit_amounts[i]);
+//            } catch (NumberFormatException e) {
+//                log.info("Incorrect component found, skipping");
+//                continue;
+//            }
+//
+//            InvoiceComponents component = new InvoiceComponents();
+//            component.setInvoice(invoice);
+//            component.setService(serviceService.findServiceById(Long.parseLong(services[i])));
+//            component.setUnit_price(Double.parseDouble(unit_prices[i]));
+//            component.setUnit_amount(Double.parseDouble(unit_amounts[i]));
+//            invoice.getComponents().add(component);
+//        }
+//        log.info("New components set!");
+//        Double total_price = invoice.getComponents().stream().map(InvoiceComponents::getTotalPrice).reduce(Double::sum).orElse(0.0);
+//        invoice.setTotal_price(total_price);
+//        log.info("Total price of an invoice: " + total_price);
+        return new ArrayList<>();
     }
 
     public Specification<Invoice> buildSpecFromFilters(FilterForm filters) {

@@ -1,15 +1,23 @@
 package com.example.myhome.home.validator;
 
+import com.example.myhome.home.dto.MeterDataDTO;
 import com.example.myhome.home.model.MeterData;
 import com.example.myhome.home.model.MeterData_;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.time.LocalDate;
+import java.util.Locale;
 
 @Component
 public class MeterValidator implements Validator {
+
+    @Autowired private MessageSource messageSource;
+
     @Override
     public boolean supports(Class<?> clazz) {
         return MeterData.class.equals(clazz);
@@ -17,37 +25,39 @@ public class MeterValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors e) {
-        MeterData meter = (MeterData) target;
+        MeterDataDTO meter = (MeterDataDTO) target;
+
+        Locale locale = LocaleContextHolder.getLocale();
 
         if(meter.getDate().isAfter(LocalDate.now())) {
-            e.rejectValue(MeterData_.DATE, "date.incorrect", "Дата не может быть в будущем");
+            e.rejectValue("date", "date.incorrect", messageSource.getMessage("meters.date.incorrect", null, locale));
         }
 
-        if(meter.getBuilding() == null) {
+        if(meter.getBuildingID() == null) {
             System.out.println("Error found(building)");
-            e.rejectValue(MeterData_.BUILDING, "building.empty", "Выберите дом!");
+            e.rejectValue("buildingID", "building.empty", messageSource.getMessage("meters.building.empty", null, locale));
         } else if(meter.getSection() == null || meter.getSection().equals("")) {
             System.out.println("Error found(section)");
-            e.rejectValue(MeterData_.SECTION, "section.empty", "Выберите секцию!");
-        } else if(meter.getApartment() == null) {
+            e.rejectValue("section", "section.empty", messageSource.getMessage("meters.section.empty", null, locale));
+        } else if(meter.getApartmentID() == null) {
             System.out.println("Error found(apartment)");
-            e.rejectValue(MeterData_.APARTMENT, "apartment.empty", "Выберите квартиру!");
+            e.rejectValue("apartmentID", "apartment.empty", messageSource.getMessage("meters.apartment.empty", null, locale));
         }
 
-        if(meter.getService() == null) {
+        if(meter.getServiceID() == null) {
             System.out.println("Error found(service)");
-            e.rejectValue(MeterData_.SERVICE, "service.empty", "Выберите счётчик!");
+            e.rejectValue("serviceID", "service.empty", messageSource.getMessage("meters.service.empty", null, locale));
         }
         if(meter.getStatus() == null) {
             System.out.println("Error found(status)");
-            e.rejectValue(MeterData_.STATUS, "status.empty", "Выберите статус!");
+            e.rejectValue("status", "status.empty", messageSource.getMessage("meters.status.empty", null, locale));
         }
-        if(meter.getCurrentReadings() == null) {
+        if(meter.getReadings() == null) {
             System.out.println("Error found(readings)");
-            e.rejectValue(MeterData_.CURRENT_READINGS, "currentReadings.empty", "Укажите показания счётчика!");
+            e.rejectValue("readings", "currentReadings.empty", messageSource.getMessage("meters.currentReadings.empty", null, locale));
         }
-        else if(meter.getCurrentReadings() < 0) {
-            e.rejectValue(MeterData_.CURRENT_READINGS, "currentReadings.empty", "Показания не могут быть отрицательными");
+        else if(meter.getReadings() < 0) {
+            e.rejectValue("readings", "currentReadings.negative", messageSource.getMessage("meters.currentReadings.negative", null, locale));
         }
     }
 }

@@ -17,7 +17,7 @@ public interface AccountService {
 
     List<ApartmentAccount> findAllAccounts();
     Page<ApartmentAccount> findAllAccountsByPage(Pageable pageable);
-    Page<ApartmentAccount> findAllAccountsByFiltersAndPage(FilterForm filters, Pageable pageable);
+    Page<ApartmentAccountDTO> findAllAccountsByFiltersAndPage(FilterForm filters, Pageable pageable);
 
     Long getMaxAccountId();
     Double getSumOfAccountBalances();
@@ -27,6 +27,7 @@ public interface AccountService {
     ApartmentAccount getAccountNumberFromFlat(Long flat_id);
 
     ApartmentAccount saveAccount(ApartmentAccount account);
+    ApartmentAccount saveAccount(ApartmentAccountDTO dto);
 
     @Transactional
     void deleteAccountById(Long account_id);

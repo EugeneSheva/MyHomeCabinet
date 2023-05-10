@@ -18,7 +18,7 @@ function downloadExcelTable() {
 
     let table = document.getElementById("accountsTable");
     let excel_file = XLSX.utils.table_to_book(table);
-    XLSX.writeFile(excel_file, "Лицевые счета " + `${day}-${month}-${year}` + ".xlsx");
+    XLSX.writeFile(excel_file, "account info " + `${day}-${month}-${year}` + ".xlsx");
 }
 
 function insertPreviousNumbers(page_number) {

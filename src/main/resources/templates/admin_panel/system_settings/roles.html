@@ -27,12 +27,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Роли</h1>
+            <h1 class="m-0" th:text="#{settings.system.roles.mainPage.pageName}">Роли</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item active">Роли</li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  <span th:text="#{settings.system.roles.mainPage.breadcrumb.main}">Главная</span></a></li>
+              <li class="breadcrumb-item active" th:text="#{settings.system.roles.mainPage.pageName}">Роли</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -55,7 +55,7 @@
                   <table class="table-responsive table-striped roles-table">
                     <thead>
                       <tr>
-                        <th>Роль</th>
+                        <th th:text="#{settings.system.roles.mainPage.role}">Роль</th>
                         <th th:each="page, iter : *{pages}" th:text="${page.page_name}"></th>
                       </tr>
                     </thead>
@@ -105,8 +105,8 @@
           </div>
           <div class="row">
             <div class="col-md-12">
-              <button type="button" class="btn btn-default">Отменить</button>
-              <button type="submit" class="btn btn-success">Сохранить</button>
+              <button type="button" class="btn btn-default" th:text="#{settings.system.roles.mainPage.cancel}">Отменить</button>
+              <button type="submit" class="btn btn-success" th:text="#{settings.system.roles.mainPage.save}">Сохранить</button>
             </div>
           </div>
           <div style="text-align: center; color: green; font-size: 20px; width: 100%">

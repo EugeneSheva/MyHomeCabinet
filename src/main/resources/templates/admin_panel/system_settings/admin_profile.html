@@ -26,13 +26,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Пользователь</h1>
+            <h1 class="m-0" th:text="#{settings.system.users.infoPage.pageName}">Пользователь</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/income-expense}">Пользователи</a></li>
-              <li class="breadcrumb-item active">Пользователь</li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i> <span th:text="#{settings.system.users.infoPage.breadcrumb.main}"> Главная</span></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/income-expense}" th:text="#{settings.system.users.infoPage.breadcrumb.previous}">Пользователи</a></li>
+              <li class="breadcrumb-item active" th:text="#{settings.system.users.infoPage.pageName}">Пользователь</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -50,7 +50,7 @@
                 <h3 class="box-title"></h3>
                 <div class="box-tools">
                   <a th:href="@{/admin/admins/update/{id}(id=${admin.id})}" class="btn btn-primary btn-sm">
-                    <span class="hidden-xs">Редактировать пользователя  </span><i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                    <span class="hidden-xs" th:text="#{settings.system.users.infoPage.edit}">Редактировать пользователя  </span><i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
                   </a>
                 </div>
               </div>
@@ -60,23 +60,23 @@
                     <table class="table table-bordered table-striped table-view">
                       <tbody>
                       <tr>
-                        <td>Пользователь</td>
+                        <td th:text="#{settings.system.users.infoPage.table.name}">Пользователь</td>
                         <td th:text="${admin.first_name + ' ' + admin.last_name}">Elon Musk</td>
                       </tr>
                       <tr>
-                        <td>Роль</td>
-                        <td th:text="${admin.role.getName()}">Директор</td>
+                        <td th:text="#{settings.system.users.infoPage.table.role}">Роль</td>
+                        <td th:text="${admin.role}">Директор</td>
                       </tr>
                       <tr>
-                        <td>Телефон</td>
+                        <td th:text="#{settings.system.users.infoPage.table.phone}">Телефон</td>
                         <td th:text="${admin.phone_number}">+380990010101</td>
                       </tr>
                       <tr>
-                        <td>Email(логин)</td>
+                        <td th:text="#{settings.system.users.infoPage.table.email}">Email(логин)</td>
                         <td th:text="${admin.email}">admin@admin.com</td>
                       </tr>
                       <tr>
-                        <td>Статус</td>
+                        <td th:text="#{settings.system.users.infoPage.table.status}">Статус</td>
                         <td><small class="label label-success">Активен</small></td>
                       </tr>
                       </tbody>

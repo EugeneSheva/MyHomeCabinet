@@ -26,13 +26,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Новый тариф</h1>
+            <h1 class="m-0" th:text="#{settings.system.tariffs.editPage.pageName}">Новый тариф</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  Главная</a></li>
-              <li class="breadcrumb-item"><a th:href="@{/admin/tariffs}">Тарифы</a></li>
-              <li class="breadcrumb-item active">Новый тариф</li>
+              <li class="breadcrumb-item"><a th:href="@{/admin}"><i class="fa fa-home"></i>  <span th:text="#{settings.system.tariffs.editPage.breadcrumb.main}">Главная</span></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/tariffs}" th:text="#{settings.system.tariffs.editPage.breadcrumb.previous}">Тарифы</a></li>
+              <li class="breadcrumb-item active" th:text="#{settings.system.tariffs.editPage.pageName}">Новый тариф</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -52,12 +52,12 @@
                   <div class="row">
                     <div class="col-xs-12 col-lg-7">
                       <div class="form-group">
-                        <label class="control-label">Название тарифа</label>
+                        <label class="control-label" th:text="#{settings.system.tariffs.editPage.name}">Название тарифа</label>
                         <input type="text" style="width: 100%;" class="form_control" th:field="*{name}">
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></h4>
                       </div>
                       <div class="form-group">
-                        <label for="description" class="control-label">Описание тарифа</label>
+                        <label for="description" class="control-label" th:text="#{settings.system.tariffs.editPage.description}">Описание тарифа</label>
                         <textarea id="description" th:field="*{description}" class="form-control" rows="5" aria-invalid="false"></textarea>
                         <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></h4>
                       </div>
@@ -67,33 +67,33 @@
                         <div th:each="component, iter : *{tariffComponents}" class="row form-tariffservice">
                           <div class="col-xs-6 col-md-4">
                             <div class="form-group">
-                              <label>Услуга</label>
+                              <label th:text="#{settings.system.tariffs.editPage.service}">Услуга</label>
                               <input type="hidden" th:value="${component.key.name}">
                               <select th:value="${component.key.name}" name="service_names" class="form-control service-select">
-                                <option value="">Выберите...</option>
+                                <option value="" th:text="#{select.placeholder}">Выберите...</option>
                                 <option th:each="service : ${services}" th:value="${service.name}" th:text="${service.name}"></option>
                               </select>
                             </div>
                           </div>
                           <div class="col-xs-6 col-md-3">
                             <div class="form-group">
-                              <label>Цена</label>
+                              <label th:text="#{settings.system.tariffs.editPage.price}">Цена</label>
                               <input type="text" th:value="${component.value}" name="prices" class="form-control">
                             </div>
                           </div>
                           <div class="col-xs-6 col-md-2">
                             <div class="form-group">
-                              <label>Валюта</label>
+                              <label th:text="#{settings.system.tariffs.editPage.currency}">Валюта</label>
                               <input type="text" class="form-control" value="грн" disabled="">
                             </div>
                           </div>
                           <div class="col-xs-6 col-md-3">
                             <div class="form-group">
-                              <label>Ед. изм.</label>
+                              <label th:text="#{settings.system.tariffs.editPage.unit}">Ед. изм.</label>
                               <input type="hidden" th:id="'id-'+${iter.index}" th:value="${component.key.unit.name}">
                               <div class="input-group">
                                 <select th:id="'unit-'+${iter.index}" disabled="">
-                                  <option value="0">Выберите...</option>
+                                  <option value="0" th:text="#{select.placeholder}">Выберите...</option>
                                   <option th:each="unit : ${units}" th:value="${unit.name}" th:text="${unit.name}"></option>
                                 </select>
                                 <span class="input-group-btn">
@@ -110,31 +110,31 @@
                         <div class="row form-tariffservice">
                           <div class="col-xs-6 col-md-4">
                             <div class="form-group">
-                              <label>Услуга</label>
+                              <label th:text="#{settings.system.tariffs.editPage.service}">Услуга</label>
                               <select name="service_names" class="form-control service-select">
-                                <option value="">Выберите...</option>
+                                <option value="" th:text="#{select.placeholder}">Выберите...</option>
                                 <option th:each="service : ${services}" th:value="${service.name}" th:text="${service.name}"></option>
                               </select>
                             </div>
                           </div>
                           <div class="col-xs-6 col-md-3">
                             <div class="form-group">
-                              <label>Цена</label>
+                              <label th:text="#{settings.system.tariffs.editPage.price}">Цена</label>
                               <input type="text" name="prices-t" class="form-control">
                             </div>
                           </div>
                           <div class="col-xs-6 col-md-2">
                             <div class="form-group">
-                              <label>Валюта</label>
+                              <label th:text="#{settings.system.tariffs.editPage.currency}">Валюта</label>
                               <input type="text" class="form-control" value="грн" disabled="">
                             </div>
                           </div>
                           <div class="col-xs-6 col-md-3">
                             <div class="form-group">
-                              <label>Ед. изм.</label>
+                              <label th:text="#{settings.system.tariffs.editPage.unit}">Ед. изм.</label>
                               <div class="input-group">
                                 <select name="service_currency" id="0-serviceunit-name" disabled="">
-                                  <option value="">Выберите...</option>
+                                  <option value="" th:text="#{select.placeholder}">Выберите...</option>
                                   <option value="2">м31234</option>
                                   <option value="3">кв.м.к</option>
                                 </select>
@@ -148,14 +148,15 @@
                           </div>
                         </div>
                       </div>
-                      <button type="button" id="add_service_btn" class="btn btn-default btn-hover-change pull-left margin-bottom-15 form-row-add-tariffservice-btn">Добавить услугу</button>
+                      <button type="button" id="add_service_btn" class="btn btn-default btn-hover-change pull-left margin-bottom-15 form-row-add-tariffservice-btn"
+                      th:text="#{settings.system.tariffs.editPage.add}">Добавить услугу</button>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-md-12">
                       <div class="form-group">
-                        <a th:href="@{/admin/tariffs}" class="btn btn-default">Отменить</a>
-                        <button type="submit" class="btn btn-success">Сохранить</button>
+                        <a th:href="@{/admin/tariffs}" class="btn btn-default" th:text="#{settings.system.tariffs.editPage.cancel}">Отменить</a>
+                        <button type="submit" class="btn btn-success" th:text="#{settings.system.tariffs.editPage.save}">Сохранить</button>
                       </div>
                     </div>
                   </div>
