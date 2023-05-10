@@ -40,10 +40,6 @@ public class AdminPanelSecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {return new BCryptPasswordEncoder(12);}
 
-    /*
-    Использование AuthenticationManager в этой версии спринга уничтожает возможность делать тесты,
-    выкидывает StackOverflowError , надо или удалить ссылку на имеющийся, или вставить новый @MockBean
-     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {

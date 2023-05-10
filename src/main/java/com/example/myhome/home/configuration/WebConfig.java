@@ -20,6 +20,7 @@ import java.util.Locale;
 @Configuration
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
+
     @Value("${upload.path}")
     private String uploadPath;
     @Value("${prefix}")
@@ -27,6 +28,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        System.out.println("CONFIG UPLOAD PATH " + uploadPath);
+        System.out.println("CONFIG PREFIX " + prefix);
         registry
                 .addResourceHandler("/img/**")
                 .addResourceLocations(prefix + uploadPath + "/", prefix + uploadPath + "/img/");
@@ -48,7 +51,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new OwnerDTOToStringConverter());
     }
 
-// translater
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
