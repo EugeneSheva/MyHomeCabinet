@@ -7,6 +7,8 @@ import com.example.myhome.home.service.AdminService;
 import com.example.myhome.home.validator.AdminValidator;
 import com.example.myhome.util.MappingUtils;
 import com.example.myhome.util.UserRole;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,15 +27,15 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/admins")
+@RequiredArgsConstructor
+@Log
 public class AdminController {
 
-    @Autowired
-    private AdminService adminService;
+    private final AdminService adminService;
+    private final AdminValidator validator;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired private AdminValidator validator;
-
-    @Autowired private AuthenticationManager authenticationManager;
-
+    // показать страничку с таблицей всех пользователей
     @GetMapping
     public String showAdminsPage(Model model,
                                  FilterForm form) throws IllegalAccessException {
@@ -49,6 +51,7 @@ public class AdminController {
         return "admin_panel/system_settings/settings_users";
     }
 
+    // показать профиль конкретного пользователя
     @GetMapping("/{id}")
     public String showAdminProfile(@PathVariable long id, Model model) {
         AdminDTO admin = adminService.findAdminDTOById(id);
@@ -56,6 +59,7 @@ public class AdminController {
         return "admin_panel/system_settings/admin_profile";
     }
 
+    // открыть страничку создания пользователя
     @GetMapping("/create")
     public String showCreateAdminPage(Model model) {
         model.addAttribute("adminDTO", new AdminDTO());
@@ -63,6 +67,7 @@ public class AdminController {
         return "admin_panel/system_settings/admin_card";
     }
 
+    // открыть страничку обновления пользователя
     @GetMapping("/update/{id}")
     public String showUpdateAdminPage(@PathVariable long id, Model model) {
         AdminDTO admin = adminService.findAdminDTOById(id);
@@ -71,6 +76,7 @@ public class AdminController {
         return "admin_panel/system_settings/admin_card";
     }
 
+    // сохранить созданного пользователя
     @PostMapping("/create")
     public String createAdmin(@ModelAttribute AdminDTO dto, BindingResult bindingResult, Model model) {
         validator.validate(dto, bindingResult);
@@ -84,6 +90,7 @@ public class AdminController {
         }
     }
 
+    // сохранить обновленного пользователя
     @PostMapping("/update/{id}")
     public String updateAdmin(@PathVariable long id, @ModelAttribute AdminDTO dto, BindingResult bindingResult, Model model) {
         dto.setId(id);
@@ -98,12 +105,14 @@ public class AdminController {
         }
     }
 
+    // удалить пользователя
     @GetMapping("/delete/{id}")
     public String deleteAdmin(@PathVariable long id) {
         adminService.deleteAdminById(id);
         return "redirect:/admin/admins";
     }
 
+    // отправить приглашение
     @GetMapping("/invite/{id}")
     public @ResponseBody String inviteAdmin(@PathVariable long id) {
         return "User with ID " + id + " - invited";
@@ -111,6 +120,7 @@ public class AdminController {
 
     // =========
 
+    // Получить всех специалистов: сантехник, электрик, ... (не управляющих) - для заявок вызова мастеров
     @GetMapping("/get-all-masters")
     public @ResponseBody Map<String, Object> getAllMasters(@RequestParam String search, @RequestParam int page) {
         Map<String, Object> map = new HashMap<>();
@@ -123,6 +133,7 @@ public class AdminController {
         return map;
     }
 
+    // Получить всех управляющих: директор, админ, бухгалтер... (не специалистов) - для кассы
     @GetMapping("/get-managers")
     public @ResponseBody Map<String, Object> getAllManagers(@RequestParam String search, @RequestParam int page) {
         Map<String, Object> map = new HashMap<>();
@@ -135,6 +146,7 @@ public class AdminController {
         return map;
     }
 
+    // Получить мастеров/управляющих конкретного типа (ID пользовательской роли)
     @GetMapping("/get-masters-by-type")
     public @ResponseBody List<AdminDTO> getMastersByType(@RequestParam Long typeID) {
         return (typeID > 0) ? adminService.findMastersByType(typeID) : adminService.findAllMasters();

@@ -10,6 +10,7 @@ import com.example.myhome.home.validator.RequestValidator;
 import com.example.myhome.util.UserRole;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,20 +28,17 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/requests")
+@RequiredArgsConstructor
 @Log
 public class RequestController {
 
-    @Autowired
-    private RepairRequestService repairRequestService;
+    private final RepairRequestService repairRequestService;
+    private final OwnerService ownerService;
+    private final AdminServiceImpl adminService;
 
-    @Autowired
-    private OwnerService ownerService;
+    private final RequestValidator validator;
 
-    @Autowired
-    private AdminServiceImpl adminService;
-
-    @Autowired private RequestValidator validator;
-
+    // Открыть страничку с таблицей всех заявок
     @GetMapping
     public String showRequestsPage(Model model,
                                    FilterForm filterForm) throws IllegalAccessException {
@@ -53,6 +51,7 @@ public class RequestController {
         return "admin_panel/requests/requests";
     }
 
+    // Открыть страничку создания заявки
     @GetMapping("/create")
     public String showCreateRequestPage(Model model) {
 
@@ -72,6 +71,7 @@ public class RequestController {
         return "admin_panel/requests/request_card";
     }
 
+    // Открыть страничку обновления заявки
     @GetMapping("/update/{id}")
     public String showUpdateRequestPage(@PathVariable long id, Model model) {
         RepairRequestDTO request = repairRequestService.findRequestDTOById(id);
@@ -91,6 +91,7 @@ public class RequestController {
         return "admin_panel/requests/request_card";
     }
 
+    // Открыть страничку профиля заявки
     @GetMapping("/info/{id}")
     public String getRequestInfoPage(@PathVariable long id, Model model) {
         RepairRequestDTO request = repairRequestService.findRequestDTOById(id);
@@ -100,11 +101,10 @@ public class RequestController {
         return "admin_panel/requests/request_profile";
     }
 
+    // Сохранить созданную заявку
     @PostMapping("/create")
     public String createRequest(@ModelAttribute RepairRequestDTO repairRequestDTO,
                                 BindingResult bindingResult,
-//                                @RequestParam(required = false) String date,
-//                                @RequestParam(required = false) String time,
                                 @RequestParam(required = false) String best_date,
                                 @RequestParam(required = false) String best_time,
                                 Model model) {
@@ -113,8 +113,6 @@ public class RequestController {
         if(best_time == null || best_time.isEmpty()) best_time = LocalTime.of(12, 0).toString();
         if(repairRequestDTO.getMasterTypeID() == null || repairRequestDTO.getMasterTypeID() < 0) repairRequestDTO.setMasterTypeID(null);
 
-//        repairRequestDTO.setRequest_date(LocalDate.parse(date));
-//        repairRequestDTO.setRequest_time(LocalTime.parse(time));
         repairRequestDTO.setBest_time(best_date + " - " + best_time);
 
         validator.validate(repairRequestDTO, bindingResult);
@@ -129,6 +127,7 @@ public class RequestController {
         return "redirect:/admin/requests";
     }
 
+    // Сохранить обновленную заявку
     @PostMapping("/update/{id}")
     public String updateRequest(@PathVariable long id,
                                 @ModelAttribute RepairRequestDTO repairRequestDTO,
@@ -154,12 +153,14 @@ public class RequestController {
         return "redirect:/admin/requests";
     }
 
+    // Удалить заявку
     @GetMapping("/delete/{id}")
     public String deleteRequest(@PathVariable long id) {
         repairRequestService.deleteRequestById(id);
         return "redirect:/admin/requests";
     }
 
+    // Получение заявок через AJAX
     @GetMapping("/get-requests")
     public @ResponseBody Page<RepairRequestDTO> getRequests(@RequestParam Integer page,
                                                             @RequestParam Integer size,
@@ -171,10 +172,6 @@ public class RequestController {
 
     @ModelAttribute
     public void addAttributes(Model model) {
-
-
     }
-
-
 
 }

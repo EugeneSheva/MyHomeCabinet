@@ -6,6 +6,7 @@ import com.example.myhome.home.model.Unit;
 import com.example.myhome.home.repository.ServiceRepository;
 import com.example.myhome.home.repository.UnitRepository;
 import com.example.myhome.home.service.impl.ServiceServiceImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,28 +21,26 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/services")
+@RequiredArgsConstructor
 @Log
 public class ServiceController {
 
-    @Autowired
-    private ServiceRepository serviceRepository;
+    private final ServiceServiceImpl serviceService;
 
-    @Autowired
-    private UnitRepository unitRepository;
-
-    @Autowired
-    private ServiceServiceImpl serviceService;
-
+    // Открыть страничку настройки услуг и ед.изм.
     @GetMapping
     public String showServicesPage(Model model){
         ServiceForm serviceForm = new ServiceForm();
-        serviceForm.setServiceList(serviceRepository.findAll());
-        serviceForm.setUnitList(unitRepository.findAll());
+        serviceForm.setServiceList(serviceService.findAllServices());
+        serviceForm.setUnitList(serviceService.findAllUnits());
         model.addAttribute("serviceForm", serviceForm);
-        model.addAttribute("units", unitRepository.findAll());
+        model.addAttribute("units", serviceService.findAllUnits());
         return "admin_panel/system_settings/settings_services";
     }
 
+    // Сохранить все услуги/единицы измерения
+    // Список всех имеющихся услуг и единиц привязывается к объекту ServiceForm
+    // Затем в этот список добавляются и сохраняются новые услуги/единицы через соотв.массивы
     @PostMapping
     public String updateServices(@Valid @ModelAttribute ServiceForm serviceForm, BindingResult bindingResult,
                                  @RequestParam String[] new_service_names,
@@ -61,10 +60,11 @@ public class ServiceController {
         return "redirect:/admin/services";
     }
 
+    // Удалить услугу по её ID
     @GetMapping("/delete/{id}")
     public String deleteService(@PathVariable long id, RedirectAttributes redirectAttributes) {
         try {
-            serviceRepository.deleteById(id);
+            serviceService.deleteServiceById(id);
             return "redirect:/admin/services";
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,10 +74,11 @@ public class ServiceController {
         }
     }
 
+    // Удалить единицу измерения по её ID
     @GetMapping("/delete-unit/{id}")
     public String deleteServiceUnit(@PathVariable long id, RedirectAttributes redirectAttributes) {
         try {
-            unitRepository.deleteById(id);
+            serviceService.deleteUnitById(id);
             return "redirect:/admin/services";
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,8 +88,9 @@ public class ServiceController {
         }
     }
 
+    // Получить конкретную единицу измерения по её ID
     @GetMapping("/get-unit")
     public @ResponseBody Unit getUnitFromService(@RequestParam long id) {
-        return serviceRepository.findById(id).orElseThrow().getUnit();
+        return serviceService.findServiceById(id).getUnit();
     }
 }

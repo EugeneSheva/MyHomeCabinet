@@ -20,7 +20,9 @@ public class MeterDTOMapper {
     }
     public MeterDataDTO fromMeterToDTO(MeterData meter) {
         if(meter == null) return null;
+
         MeterDataDTO dto = new MeterDataDTO();
+
         dto.setId(meter.getId());
         dto.setReadings(meter.getCurrentReadings());
         dto.setApartmentID(meter.getApartment().getId());

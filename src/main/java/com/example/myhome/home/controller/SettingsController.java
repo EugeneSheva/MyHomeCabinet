@@ -3,6 +3,7 @@ package com.example.myhome.home.controller;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.RoleService;
+import com.example.myhome.home.service.SettingsService;
 import com.example.myhome.home.service.UserRoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -24,52 +25,51 @@ import java.util.concurrent.atomic.AtomicReference;
 @Log
 public class SettingsController {
 
-    private final IncomeExpenseRepository incomeExpenseRepository;
-    private final PaymentDetailsRepository paymentDetailsRepository;
-    private final PageRoleDisplayRepository pageRoleDisplayRepository;
-
+    private final SettingsService settingsService;
     private final UserRoleService userRoleService;
 
-
+    // Редирект на статистику
     @GetMapping("/admin")
     public String redirectToStatPage() {
         return "redirect:/admin/statistics";
     }
 
+    // Открыть страничку платёжных реквизитов
     @GetMapping("/admin/payment-details")
     public String showPaymentDetailsPage(Model model) {
-        model.addAttribute("paymentDetails", paymentDetailsRepository.findById(1L).orElseGet(PaymentDetails::new));
+        model.addAttribute("paymentDetails", settingsService.getPaymentDetails());
         return "admin_panel/system_settings/settings_payment";
     }
 
+    // Открыть страничку со всеми статьями приходов/расходов
     @GetMapping("/admin/income-expense")
     public String showTransactionsPage(@RequestParam(required = false) String sort, Model model) {
         List<IncomeExpenseItems> transactions = new ArrayList<>();
         if(sort != null) {
             if(sort.equalsIgnoreCase("exp")) {
-                transactions = incomeExpenseRepository.findAll(Sort.by(Sort.Direction.ASC, "incomeExpenseType"));
+                transactions = settingsService.getAllTransactionItems(Sort.by(Sort.Direction.ASC, "incomeExpenseType"));
                 model.addAttribute("type", "inc");
             }
             else if(sort.equalsIgnoreCase("inc")) {
-                transactions = incomeExpenseRepository.findAll(Sort.by(Sort.Direction.DESC, "incomeExpenseType"));
+                transactions = settingsService.getAllTransactionItems(Sort.by(Sort.Direction.DESC, "incomeExpenseType"));
                 model.addAttribute("type", "exp");
             }
         } else {
-            transactions = incomeExpenseRepository.findAll();
+            transactions = settingsService.getAllTransactionItems();
             model.addAttribute("type", "exp");
         }
-        log.info(transactions.toString());
-        transactions.forEach(System.out::println);
         model.addAttribute("transactions", transactions);
         return "admin_panel/system_settings/settings_inc_exp";
     }
 
+    // Открыть страничку создания новой статьи приходов/расходов
     @GetMapping("/admin/income-expense/create")
     public String showCreateTransactionPage(Model model) {
         model.addAttribute("incomeExpenseItems", new IncomeExpenseItems());
         return "admin_panel/system_settings/transaction_card";
     }
 
+    // Сохранение новой статьи приходов/расходов
     @PostMapping("/admin/income-expense/create")
     public String createTransaction(@Valid @ModelAttribute IncomeExpenseItems item, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
@@ -78,17 +78,18 @@ public class SettingsController {
             log.info(bindingResult.getAllErrors().toString());
             return "admin_panel/system_settings/transaction_card";
         }
-        if(!incomeExpenseRepository.existsByName(item.getName()))
-            incomeExpenseRepository.save(new IncomeExpenseItems(item.getName(), item.getIncomeExpenseType()));
+        settingsService.saveTransactionItem(item);
         return "redirect:/admin/income-expense";
     }
 
+    // Открыть страничку обновления статьи приходов/расходов
     @GetMapping("/admin/income-expense/update/{id}")
     public String showUpdateTransactionPage(@PathVariable long id, Model model) {
-        model.addAttribute("incomeExpenseItems", incomeExpenseRepository.findById(id).orElseThrow());
+        model.addAttribute("incomeExpenseItems", settingsService.getTransactionItem(id));
         return "admin_panel/system_settings/transaction_card";
     }
 
+    // Сохранить обновленную статью
     @PostMapping("/admin/income-expense/update/{id}")
     public String updateTransaction(@Valid @ModelAttribute IncomeExpenseItems item, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
@@ -97,16 +98,18 @@ public class SettingsController {
             log.info(bindingResult.getAllErrors().toString());
             return "admin_panel/system_settings/transaction_card";
         }
-        incomeExpenseRepository.save(item);
+        settingsService.saveTransactionItem(item);
         return "redirect:/admin/income-expense";
     }
 
+    // Удалить статью приходов/расходов по ID
     @GetMapping("/admin/income-expense/delete/{id}")
     public String deleteTransaction(@PathVariable long id) {
-        incomeExpenseRepository.deleteById(id);
+        settingsService.deleteTransactionItem(id);
         return "redirect:/admin/income-expense";
     }
 
+    // Сохранить платёжные реквизиты
     @PostMapping("/admin/payment-details")
     public String updatePaymentDetails(@Valid @ModelAttribute PaymentDetails details, BindingResult bindingResult,
                                        RedirectAttributes redirectAttributes) {
@@ -118,23 +121,25 @@ public class SettingsController {
         }
 
         details.setId(1L);
-        paymentDetailsRepository.save(details);
+        settingsService.savePaymentDetails(details);
 
         redirectAttributes.addFlashAttribute("success_message", "Сохранено!");
         return "redirect:/admin/payment-details";
     }
 
+    // Открыть страничку разрешений для пользовательских ролей
     @GetMapping("/admin/roles")
     public String showRolesPage(Model model) {
         PageRoleForm pageForm = new PageRoleForm();
-        pageForm.setPages(pageRoleDisplayRepository.findAll());
+        pageForm.setPages(settingsService.getAllPagePermissions());
         model.addAttribute("pageForm", pageForm);
         return "admin_panel/system_settings/roles";
     }
 
+    // Сохранить все разрешения для пользовательских ролей
     @PostMapping("/admin/roles")
     public String saveRolesPage(@ModelAttribute PageRoleForm pageForm, RedirectAttributes redirectAttributes, Model model) {
-        List<PageRoleDisplay> originalList = pageRoleDisplayRepository.findAll();
+        List<PageRoleDisplay> originalList = settingsService.getAllPagePermissions();
         List<PageRoleDisplay> pages = pageForm.getPages();
         for(int i = 0; i < pages.size(); i++) {
             pages.get(i).setId((long) i+1);
@@ -142,7 +147,7 @@ public class SettingsController {
             pages.get(i).setRole_director(true);
             pages.get(i).setCode(originalList.get(i).getCode());
         }
-        pageRoleDisplayRepository.saveAll(pages);
+        settingsService.savePagePermissions(pages);
         userRoleService.updateRoles(pages);
         redirectAttributes.addFlashAttribute("success", "Сохранено!");
         return "redirect:/admin/roles";

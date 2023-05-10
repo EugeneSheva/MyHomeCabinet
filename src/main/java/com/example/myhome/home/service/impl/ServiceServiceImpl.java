@@ -36,6 +36,8 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public void deleteServiceById(Long service_id) {serviceRepository.deleteById(service_id);}
     @Override
+    public void deleteUnitById(Long unit_id) {unitRepository.deleteById(unit_id);}
+    @Override
     public List<Unit> addNewUnits(List<Unit> unitList, String[] new_unit_names) {
         log.info(unitList.toString());
         log.info(Arrays.toString(new_unit_names));

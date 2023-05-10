@@ -14,6 +14,7 @@ import com.example.myhome.home.validator.AccountValidator;
 import com.example.myhome.util.MappingUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,30 +29,25 @@ import java.util.Objects;
 
 @Controller
 @RequestMapping("/admin/accounts")
+@RequiredArgsConstructor
 @Log
 public class AccountController {
 
-    @Autowired
-    private AccountServiceImpl accountService;
+    private final AccountServiceImpl accountService;
+    private final CashBoxService cashBoxService;
+    private final BuildingService buildingService;
+    private final OwnerService ownerService;
 
-    @Autowired
-    private CashBoxService cashBoxService;
+    private final AccountValidator validator;
 
-    @Autowired
-    private BuildingService buildingService;
+    private final AccountDTOMapper mapper;
 
-    @Autowired private OwnerService ownerService;
+    private final WebsocketController websocketController;
 
-    @Autowired private AccountValidator validator;
-
-    @Autowired private AccountDTOMapper mapper;
-
-    @Autowired private WebsocketController websocketController;
-
-    // показать все счета
+    // Открыть страничку с таблицей всех счетов
     @GetMapping
     public String showAccountsPage(Model model,
-                                   FilterForm filterForm) throws IllegalAccessException {
+                                   FilterForm filterForm){
 
         model.addAttribute("cashbox_balance", cashBoxService.calculateBalance());
         model.addAttribute("account_balance", accountService.getSumOfAccountBalances());
@@ -68,14 +64,14 @@ public class AccountController {
         return "admin_panel/accounts/accounts";
     }
 
-    // показать профиль лицевого счёта
+    // Открыть страничку профиля лицевого счёта
     @GetMapping("/{id}")
     public String showAccountInfoPage(@PathVariable long id, Model model) {
         model.addAttribute("account", accountService.findAccountDTOById(id));
         return "admin_panel/accounts/account_profile";
     }
 
-    // открытие страницы создания лицевого счета
+    // Открыть страничку создания лицевого счёта
     @GetMapping("/create")
     public String showCreateAccountPage(Model model) {
         ApartmentAccountDTO dto = new ApartmentAccountDTO();
@@ -87,7 +83,18 @@ public class AccountController {
         return "admin_panel/accounts/account_card";
     }
 
-    // создание лицевого счета
+    // Открыть страничку обновления лицевого счёта
+    @GetMapping("/update/{id}")
+    public String showUpdateAccountPage(@PathVariable long id, Model model) {
+
+        model.addAttribute("apartmentAccountDTO", accountService.findAccountDTOById(id));
+        model.addAttribute("id", id);
+        model.addAttribute("buildings", buildingService.findAllDTO());
+
+        return "admin_panel/accounts/account_card";
+    }
+
+    // Сохранить созданный лицевой счёт
     @PostMapping("/create")
     public String createAccount(@ModelAttribute ApartmentAccountDTO apartmentAccountDTO,
                                 BindingResult bindingResult,
@@ -123,16 +130,7 @@ public class AccountController {
 
     }
 
-    @GetMapping("/update/{id}")
-    public String showUpdateAccountPage(@PathVariable long id, Model model) {
-
-        model.addAttribute("apartmentAccountDTO", accountService.findAccountDTOById(id));
-        model.addAttribute("id", id);
-        model.addAttribute("buildings", buildingService.findAllDTO());
-
-        return "admin_panel/accounts/account_card";
-    }
-
+    // Сохранить обновленный счёт
     @PostMapping("/update/{id}")
     public String updateAccount(@PathVariable long id,
                                 @ModelAttribute ApartmentAccountDTO apartmentAccountDTO,
@@ -154,17 +152,20 @@ public class AccountController {
         return "redirect:/admin/accounts";
     }
 
+    // Удалить лицевой счёт
     @GetMapping("/delete/{id}")
     public String deleteAccount(@PathVariable long id) {
         accountService.deleteAccountById(id);
         return "redirect:/admin/accounts";
     }
 
+    // Получить лицевой счёт конкретной квартиры через её ID
     @GetMapping("/get-flat-account")
     public @ResponseBody Long getAccountNumberFromFlat(@RequestParam long flat_id) {
         return accountService.getAccountNumberFromFlat(flat_id).getId();
     }
 
+    // Получение лицевых счетов через AJAX
     @GetMapping("/get-accounts")
     public @ResponseBody Page<ApartmentAccountDTO> getAccounts(@RequestParam Integer page,
                                                                @RequestParam Integer size,

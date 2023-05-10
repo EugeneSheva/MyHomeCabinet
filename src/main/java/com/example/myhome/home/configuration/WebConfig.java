@@ -1,5 +1,5 @@
 package com.example.myhome.home.configuration;
-import com.example.myhome.home.converters.*;
+import com.example.myhome.home.converter.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;

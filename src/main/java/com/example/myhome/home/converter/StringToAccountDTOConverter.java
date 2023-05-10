@@ -1,7 +1,6 @@
-package com.example.myhome.home.converters;
+package com.example.myhome.home.converter;
 
 import com.example.myhome.home.dto.ApartmentAccountDTO;
-import com.example.myhome.home.dto.BuildingDTO;
 import org.springframework.core.convert.converter.Converter;
 
 public class StringToAccountDTOConverter implements Converter<String, ApartmentAccountDTO> {

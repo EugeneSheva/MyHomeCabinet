@@ -26,10 +26,6 @@ public class AccountDTOMapper {
         account.setSection(dto.getSection());
         account.setBalance(dto.getBalance());
 
-//        account.setApartment((dto.getApartment() != null) ? fromDTOToApartment(dto.getApartment()) : null);
-//        account.setBuilding((dto.getBuilding() != null) ? fromDTOToBuilding(dto.getBuilding()) : null);
-//        account.setOwner((dto.getOwner() != null) ? fromDTOToOwner(dto.getOwner()) : null);
-
         return account;
     }
     public ApartmentAccountDTO fromAccountToDTO(ApartmentAccount account) {
@@ -71,9 +67,6 @@ public class AccountDTOMapper {
                             .build()
             );
         }
-
-//        dto.setApartment(fromApartmentToDTO(account.getApartment()));
-//        dto.setOwner(fromOwnerToDTO(account.getOwner()));
 
         log.info("Created dto: ");
         log.info(dto.toString());

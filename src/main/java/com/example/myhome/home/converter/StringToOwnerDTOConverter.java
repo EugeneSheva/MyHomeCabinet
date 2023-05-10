@@ -1,6 +1,5 @@
-package com.example.myhome.home.converters;
+package com.example.myhome.home.converter;
 
-import com.example.myhome.home.dto.ApartmentAccountDTO;
 import com.example.myhome.home.dto.OwnerDTO;
 import org.springframework.core.convert.converter.Converter;
 

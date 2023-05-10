@@ -1,4 +1,4 @@
-package com.example.myhome.home.converters;
+package com.example.myhome.home.converter;
 
 import org.springframework.format.Formatter;
 
