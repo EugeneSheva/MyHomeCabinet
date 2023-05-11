@@ -1,5 +1,4 @@
 package com.example.myhome.home.controller;
-import com.example.myhome.home.configuration.security.CustomUserDetails;
 import com.example.myhome.home.service.registration.LoginRequest;
 import com.example.myhome.home.service.registration.RegistrationRequest;
 import com.example.myhome.home.service.registration.RegisterService;
@@ -106,7 +105,7 @@ public class LoginController {
     @GetMapping("/cabinet/logout")
     public String logout (HttpServletRequest request, HttpServletResponse response) {
         clearRememberMeCookie(request, response);
-        clearRememberMeTokens();
+//        clearRememberMeTokens();
         SecurityContextHolder.getContext().setAuthentication(null);
         return "redirect:/cabinet/site/login";
     }

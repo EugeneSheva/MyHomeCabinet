@@ -13,7 +13,6 @@ public class ApartmentAccountDTO {
     private Long id;
     private Boolean isActive;
     private Boolean changedState = false;
-    private Long number;
     private Double balance = 0.0;
     private String section;
 
@@ -27,10 +26,9 @@ public class ApartmentAccountDTO {
         this.owner = new OwnerDTO();
     }
 
-    public ApartmentAccountDTO(Long id, Boolean isActive, Long number, Double balance) {
+    public ApartmentAccountDTO(Long id, Boolean isActive, Double balance) {
         this.id = id;
         this.isActive = isActive;
-        this.number = number;
         this.balance = balance;
     }
 }

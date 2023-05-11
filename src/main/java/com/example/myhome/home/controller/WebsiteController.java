@@ -3,7 +3,7 @@ package com.example.myhome.home.controller;
 import com.example.myhome.home.model.pages.*;
 import com.example.myhome.home.service.WebsiteService;
 import com.example.myhome.home.service.impl.WebsiteServiceImpl;
-import com.example.myhome.home.validator.MainPageValidator;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class WebsiteController {
 
     private final WebsiteServiceImpl websiteService;
-    private final MainPageValidator validator;
+    private final com.example.myhome.home.validator.pages.MainPageValidator validator;
 
     // Открыть страничку редактирования контента главной страницы
     @GetMapping("/home")

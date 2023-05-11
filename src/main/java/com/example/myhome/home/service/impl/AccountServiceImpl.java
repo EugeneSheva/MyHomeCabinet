@@ -189,7 +189,7 @@ public class AccountServiceImpl implements AccountService {
 
 
     public ApartmentAccountDTO convertApartAccountToApartAccountDTO(ApartmentAccount account) {
-       return new ApartmentAccountDTO(account.getId(),account.getIsActive(),account.getNumber(),account.getBalance());
+       return new ApartmentAccountDTO(account.getId(),account.getIsActive(), account.getBalance());
     }
 
     public ApartmentAccount getAccountWithBiggestId() {return accountRepository.findFirstByOrderByIdDesc().orElseThrow();}
