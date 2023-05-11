@@ -3,17 +3,14 @@ package com.example.myhome.home.controller;
 import com.example.myhome.home.model.MeterData;
 import com.example.myhome.home.dto.MeterDataDTO;
 import com.example.myhome.home.model.filter.FilterForm;
-import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
-import com.example.myhome.home.service.impl.MeterDataServiceImpl;
-import com.example.myhome.home.service.impl.ServiceServiceImpl;
+import com.example.myhome.home.service.impl.*;
 import com.example.myhome.home.validator.MeterValidator;
 import com.example.myhome.util.MappingUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,11 +22,9 @@ import org.springframework.validation.DataBinder;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.logging.Filter;
 import java.util.stream.Collectors;
 
 @Controller
@@ -41,7 +36,7 @@ public class MeterController {
     private final MeterDataServiceImpl meterDataService;
     private final ServiceServiceImpl serviceService;
     private final BuildingService buildingService;
-    private final ApartmentService apartmentService;
+    private final ApartmentServiceImpl apartmentService;
 
     private final MeterValidator validator;
 

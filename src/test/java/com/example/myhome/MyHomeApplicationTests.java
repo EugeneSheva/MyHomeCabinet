@@ -2,6 +2,7 @@ package com.example.myhome;
 
 import com.example.myhome.home.service.*;
 import com.example.myhome.home.service.impl.*;
+import com.example.myhome.home.service.BuildingService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,11 +17,11 @@ class MyHomeApplicationTests {
     @MockBean
     private AdminServiceImpl adminService;
     @MockBean
-    private ApartmentService apartmentService;
+    private ApartmentServiceImpl apartmentService;
     @MockBean
     private BuildingService buildingService;
     @MockBean
-    private InvoiceServiceImpl invoiceServiceImpl;
+    private InvoiceService invoiceService;
     @MockBean
     private MessageService messageService;
     @MockBean
@@ -40,7 +41,7 @@ class MyHomeApplicationTests {
         assertThat(apartmentService).isNotNull();
         assertThat(adminService).isNotNull();
         assertThat(buildingService).isNotNull();
-        assertThat(invoiceServiceImpl).isNotNull();
+        assertThat(invoiceService).isNotNull();
         assertThat(messageService).isNotNull();
         assertThat(meterDataService).isNotNull();
         assertThat(ownerService).isNotNull();

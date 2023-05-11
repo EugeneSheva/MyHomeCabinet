@@ -8,10 +8,8 @@ import com.example.myhome.home.repository.ApartmentRepository;
 import com.example.myhome.home.repository.BuildingRepository;
 import com.example.myhome.home.repository.MeterDataRepository;
 import com.example.myhome.home.repository.ServiceRepository;
-import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.MeterDataService;
-import com.example.myhome.home.service.impl.ServiceServiceImpl;
 import com.example.myhome.home.specification.MeterSpecifications;
 import com.example.myhome.home.validator.MeterValidator;
 import com.example.myhome.util.MappingUtils;
@@ -27,8 +25,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,7 +34,7 @@ public class MeterDataServiceImpl implements MeterDataService {
     @Autowired
     private MeterDataRepository meterDataRepository;
 
-    @Autowired private ApartmentService apartmentService;
+    @Autowired private ApartmentServiceImpl apartmentService;
     @Autowired private ServiceServiceImpl serviceService;
     @Autowired private BuildingService buildingService;
 

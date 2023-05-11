@@ -6,10 +6,8 @@ import com.example.myhome.home.dto.InvoiceDTO;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.service.*;
-import com.example.myhome.home.service.impl.InvoiceServiceImpl;
-import com.example.myhome.home.service.impl.MeterDataServiceImpl;
-import com.example.myhome.home.service.impl.ServiceServiceImpl;
-import com.example.myhome.home.service.impl.TariffServiceImpl;
+import com.example.myhome.home.service.impl.*;
+import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.validator.InvoiceValidator;
 import com.example.myhome.util.FileDownloadUtil;
 import com.example.myhome.util.FileUploadUtil;
@@ -21,7 +19,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,7 +38,7 @@ import java.time.LocalDate;
 public class InvoiceController {
 
     @Autowired
-    private InvoiceServiceImpl invoiceService;
+    private InvoiceService invoiceService;
 
     @Autowired
     private CashBoxService cashBoxService;
@@ -50,7 +47,7 @@ public class InvoiceController {
     private AccountService accountService;
 
     @Autowired
-    private ApartmentService apartmentService;
+    private ApartmentServiceImpl apartmentService;
 
     @Autowired
     private BuildingService buildingService;

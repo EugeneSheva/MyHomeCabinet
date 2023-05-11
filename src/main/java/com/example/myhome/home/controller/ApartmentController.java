@@ -8,9 +8,8 @@ import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.*;
-import com.example.myhome.home.service.impl.AdminServiceImpl;
-import com.example.myhome.home.service.impl.MeterDataServiceImpl;
-import com.example.myhome.home.service.impl.TariffServiceImpl;
+import com.example.myhome.home.service.impl.*;
+import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.validator.ApartmentValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,7 +41,7 @@ public class ApartmentController {
     @Value("${upload.path}")
     private String uploadPath;
 
-    private final ApartmentService apartmentService;
+    private final ApartmentServiceImpl apartmentService;
     private final ApartmentRepository apartmentRepository;
     private final AccountService accountService;
     private final BuildingService buildingService;

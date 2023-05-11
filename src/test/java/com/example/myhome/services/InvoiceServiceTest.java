@@ -2,7 +2,7 @@ package com.example.myhome.services;
 
 import com.example.myhome.home.model.Invoice;
 import com.example.myhome.home.repository.InvoiceRepository;
-import com.example.myhome.home.service.impl.InvoiceServiceImpl;
+import com.example.myhome.home.service.InvoiceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class InvoiceServiceTest {
 
     @MockBean private InvoiceRepository invoiceRepository;
-    @Autowired private InvoiceServiceImpl invoiceServiceImpl;
+    @Autowired private InvoiceService invoiceService;
 
     Invoice invoice;
 
@@ -27,7 +27,7 @@ public class InvoiceServiceTest {
     @Test
     void sanityCheck() {
         assertThat(invoiceRepository).isNotNull();
-        assertThat(invoiceServiceImpl).isNotNull();
+        assertThat(invoiceService).isNotNull();
         assertThat(invoice).isNotNull();
     }
 }
