@@ -16,16 +16,21 @@ import java.io.IOException;
 import java.util.List;
 
 public interface InvoiceService {
-    List<Invoice> findAllInvoices();
-    List<Invoice> findAllByPage(Integer page, Integer page_size);
-    List<Invoice> findAllBySpecification(FilterForm filters);
-    Page<Invoice> findAllBySpecificationAndPage(FilterForm filters, Integer page, Integer page_size);
-    Page<InvoiceDTO> findAllBySpecificationAndPageCabinet(FilterForm filters, Integer page, Integer size);
 
+    List<Invoice> findAllInvoices();
+
+    List<Invoice> findAllByPage(Integer page, Integer page_size);
+
+    List<Invoice> findAllBySpecification(FilterForm filters);
+
+    Page<Invoice> findAllBySpecificationAndPage(FilterForm filters, Integer page, Integer page_size);
+
+    Page<InvoiceDTO> findAllBySpecificationAndPageCabinet(FilterForm filters, Integer page, Integer size);
 
     Page<InvoiceDTO> findAllInvoicesByFiltersAndPage(FilterForm filters, Pageable pageable);
 
     List<Invoice> findAllByApartmentId(Long id);
+
     List<Invoice> findAllByOwnerId(Long id);
 
     Invoice findInvoiceById(Long invoice_id);
@@ -43,6 +48,7 @@ public interface InvoiceService {
     void setDefaultTemplate(InvoiceTemplate template);
 
     Long getMaxInvoiceId();
+
     Long count();
 
     @Transactional

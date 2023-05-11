@@ -24,7 +24,7 @@ public class AccountValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return ApartmentAccount.class.equals(clazz);
+        return ApartmentAccountDTO.class.equals(clazz);
     }
 
     @Override

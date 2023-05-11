@@ -23,6 +23,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -50,6 +53,37 @@ public class AccountServiceTest {
         assertThat(validator).isNotNull();
         assertThat(messageSource).isNotNull();
         assertThat(mapper).isNotNull();
+    }
+
+    @Test
+    void canLoadAllAccountsTest() {
+        List<ApartmentAccount> expected = List.of(new ApartmentAccount(), new ApartmentAccount());
+
+        given(accountRepository.findAll()).willReturn(expected);
+
+        List<ApartmentAccount> list = accountService.findAllAccounts();
+
+        verify(accountRepository).findAll();
+
+        assertThat(list).isEqualTo(expected);
+    }
+
+    @Test
+    void canLoadSingleAccountTest() {
+        ApartmentAccount expected = new ApartmentAccount();
+        expected.setId(1L);
+
+        given(accountRepository.findById(1L)).willReturn(Optional.of(expected));
+
+        ApartmentAccount acc = accountService.findAccountById(1L);
+        verify(accountRepository.findById(anyLong()));
+
+        assertThat(acc).isEqualTo(expected);
+    }
+
+    @Test
+    void throwsExceptionOnAccountNotFound() {
+        assertThrows(NoSuchElementException.class, () -> accountService.findAccountById(1L));
     }
 
     @Test
@@ -81,7 +115,7 @@ public class AccountServiceTest {
                 double invoice_price = Math.floor(random.nextDouble()*10000);
                 invoice.setTotal_price(invoice_price);
                 account_balance -= invoice_price;
-                apartmentAccount.getApartment().getInvoiceList().add(invoice);
+                apartmentAccount.getInvoices().add(invoice);
             }
             if(account_balance < 0) total_debt += account_balance;
             else total_positive_balance += account_balance;
@@ -93,10 +127,15 @@ public class AccountServiceTest {
             System.out.println("total debt: " + total_debt);
             System.out.println("total positive balance: " + total_positive_balance);
             System.out.println("======");
+
             accountList.add(apartmentAccount);
         }
 
-        accountList.forEach(account -> System.out.println(account.toString()));
+        accountList.forEach(account -> {
+            System.out.println(account.toString());
+            System.out.println(account.getTransactions().toString());
+            System.out.println(account.getApartment().getInvoiceList().toString());
+        });
 
         given(accountRepository.findAll()).willReturn(accountList);
         accountService.getSumOfAccountBalances();

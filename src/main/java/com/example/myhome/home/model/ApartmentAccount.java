@@ -65,6 +65,15 @@ public class ApartmentAccount implements Serializable {
         this.balance = balance;
     }
 
+    public Double getAccountBalance() {
+        return this.transactions.stream()
+                .map(CashBox::getAmount)
+                .reduce(Double::sum).orElse(0.0)
+                - this.getInvoices().stream()
+                .map(Invoice::getTotal_price)
+                .reduce(Double::sum).orElse(0.0);
+    }
+
     public void addToBalance(double amount) {
         this.balance += amount;
     }

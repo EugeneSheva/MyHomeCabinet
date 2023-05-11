@@ -172,13 +172,13 @@ public class AccountServiceImpl implements AccountService {
     public Long getQuantity() { return accountRepository.countAllBy();}
     public Double getSumOfAccountBalances() {
         return accountRepository.findAll().stream()
-                .map(ApartmentAccount::getBalance)
+                .map(ApartmentAccount::getAccountBalance)
                 .filter(balance -> balance > 0)
                 .reduce(Double::sum).orElse(0.0);
     }
     public Double getSumOfAccountDebts() {
         return accountRepository.findAll().stream()
-                .map(ApartmentAccount::getBalance)
+                .map(ApartmentAccount::getAccountBalance)
                 .filter(balance -> balance < 0)
                 .reduce(Double::sum).orElse(0.0);
     }
