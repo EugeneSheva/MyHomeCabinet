@@ -55,8 +55,23 @@ class DefaultUserInitializer implements CommandLineRunner {
             permissions.add("meters.write");
             permissions.add("requests.read");
             permissions.add("requests.write");
+
             permissions.add("roles.read");
             permissions.add("roles.write");
+            permissions.add("services.read");
+            permissions.add("services.write");
+
+            permissions.add("tariffs.read");
+            permissions.add("tariffs.write");
+            permissions.add("users.read");
+            permissions.add("users.write");
+            permissions.add("payment_details.read");
+            permissions.add("payment_details.write");
+            permissions.add("transaction_items.read");
+            permissions.add("transaction_items.write");
+
+            permissions.add("website_settings.read");
+            permissions.add("website_settings.write");
             UserRole userRole = new UserRole();
             userRole.setMaster(false);
             userRole.setName("Director");
