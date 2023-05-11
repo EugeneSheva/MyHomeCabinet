@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>МойДом24</title>
+    <title th:text="#{myHome24}">МойДом24</title>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -62,7 +62,7 @@
                                     <h3 th:text="${(apartment.balance != null ? apartment.balance : 'Не задан')+ ' грн.'}">
 
                                     </h3>
-                                    <p>Баланс по квартире</p>
+                                    <p th:text="#{apartmentsBalance}">Баланс по квартире</p>
                                 </div>
                                 <div class="icon">
                                     <i class="fa fa-dollar"></i>
@@ -73,9 +73,9 @@
                         <div class="col-xs-12 col-lg-4">
                             <div class="small-box bg-blue overflow-hidden" style="margin-bottom: 0px">
                                 <div class="inner">
-                                    <h3 th:text="${apartment.account != null ? T(java.lang.String).format('%010d',apartment.account) : 'Не задан'}  "></h3>
+                                    <h3 th:text="${apartment.accountNo != null ? T(java.lang.String).format('%010d',apartment.accountNo) : 'Не задан'}  "></h3>
                                     <!--                                th:text="${T(java.lang.String).format('%010d', account.id)}"-->
-                                    <p>Лицевой счёт</p>
+                                    <p th:text="#{apartmentAccount}">Лицевой счёт</p>
                                 </div>
                                 <div class="icon">
                                     <i class="fa fa-user"></i>
@@ -88,7 +88,7 @@
                                 <div class="inner">
                                     <h3 th:text="${(avgInvoicePriceInMonth != null ? avgInvoicePriceInMonth : 'Не задан')+ ' грн.'}">
                                         avgInvoicePriceInMonth</h3>
-                                    <p>Средний расход за месяц</p>
+                                    <p th:text="#{averageСostPerMonth}">Средний расход за месяц</p>
                                 </div>
                                 <div class="icon">
                                     <i class="fa fa-pie-chart"></i>
@@ -102,7 +102,7 @@
 
             <div class="card card card-primary card-outline" style="padding: 0px; border-top-color: #bbbbbb;">
                 <div class="card-header" style="background-color: transparent;">
-                    <h3 class="card-title">Диаграмма расходов</h3>
+                    <h3 class="card-title" th:text="#{expenseChart}">Диаграмма расходов</h3>
 
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -116,13 +116,13 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-xs-12 col-lg-6">
-                            <label for="donutChart1" style="display: block; text-align: center;">за предыдущий
+                            <label for="donutChart1" style="display: block; text-align: center;" th:text="#{lastMonth}">за предыдущий
                                 месяц</label>
                             <canvas id="donutChart1"
                                     style="min-height: 250px; height: 450px; max-height: 450px; max-width: 100%;"></canvas>
                         </div>
                         <div class="col-xs-12 col-lg-6">
-                            <label for="donutChart2" style="display: block; text-align: center;">за текущий год</label>
+                            <label for="donutChart2" style="display: block; text-align: center;" th:text="#{thisYear}">за текущий год</label>
                             <canvas id="donutChart2"
                                     style="min-height: 250px; height: 450px; max-height: 450px; max-width: 100%;"></canvas>
                         </div>
@@ -131,7 +131,7 @@
             </div>
             <div class="card card card-primary card-outline" style="padding: 0px; border-top-color: #bbbbbb;">
                 <div class="card-header" style="background-color: transparent;">
-                    <h3 class="card-title">Диаграмма расходов</h3>
+                    <h3 class="card-title" th:text="#{expenseChart}">Диаграмма расходов</h3>
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
                             <i class="fas fa-minus"></i>
@@ -248,6 +248,7 @@
 </script>
 <script th:inline="javascript">
     /*<![CDATA[*/
+    var chartName = [[#{chartOfExpensesByMonthForAYear}]];
     var months = /*[[${monthsName}]]*/ [];
     var dataExpense = /*[[${apartExpenseEachMonthByYear}]]*/ [];
 
@@ -260,7 +261,7 @@
             labels: months,
             datasets: [
                 {
-                    label: 'Диаграмма расходов по месяцам за год',
+                    label: chartName,
                     backgroundColor: 'rgb(33,88,194)',
                     borderColor: 'rgba(60,141,188,0.8)',
                     pointRadius: false,

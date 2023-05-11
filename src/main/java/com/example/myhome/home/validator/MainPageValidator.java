@@ -1,4 +1,4 @@
-package com.example.myhome.home.validator;
+package com.example.myhome.home.validator.pages;
 
 import com.example.myhome.home.model.pages.MainPage;
 import lombok.extern.java.Log;

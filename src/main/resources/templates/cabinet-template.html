@@ -9,7 +9,7 @@
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="#" class="nav-link">Личный кабинет</a>
+            <a href="#" class="nav-link" th:text="#{personalCab}">Личный кабинет</a>
         </li>
     </ul>
     <!-- Right navbar links -->
@@ -39,12 +39,21 @@
                         <b th:text="${owner.getFullName()}">Иванов Иван</b>
                     </p>
                 </li>
-                <li class="user-footer">
-                    <div class="pull-left" style="float: left;">
-                        <a th:href="@{/cabinet/user/view}" class="btn btn-warning">Профиль</a>
+                <li class="user-row">
+                    <div >
+                        <a th:href="@{/admin/admins/update/{id}(id=${auth_admin.id})}" class="btn btn-warning" th:text="#{profile}">Профиль</a>
                     </div>
-                    <div class="pull-right">
-                        <a th:href="@{/cabinet/logout}" type="submit" class="btn btn-danger">Выйти</a>
+                    <div >
+                        <form id="languageForm" action="#" th:action="@{/change-language}" method="post" >
+                            <input type="hidden" name="url" th:value="${#httpServletRequest.requestURI}" />
+                            <select class="form-group" name="language" onchange="document.getElementById('languageForm').submit()" style="margin-bottom: 0; width: 92px; height: 36px;">
+                                <option th:selected="${#locale.language == 'uk'}" value="uk_UA">Укр</option>
+                                <option th:selected="${#locale.language == 'ru'}" value="ru_UA">Рус</option>
+                            </select>
+                        </form>
+                    </div>
+                    <div >
+                        <a th:href="@{/admin/logout}" class="btn btn-danger" th:text="#{exit}">Выйти</a>
                     </div>
                 </li>
             </ul>
@@ -75,7 +84,7 @@
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="fa fa-line-chart" aria-hidden="true"></i>
-                        <p class="pl-1">
+                        <p class="pl-1" th:text="#{summary}">
                             Сводка
                             <i class="fas fa-angle-left right"></i>
                         </p>
@@ -93,7 +102,7 @@
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="fa fa-files-o" aria-hidden="true"></i>
-                        <p class="pl-1">
+                        <p class="pl-1" th:text="#{Invioces}">
                             Квитанции
                             <i class="fas fa-angle-left right"></i>
                         </p>
@@ -102,7 +111,7 @@
                         <li class="nav-item dropdown-items">
                             <a th:href="@{/cabinet/invoices}" class="nav-link dropdown-links" style="margin:0">
                                 <i style="font-size: 16px;" class="fa fa-files-o fa-sm nav-icon"></i>
-                                <p>Все квитанции</p>
+                                <p >Все квитанции</p>
                             </a>
                         </li>
                       <div th:each="apartment : ${owner.apartments}">
@@ -119,7 +128,7 @@
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="fa fa-money" aria-hidden="true"></i>
-                        <p class="pl-1">
+                        <p class="pl-1" th:text="#{tariffs}">
                             Тарифы
                             <i class="fas fa-angle-left right"></i>
                         </p>
@@ -137,7 +146,7 @@
                 <li class="nav-item">
                     <a th:href="@{/cabinet/messages}" class="nav-link">
                         <i class="fa fa-envelope-o" aria-hidden="true"></i>
-                        <p class="pl-1">
+                        <p class="pl-1" th:text="#{messages}">
                             Сообщения
                         </p>
                     </a>
@@ -145,7 +154,7 @@
                 <li class="nav-item">
                     <a th:href="@{/cabinet/requests}" class="nav-link">
                         <i class="fa fa-wrench" aria-hidden="true"></i>
-                        <p class="pl-1">
+                        <p class="pl-1" th:text="#{requestMaster}">
                             Вызов мастера
                         </p>
                     </a>
@@ -153,7 +162,7 @@
                 <li class="nav-item">
                     <a th:href="@{/cabinet/user/view}" class="nav-link">
                         <i class="fa fa-user-circle" aria-hidden="true" style="font-size: 14px"></i>
-                        <p class="pl-1">
+                        <p class="pl-1" th:text="#{profile}">
                             Профиль
                         </p>
                     </a>
@@ -196,9 +205,9 @@
 
 <!-- Main Footer -->
 <footer th:fragment="footer" class="main-footer">
-    <strong>Разработано <a href="#">AVADA-MEDIA</a>.</strong>
-    <strong>На базе системы управления <a href="#">"МойДом24"</a>.</strong>
-    <strong>Документация API доступна по <a href="#">ссылке</a>.</strong>
+    <strong th:text="#{footerP1}">Разработано <a href="#" th:text="#{footerP2}">AVADA-MEDIA</a>.</strong>
+    <strong th:text="#{footerP3}">На базе системы управления <a href="#" th:text="#{footerP4}">"МойДом24"</a>.</strong>
+    <strong th:text="#{footerP5}">Документация API доступна по <a href="#" th:text="#{footerP6}">ссылке</a>.</strong>
     <div class="float-right d-none d-sm-inline-block">
         <b>Version</b> 1.0.0
     </div>

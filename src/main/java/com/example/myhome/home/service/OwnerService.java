@@ -275,6 +275,7 @@ public class OwnerService {
         return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.convertApartmentsToApartmentsDTO(owner.getApartments()), owner.getMessages(), owner.getPhone_number(), owner.getEmail(), owner.getViber(), owner.getTelegram(), owner.getDescription(), owner.getProfile_picture());
     }
 
+
     public OwnerDTO findOwnerDTObyEmailFull(String mail) {
         Owner owner = ownerRepository.findByEmail(mail).orElseThrow();
         return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.convertApartmentsToApartmentsDTO(owner.getApartments()), owner.getMessages(), owner.getPhone_number(),owner.getEmail(),owner.getViber(),owner.getTelegram(), owner.getDescription(), owner.getProfile_picture());

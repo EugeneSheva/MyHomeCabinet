@@ -1,7 +1,10 @@
 package com.example.myhome.home.validator;
 
 import com.example.myhome.home.dto.ApartmentAccountDTO;
+import com.example.myhome.home.model.ApartmentAccount;
 import com.example.myhome.home.model.ApartmentAccount_;
+import com.example.myhome.home.repository.ApartmentRepository;
+import com.example.myhome.home.service.AccountService;
 import com.example.myhome.home.service.impl.AccountServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -15,12 +18,13 @@ import java.util.Locale;
 @Component
 public class AccountValidator implements Validator {
 
+    @Autowired private AccountService accountService;
     @Autowired private AccountServiceImpl accountServiceImpl;
     @Autowired private MessageSource messageSource;
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return ApartmentAccountDTO.class.equals(clazz);
+        return ApartmentAccount.class.equals(clazz);
     }
 
     @Override

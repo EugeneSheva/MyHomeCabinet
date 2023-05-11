@@ -16,6 +16,41 @@ public class MappingUtils {
 
      */
 
+    //ACCOUNT
+    public static ApartmentAccount fromDTOToAccount(ApartmentAccountDTO dto) {
+
+        if(dto == null) return null;
+
+        ApartmentAccount account = new ApartmentAccount();
+        account.setId(dto.getId());
+        account.setIsActive(dto.getIsActive());
+        account.setChangedState(dto.getChangedState());
+        account.setSection(dto.getSection());
+        account.setBalance(dto.getBalance());
+
+//        account.setApartment((dto.getApartment() != null) ? fromDTOToApartment(dto.getApartment()) : null);
+//        account.setBuilding((dto.getBuilding() != null) ? fromDTOToBuilding(dto.getBuilding()) : null);
+//        account.setOwner((dto.getOwner() != null) ? fromDTOToOwner(dto.getOwner()) : null);
+
+        return account;
+    }
+    public static ApartmentAccountDTO fromAccountToDTO(ApartmentAccount account) {
+
+        if(account == null) return null;
+
+        ApartmentAccountDTO dto = new ApartmentAccountDTO();
+        dto.setId(account.getId());
+        dto.setIsActive(account.getIsActive());
+        dto.setBalance(account.getBalance());
+        dto.setChangedState(account.getChangedState());
+        dto.setSection(account.getSection());
+
+//        dto.setApartment(fromApartmentToDTO(account.getApartment()));
+//        dto.setOwner(fromOwnerToDTO(account.getOwner()));
+
+        return dto;
+    }
+
     //APARTMENT
     public static Apartment fromDTOToApartment(ApartmentDTO dto) {
 
@@ -46,10 +81,10 @@ public class MappingUtils {
         dto.setNumber(apartment.getNumber());
         dto.setBalance(apartment.getBalance());
         dto.setSquare(apartment.getSquare());
+        dto.setBuilding(new BuildingDTO(apartment.getBuilding().getId(),apartment.getBuilding().getName()));
 //        dto.setFullName("кв. " + dto.getNumber() + ", " + dto.getBuilding().getName());
-
 //        dto.setBuilding(fromBuildingToDTO(apartment.getBuilding()));
-//        dto.setAccount(fromAccountToDTO(apartment.getAccount()));
+        dto.setAccountNo(apartment.getAccount().getId());
 //        dto.setOwner(fromOwnerToDTO(apartment.getOwner()));
 
         return dto;

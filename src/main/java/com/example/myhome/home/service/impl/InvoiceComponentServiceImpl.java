@@ -36,7 +36,7 @@ public class InvoiceComponentServiceImpl {
     public Map<String, Double> findExprncesLastMonthByApartment(Long id) {
         Integer year = LocalDate.now().getYear();
         Integer lastMonthValue = LocalDate.now().minusMonths(1).getMonthValue();
-        Integer lastDayOfMonth =  LocalDate.now().with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth();
+        Integer lastDayOfMonth =  LocalDate.now().minusMonths(1).with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth();
         LocalDate from = LocalDate.of(year, lastMonthValue, 01);
         LocalDate to = LocalDate.of(year, lastMonthValue, lastDayOfMonth);
 //        System.out.println("даты за посл месяц "+ from + " - " + to);

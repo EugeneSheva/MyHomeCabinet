@@ -190,6 +190,9 @@
             }
         })
     })
+
+
+
 </script>
 <script th:inline="javascript">
     function deleteSelected() {
@@ -201,7 +204,6 @@
                checkedBoxes.forEach((box) => {
                    ids.push(box.value);
                });
-               console.log('ids' +ids)
 
                $.ajax({
                    url: url,

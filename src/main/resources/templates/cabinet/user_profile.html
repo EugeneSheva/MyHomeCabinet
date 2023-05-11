@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>МойДом24</title>
+    <title th:text="#{new}">МойДом24</title>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
@@ -34,12 +34,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Профиль</h1>
+                        <h1 class="m-0" th:text="#{profile}">Профиль</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i> Главная</a></li>
-                            <li class="breadcrumb-item active">Профиль</li>
+                            <li class="breadcrumb-item"><a href="/"><i class="fa fa-home" th:text="#{homePage}"></i></a></li>
+                            <li class="breadcrumb-item active" th:text="#{profile}">Профиль</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -52,7 +52,6 @@
 
             <div class="container-fluid">
                 <section class="content">
-
                     <div class="row">
                         <div class="col-lg-3">
                             <div class="row">
@@ -67,46 +66,46 @@
                                             <h3 class="profile-username text-center"
                                                 th:text="${owner.getFullName()}"></h3>
 
-                                            <p class="text-muted text-center">Владелец квартиры</p>
+                                            <p class="text-muted text-center" th:text="#{apartmentOwner}">Владелец квартиры</p>
 
                                             <ul class="list-group list-group-unbordered">
                                                 <li class="list-group-item">
-                                                    <span>Телефон</span>
+                                                    <span th:text="#{phonenumber}">Телефон</span>
                                                     <span class="pull-right" th:text="${owner.phone_number}"></span>
                                                 </li>
                                                 <li class="list-group-item">
-                                                    <span>Viber</span>
+                                                    <span th:text="#{viber}">Viber</span>
                                                     <span class="pull-right" th:text="${owner.viber}"></span>
                                                 </li>
                                                 <li class="list-group-item">
-                                                    <span>Telegram</span>
+                                                    <span th:text="#{telegram}">Telegram</span>
                                                     <span class="pull-right" th:text="${owner.telegram}"></span>
                                                 </li>
                                                 <li class="list-group-item">
-                                                    <span>Email</span>
+                                                    <span th:text="#{email}">Email</span>
                                                     <span class="pull-right" th:text="${owner.email}"></span>
                                                 </li>
                                             </ul>
 
-                                            <a th:href="@{/cabinet/user/edit}" class="btn btn-primary btn-block">Изменить</a>
+                                            <a th:href="@{/cabinet/user/edit}" class="btn btn-primary btn-block" th:text="#{edit}">Изменить</a>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-lg-12">
-                                    <h3 class="page-header">Обо мне (заметки)</h3>
+                                    <h3 class="page-header" th:text="#{aboutMe}">Обо мне (заметки)</h3>
                                     <div class="box">
-                                        <div class="box-body box-profile" th:text="${owner.description != null and !owner.description.isEmpty() ? owner.description : 'Поле не заполнено.'  }"></div>
+                                        <div class="box-body box-profile" th:text="${owner.description != null and !owner.description.isEmpty()} ? owner.description : #{fieldIsEmpty}"></div>
                                     </div>
                                 </div>
                                 <!-- /.box-body -->
                             </div>
                         </div>
                         <div class="col-lg-9">
-                            <h2 class="page-header">Мои квартиры</h2>
+                            <h2 class="page-header" th:text="#{myApartments}">Мои квартиры</h2>
                             <div th:each="apartment : ${owner.apartments} ">
                                 <div class="box" style="margin-bottom: 20px">
                                     <div class="box-header with-border">
-                                        <h3 class="box-title">Описание квартиры</h3>
+                                        <h3 class="box-title" th:text="#{apaprtmentDescription}">Описание квартиры</h3>
                                     </div>
                                     <div class="box-body">
                                         <p th:text="${apartment.building.name+'. '+apartment.building.address+', кв. '+ apartment.number}"></p>
@@ -148,37 +147,37 @@
                                             <table class="table table-bordered table-striped">
                                                 <thead>
                                                 <tr>
-                                                    <th colspan="2">Описание</th>
+                                                    <th colspan="2" th:text="#{description}">Описание</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
                                                 <tr>
-                                                    <th style="min-width: 200px; font-weight:normal;">Название дома</th>
+                                                    <th style="min-width: 200px; font-weight:normal;" th:text="#{nameOfBuilding}">Название дома</th>
                                                     <th th:text="${apartment.building.name}" style="font-weight:normal;"></th>
                                                 </tr>
                                                 <tr>
-                                                    <td>Адрес</td>
+                                                    <td th:text="#{address}">Адрес</td>
                                                     <td th:text="${apartment.building.address}"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>№ квартиры</td>
+                                                    <td th:text="#{apartmentNumber}">№ квартиры</td>
                                                     <td th:text="${apartment.number}"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Площадь</td>
+                                                    <td th:text="#{square}">Площадь</td>
                                                     <td th:text="${apartment.square}+'m'"><sup>2</sup>
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Этаж</td>
+                                                    <td th:text="#{floor}">Этаж</td>
                                                     <td th:text="${apartment.floor}"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Секция</td>
+                                                    <td th:text="#{section}">Секция</td>
                                                     <td th:text="${apartment.section}"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Лицевой счет</td>
+                                                    <td th:text="#{apartmentAccount}">Лицевой счет</td>
                                                     <td th:text="${T(java.lang.String).format('%010d',apartment.account.id)}"></td>
                                                 </tr>
                                                 </tbody>

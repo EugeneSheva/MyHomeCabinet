@@ -34,5 +34,22 @@ public interface AccountService {
 
     Specification<ApartmentAccount> buildSpecFromFilters(FilterForm filters);
 
+    default ApartmentAccount fromDTO(ApartmentAccountDTO dto) {return MappingUtils.fromDTOToAccount(dto);}
+    default ApartmentAccountDTO toDTO(ApartmentAccount account) {
+        return MappingUtils.fromAccountToDTO(account);
+    }
+    default List<ApartmentAccountDTO> toDTO(List<ApartmentAccount> accountList) {
+        return accountList.stream().map(MappingUtils::fromAccountToDTO).collect(Collectors.toList());
+    }
+    ApartmentAccount getAccountWithBiggestId();
+    ApartmentAccount getAccountNumberFromFlat(long flat_id);
+    ApartmentAccount save(ApartmentAccount account);
+    void deleteAccountById(long account_id);
+    boolean apartmentHasAccount(long apartment_id);
+
+
+    default Page<ApartmentAccountDTO> toPage(List<ApartmentAccountDTO> list, Pageable pageable, Long totalElements) {
+        return new PageImpl<>(list, pageable, totalElements);
+    }
 
 }

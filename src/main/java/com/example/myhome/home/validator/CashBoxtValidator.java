@@ -17,7 +17,7 @@ public class CashBoxtValidator implements Validator {
     public void validate(Object obj, Errors e) {
         CashBox cashBox = (CashBox) obj;
         if ((cashBox.getIncomeExpenseType().equals(IncomeExpenseType.INCOME)) && cashBox.getOwner() == null) {
-            e.rejectValue("ownerId", "ownerId.empty", "Заполните поле");
+            e.rejectValue("owner", "owner.empty", "Заполните поле");
         }
         if ((cashBox.getIncomeExpenseType().equals(IncomeExpenseType.INCOME)) && cashBox.getApartmentAccount() == null) {
             e.rejectValue("apartmentAccount", "apartmentAccount.empty", "Заполните поле");

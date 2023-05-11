@@ -302,12 +302,10 @@ function drawMessagesTableCabinet(){
         let newTableRow = document.createElement('tr');
         newTableRow.style.cursor = 'pointer';
         newTableRow.class = 'invoice_row';
-        var index = msg.text.indexOf("<br>");
-        var text = msg.text.substring(3, index);
-        console.log("text" + text);
-        var newText = text.substring(0, 70);
+        var text = msg.text;
+        let strippedStr = text.replace(/(<([^>]+)>)/gi, "");
+        var newText = strippedStr.substring(0, 70);
         if (newText.length == 70) {newText +='...' }
-        console.log("newText" + newText)
         newTableRow.innerHTML =
                                 '<td><input type="checkbox" name="" id="" value="'+msg.id+'"></td>' +
                                 '<td>' + msg.sender.first_name + ' ' + msg.sender.last_name + '</td>' +
@@ -319,7 +317,6 @@ function drawMessagesTableCabinet(){
                 window.location.href = '/cabinet/messages/'+msg.id;
             });
         }
-        console.log('msg drawed');
         $invoicesTableBody.append(newTableRow);
     }
     if(data.content.length === 0) {
@@ -338,7 +335,6 @@ function drawMessagesTableAdmin() {
     $invoicesTableBody.html('');
 
     for (const msg of data.content) {
-
         let dateString = msg.date.toString();
         let dateParts = dateString.split(",");
         let year = parseInt(dateParts[0]);
@@ -352,12 +348,10 @@ function drawMessagesTableAdmin() {
         let newTableRow = document.createElement('tr');
         newTableRow.style.cursor = 'pointer';
         newTableRow.class = 'invoice_row';
-        var index = msg.text.indexOf("<br>");
-        var text = msg.text.substring(3, index);
-        var newText = text.substring(0, 70);
-        if (newText.length == 70) {
-            newText += '...'
-        }
+        var text = msg.text;
+        let strippedStr = text.replace(/(<([^>]+)>)/gi, "");
+        var newText = strippedStr.substring(0, 70);
+        if (newText.length == 70) {newText +='...' }
         newTableRow.innerHTML =
             '<td><input type="checkbox" name="" id="" value="' + msg.id + '"></td>' +
             '<td>' + msg.receiversName + '</td>' +
@@ -404,7 +398,7 @@ function drawInvoicesInCabinetTable(){
         let row_children = newTableRow.children;
         for(let j = 1; j < row_children.length - 1; j++) {
             row_children[j].addEventListener('click', function(){
-                window.location.href = '/admin/invoices/'+invoice.id;
+                window.location.href = '/cabinet/invoice/'+invoice.id;
             });
         }
 
@@ -677,7 +671,7 @@ function drawOwnersTable(){
                                   '<td>' + owner.hasDebt + '</td>' +
                                   '<td>' +
                                       '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
-                                          '<a href="#" class="btn btn-default btn-sm"><i class="fa fa-envelope" aria-hidden="true"></i></a>' +
+                                          '<a href="newTo/'+ owner.id + '" class="btn btn-default btn-sm"><i class="fa fa-envelope" aria-hidden="true"></i></a>' +
                                           '<a href="edit/'+ owner.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>' +
                                           '<a href="delete/'+ owner.id + '" class="btn btn-default btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></i></a>' +
                                       '</div>' +

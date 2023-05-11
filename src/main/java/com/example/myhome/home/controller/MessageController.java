@@ -3,6 +3,7 @@ package com.example.myhome.home.controller;
 import com.example.myhome.home.controller.socket.WebsocketController;
 import com.example.myhome.home.dto.ApartmentDTO;
 import com.example.myhome.home.dto.BuildingDTO;
+import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.model.*;
 
 import com.example.myhome.home.model.filter.FilterForm;
@@ -72,73 +73,81 @@ public class MessageController {
         return "admin_panel/messages/message_edit";
     }
 
+
+
     @PostMapping("/save")
     public String saveMessage(@Valid @ModelAttribute("message") Message message, BindingResult bindingResult, @RequestParam(name = "debt",
             defaultValue = "false") Boolean debt, @RequestParam(name = "building", defaultValue = "0") Long buildingId,
                               @RequestParam(name = "section", defaultValue = "") String section, @RequestParam(name = "floor", defaultValue = "") String floor,
-                              @RequestParam(name = "apartmentId", defaultValue = "0") Long apartmentId, Principal principal) throws IOException {
-        messageValidator.validate(message,bindingResult);
-        if (bindingResult.hasErrors()){
+                              @RequestParam(name = "apartmentId", defaultValue = "0") Long apartmentId, @RequestParam(name = "recipient", defaultValue = "0") Long recipient, Principal principal) throws IOException {
+        messageValidator.validate(message, bindingResult);
+        if (bindingResult.hasErrors()) {
             return "admin_panel/messages/message_edit";
         } else {
-            //geting recivers
             List<Owner> recivers = new ArrayList<>();
-            if (apartmentId == 0) {
-                if (floor.length() == 0 && section.length() == 0 && buildingId == 0 && debt == false) {
-                    for (Apartment apartment : apartmentRepository.findAll()) {
-                        recivers.add(apartment.getOwner());
+            if (recipient == 0) {
+                //geting recivers
+                if (apartmentId == 0) {
+                    if (floor.length() == 0 && section.length() == 0 && buildingId == 0 && debt == false) {
+                        for (Apartment apartment : apartmentRepository.findAll()) {
+                            if (!recivers.contains(apartment.getOwner())) recivers.add(apartment.getOwner());
+                        }
+                        message.setReceiversName("Всем");
+                    } else if (floor.length() == 0 && section.length() == 0 && buildingId == 0 && debt == true) {
+                        for (Apartment apartment : apartmentRepository.findApartmentsByBalanceBefore(0D)) {
+                            if (!recivers.contains(apartment.getOwner())) recivers.add(apartment.getOwner());
+                        }
+                        message.setReceiversName("Всем с задоженностями");
+                    } else if (floor.length() == 0 && section.length() == 0 && buildingId > 0 && debt == false) {
+                        for (Apartment apartment : apartmentRepository.findApartmentsByBuildingId(buildingId)) {
+                            if (!recivers.contains(apartment.getOwner())) recivers.add(apartment.getOwner());
+                        }
+                        message.setReceiversName(buildingService.findById(buildingId).getName());
+                    } else if (floor.length() == 0 && section.length() == 0 && buildingId > 0 && debt == true) {
+                        for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndBalanceBefore(buildingId, 0D)) {
+                            if (!recivers.contains(apartment.getOwner())) recivers.add(apartment.getOwner());
+                        }
+                        message.setReceiversName(buildingService.findById(buildingId).getName() + " c задолженостями");
+                    } else if (floor.length() == 0 && section.length() > 0 && buildingId > 0 && debt == false) {
+                        for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndSectionContainingIgnoreCase(buildingId, section)) {
+                            if (!recivers.contains(apartment.getOwner())) recivers.add(apartment.getOwner());
+                        }
+                        message.setReceiversName(buildingService.findById(buildingId).getName() + ", " + section);
+                    } else if (floor.length() == 0 && section.length() > 0 && buildingId > 0 && debt == true) {
+                        for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndSectionContainingIgnoreCaseAndBalanceBefore(buildingId, section, 0D)) {
+                            if (!recivers.contains(apartment.getOwner())) recivers.add(apartment.getOwner());
+                        }
+                        message.setReceiversName(buildingService.findById(buildingId).getName() + ", " + section + " c задолженостями");
+                    } else if (floor.length() > 0 && section.length() == 0 && buildingId > 0 && debt == false) {
+                        for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndFloorContainingIgnoreCase(buildingId, floor)) {
+                            if (!recivers.contains(apartment.getOwner())) recivers.add(apartment.getOwner());
+                        }
+                        message.setReceiversName(buildingService.findById(buildingId).getName() + ", " + floor);
+                    } else if (floor.length() > 0 && section.length() == 0 && buildingId > 0 && debt == true) {
+                        for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndFloorContainingIgnoreCaseAndBalanceBefore(buildingId, floor, 0D)) {
+                            if (!recivers.contains(apartment.getOwner())) recivers.add(apartment.getOwner());
+                        }
+                        message.setReceiversName(buildingService.findById(buildingId).getName() + ", " + floor + " c задолженостями");
+                    } else if (floor.length() > 0 && section.length() > 0 && buildingId > 0 && debt == false) {
+                        for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndSectionContainingIgnoreCaseAndFloorContainingIgnoreCase(buildingId, section, floor)) {
+                            if (!recivers.contains(apartment.getOwner())) recivers.add(apartment.getOwner());
+                        }
+                        message.setReceiversName(buildingService.findById(buildingId).getName() + ", " + section + ", " + floor);
+                    } else if (floor.length() > 0 && section.length() > 0 && buildingId > 0 && debt == true) {
+                        for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndSectionContainingIgnoreCaseAndFloorContainingIgnoreCaseAndBalanceBefore(buildingId, section, floor, 0D)) {
+                            recivers.add(apartment.getOwner());
+                        }
+                        message.setReceiversName(buildingService.findById(buildingId).getName() + ", " + section + ", " + floor + " c задолженостями");
                     }
-                    message.setReceiversName("Всем");
-                } else if (floor.length() == 0 && section.length() == 0 && buildingId == 0 && debt == true) {
-                    for (Apartment apartment : apartmentRepository.findApartmentsByBalanceBefore(0D)) {
-                        recivers.add(apartment.getOwner());
-                    }
-                    message.setReceiversName("Всем с задоженностями");
-                } else if (floor.length() == 0 && section.length() == 0 && buildingId > 0 && debt == false) {
-                    for (Apartment apartment : apartmentRepository.findApartmentsByBuildingId(buildingId)) {
-                        recivers.add(apartment.getOwner());
-                    }
-                    message.setReceiversName(buildingService.findById(buildingId).getName());
-                } else if (floor.length() == 0 && section.length() == 0 && buildingId > 0 && debt == true) {
-                    for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndBalanceBefore(buildingId, 0D)) {
-                        recivers.add(apartment.getOwner());
-                    }
-                    message.setReceiversName(buildingService.findById(buildingId).getName() + " c задолженостями");
-                } else if (floor.length() == 0 && section.length() > 0 && buildingId > 0 && debt == false) {
-                    for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndSectionContainingIgnoreCase(buildingId, section)) {
-                        recivers.add(apartment.getOwner());
-                    }
-                    message.setReceiversName(buildingService.findById(buildingId).getName() + ", " + section);
-                } else if (floor.length() == 0 && section.length() > 0 && buildingId > 0 && debt == true) {
-                    for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndSectionContainingIgnoreCaseAndBalanceBefore(buildingId, section, 0D)) {
-                        recivers.add(apartment.getOwner());
-                    }
-                    message.setReceiversName(buildingService.findById(buildingId).getName() + ", " + section + " c задолженостями");
-                } else if (floor.length() > 0 && section.length() == 0 && buildingId > 0 && debt == false) {
-                    for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndFloorContainingIgnoreCase(buildingId, floor)) {
-                        recivers.add(apartment.getOwner());
-                    }
-                    message.setReceiversName(buildingService.findById(buildingId).getName() + ", " + floor);
-                } else if (floor.length() > 0 && section.length() == 0 && buildingId > 0 && debt == true) {
-                    for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndFloorContainingIgnoreCaseAndBalanceBefore(buildingId, floor, 0D)) {
-                        recivers.add(apartment.getOwner());
-                    }
-                    message.setReceiversName(buildingService.findById(buildingId).getName() + ", " + floor + " c задолженостями");
-                } else if (floor.length() > 0 && section.length() > 0 && buildingId > 0 && debt == false) {
-                    for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndSectionContainingIgnoreCaseAndFloorContainingIgnoreCase(buildingId, section, floor)) {
-                        recivers.add(apartment.getOwner());
-                    }
-                    message.setReceiversName(buildingService.findById(buildingId).getName() + ", " + section + ", " + floor);
-                } else if (floor.length() > 0 && section.length() > 0 && buildingId > 0 && debt == true) {
-                    for (Apartment apartment : apartmentRepository.findApartmentsByBuildingIdAndSectionContainingIgnoreCaseAndFloorContainingIgnoreCaseAndBalanceBefore(buildingId, section, floor, 0D)) {
-                        recivers.add(apartment.getOwner());
-                    }
-                    message.setReceiversName(buildingService.findById(buildingId).getName() + ", " + section + ", " + floor + " c задолженостями");
+                } else if (apartmentId > 0) { //if we get one selected apartment
+                    Apartment apartment = apartmentService.findById(apartmentId);
+                    if (!recivers.contains(apartment.getOwner())) recivers.add(apartment.getOwner());
+                    message.setReceiversName(apartment.getBuilding().getName() + ", " + apartment.getSection() + ", " + apartment.getFloor() + ", кв." + apartment.getNumber());
                 }
-            } else if (apartmentId > 0) { //if we get one selected apartment
-                Apartment apartment = apartmentService.findById(apartmentId);
-                recivers.add(apartment.getOwner());
-                message.setReceiversName(apartment.getBuilding().getName() + ", " + apartment.getSection() + ", " + apartment.getFloor() + ", кв." + apartment.getNumber());
+            } else if (recipient > 0) {
+                Owner owner = ownerService.findById(recipient);
+                recivers.add(owner);
+                message.setReceiversName(owner.getFullName());
             }
             message.setSender(adminRepository.findByEmail(principal.getName()).orElseThrow());
             message.setReceivers(recivers);
@@ -154,35 +163,35 @@ public class MessageController {
         return "redirect:/admin/messages/";
     }
 
-    @GetMapping( "/getApartments")
+    @GetMapping("/getApartments")
     @ResponseBody
     public List<ApartmentDTO> getApartments(@RequestParam(name = "debt", defaultValue = "false") Boolean debt,
-                                                          @RequestParam(name = "building_id", defaultValue = "0") Long buildingId,
-                                                          @RequestParam(name = "section", defaultValue = "") String section,
-                                                          @RequestParam(name = "floor", defaultValue = "") String floor) {
+                                            @RequestParam(name = "building_id", defaultValue = "0") Long buildingId,
+                                            @RequestParam(name = "section", defaultValue = "") String section,
+                                            @RequestParam(name = "floor", defaultValue = "") String floor) {
         System.out.println("getApartments start");
-        System.out.println("b="+buildingId+" s="+section.length()+" f="+floor.length()+" d="+debt);
-        List<ApartmentDTO>apartmentDTOList = new ArrayList<>();
+        System.out.println("b=" + buildingId + " s=" + section.length() + " f=" + floor.length() + " d=" + debt);
+        List<ApartmentDTO> apartmentDTOList = new ArrayList<>();
 
-        if (floor.length()==0 && section.length()==0 && buildingId==0 && debt==false) {
+        if (floor.length() == 0 && section.length() == 0 && buildingId == 0 && debt == false) {
             apartmentDTOList = apartmentService.findDtoApartments();
-        } else if (floor.length()==0 && section.length()==0 && buildingId==0 && debt==true){
-            apartmentDTOList=apartmentService.findDtoApartmentsWithDebt();
-        } else  if (floor.length()==0 && section.length()==0 && buildingId>0 && debt==false){
-            apartmentDTOList=apartmentService.findDtoApartmentsByBuilding(buildingId);
-        } else  if (floor.length()==0 && section.length()==0 && buildingId>0 && debt==true){
-            apartmentDTOList=apartmentService.findDtoApartmentsByBuildingWithDebt(buildingId);
-        } else  if (floor.length()==0 && section.length()>0 && buildingId>0 && debt==false){
-            apartmentDTOList=apartmentService.findDtoApartmentsByBuildingAndSection(buildingId,section);
-        } else  if (floor.length()==0 && section.length()>0 && buildingId>0 && debt==true){
-            apartmentDTOList=apartmentService.findDtoApartmentsByBuildingAndSectionWithDebt(buildingId,section);
-        } else if (floor.length()>0 && section.length()==0 && buildingId>0 && debt==false) {
+        } else if (floor.length() == 0 && section.length() == 0 && buildingId == 0 && debt == true) {
+            apartmentDTOList = apartmentService.findDtoApartmentsWithDebt();
+        } else if (floor.length() == 0 && section.length() == 0 && buildingId > 0 && debt == false) {
+            apartmentDTOList = apartmentService.findDtoApartmentsByBuilding(buildingId);
+        } else if (floor.length() == 0 && section.length() == 0 && buildingId > 0 && debt == true) {
+            apartmentDTOList = apartmentService.findDtoApartmentsByBuildingWithDebt(buildingId);
+        } else if (floor.length() == 0 && section.length() > 0 && buildingId > 0 && debt == false) {
+            apartmentDTOList = apartmentService.findDtoApartmentsByBuildingAndSection(buildingId, section);
+        } else if (floor.length() == 0 && section.length() > 0 && buildingId > 0 && debt == true) {
+            apartmentDTOList = apartmentService.findDtoApartmentsByBuildingAndSectionWithDebt(buildingId, section);
+        } else if (floor.length() > 0 && section.length() == 0 && buildingId > 0 && debt == false) {
             apartmentDTOList = apartmentService.findDtoApartmentsByBuildingAndFloor(buildingId, floor);
-        } else if (floor.length()>0 && section.length()==0 && buildingId>0 && debt==true){
-            apartmentDTOList=apartmentService.findDtoApartmentsByBuildingAndFloorWithDebt(buildingId,floor);
-        } else if (floor.length()>0 && section.length()>0 && buildingId>0 && debt==false){
-            apartmentDTOList=apartmentService.findDtoApartmentsByBuildingAndSectionAndFloor(buildingId,section,floor);
-        } else if (floor.length()>0 && section.length()>0 && buildingId>0 && debt==true) {
+        } else if (floor.length() > 0 && section.length() == 0 && buildingId > 0 && debt == true) {
+            apartmentDTOList = apartmentService.findDtoApartmentsByBuildingAndFloorWithDebt(buildingId, floor);
+        } else if (floor.length() > 0 && section.length() > 0 && buildingId > 0 && debt == false) {
+            apartmentDTOList = apartmentService.findDtoApartmentsByBuildingAndSectionAndFloor(buildingId, section, floor);
+        } else if (floor.length() > 0 && section.length() > 0 && buildingId > 0 && debt == true) {
             apartmentDTOList = apartmentService.findDtoApartmentsByBuildingAndSectionAndFloorWithDebt(buildingId, section, floor);
         }
 
@@ -191,9 +200,9 @@ public class MessageController {
         return apartmentDTOList;
     }
 
-    @GetMapping( "/deleteSelected")
+    @GetMapping("/deleteSelected")
     @ResponseBody
-    public void deleteSelected(@RequestParam(name = "checkboxList")Long[]checkboxList) {
+    public void deleteSelected(@RequestParam(name = "checkboxList") Long[] checkboxList) {
         System.out.println("deleteSelected start");
         for (Long aLong : checkboxList) {
             messageService.deleteById(aLong);
@@ -206,8 +215,8 @@ public class MessageController {
                                                  @RequestParam String filters) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         FilterForm form = mapper.readValue(filters, FilterForm.class);
-        System.out.println("controller "+form);
-        return messageService.findAllBySpecification(form, page, size);
+        System.out.println("controller " + form);
+        return messageService.findAllBySpecification(form, page, size, null);
     }
 }
 
