@@ -43,7 +43,7 @@ public class Admin implements UserDetails {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfRegistry;
 
-    @ManyToOne
+    @ManyToOne (cascade = CascadeType.PERSIST)
     @JoinColumn(name="user_role_id")
     private UserRole role;
 
