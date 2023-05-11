@@ -36,7 +36,7 @@ public class AccountValidator implements Validator {
         } else if(account.getSection() == null || account.getSection().equalsIgnoreCase("0")) {
             System.out.println("Error found(section)");
             errors.rejectValue("section", "section.empty", messageSource.getMessage("accounts.section.empty", null, locale));
-        } else if(account.getApartment() == null || account.getApartment().getId() == 0) {
+        } else if(account.getApartment() == null || account.getApartment().getId() == 0L) {
             System.out.println("Error found(apartment)");
             errors.rejectValue("apartment", "apartment.empty", messageSource.getMessage("accounts.apartment.empty", null, locale));
         } else if(accountServiceImpl.apartmentHasAccount(account.getApartment().getId())) {

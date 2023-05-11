@@ -1,4 +1,4 @@
-package com.example.myhome;
+package com.example.myhome.services;
 
 import com.example.myhome.home.model.Invoice;
 import com.example.myhome.home.repository.InvoiceRepository;
@@ -12,7 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class InvoiceServiceImplTest {
+public class InvoiceServiceTest {
 
     @MockBean private InvoiceRepository invoiceRepository;
     @Autowired private InvoiceServiceImpl invoiceServiceImpl;

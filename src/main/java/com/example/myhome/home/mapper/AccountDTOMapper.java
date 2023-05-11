@@ -58,7 +58,7 @@ public class AccountDTOMapper {
             );
         }
 
-        Owner owner = account.getApartment().getOwner();
+        Owner owner = (account.getApartment() != null) ? account.getApartment().getOwner() : null;
         if(owner != null) {
             dto.setOwner(
                     OwnerDTO.builder()

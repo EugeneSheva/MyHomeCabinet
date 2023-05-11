@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 public class OwnerDTO {
 
-    private Long id = 0L;
+    private Long id;
     private String text = "";
 
     private String first_name = "", last_name = "", fathers_name = "";

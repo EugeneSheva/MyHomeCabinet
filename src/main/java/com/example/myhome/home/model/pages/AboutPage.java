@@ -40,7 +40,6 @@ public class AboutPage extends Page {
         private String name;
         @NotBlank
         private String file;
-
         @ManyToOne
         private AboutPage page;
     }

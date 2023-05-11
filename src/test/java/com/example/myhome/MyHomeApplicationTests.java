@@ -49,9 +49,4 @@ class MyHomeApplicationTests {
         assertThat(tariffService).isNotNull();
     }
 
-    @Test
-    void saveTariff() {
-
-    }
-
 }
