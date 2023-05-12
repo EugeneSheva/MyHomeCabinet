@@ -14,6 +14,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "apartment_account")
 public class ApartmentAccount implements Serializable {
@@ -62,6 +63,15 @@ public class ApartmentAccount implements Serializable {
         this.id = id;
         this.isActive = isActive;
         this.balance = balance;
+    }
+
+    public Double getAccountBalance() {
+        return this.transactions.stream()
+                .map(CashBox::getAmount)
+                .reduce(Double::sum).orElse(0.0)
+                - this.getInvoices().stream()
+                .map(Invoice::getTotal_price)
+                .reduce(Double::sum).orElse(0.0);
     }
 
     public void addToBalance(double amount) {

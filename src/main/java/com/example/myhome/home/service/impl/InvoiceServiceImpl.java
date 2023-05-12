@@ -12,9 +12,12 @@ import com.example.myhome.home.service.*;
 import com.example.myhome.home.specification.InvoiceSpecifications;
 import com.example.myhome.util.ExcelHelper;
 import lombok.extern.java.Log;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -22,18 +25,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @Log
-public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplateService {
+public class InvoiceServiceImpl implements InvoiceTemplateService, InvoiceService {
 
     @Autowired private InvoiceRepository invoiceRepository;
     @Autowired private InvoiceTemplateRepository invoiceTemplateRepository;
     @Autowired private InvoiceDTOMapper mapper;
 
-    @Autowired private ApartmentService apartmentService;
+    @Autowired private ApartmentServiceImpl apartmentService;
     @Autowired private AccountRepository accountRepository;
     @Autowired private EmailServiceImpl emailService;
     @Autowired private OwnerService ownerService;
@@ -52,6 +56,41 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
         return list;
     }
 
+    @Override
+    public List<Invoice> findAllByPage(Integer page, Integer page_size) {
+        return invoiceRepository.findAll(PageRequest.of(page, page_size)).toList();
+    }
+
+    @Override
+    public List<Invoice> findAllBySpecification(FilterForm filters) {
+        log.info("Filters found!");
+        log.info(filters.toString());
+
+        Specification<Invoice> specification = buildSpecFromFilters(filters);
+
+        return invoiceRepository.findAll(specification);
+    }
+
+    @Override
+    public Page<Invoice> findAllBySpecificationAndPage(FilterForm filters, Integer page, Integer page_size) {
+        Specification<Invoice> specification = buildSpecFromFilters(filters);
+
+        Pageable pageable = PageRequest.of(page, page_size);
+
+        return invoiceRepository.findAll(specification, pageable);
+    }
+
+    @Override
+    public Page<InvoiceDTO> findAllBySpecificationAndPageCabinet(FilterForm filters, Integer page, Integer size) {
+        List<InvoiceDTO> listDTO = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page-1, size);
+        Page<Invoice>invoiceList = invoiceRepository.findByFilters(filters.getDate() != null ? LocalDate.parse(filters.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null, filters.getStatus() != null ? InvoiceStatus.valueOf(filters.getStatus()) : null, pageable);
+        invoiceList.forEach(inv -> listDTO.add(mapper.fromInvoiceToDTO(inv)));
+
+        return new PageImpl<>(listDTO, pageable, invoiceList.getTotalElements());
+    }
+
+    @Override
     public Page<InvoiceDTO> findAllInvoicesByFiltersAndPage(FilterForm filters, Pageable pageable) {
         log.info("Getting invoices (page " + pageable.getPageNumber() + "/size " + pageable.getPageSize() + ")");
         Specification<Invoice> specification = buildSpecFromFilters(filters);
@@ -59,6 +98,16 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
         log.info("Found " + page.getContent().size() + " elements");
         List<InvoiceDTO> list = page.getContent().stream().map(mapper::fromInvoiceToDTO).collect(Collectors.toList());
         return new PageImpl<>(list, pageable, page.getTotalElements());
+    }
+
+    @Override
+    public List<Invoice> findAllByApartmentId(Long id) {
+        return invoiceRepository.findAllByApartmentId(id);
+    }
+
+    @Override
+    public List<Invoice> findAllByOwnerId(Long id) {
+        return invoiceRepository.findAllByOwnerId(id);
     }
 
     @Override
@@ -75,6 +124,7 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
         }
     }
 
+    @Override
     public InvoiceDTO findInvoiceDTOById(Long invoice_id) {
         Invoice invoice = findInvoiceById(invoice_id);
         return mapper.fromInvoiceToDTO(invoice);
@@ -177,6 +227,11 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
     }
 
     @Override
+    public Long count() {
+        return invoiceRepository.count();
+    }
+
+    @Override
     @Transactional
     public Invoice saveInvoice(Invoice invoice) {
         log.info("Trying to save invoice...");
@@ -204,6 +259,7 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
         }
     }
 
+    @Override
     public Invoice saveInvoice(InvoiceDTO dto) {
         Invoice invoice = mapper.fromDTOToInvoice(dto);
         return saveInvoice(invoice);
@@ -271,7 +327,6 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
             log.severe("Something went wrong during deletion");
             log.severe(e.getMessage());
         }
-
     }
 
     @Override
@@ -289,31 +344,12 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
     }
 
 
-    // ====
-
-//    public Invoice buildInvoice(Invoice invoice,
-//                               String date,
-//                               String[] services,
-//                               String[] unit_prices,
-//                               String[] unit_amounts) {
-//        log.info("Building invoice!");
-//        invoice.setDate(LocalDate.parse(date));
-//        log.info("Set date " + LocalDate.parse(date));
-//        log.info("Adding components");
-//        invoice = buildComponents(invoice, services, unit_prices, unit_amounts);
-//        log.info("Built invoice!");
-//        log.info(invoice.toString());
-//
-////        savedInvoice = buildComponents(savedInvoice, services, unit_prices, unit_amounts);
-//
-//        return invoice;
-//    }
-
+    @Override
     public InvoiceDTO buildInvoice(InvoiceDTO invoice,
-                                String date,
-                                String[] services,
-                                String[] unit_prices,
-                                String[] unit_amounts) {
+                                   String date,
+                                   String[] services,
+                                   String[] unit_prices,
+                                   String[] unit_amounts) {
 
         log.info("Building invoice!");
         invoice.setDate(LocalDate.parse(date));
@@ -334,9 +370,10 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
         return invoice;
     }
 
+    @Override
     public List<InvoiceComponents> buildComponents(String[] services,
-                                   String[] unit_prices,
-                                   String[] unit_amounts) {
+                                                   String[] unit_prices,
+                                                   String[] unit_amounts) {
 
         List<InvoiceComponents> list = new ArrayList<>();
 
@@ -363,6 +400,7 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
     }
 
 
+    @Override
     public Long getFilteredInvoiceCount(FilterForm filters) {
 
         Specification<Invoice> spec = buildSpecFromFilters(filters);
@@ -370,12 +408,14 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
         return invoiceRepository.count(spec);
     }
 
+    @Override
     public String turnInvoiceIntoExcel(Invoice invoice, InvoiceTemplate template) throws IOException {
 
         return excelHelper.turnInvoiceIntoExcel(invoice, template);
 
     }
 
+    @Override
     public List<Double> getListSumInvoicesByMonth() {
         List<Double>doubleList = new ArrayList<>();
         LocalDate now = LocalDate.now();
@@ -388,6 +428,7 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
         }
         return doubleList;
     }
+    @Override
     public List<Double> getListSumPaidInvoicesByMonth() {
         List<Double>doubleList = new ArrayList<>();
         LocalDate now = LocalDate.now();
@@ -401,6 +442,7 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
         }
         return doubleList;
     }
+    @Override
     public List<String> getListOfMonthName() {
         List<String>doubleList = new ArrayList<>();
         LocalDate now = LocalDate.now();
@@ -411,6 +453,47 @@ public class InvoiceServiceImpl extends InvoiceService implements InvoiceTemplat
             begin = begin.plusMonths(1);
         }
         return doubleList;
+    }
+
+    @Override
+    public List<Double> getListExpenseByApartmentByMonth(Long id) {
+        List<Double>doubleList = new ArrayList<>();
+        LocalDate now = LocalDate.now();
+        LocalDate begin = now.minusMonths(11);
+        for (int i = 0; i < 12; i++) {
+            Double tmp = invoiceRepository.getTotalPriceByApartmentIdAndMonthAndYear(id, begin.getMonthValue(), begin.getYear());
+            if (tmp == null) tmp=0D;
+            doubleList.add(tmp);
+            begin = begin.plusMonths(1);
+        }
+        return doubleList;
+    }
+
+    @Override
+    public Double getAverageTotalPriceForApartmentLastYear(Long apartment) {
+        LocalDate lastYear = LocalDate.now().minusYears(1);
+        LocalDate today = LocalDate.now();
+        return invoiceRepository.getAverageTotalPriceForApartmentBetwenDate(apartment, lastYear, today);
+    }
+
+    @Override
+    public void insertService(Invoice invoice, Sheet sheet, Row row) {
+
+        List<InvoiceComponents> componentsList = invoice.getComponents();
+        for (int i = 0; i < componentsList.size(); i++) {
+            Row newRow = sheet.createRow(row.getRowNum()+i+1);
+            InvoiceComponents component = componentsList.get(i);
+            newRow.createCell(0).setCellValue(component.getService().getName());
+            newRow.createCell(1).setCellValue(invoice.getTariff().getName());
+            newRow.createCell(2).setCellValue(component.getService().getUnit().getName());
+            newRow.createCell(3).setCellValue(component.getUnit_amount());
+            newRow.createCell(4).setCellValue(component.getTotalPrice());
+        }
+    }
+
+    @Override
+    public void sendExcelInvoiceToEmail() {
+
     }
 
 }

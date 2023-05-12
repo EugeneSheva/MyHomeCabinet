@@ -52,11 +52,6 @@ public class WebsiteServiceImpl implements WebsiteService {
 
     public void deleteDocument(Long document_id) {documentRepository.deleteById(document_id);}
 
-    @Override
-    public MainPage saveMainPageImages(MainPage page, MultipartFile... files) {
-        return null;
-    }
-
     public MainPage saveMainPageImages(MainPage page,
                                        MultipartFile page_slide1,
                                        MultipartFile page_slide2,

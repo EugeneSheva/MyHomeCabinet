@@ -1,4 +1,4 @@
-package com.example.myhome;
+package com.example.myhome.services;
 
 import com.example.myhome.home.exception.EmptyObjectException;
 import com.example.myhome.home.model.Service;
@@ -12,6 +12,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.AuthenticationManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,13 +27,12 @@ import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TariffServiceTests {
+public class TariffServiceTest {
 
-    @MockBean
-    private TariffRepository tariffRepository;
+    @MockBean private TariffRepository tariffRepository;
+    @MockBean private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private TariffServiceImpl tariffService;
+    @Autowired private TariffServiceImpl tariffService;
 
     @Test
     @Order(1)

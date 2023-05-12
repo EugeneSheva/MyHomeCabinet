@@ -1,16 +1,12 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.dto.AdminDTO;
-import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.service.AdminService;
-import com.example.myhome.home.service.impl.AdminServiceImpl;
 import com.example.myhome.home.validator.AdminValidator;
 import com.example.myhome.util.MappingUtils;
 import com.example.myhome.util.UserRole;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,6 +128,8 @@ public class AdminController {
         pagination.put("more", (page*5L) < adminService.countAllMasters());
         map.put("results", adminService.findAllMasters(search, page-1));
         map.put("pagination", pagination);
+        System.out.println(map.get("results").toString());
+        System.out.println(map.get("pagination").toString());
         return map;
     }
 
@@ -143,6 +141,8 @@ public class AdminController {
         pagination.put("more", (page*5L) < adminService.countAllManagers());
         map.put("results", adminService.findAllMasters(search, page-1));
         map.put("pagination", pagination);
+        System.out.println(map.get("results").toString());
+        System.out.println(map.get("pagination").toString());
         return map;
     }
     @GetMapping("/get-admins")

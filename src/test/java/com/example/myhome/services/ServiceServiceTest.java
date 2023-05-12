@@ -1,4 +1,4 @@
-package com.example.myhome;
+package com.example.myhome.services;
 
 import com.example.myhome.home.model.Service;
 import com.example.myhome.home.model.Unit;

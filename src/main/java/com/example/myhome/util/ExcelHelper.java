@@ -27,6 +27,19 @@ import java.util.Map;
 @Log
 public class ExcelHelper {
 
+    /*
+
+    Класс для создания квитанций в форме Excel файла при помощи заданных шаблонов
+
+    метод createMapFromInvoice создаёт пары ключ-значение для шаблона (ключ: %параметр для замены%)
+    сделан только на русском языке
+
+    метод turnInvoiceIntoExcel пробегается по шаблону и подставляет нужные параметры
+    единственное исключение - это услуги , которых может быть неопределенное количество
+    так что в этом случае он создает нужные ячейки и заполняет их
+
+     */
+
     private static final String FILE_PATH = "C:\\Users\\OneSmiLe\\IdeaProjects\\MyHome\\src\\main\\resources\\static\\files\\";
 
     private static final List<String> templateCommandsList = List.of("%payCompany%",

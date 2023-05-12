@@ -1,100 +1,34 @@
 package com.example.myhome.home.service;
 
-
 import com.example.myhome.home.dto.BuildingDTO;
-import com.example.myhome.home.exception.NotFoundException;
-import com.example.myhome.home.mapper.ApartmentDTOMapper;
-import com.example.myhome.home.mapper.BuildingDTOMapper;
 import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Building;
-
 import com.example.myhome.home.model.filter.FilterForm;
-import com.example.myhome.home.repository.BuildingRepository;
 import com.example.myhome.home.specification.BuildingSpecifications;
-import com.example.myhome.util.FileUploadUtil;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
-@Service
-@RequiredArgsConstructor
-@Log
-public class BuildingService {
-    @Value("${upload.path}")
-    private String uploadPath;
-    private String localPath = "/img/buildings/";
-    private final BuildingRepository buildingRepository;
-    private final FileUploadUtil fileUploadUtil;
+public interface BuildingService {
+    Building findById(Long id);
 
-    private final BuildingDTOMapper mapper;
-    private final ApartmentDTOMapper apartmentMapper;
+    List<Building> findAll();
 
-    public Building findById(Long id) {
-        return buildingRepository.findById(id).orElseThrow(NotFoundException::new);
-    }
+    Page<Building> findAll(Pageable pageable);
 
-    public List<Building> findAll() {
-        return buildingRepository.findAll();
-    }
+    List<BuildingDTO> findAllDTO();
 
-    public Page<Building> findAll(Pageable pageable) {
-        return buildingRepository.findAll(pageable);
-    }
+    BuildingDTO findBuildingDTObyId(Long id);
 
-    public List<BuildingDTO> findAllDTO() {
-        List<BuildingDTO> buildingDTOList = new ArrayList<>();
-        for (Building building : buildingRepository.findAll()) {
-            buildingDTOList.add(new BuildingDTO(building.getId(), building.getName(), building.getSections(), building.getAddress(), building.getFloors()));
-        }
-        return buildingDTOList;
-    }
+    Building save(Building building);
 
+    Page<BuildingDTO> findAllBySpecification(FilterForm filters, Integer page, Integer size);
 
-    public BuildingDTO findBuildingDTObyId(Long id) {
-        Building building = buildingRepository.findById(id).orElseThrow();
-        BuildingDTO dto = mapper.fromBuildingToDTO(building);
-        dto.setApartments(building.getApartments().stream().map(apartmentMapper::fromApartmentToDTO).collect(Collectors.toList()));
-        return dto;
-    }
-
-
-    public Building save(Building building) {
-        return buildingRepository.save(building);
-    }
-
-    public Page<BuildingDTO> findAllBySpecification(FilterForm filters, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Building> initialPage = buildingRepository.findAll(buildSpecFromFilters(filters), pageable);
-
-        List<BuildingDTO> listDTO = initialPage.getContent().stream()
-                .map(
-                        building -> BuildingDTO.builder()
-                                .id(building.getId())
-                                .name(building.getName())
-                                .address(building.getAddress())
-                                .build()
-                )
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(listDTO, pageable, initialPage.getTotalElements());
-    }
-
-    private Specification<Building> buildSpecFromFilters(FilterForm filters) {
+    default Specification<Building> buildSpecFromFilters(FilterForm filters) {
         Long id = filters.getId();
         String name = filters.getName();
         String address = filters.getAddress();
@@ -104,108 +38,19 @@ public class BuildingService {
                 .and(BuildingSpecifications.hasAddressLike(address)));
     }
 
-    public List<BuildingDTO> findByPage(String search, int page) {
-        log.info(buildingRepository.findAll().toString());
-        log.info(buildingRepository.findAll(PageRequest.of(page - 1, 5)).getContent().toString());
-        log.info(buildingRepository.findByName(search, PageRequest.of(page - 1, 5)).toString());
+    List<BuildingDTO> findByPage(String search, int page);
 
-        return buildingRepository.findByName(search, PageRequest.of(page - 1, 5)).stream()
-                .map(building -> new BuildingDTO(building.getId(), building.getName())).collect(Collectors.toList());
-    }
+    List<Apartment> getSectionApartments(long building_id, String section_name);
 
-    public List<Apartment> getSectionApartments(long building_id, String section_name) {
-        log.info("ID BUILDING: " + building_id + ", SECTION NAME: " + section_name);
-        return buildingRepository.getSectionApartments(building_id, section_name);
-    }
+    Long countBuildings();
 
-    public Long countBuildings() {
-        return buildingRepository.count();
-    }
+    void deleteById(Long id);
 
-    public void deleteById(Long id) {
-        buildingRepository.deleteById(id);
-    }
+    Long getQuantity();
 
-    public Long getQuantity() {
-        return buildingRepository.countAllBy();
-    }
+    Building saveBuildindImages(Long id, MultipartFile file1, MultipartFile file2, MultipartFile file3, MultipartFile file4, MultipartFile file5) throws IOException;
 
-    public Building saveBuildindImages(Long id, MultipartFile file1, MultipartFile file2, MultipartFile file3, MultipartFile file4, MultipartFile file5) throws IOException {
-        Building newBuilding = new Building();
-        Building oldBuilding = new Building();
-        if (id > 0) {
-            oldBuilding = buildingRepository.getReferenceById(id);
-            newBuilding.setId(id);
-        }
-// file1
-        if (file1.getSize() > 0) {
-            String FileNameUuid = UUID.randomUUID() + "-" + file1.getOriginalFilename();
-            fileUploadUtil.saveFile(localPath, FileNameUuid, file1);
-            newBuilding.setImg1(localPath + FileNameUuid);
-            if (oldBuilding.getImg1() != null) {
-                Files.deleteIfExists(Paths.get(uploadPath + oldBuilding.getImg1()));
-            }
-        } else if (oldBuilding.getImg1() != null) {
-            newBuilding.setImg1(oldBuilding.getImg1());
-        }
-// file2
-        if (file2.getSize() > 0) {
-            String FileNameUuid = UUID.randomUUID() + "-" + file2.getOriginalFilename();
-            fileUploadUtil.saveFile(localPath, FileNameUuid, file2);
-            newBuilding.setImg2(localPath + FileNameUuid);
-            if (oldBuilding.getImg2() != null) {
-                Files.deleteIfExists(Paths.get(uploadPath + oldBuilding.getImg2()));
-            }
-        } else if (oldBuilding.getImg2() != null) {
-            newBuilding.setImg2(oldBuilding.getImg2());
-        }
-// file3
-        if (file3.getSize() > 0) {
-            String FileNameUuid = UUID.randomUUID() + "-" + file3.getOriginalFilename();
-            fileUploadUtil.saveFile(localPath, FileNameUuid, file3);
-            newBuilding.setImg3(localPath + FileNameUuid);
-            if (oldBuilding.getImg3() != null) {
-                Files.deleteIfExists(Paths.get(uploadPath + oldBuilding.getImg3()));
-            }
-        } else if (oldBuilding.getImg3() != null) {
-            newBuilding.setImg3(oldBuilding.getImg3());
-        }
-// file4
-        if (file4.getSize() > 0) {
-            String FileNameUuid = UUID.randomUUID() + "-" + file4.getOriginalFilename();
-            fileUploadUtil.saveFile(localPath, FileNameUuid, file4);
-            newBuilding.setImg4(localPath + FileNameUuid);
-            if (oldBuilding.getImg4() != null) {
-                Files.deleteIfExists(Paths.get(uploadPath + oldBuilding.getImg4()));
-            }
-        } else if (oldBuilding.getImg4() != null) {
-            newBuilding.setImg4(oldBuilding.getImg4());
-        }
-// file5
-        if (file5.getSize() > 0) {
-            String FileNameUuid = UUID.randomUUID() + "-" + file5.getOriginalFilename();
-            fileUploadUtil.saveFile(localPath, FileNameUuid, file5);
-            newBuilding.setImg5(localPath + FileNameUuid);
-            if (oldBuilding.getImg5() != null) {
-                Files.deleteIfExists(Paths.get(uploadPath + oldBuilding.getImg5()));
-            }
-        } else if (oldBuilding.getImg5() != null) {
-            newBuilding.setImg5(oldBuilding.getImg5());
-        }
+    List<BuildingDTO> convertBuildingToBuildingDTO(List<Building> buildingList);
 
-        return newBuilding;
-    }
-
-    public List<BuildingDTO> convertBuildingToBuildingDTO(List<Building> buildingList) {
-        List<BuildingDTO> DTOList = new ArrayList<>();
-        for (Building building : buildingList) {
-            DTOList.add(new BuildingDTO(building.getId(), building.getName(), building.getSections(), building.getAddress(), building.getFloors()));
-        }
-        return DTOList;
-    }
-
-
-    public BuildingDTO convertBuildingToBuildingDTO(Building building) {
-        return new BuildingDTO(building.getId(),building.getName(), building.getSections(),building.getAddress(), building.getFloors());
-    }
+    BuildingDTO convertBuildingToBuildingDTO(Building building);
 }

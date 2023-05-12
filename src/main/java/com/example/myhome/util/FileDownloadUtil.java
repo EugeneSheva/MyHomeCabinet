@@ -17,6 +17,15 @@ import java.time.format.DateTimeFormatter;
 @Log
 public class FileDownloadUtil {
 
+    /*
+
+    Класс для загрузки свежесозданных квитанций (или других файлов) из браузера
+
+    Временный файл квитанции копируется в проект -> файл предлагается на загрузку клиенту ->
+    -> файл загружается -> временный файл удаляется с места дислокации
+
+     */
+
     private static final String FILE_PATH = "C:\\Users\\OneSmiLe\\IdeaProjects\\MyHome\\src\\main\\resources\\static\\files\\";
 
     private FileDownloadUtil() {

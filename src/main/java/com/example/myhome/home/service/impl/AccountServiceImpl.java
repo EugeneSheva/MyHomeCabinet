@@ -9,20 +9,16 @@ import com.example.myhome.home.repository.ApartmentRepository;
 import com.example.myhome.home.repository.BuildingRepository;
 import com.example.myhome.home.repository.OwnerRepository;
 import com.example.myhome.home.service.AccountService;
-import com.example.myhome.home.service.ApartmentService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.OwnerService;
 import com.example.myhome.home.specification.AccountSpecifications;
-import com.example.myhome.util.MappingUtils;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,7 +35,7 @@ public class AccountServiceImpl implements AccountService {
     @Autowired private OwnerRepository ownerRepository;
     @Autowired private BuildingRepository buildingRepository;
 
-    @Autowired private ApartmentService apartmentService;
+    @Autowired private ApartmentServiceImpl apartmentService;
     @Autowired private BuildingService buildingService;
     @Autowired private OwnerService ownerService;
 
@@ -176,13 +172,13 @@ public class AccountServiceImpl implements AccountService {
     public Long getQuantity() { return accountRepository.countAllBy();}
     public Double getSumOfAccountBalances() {
         return accountRepository.findAll().stream()
-                .map(ApartmentAccount::getBalance)
+                .map(ApartmentAccount::getAccountBalance)
                 .filter(balance -> balance > 0)
                 .reduce(Double::sum).orElse(0.0);
     }
     public Double getSumOfAccountDebts() {
         return accountRepository.findAll().stream()
-                .map(ApartmentAccount::getBalance)
+                .map(ApartmentAccount::getAccountBalance)
                 .filter(balance -> balance < 0)
                 .reduce(Double::sum).orElse(0.0);
     }

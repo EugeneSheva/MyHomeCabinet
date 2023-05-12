@@ -5,18 +5,15 @@ import com.example.myhome.home.mapper.AccountDTOMapper;
 import com.example.myhome.home.model.ApartmentAccount;
 import com.example.myhome.home.dto.ApartmentAccountDTO;
 import com.example.myhome.home.model.filter.FilterForm;
-import com.example.myhome.home.service.AccountService;
 import com.example.myhome.home.service.BuildingService;
 import com.example.myhome.home.service.CashBoxService;
 import com.example.myhome.home.service.OwnerService;
 import com.example.myhome.home.service.impl.AccountServiceImpl;
 import com.example.myhome.home.validator.AccountValidator;
-import com.example.myhome.util.MappingUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -24,8 +21,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.Objects;
 
 @Controller
 @RequestMapping("/admin/accounts")

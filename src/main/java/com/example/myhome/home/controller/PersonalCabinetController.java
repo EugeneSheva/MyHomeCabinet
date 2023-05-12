@@ -9,6 +9,7 @@ import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.*;
 import com.example.myhome.home.service.*;
+import com.example.myhome.home.service.impl.ApartmentServiceImpl;
 import com.example.myhome.home.service.impl.InvoiceComponentServiceImpl;
 import com.example.myhome.home.validator.OwnerValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,12 +18,6 @@ import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Controller;
@@ -31,9 +26,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.security.Principal;
@@ -60,7 +52,7 @@ public class PersonalCabinetController {
     private PersistentTokenBasedRememberMeServices rememberMeServices;
 
     @Autowired
-    private ApartmentService apartmentService;
+    private ApartmentServiceImpl apartmentService;
     @Autowired
     private InvoiceService invoiceService;
     @Autowired
