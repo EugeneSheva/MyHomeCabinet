@@ -14,46 +14,56 @@
     </ul>
     <!-- Right navbar links -->
     <aside class="navbar-nav ml-auto align-items-center">
-        <li class="dropdown notifications-menu">
+        <div class="my-lang mr-2" >
+            <svg th:if="${#locale.language == 'uk'}" style="width:20px" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 30 20" viewBox="0 0 30 20" id="ukraine-flag"><rect width="30" height="20"></rect><rect width="28" height="9" x="1" y="1" fill="#005bbb"></rect><rect width="28" height="9" x="1" y="10" fill="#ffd500"></rect></svg>
+            <svg th:if="${#locale.language == 'ru'}" style="width:20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 47.5 47.5" id="pig"><defs><clipPath id="a"><path d="M0 38h38V0H0v38Z"></path></clipPath></defs><g clip-path="url(#a)" transform="matrix(1.25 0 0 -1.25 0 47.5)"><path fill="#f4abba" d="M35.193 23.67a6.01 6.01 0 0 1 1.02 1.28c1.685 2.853.269 10.292-.592 10.8-.696.411-5.53-1.05-8.246-3.132-2.499 1.497-5.344 2.381-8.375 2.381-3.022 0-5.856-.879-8.349-2.367-2.721 2.075-7.533 3.528-8.227 3.118-.861-.508-2.276-7.947-.592-10.8.278-.471.615-.884.989-1.249C1.665 21.149 1 18.359 1 15.521 1 5.531 9.01 2.999 19 2.999c9.989 0 18 2.532 18 12.522 0 2.827-.661 5.606-1.807 8.149"></path><path fill="#ea596e" d="M8.398 31.035c-2.166 1.268-4.402 2.08-4.8 1.845-.57-.336-1.083-4.998-.351-8.264a20.366 20.366 0 0 0 5.151 6.419M34.753 24.616c.732 3.267.219 7.928-.351 8.265-.398.235-2.634-.578-4.8-1.846a20.316 20.316 0 0 0 5.151-6.419M29 13.875C29 9.388 25.903 4.5 19 4.5c-6.904 0-10 4.888-10 9.375S12.096 19.5 19 19.5c6.903 0 10-1.138 10-5.625"></path><path fill="#662113" d="M16 12.4c0-1.857-.34-2.4-1.5-2.4s-1.5.543-1.5 2.4c0 1.856.34 2.399 1.5 2.399S16 14.256 16 12.4M25 12.4c0-1.857-.34-2.4-1.5-2.4s-1.5.543-1.5 2.4c0 1.856.34 2.399 1.5 2.399S25 14.256 25 12.4"></path><path fill="#292f33" d="M10 20a2 2 0 1 0-4.001.001A2 2 0 0 0 10 20M32 20a2 2 0 1 0-4.001.001A2 2 0 0 0 32 20"></path></g></svg>
+            <span th:if="${#locale.language == 'uk'}" id="selectedLanguage">UA</span>
+            <span th:if="${#locale.language == 'ru'}" id="selectedLanguage">RU</span>
+            <div class="language-list">
+                <div class="lang-item">
+                    <svg style="width:20px" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 30 20" viewBox="0 0 30 20" id="ukraine-flag"><rect width="30" height="20"></rect><rect width="28" height="9" x="1" y="1" fill="#005bbb"></rect><rect width="28" height="9" x="1" y="10" fill="#ffd500"></rect></svg>
+                    <span id="uk_UA">UA</span>
+                </div>
+                <div class="lang-item">
+                    <svg style="width:20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 47.5 47.5" id="pig"><defs><clipPath id="a"><path d="M0 38h38V0H0v38Z"></path></clipPath></defs><g clip-path="url(#a)" transform="matrix(1.25 0 0 -1.25 0 47.5)"><path fill="#f4abba" d="M35.193 23.67a6.01 6.01 0 0 1 1.02 1.28c1.685 2.853.269 10.292-.592 10.8-.696.411-5.53-1.05-8.246-3.132-2.499 1.497-5.344 2.381-8.375 2.381-3.022 0-5.856-.879-8.349-2.367-2.721 2.075-7.533 3.528-8.227 3.118-.861-.508-2.276-7.947-.592-10.8.278-.471.615-.884.989-1.249C1.665 21.149 1 18.359 1 15.521 1 5.531 9.01 2.999 19 2.999c9.989 0 18 2.532 18 12.522 0 2.827-.661 5.606-1.807 8.149"></path><path fill="#ea596e" d="M8.398 31.035c-2.166 1.268-4.402 2.08-4.8 1.845-.57-.336-1.083-4.998-.351-8.264a20.366 20.366 0 0 0 5.151 6.419M34.753 24.616c.732 3.267.219 7.928-.351 8.265-.398.235-2.634-.578-4.8-1.846a20.316 20.316 0 0 0 5.151-6.419M29 13.875C29 9.388 25.903 4.5 19 4.5c-6.904 0-10 4.888-10 9.375S12.096 19.5 19 19.5c6.903 0 10-1.138 10-5.625"></path><path fill="#662113" d="M16 12.4c0-1.857-.34-2.4-1.5-2.4s-1.5.543-1.5 2.4c0 1.856.34 2.399 1.5 2.399S16 14.256 16 12.4M25 12.4c0-1.857-.34-2.4-1.5-2.4s-1.5.543-1.5 2.4c0 1.856.34 2.399 1.5 2.399S25 14.256 25 12.4"></path><path fill="#292f33" d="M10 20a2 2 0 1 0-4.001.001A2 2 0 0 0 10 20M32 20a2 2 0 1 0-4.001.001A2 2 0 0 0 32 20"></path></g></svg>
+                    <span id="ru_UA">RU</span>
+                </div>
+            </div>
+        </div>
+        <li class="dropdown notifications-menu" style="margin-right: 15px; margin-left: 7px;">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-bell" aria-hidden="true" style="color:grey;"></i>
+                <i class="fa fa-bell" id="bell" aria-hidden="true" style="color:grey;"></i>
             </a>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu" >
 
-                <li class="header">Нет новых сообщений</li>
-                <li class="footer"><a href="">Перейти в раздел сообщений</a></li>
+                <li class="header" th:text="${owner.unreadMessageQuantity > 0} ? (#{newMessageQuant} + ' ' + ${owner.unreadMessageQuantity}): (#{noNewMessage})">Нет новых сообщений</li>
+                <li class="footer"><a th:href="@{/cabinet/messages}" th:text="#{toMessage}">Перейти в раздел сообщений</a></li>
             </ul>
         </li>
         <!-- user panel  -->
         <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <img th:src="@{/images/placeholder.jpg}" class="user-image" alt="User Image">
-                <span class="hidden-xs" style="color:grey;" th:text="${owner.getFullName()}">Иванов Иван</span>
+                <img th:src="${owner.profile_picture != null && !owner.profile_picture.isEmpty()} ?
+                                   @{${owner.profile_picture}} :  @{/images/placeholder.jpg}" class="user-image" alt="User Image">
+                <span class="hidden-xs" style="color:grey;" th:text="${owner.last_name + ' ' + owner.first_name }">Иванов Иван</span>
             </a>
             <ul class="dropdown-menu">
                 <li class="user-header"
                     style="background-color: rgba(255,0,0,0.4); display:flex; flex-direction:column;
               justify-content:center;align-items:center;">
-                    <img th:src="@{/images/placeholder.jpg}" class="img-circle" alt="User Image">
+                    <img th:src="${owner.profile_picture != null && !owner.profile_picture.isEmpty()} ?
+                                   @{${owner.profile_picture}} :  @{/images/placeholder.jpg}" alt="user-avatar"
+                         class="img-circle img-fluid">
                     <p style="margin: 0">
-                        <b th:text="${owner.getFullName()}">Иванов Иван</b>
+                        <b th:text="${owner.last_name + ' ' + owner.first_name + ' ' + owner.fathers_name}">Иванов Иван</b>
                     </p>
                 </li>
-                <li class="user-row">
-                    <div >
-                        <a th:href="@{/admin/admins/update/{id}(id=${auth_admin.id})}" class="btn btn-warning" th:text="#{profile}">Профиль</a>
+                <li class="user-row" style="list-style: none; padding: 0; display: flex;">
+                    <div style="flex: 1;">
+                        <a th:href="@{/cabinet/user/view}" class="btn btn-warning" th:text="#{profile}">Профиль</a>
                     </div>
-                    <div >
-                        <form id="languageForm" action="#" th:action="@{/change-language}" method="post" >
-                            <input type="hidden" name="url" th:value="${#httpServletRequest.requestURI}" />
-                            <select class="form-group" name="language" onchange="document.getElementById('languageForm').submit()" style="margin-bottom: 0; width: 92px; height: 36px;">
-                                <option th:selected="${#locale.language == 'uk'}" value="uk_UA">Укр</option>
-                                <option th:selected="${#locale.language == 'ru'}" value="ru_UA">Рус</option>
-                            </select>
-                        </form>
-                    </div>
-                    <div >
-                        <a th:href="@{/admin/logout}" class="btn btn-danger" th:text="#{exit}">Выйти</a>
+                    <div  style="flex: 1; text-align: right;">
+                        <a th:href="@{/cabinet/logout}" class="btn btn-danger" th:text="#{exit}">Выйти</a>
                     </div>
                 </li>
             </ul>
@@ -89,7 +99,7 @@
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
-                    <ul class="nav nav-treeview" th:each="apartment : ${owner.apartments}" style="font-weight: 400">
+                    <ul class="nav nav-treeview" th:if=" ${owner.apartments.size>0}"    th:each="apartment : ${owner.apartments}" style="font-weight: 400">
                         <li class="nav-item dropdown-items">
                             <a th:href="@{/cabinet/{id}(id=${apartment.id})}" class="nav-link dropdown-links"
                                style="margin:0">
@@ -114,7 +124,7 @@
                                 <p >Все квитанции</p>
                             </a>
                         </li>
-                      <div th:each="apartment : ${owner.apartments}">
+                      <div th:if=" ${owner.apartments.size>0}" th:each="apartment : ${owner.apartments}">
                           <li class="nav-item dropdown-items">
                               <a th:href="@{/cabinet/invoices/{id}(id=${apartment.id})}" class="nav-link dropdown-links"
                                  style="margin:0">
@@ -133,7 +143,7 @@
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
-                    <ul class="nav nav-treeview" th:each="apartment : ${owner.apartments}" style="font-weight: 400">
+                    <ul class="nav nav-treeview" th:if=" ${owner.apartments.size>0}" th:each="apartment : ${owner.apartments}" style="font-weight: 400">
                         <li class="nav-item dropdown-items">
                             <a th:href="@{/cabinet/tariffs/{id}(id=${apartment.id})}" class="nav-link dropdown-links"
                                style="margin:0">
@@ -171,7 +181,26 @@
         </nav>
         <!-- /.sidebar-menu -->
     </div>
+    <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
 
+    <script>
+
+        let myLang = $(".my-lang");
+        $(".lang-item").click(function(){
+            let element = $(this).find('span');
+            console.log(element.attr('id'));
+            $("#selectedLanguage").text(element.text());
+            document.getElementsByClassName("language-list")[0].style.display='none';
+
+            const url = "/change-language";
+
+            $.post(url, {language:element.attr('id')}, function(data){
+                console.log(data);
+                location.reload();
+            });
+        });
+
+    </script>
     <style>
 
         .nav-link {
@@ -198,6 +227,74 @@
             background-color: rgba(128, 128, 128, 0.01) !important;
         }
 
+    </style>
+    <style>
+        nav a {
+            text-decoration: none;
+        }
+
+        .my-lang {
+            display: flex;
+            align-items: center;
+            justify-content:center;
+            column-gap: 5px;
+            cursor: pointer;
+            border: 1px solid silver;
+            border-radius:5px;
+            padding: 3px;
+            position: relative;
+            width:60px;
+        }
+
+        .dark-mode .my-lang {
+            border: 1px solid gray;
+        }
+
+        .language-list {
+            display:none;
+            position:absolute;
+            top:100%;
+            left:0px;
+            width:58px;
+            border:1px solid silver;
+            border-top:1.2px solid black;
+            background-color:white;
+        }
+
+        .dark-mode .language-list {
+            background-color: #454d55;
+        }
+
+        .lang-item {
+            padding:3px;
+            display: flex;
+            align-items: center;
+            justify-content:center;
+            column-gap: 5px;
+            width:58px;
+        }
+
+        .lang-item:hover {
+            font-weight:bold;
+            background-color: lightgray;
+        }
+
+        .my-lang:hover .my-lang, .my-lang:hover .language-list {
+            border:1.2px solid black;
+        }
+
+        .my-lang:hover #selectedLanguage {
+            font-weight:bold;
+        }
+
+        .my-lang:hover .language-list, .language-list:hover .language-list {
+            display:block;
+        }
+
+        #selectedLanguage {
+            font-family: Recursive;
+            font-size:16px;
+        }
     </style>
     <!-- /.sidebar -->
 </aside>

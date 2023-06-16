@@ -248,9 +248,8 @@ public class OwnerServiceImpl implements OwnerService {
             String FileNameUuid = UUID.randomUUID() + "-" + file1.getOriginalFilename();
             fileUploadUtil.saveFile(localPath, FileNameUuid, file1);
             fileName = (localPath + FileNameUuid);
-            if(oldOwner.getProfile_picture() != null) {
+            if(oldOwner.getProfile_picture() != null && oldOwner.getProfile_picture().length() >0) {
             Files.deleteIfExists(Paths.get(uploadPath + oldOwner.getProfile_picture()));
-
             }
         } else if (oldOwner.getProfile_picture() != null) {
             fileName = oldOwner.getProfile_picture();
@@ -291,7 +290,7 @@ public class OwnerServiceImpl implements OwnerService {
     @Override
     public OwnerDTO findOwnerDTObyEmail(String mail) {
         Owner owner = ownerRepository.findByEmail(mail).orElseThrow();
-        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.convertApartmentsToApartmentsDTO(owner.getApartments()));
+        return new OwnerDTO(owner.getId(),owner.getFirst_name(),owner.getLast_name(),owner.getFathers_name(), (owner.getFirst_name()+" "+owner.getLast_name()+" "+owner.getFathers_name()), apartmentService.convertApartmentsToApartmentsDTO(owner.getApartments()), (long) owner.getUnreadMessages().size(), owner.getProfile_picture());
     }
 
     @Override

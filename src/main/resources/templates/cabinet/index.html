@@ -43,7 +43,7 @@
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
-                    <div class="col-sm-6">
+                    <div class="col-sm-6" th:if="${apartment != null}">
                         <h1 class="m-0" th:text="${apartment.building.name + ' кв. '+ apartment.number}"></h1>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -53,107 +53,116 @@
 
         <!-- Main content -->
         <section class="page_content">
-            <div class="row">
-                <div class="col-xs-12 col-lg-12">
-                    <div class="row">
-                        <div class="col-xs-12 col-lg-4">
-                            <div class="small-box bg-green overflow-hidden" style="margin-bottom: 0px">
-                                <div class="inner">
-                                    <h3 th:text="${(apartment.balance != null ? apartment.balance : 'Не задан')+ ' грн.'}">
-
-                                    </h3>
-                                    <p th:text="#{apartmentsBalance}">Баланс по квартире</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-dollar"></i>
-                                </div>
-                                <span class="small-box-footer">&nbsp;</span>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-lg-4">
-                            <div class="small-box bg-blue overflow-hidden" style="margin-bottom: 0px">
-                                <div class="inner">
-                                    <h3 th:text="${apartment.accountNo != null ? T(java.lang.String).format('%010d',apartment.accountNo) : 'Не задан'}  "></h3>
-                                    <!--                                th:text="${T(java.lang.String).format('%010d', account.id)}"-->
-                                    <p th:text="#{apartmentAccount}">Лицевой счёт</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-user"></i>
-                                </div>
-                                <span class="small-box-footer">&nbsp;</span>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-lg-4">
-                            <div class="small-box bg-red overflow-hidden" style="margin-bottom: 0px">
-                                <div class="inner">
-                                    <h3 th:text="${(avgInvoicePriceInMonth != null ? avgInvoicePriceInMonth : 'Не задан')+ ' грн.'}">
-                                        avgInvoicePriceInMonth</h3>
-                                    <p th:text="#{averageСostPerMonth}">Средний расход за месяц</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-pie-chart"></i>
-                                </div>
-                                <span class="small-box-footer">&nbsp;</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="row"  th:if="${owner.getApartments() == null or owner.getApartments().size() == 0}">
+                У пользователя нет квартир. Добавьте квартиру.
             </div>
+            <div class="row" th:if="${owner.getApartments() != null and owner.getApartments().size() > 0}">
+                <div>
+                    <div class="col-xs-12 col-lg-12">
+                        <div class="row">
+                            <div class="col-xs-12 col-lg-4">
+                                <div class="small-box bg-green overflow-hidden" style="margin-bottom: 0px">
+                                    <div class="inner">
+                                        <h3 th:text="${(apartment.balance != null ? apartment.balance : 'Не задан')+ ' грн.'}">
 
-            <div class="card card card-primary card-outline" style="padding: 0px; border-top-color: #bbbbbb;">
-                <div class="card-header" style="background-color: transparent;">
-                    <h3 class="card-title" th:text="#{expenseChart}">Диаграмма расходов</h3>
-
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                        <button type="button" class="btn btn-tool" data-card-widget="remove">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-xs-12 col-lg-6">
-                            <label for="donutChart1" style="display: block; text-align: center;" th:text="#{lastMonth}">за предыдущий
-                                месяц</label>
-                            <canvas id="donutChart1"
-                                    style="min-height: 250px; height: 450px; max-height: 450px; max-width: 100%;"></canvas>
-                        </div>
-                        <div class="col-xs-12 col-lg-6">
-                            <label for="donutChart2" style="display: block; text-align: center;" th:text="#{thisYear}">за текущий год</label>
-                            <canvas id="donutChart2"
-                                    style="min-height: 250px; height: 450px; max-height: 450px; max-width: 100%;"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card card card-primary card-outline" style="padding: 0px; border-top-color: #bbbbbb;">
-                <div class="card-header" style="background-color: transparent;">
-                    <h3 class="card-title" th:text="#{expenseChart}">Диаграмма расходов</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                        <button type="button" class="btn btn-tool" data-card-widget="remove">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body" style="padding-top: 0; padding-left: 12px; padding-right: 12px;">
-                    <div class="row">
-                        <!-- BAR CHART -->
-                        <div class="card card-success">
-                            <div class="card-body" >
-                                <div class="chart">
-                                    <canvas id="barChart"
-                                            style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                        </h3>
+                                        <p th:text="#{apartmentsBalance}">Баланс по квартире</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-dollar"></i>
+                                    </div>
+                                    <span class="small-box-footer">&nbsp;</span>
                                 </div>
                             </div>
-                            <!-- /.card-body -->
+                            <div class="col-xs-12 col-lg-4">
+                                <div class="small-box bg-blue overflow-hidden" style="margin-bottom: 0px">
+                                    <div class="inner">
+                                        <h3 th:text="${apartment.accountNo != null ? T(java.lang.String).format('%010d',apartment.accountNo) : 'Не задан'}  "></h3>
+                                        <!--                                th:text="${T(java.lang.String).format('%010d', account.id)}"-->
+                                        <p th:text="#{apartmentAccount}">Лицевой счёт</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                    <span class="small-box-footer">&nbsp;</span>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-lg-4">
+                                <div class="small-box bg-red overflow-hidden" style="margin-bottom: 0px">
+                                    <div class="inner">
+                                        <h3 th:text="${(avgInvoicePriceInMonth != null ? avgInvoicePriceInMonth : 'Не задан')+ ' грн.'}">
+                                            avgInvoicePriceInMonth</h3>
+                                        <p th:text="#{averageСostPerMonth}">Средний расход за месяц</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-pie-chart"></i>
+                                    </div>
+                                    <span class="small-box-footer">&nbsp;</span>
+                                </div>
+                            </div>
                         </div>
-                        <!-- /.card -->
+                    </div>
+                </div>
+
+                <div class="card card card-primary card-outline" style="padding: 0px; border-top-color: #bbbbbb;">
+                    <div class="card-header" style="background-color: transparent;">
+                        <h3 class="card-title" th:text="#{expenseChart}">Диаграмма расходов</h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-lg-6">
+                                <label for="donutChart1" style="display: block; text-align: center;"
+                                       th:text="#{lastMonth}">за
+                                    предыдущий
+                                    месяц</label>
+                                <canvas id="donutChart1"
+                                        style="min-height: 250px; height: 450px; max-height: 450px; max-width: 100%;"></canvas>
+                            </div>
+                            <div class="col-xs-12 col-lg-6">
+                                <label for="donutChart2" style="display: block; text-align: center;"
+                                       th:text="#{thisYear}">за
+                                    текущий год</label>
+                                <canvas id="donutChart2"
+                                        style="min-height: 250px; height: 450px; max-height: 450px; max-width: 100%;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card card card-primary card-outline" style="padding: 0px; border-top-color: #bbbbbb;">
+                    <div class="card-header" style="background-color: transparent;">
+                        <h3 class="card-title" th:text="#{expenseChart}">Диаграмма расходов</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding-top: 0; padding-left: 12px; padding-right: 12px;">
+                        <div class="row">
+                            <!-- BAR CHART -->
+                            <div class="card card-success">
+                                <div class="card-body">
+                                    <div class="chart">
+                                        <canvas id="barChart"
+                                                style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
                     </div>
                 </div>
                 <!-- /.card-body -->

@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 // --- ВЛАДЕЛЬЦЫ КВАРТИР ---
@@ -47,10 +48,16 @@ public class Owner {
     @JsonIgnore
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private List<Apartment> apartments;
+
     @JsonIgnore
     @ToString.Exclude
     @ManyToMany(mappedBy = "receivers")
     private List<Message> messages;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "unreadReceivers")
+    private List<Message>unreadMessages;
 
     private boolean has_debt;
 

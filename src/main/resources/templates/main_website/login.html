@@ -28,7 +28,10 @@
                     </a>
                 </div>
                 <p style="text-align: center; padding-block: 20px;">Вход в личный кабинет</p>
-                    <p th:if="${param.error}" style="color: red">Произошла ошибка</p>
+                    <div th:if="${param.error}">
+                        Неверный логин или пароль.</div>
+                    <div th:if="${param.logout}">
+                        Вы вышли из аккаунта.</div>
                 <div class="row inputs">
                     <input type="text" placeholder="E-mail или ID" th:field="*{username}" id="">
                     <i class="fas fa-envelope"></i>

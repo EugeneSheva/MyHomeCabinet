@@ -275,14 +275,11 @@ function drawInvoicesTable(){
 
 }
 function drawMessagesTableCabinet(){
-    console.log('msg draw table start');
     let pageFiltersString = JSON.stringify(gatherFilters());
     let data = getTableData('/cabinet/get-messages', currentPageNumber, currentPageSize, pageFiltersString);
     let $invoicesTableBody = $("#messageTable tbody");
     $invoicesTableBody.html('');
-
     for(const msg of data.content) {
-
         let dateString = msg.date.toString();
         let dateParts = dateString.split(",");
         let year = parseInt(dateParts[0]);
@@ -294,6 +291,9 @@ function drawMessagesTableCabinet(){
         let formattedDate = ("0" + date.getDate()).slice(-2) + "." + ("0" + (date.getMonth() + 1)).slice(-2) + "." + date.getFullYear() + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
 
         let newTableRow = document.createElement('tr');
+        if (unreadMessId.includes(msg.id)){
+            newTableRow.style.color = '#191970';
+            newTableRow.style.fontWeight = 'bold';}
         newTableRow.style.cursor = 'pointer';
         newTableRow.class = 'invoice_row';
         var text = msg.text;

@@ -31,8 +31,9 @@ import java.util.Map;
 public class AdminController {
     private final AdminServiceImpl adminServiceImpl;
     private final AdminService adminService;
+
     private final AdminValidator validator;
-    private final AuthenticationManager authenticationManager;
+
 
     // показать страничку с таблицей всех пользователей
     @GetMapping

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class UserRoleServiceImpl implements UserRoleService {
 
     private final UserRoleRepository repository;
-    private final AuthenticationManager authenticationManager;
+
 
     public UserRole getRole(Long role_id) {
         return repository.findById(role_id).orElse(null);

@@ -8,10 +8,20 @@ import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.ApartmentAccount;
 import com.example.myhome.home.model.Building;
 import com.example.myhome.home.model.Owner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class ApartmentDTOMapper {
+    @Autowired
+    private final BuildingDTOMapper buildingDTOMapper;
+
+    public ApartmentDTOMapper(BuildingDTOMapper buildingDTOMapper) {
+        this.buildingDTOMapper = buildingDTOMapper;
+    }
 
     public Apartment fromDTOToApartment(ApartmentDTO dto) {
 
@@ -65,6 +75,32 @@ public class ApartmentDTOMapper {
         }
 
         return dto;
+    }
+
+    public List<ApartmentDTO> listFromApartmentToDTOshort(List<Apartment> apartmentLIst) {
+        List<ApartmentDTO>apartmentDTOList=new ArrayList<>();
+        for (Apartment apartment : apartmentLIst) {
+            ApartmentDTO dto = new ApartmentDTO();
+            Building b = apartment.getBuilding();
+            System.out.println(b);
+            dto.setId(apartment.getId());
+            dto.setSection(apartment.getSection());
+            dto.setFloor(apartment.getFloor());
+            dto.setNumber(apartment.getNumber());
+            dto.setBalance(apartment.getBalance());
+            dto.setSquare(apartment.getSquare());
+            dto.setBuilding(buildingDTOMapper.fromBuildingToDTO(apartment.getBuilding()));
+            dto.setFullName(b.getName() + " , " + b.getAddress() + " кв. " + apartment.getNumber() + "." );
+            dto.setAccountNo(apartment.getAccount().getId());
+            if (b.getImg1()!=null) dto.setImg1(b.getImg1());
+            if (b.getImg2()!=null) dto.setImg2(b.getImg2());
+            if (b.getImg3()!=null) dto.setImg3(b.getImg3());
+            if (b.getImg4()!=null) dto.setImg4(b.getImg4());
+            if (b.getImg5()!=null) dto.setImg5(b.getImg5());
+            apartmentDTOList.add(dto);
+        }
+        System.out.println(apartmentDTOList);
+    return apartmentDTOList;
     }
 
 }

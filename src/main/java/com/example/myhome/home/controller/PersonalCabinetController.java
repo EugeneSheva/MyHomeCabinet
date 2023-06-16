@@ -5,6 +5,7 @@ import com.example.myhome.home.dto.ApartmentDTO;
 import com.example.myhome.home.dto.InvoiceDTO;
 import com.example.myhome.home.dto.OwnerDTO;
 import com.example.myhome.home.dto.RepairRequestDTO;
+import com.example.myhome.home.mapper.OwnerDTOMapper;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.*;
@@ -18,6 +19,7 @@ import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Controller;
@@ -36,6 +38,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/cabinet")
@@ -67,27 +70,30 @@ public class PersonalCabinetController {
     private RepairRequestService repairRequestService;
     @Autowired
     private OwnerValidator ownerValidator;
+    @Autowired
+    private OwnerDTOMapper ownerDTOMapper;
 
     @GetMapping
     public String getStartPage(Model model, Principal principal){
+        System.out.println("principal.getName()" + principal.getName());
+        System.out.println("ownerService.findOwnerDTObyEmail(principal.getName()" + ownerService.findOwnerDTObyEmail(principal.getName()));
         OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
         model.addAttribute("owner", ownerDTO);
-        model.addAttribute("apartment", apartmentService.findApartmentDto(ownerDTO.getApartments().get(0).getId()));
-        model.addAttribute("avgInvoicePriceInMonth", invoiceService.getAverageTotalPriceForApartmentLastYear(ownerDTO.getApartments().get(0).getId()));
+        if (ownerDTO.getApartments()!=null && ownerDTO.getApartments().size()>0) {
+            model.addAttribute("apartment", apartmentService.findApartmentDto(ownerDTO.getApartments().get(0).getId()));
+            model.addAttribute("avgInvoicePriceInMonth", invoiceService.getAverageTotalPriceForApartmentLastYear(ownerDTO.getApartments().get(0).getId()));
+            Map<String, Double>expenseLastMonth = invoiceComponentService.findExprncesLastMonthByApartment(ownerDTO.getApartments().get(0).getId());
+            model.addAttribute("byMonthNames", new ArrayList<>(expenseLastMonth.keySet()));
+            model.addAttribute("byMonthValues", new ArrayList<>(expenseLastMonth.values()));
+            Map<String, Double>expenseThisYear = invoiceComponentService.findExprncesThisYearByApartment(ownerDTO.getApartments().get(0).getId());
 
-        Map<String, Double>expenseLastMonth = invoiceComponentService.findExprncesLastMonthByApartment(ownerDTO.getApartments().get(0).getId());
+            model.addAttribute("byYearName", new ArrayList<>(expenseThisYear.keySet()));
+            model.addAttribute("byYearValue", new ArrayList<>(expenseThisYear.values()));
+            model.addAttribute("monthsName", invoiceService.getListOfMonthName());
+            model.addAttribute("apartExpenseEachMonthByYear", invoiceService.getListExpenseByApartmentByMonth(ownerDTO.getApartments().get(0).getId()));
 
-        model.addAttribute("byMonthNames", new ArrayList<>(expenseLastMonth.keySet()));
-        model.addAttribute("byMonthValues", new ArrayList<>(expenseLastMonth.values()));
-
-        Map<String, Double>expenseThisYear = invoiceComponentService.findExprncesThisYearByApartment(ownerDTO.getApartments().get(0).getId());
-
-        model.addAttribute("byYearName", new ArrayList<>(expenseThisYear.keySet()));
-        model.addAttribute("byYearValue", new ArrayList<>(expenseThisYear.values()));
-
-        model.addAttribute("monthsName", invoiceService.getListOfMonthName());
-        model.addAttribute("apartExpenseEachMonthByYear", invoiceService.getListExpenseByApartmentByMonth(ownerDTO.getApartments().get(0).getId()));
-        return "cabinet/index";
+        }
+         return "cabinet/index";
     }
 
     @GetMapping("/{id}")
@@ -163,8 +169,17 @@ public class PersonalCabinetController {
         OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
         model.addAttribute("owner", ownerDTO);
         List<Message> messagesList = ownerService.findOwnerDTObyEmailWithMessages(principal.getName()).getMessages();
+
+        List<Long> unreadMessagesId = ownerService
+                .findByLogin(principal.getName())
+                .getUnreadMessages()
+                .stream()
+                .map(Message::getId)
+                .collect(Collectors.toList());
+
         System.out.println(messagesList);
         Page<Message> messagesListPage = new PageImpl<>(messagesList, pageable, messagesList.size());
+        model.addAttribute("unreadMessagesId", unreadMessagesId);
         model.addAttribute("messages", messagesListPage);
         model.addAttribute("totalPagesCount", messagesListPage.getTotalPages());
         model.addAttribute("filterForm", new FilterForm());
@@ -175,8 +190,11 @@ public class PersonalCabinetController {
     public String getMessageContentPage(@PathVariable long id, Model model, Principal principal) {
         OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
         model.addAttribute("owner", ownerDTO);
-
         Message message = messageRepository.getReferenceById(id);
+        List<Owner>unreadReceivers = message.getUnreadReceivers();
+        Owner owner = ownerService.findByLogin(principal.getName());
+        if (unreadReceivers.contains(owner)) unreadReceivers.remove(owner);
+        messageRepository.save(message);
         model.addAttribute("message", message);
         return "cabinet/message_card";
     }
@@ -184,17 +202,20 @@ public class PersonalCabinetController {
     @GetMapping("/message/deleteSelected")
     @ResponseBody
     public void deleteSelected(@RequestParam(name = "checkboxList")Long[]checkboxList, Principal principal) {
-        List<Message>messages= ownerService.findByLogin(principal.getName()).getMessages();
+        Owner owner = ownerService.findByLogin(principal.getName());
+        List<Message>messages= owner.getMessages();
+
         for (Long aLong : checkboxList) {
             Message message = messageService.findById(aLong);
             List<Owner>receivers = message.getReceivers();
-            for (Owner owner : receivers) {
-                if (owner.getEmail().equals(principal.getName())) {
+            for (Owner receiver : receivers) {
+                if (receiver.equals(owner)) {
                     receivers.remove(owner);
                     messages.remove(message);
                     break;
                 }
             }
+            if (message.getUnreadReceivers().contains(owner)) message.getUnreadReceivers().remove(owner);
             message.setReceivers(receivers);
             messageService.save(message);
         }
@@ -267,25 +288,41 @@ public class PersonalCabinetController {
 
     @GetMapping("/user/view")
     public String getUserProfilePage(Model model, Principal principal) {
-        Owner owner = ownerService.findByLogin(principal.getName());
-        model.addAttribute("owner", owner);
+        OwnerDTO ownerDTO = ownerDTOMapper.toDTOcabinetProfile(ownerService.findByLogin(principal.getName()));
+        model.addAttribute("owner", ownerDTO);
         return "cabinet/user_profile";
     }
 
     @GetMapping("/user/edit")
     public String getEditUserProfilePage(Model model, Principal principal) {
-        model.addAttribute("owner", ownerService.findByLogin(principal.getName()));
+        OwnerDTO ownerDTO = ownerDTOMapper.toDTOcabinetEditProfile(ownerService.findByLogin(principal.getName()));
+        System.out.println("ownerDTO " + ownerDTO);
+        model.addAttribute("owner", ownerDTO);
         return "cabinet/user_edit";
     }
 
     @PostMapping("/user/save")
-    public String saveCoffee(@Valid @ModelAttribute("owner") Owner owner, BindingResult bindingResult, @RequestParam("img1") MultipartFile file) throws IOException {
-        ownerValidator.validate(owner, bindingResult);
+    public String saveCoffee(@Valid @ModelAttribute("owner") OwnerDTO owner, BindingResult bindingResult, @RequestParam("img1") MultipartFile file, @RequestParam("newPassword") String newPassword, @RequestParam("repassword") String repassword) throws IOException {
+        Owner newOwner = ownerDTOMapper.toEntityСabinetEditProfile(owner);
+        ownerValidator.validate(newOwner, bindingResult);
         if (bindingResult.hasErrors()) {
+            System.out.println("bindingResult " + bindingResult);
+            return "cabinet/user_edit";
+        } else if (!newPassword.equals(repassword) ){
+            System.out.println("newPassword " + newPassword);
+            System.out.println("repassword " + repassword);
+            System.out.println("!newPassword.equals(repassword) " + !newPassword.equals(repassword));
             return "cabinet/user_edit";
         } else {
-            owner.setProfile_picture(ownerService.saveOwnerImage(owner.getId(), file));
-            ownerService.save(owner);
+            Owner oldOwner = ownerService.findById(owner.getId());
+            newOwner.setProfile_picture(ownerService.saveOwnerImage(owner.getId(), file));
+            newOwner.setEnabled(oldOwner.getEnabled());
+            if (newPassword != null && newPassword.length() > 0 ) {
+                newOwner.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
+            }else {
+                newOwner.setPassword(oldOwner.getPassword());
+            }
+            ownerService.save(newOwner);
         }
         return "redirect:/cabinet/user/view";
     }

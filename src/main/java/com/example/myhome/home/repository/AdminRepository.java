@@ -2,9 +2,10 @@ package com.example.myhome.home.repository;
 
 import com.example.myhome.home.model.Admin;
 import com.example.myhome.home.model.Owner;
+import com.example.myhome.home.model.UserRole;
 import com.example.myhome.home.specification.AdminSpecifications;
 import com.example.myhome.home.specification.OwnerSpecifications;
-import com.example.myhome.util.UserRole;
+
 import com.example.myhome.util.UserStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
