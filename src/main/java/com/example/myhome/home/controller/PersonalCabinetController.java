@@ -309,9 +309,6 @@ public class PersonalCabinetController {
             System.out.println("bindingResult " + bindingResult);
             return "cabinet/user_edit";
         } else if (!newPassword.equals(repassword) ){
-            System.out.println("newPassword " + newPassword);
-            System.out.println("repassword " + repassword);
-            System.out.println("!newPassword.equals(repassword) " + !newPassword.equals(repassword));
             return "cabinet/user_edit";
         } else {
             Owner oldOwner = ownerService.findById(owner.getId());
