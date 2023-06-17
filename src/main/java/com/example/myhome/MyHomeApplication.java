@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +20,7 @@ import java.util.List;
 @EnableJpaRepositories(basePackages = {"com.example.myhome.home.repository", "com.example.myhome.home.service.registration"})
 @EnableEncryptableProperties
 @Log4j2
-public class MyHomeApplication {
+public class MyHomeApplication extends SpringBootServletInitializer {
 
     @Autowired private UserRoleRepository repository;
     @Autowired private AdminRepository adminRepository;
