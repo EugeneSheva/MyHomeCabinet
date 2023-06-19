@@ -30,9 +30,12 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         System.out.println("CONFIG UPLOAD PATH " + uploadPath);
         System.out.println("CONFIG PREFIX " + prefix);
+//        registry
+//                .addResourceHandler("/img/**", "/images/**")
+//                .addResourceLocations(prefix + uploadPath + "/", prefix + uploadPath + "/img/");
         registry
                 .addResourceHandler("/img/**", "/images/**")
-                .addResourceLocations(prefix + uploadPath + "/", prefix + uploadPath + "/img/");
+                .addResourceLocations("http://kino.avada-media-dev1.od.ua:9002/myhome/WEB-INF/classes/static/images/");
         registry
                 .addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/");
