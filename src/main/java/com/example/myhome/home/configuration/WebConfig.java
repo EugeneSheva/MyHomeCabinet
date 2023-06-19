@@ -35,7 +35,7 @@ public class WebConfig implements WebMvcConfigurer {
 //                .addResourceLocations(prefix + uploadPath + "/", prefix + uploadPath + "/img/");
         registry
                 .addResourceHandler("/img/**", "/images/**")
-                .addResourceLocations("http://kino.avada-media-dev1.od.ua:9002/myhome/WEB-INF/classes/static/images/");
+                .addResourceLocations("http://kino.avada-media-dev1.od.ua:9002/myhome/WEB-INF/classes/static/images/", "http://kino.avada-media-dev1.od.ua:9002/myhome/WEB-INF/classes/static/images", "http://kino.avada-media-dev1.od.ua:9002/WEB-INF/classes/static/images/", "http://kino.avada-media-dev1.od.ua:9002/WEB-INF/classes/static/images");
         registry
                 .addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/");
