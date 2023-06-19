@@ -38,7 +38,7 @@
           </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="/"><i class="fa fa-home" th:text="#{homePage}"></i></a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/cabinet/}"><i class="fa fa-home" th:text="' '+#{homePage}"></i></a></li>
                     <li class="breadcrumb-item" th:text="#{requestMaster}">Вызов мастера</li>
                     <li class="breadcrumb-item active" th:text="#{newRequest}">Новая заявка</li>
                 </ol>
@@ -79,6 +79,7 @@
                                   <h4 class="control-label" th:text="#{dateOfWork}">Дата работ</h4>
                                   <input type="text" id="date_picker" th:field="*{date}">
                                   <span class="input-group-addon kv-date-calendar" title="Выбрать дату"><i class="fa fa-calendar"></i></span>
+                                  <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('best_time_request')}" th:errors="*{best_time_request}"></h4>
                               </div>
                           </div>
                           <div class="col-md-6">
@@ -92,6 +93,7 @@
                       <div class="form-group">
                           <h4 class="control-label" th:text="#{description}">Описание</h4>
                           <textarea th:field="*{description}" style="width:100%" rows="5"></textarea>
+                          <h4 style="color: red; font-weight: bold; margin-top: -5px" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></h4>
                       </div>
                   </div>
                   <div class="modal-footer">

@@ -13,6 +13,7 @@ import com.example.myhome.home.service.*;
 import com.example.myhome.home.service.impl.ApartmentServiceImpl;
 import com.example.myhome.home.service.impl.InvoiceComponentServiceImpl;
 import com.example.myhome.home.validator.OwnerValidator;
+import com.example.myhome.home.validator.RequestValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.java.Log;
@@ -76,6 +77,8 @@ public class PersonalCabinetController {
     private OwnerValidator ownerValidator;
     @Autowired
     private OwnerDTOMapper ownerDTOMapper;
+@Autowired
+    private RequestValidator validator;
 
     @GetMapping
     public String getStartPage(Model model, Principal principal){
@@ -255,11 +258,14 @@ public class PersonalCabinetController {
         model.addAttribute("masters", userRoleRepository.findAllMasterRoles());
         return "cabinet/request_card";
     }
-
+//
     @PostMapping("/request/save")
-    public String saveRequest(@RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam("master") Long master,
+    public String saveRequest(@ModelAttribute RepairRequest request,
+                              BindingResult bindingResult, @RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam("master") Long master,
                               @RequestParam(name = "apartment") Long apartmentId,@RequestParam("description") String description,
-                              @RequestParam("date") String date,  @RequestParam("time") String time, Principal principal) throws IOException {
+                              @RequestParam("date") String date,  @RequestParam("time") String time, Principal principal, Model model) throws IOException {
+
+
         System.out.println(id +' '+ master +' '+ apartmentId+' '+ description+' '+ date+' '+ time);
         Owner owner = ownerService.findByLogin(principal.getName());
         RepairRequest repairRequest = new RepairRequest();
@@ -275,10 +281,16 @@ public class PersonalCabinetController {
         repairRequest.setStatus(RepairStatus.ACCEPTED);
         repairRequest.setRequest_date(LocalDateTime.now());
         repairRequest.setPhone_number(owner.getPhone_number());
+
+        validator.validate(repairRequest, bindingResult);
+        if(bindingResult.hasErrors()) {
+            OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
+            model.addAttribute("owner", ownerDTO);
+            return "cabinet/request_card";
+        }
         repairRequestRepository.save(repairRequest);
 
         return "redirect:/cabinet/requests";
-
     }
 
     @GetMapping("/get-requests")
