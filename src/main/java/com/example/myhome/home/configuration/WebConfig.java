@@ -31,7 +31,7 @@ public class WebConfig implements WebMvcConfigurer {
         System.out.println("CONFIG UPLOAD PATH " + uploadPath);
         System.out.println("CONFIG PREFIX " + prefix);
         registry
-                .addResourceHandler("/img/**")
+                .addResourceHandler("/img/**", "/images/**")
                 .addResourceLocations(prefix + uploadPath + "/", prefix + uploadPath + "/img/");
         registry
                 .addResourceHandler("/**")
@@ -41,15 +41,18 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations(prefix + uploadPath + "/", prefix + uploadPath + "/files/");
     }
 
-    @Override
-    public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new StringToApartmentDTOConverter());
-        registry.addConverter(new StringToBuildingDTOConverter());
-        registry.addConverter(new StringToAccountDTOConverter());
-        registry.addConverter(new StringToOwnerDTOConverter());
-        registry.addConverter(new AccountDTOToStringConverter());
-        registry.addConverter(new OwnerDTOToStringConverter());
-    }
+//    @Override
+//    public void addFormatters(FormatterRegistry registry) {
+//        registry.addConverter(new StringToApartmentDTOConverter());
+//        registry.addConverter(new StringToBuildingDTOConverter());
+//        registry.addConverter(new StringToAccountDTOConverter());
+//        registry.addConverter(new StringToOwnerDTOConverter());
+////        registry.addConverter(new StringToUnitConverter());
+//        registry.addConverter(new AccountDTOToStringConverter());
+//        registry.addConverter(new OwnerDTOToStringConverter());
+//        registry.addConverter(new AdminToStringConverter());
+//        registry.addConverter(new RoleToStringConverter());
+//    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
