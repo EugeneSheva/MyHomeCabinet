@@ -78,7 +78,7 @@
                             <div class="col-xs-12 col-lg-4">
                                 <div class="small-box bg-blue overflow-hidden" style="margin-bottom: 0px">
                                     <div class="inner">
-                                        <h3 th:text="${apartment.accountNo != null ? T(java.lang.String).format('%010d',apartment.accountNo) : 'Не задан'}  "></h3>
+                                        <h3 th:text="${apartment.account.getId() != null ? T(java.lang.String).format('%010d',apartment.account.getId()) : 'Не задан'}  "></h3>
                                         <!--                                th:text="${T(java.lang.String).format('%010d', account.id)}"-->
                                         <p th:text="#{apartmentAccount}">Лицевой счёт</p>
                                     </div>
