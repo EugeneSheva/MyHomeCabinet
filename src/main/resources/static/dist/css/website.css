@@ -251,7 +251,21 @@ textarea {
     font-size:40px;
     font-weight:bold;
 }
+.logo-mini {
+    display: none;
+}
 
+.logo-lg {
+    display: block;
+}
+
+.sidebar-collapse .logo-lg {
+    display: none;
+}
+
+.sidebar-collapse .logo-mini {
+    display: block;
+}
 
 
 
