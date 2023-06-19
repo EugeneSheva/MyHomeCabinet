@@ -1,17 +1,17 @@
 package com.example.myhome.home.controller;
 
 import com.example.myhome.home.configuration.security.CustomUserDetails;
+import com.example.myhome.home.dto.newOwnerDTO;
+import com.example.myhome.home.model.Owner;
+import com.example.myhome.home.service.OwnerService;
 import com.example.myhome.home.service.registration.LoginRequest;
-import com.example.myhome.home.service.registration.RegistrationRequest;
 import com.example.myhome.home.service.registration.RegisterService;
-import com.example.myhome.home.validator.LoginRequestValidator;
-import com.example.myhome.home.validator.RegistrationRequestValidator;
-
+import com.example.myhome.home.validator.NewOwnerValidator;
+import com.example.myhome.util.UserStatus;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,24 +25,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.time.LocalDateTime;
 
 @Controller
 @Log
 public class LoginController {
 
     @Autowired
-    private ApplicationEventPublisher publisher;
-
-    @Autowired
     private RegisterService registerService;
-
-    @Autowired
-    private RegistrationRequestValidator validator;
-    @Autowired
-    private LoginRequestValidator loginRequestValidator;
-
     @Autowired
     private PersistentTokenRepository repository;
+    @Autowired
+    private NewOwnerValidator newOwnerValidator;
+    @Autowired
+    private OwnerService ownerService;
 
     @GetMapping("/cabinet/site/login")
     public String showLoginPage(Model model) {
@@ -50,46 +47,31 @@ public class LoginController {
         return "main_website/login";
     }
 
-//    @PostMapping("/cabinet/site/login")
-//    public String logInUser(@ModelAttribute LoginRequest loginRequest, BindingResult bindingResult,
-//                            Model model,
-//                            HttpServletRequest request) {
-//        loginRequestValidator.validate(loginRequest, bindingResult);
-//        if (bindingResult.hasErrors()) {
-//            log.info("Errors found in login request");
-//            log.info(bindingResult.getAllErrors().toString());
-//            System.out.println("error!!!");
-//            return "main_website/login";
-//        }
-//        System.out.println("ok!!!");
-//        return "redirect:/cabinet";
-//    }
-
-//    @GetMapping("/admin/site/login")
-//    public String showAdminLoginPage(Model model) {
-//        return "main_website/admin_login";
-//    }
-
     @GetMapping("/cabinet/site/register")
     public String showRegisterPage(Model model) {
-        model.addAttribute("registrationRequest", new RegistrationRequest());
+        model.addAttribute("newowner", new newOwnerDTO());
         return "main_website/register";
     }
 
     @PostMapping("/cabinet/site/register")
-    public String registerUser(@ModelAttribute RegistrationRequest registrationRequest,
-                               BindingResult bindingResult,
-                               HttpServletRequest request) {
-        validator.validate(registrationRequest, bindingResult);
-
+    public String registerUser(@Valid @ModelAttribute("newowner") newOwnerDTO newowner,
+                               BindingResult bindingResult) {
+        newOwnerValidator.validate(newowner, bindingResult);
         if (bindingResult.hasErrors()) {
-            log.info("Errors found with reg.request");
-            log.info(bindingResult.getAllErrors().toString());
             return "main_website/register";
+        } else {
+            Owner owner = new Owner();
+            owner.setEnabled(true);
+            owner.setStatus(UserStatus.NEW);
+            owner.setAdded_at(LocalDateTime.now());
+            owner.setFirst_name(newowner.getFirst_name());
+            owner.setLast_name(newowner.getLast_name());
+            owner.setFathers_name(newowner.getFathers_name());
+            owner.setEmail(newowner.getEmail());
+            owner.setPassword(BCrypt.hashpw(newowner.getPassword(), BCrypt.gensalt()));
+            ownerService.save(owner);
+            return "redirect:/cabinet/site/login";
         }
-        registerService.register(registrationRequest);
-
-        return "redirect:/cabinet/site/login";
     }
 
     @GetMapping("/cabinet/site/register/confirm")
@@ -108,13 +90,6 @@ public class LoginController {
         SecurityContextHolder.getContext().setAuthentication(null);
         return "redirect:/cabinet/site/login";
     }
-
-//    @GetMapping("/admin/logout")
-//    public String adminLogout(HttpServletRequest request, HttpServletResponse response) {
-//        clearRememberMeCookie(request, response);
-//        SecurityContextHolder.getContext().setAuthentication(null);
-//        return "redirect:/admin/site/login";
-//    }
 
     void clearRememberMeCookie(HttpServletRequest request, HttpServletResponse response) {
         String cookieName = "remember-me";

@@ -31,6 +31,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -79,6 +80,10 @@ public class OwnerServiceImpl implements OwnerService {
         return owner.getApartments().stream().map(apartmentDTOMapper::fromApartmentToDTO).collect(Collectors.toList());
     }
 
+    public boolean isOwnerExistsByEmail(String email) {
+        Optional<Owner> owner = ownerRepository.findByEmail(email);
+        return owner.isPresent();
+    }
     @Override
     public List<OwnerDTO> findAllDTO() {
         List<OwnerDTO>ownerDTOList=new ArrayList<>();

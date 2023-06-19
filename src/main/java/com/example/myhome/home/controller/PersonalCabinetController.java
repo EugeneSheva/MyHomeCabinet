@@ -47,6 +47,10 @@ public class PersonalCabinetController {
 
     @Autowired
     private OwnerService ownerService;
+    @Autowired
+    private AdminService adminService;
+    @Autowired
+    private UserRoleRepository userRoleRepository;
 
     @Autowired
     private PersistentTokenRepository repository;
@@ -248,11 +252,12 @@ public class PersonalCabinetController {
         repairRequest.setTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
         System.out.println(repairRequest);
         model.addAttribute("repairRequest", repairRequest);
+        model.addAttribute("masters", userRoleRepository.findAllMasterRoles());
         return "cabinet/request_card";
     }
 
     @PostMapping("/request/save")
-    public String saveRequest(@RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam("master") String master,
+    public String saveRequest(@RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam("master") Long master,
                               @RequestParam(name = "apartment") Long apartmentId,@RequestParam("description") String description,
                               @RequestParam("date") String date,  @RequestParam("time") String time, Principal principal) throws IOException {
         System.out.println(id +' '+ master +' '+ apartmentId+' '+ description+' '+ date+' '+ time);
@@ -260,7 +265,7 @@ public class PersonalCabinetController {
         RepairRequest repairRequest = new RepairRequest();
         repairRequest.setId(id);
         repairRequest.setApartment(apartmentService.findById(apartmentId));
-//        repairRequest.setMaster_type(RepairMasterType.valueOf(master));
+        if (master > 0) repairRequest.setMaster_type(userRoleRepository.findById(master).orElseThrow());
         repairRequest.setDescription(description);
         repairRequest.setDate(date);
         repairRequest.setTime(time);

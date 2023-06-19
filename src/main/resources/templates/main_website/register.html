@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -17,7 +17,7 @@
         <div class="login-box">
             <a th:href="@{/}"><img th:src="@{/images/namelogo.png}" class="img-fluid" alt=""></a>
             <br>
-            <form action="" method="post" th:object="${registrationRequest}">
+            <form action="" method="post" th:object="${newowner}">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <div class="credentials">
                     <p style="text-align: center; padding-block: 20px;">Регистрация нового жильца</p>
@@ -47,13 +47,12 @@
                         <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: red; margin:0"></p>
                     </div>
                     <div class="row inputs">
-                        <input type="password" placeholder="Повторите пароль" th:field="*{confirm_password}" th:styleappend="${#fields.hasErrors('confirm_password')} ? 'border: 0.5px solid red'">
-                        <i class="fas fa-lock" th:styleappend="${#fields.hasErrors('confirm_password')} ? 'top:19%'"></i>
-                        <p th:if="${#fields.hasErrors('confirm_password')}" th:errors="*{confirm_password}" style="color: red; margin:0"></p>
+                        <input type="password" placeholder="Повторите пароль" th:field="*{repassword}" th:styleappend="${#fields.hasErrors('password')} ? 'border: 0.5px solid red'">
+                        <i class="fas fa-lock" th:styleappend="${#fields.hasErrors('password')} ? 'top:19%'"></i>
                     </div>
                     <div class="row mt-4">
-                        <input type="checkbox" th:field="*{agreeToTOS}" style="display: inline; width:30px">Я согласен с политикой конфиденциальности
-                        <p th:if="${#fields.hasErrors('agreeToTOS')}" th:errors="*{agreeToTOS}" style="color: red; margin:0"></p>
+                        <input type="checkbox" th:field="*{confirm}" style="display: inline; width:30px">Я согласен с политикой конфиденциальности
+                        <p th:if="${#fields.hasErrors('confirm')}" th:errors="*{confirm}" style="color: red; margin:0"></p>
                     </div>
                     <div class="row">
                         <button class="btn btn-default btn-primary text-center">Зарегистрироваться</button>

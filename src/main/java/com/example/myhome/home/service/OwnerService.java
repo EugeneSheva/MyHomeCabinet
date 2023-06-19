@@ -63,4 +63,6 @@ public interface OwnerService {
     OwnerDTO findOwnerDTObyEmailFull(String mail);
 
     OwnerDTO convertOwnerToOwnerDTO(Owner owner);
+
+    boolean isOwnerExistsByEmail(String email);
 }

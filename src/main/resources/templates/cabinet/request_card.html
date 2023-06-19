@@ -58,8 +58,9 @@
                       <div class="form-group">
                           <h4 class="control-label" th:text="#{typeOfMaster}">Тип мастера</h4>
                           <select th:field="*{master}" id="master_select" class="my_selects">
-                              <option th:each="type : ${T(com.example.myhome.home.model.RepairMasterType).values()}"
-                                      th:value="${type}"
+                              <option th:text="#{anyMaster}" th:value="0"></option>
+                              <option th:each="type : ${masters}"
+                                      th:value="${type.id}"
                                       th:text="${type.getName()}"></option>
                           </select>
                       </div>
