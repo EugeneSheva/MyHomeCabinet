@@ -77,16 +77,14 @@
                           <div class="col-md-6">
                               <div class="form-group">
                                   <h4 class="control-label" th:text="#{dateOfWork}">Дата работ</h4>
-                                  <input type="text" id="date_picker" th:field="*{date}">
-                                  <span class="input-group-addon kv-date-calendar" title="Выбрать дату"><i class="fa fa-calendar"></i></span>
+                                  <input type="date" class="form-control" style="height: 48px;"  th:field="*{date}">
                                   <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('best_time_request')}" th:errors="*{best_time_request}"></h4>
                               </div>
                           </div>
                           <div class="col-md-6">
                               <div class="form-group">
                                   <h4 class="control-label" th:text="#{timeOfWork}">Время работ</h4>
-                                  <input type="text" id="time_picker" th:field="*{time}">
-                                  <span class="input-group-addon kv-date-calendar" title="Выбрать дату"><i class="fa fa-clock"></i></span>
+                                  <input type="time" class="form-control" style="height: 48px;" th:field="*{time}">
                               </div>
                           </div>
                       </div>

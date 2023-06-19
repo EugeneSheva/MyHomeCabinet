@@ -251,8 +251,8 @@ public class PersonalCabinetController {
         OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
         model.addAttribute("owner", ownerDTO);
         RepairRequest repairRequest = new RepairRequest();
-        repairRequest.setDate(LocalDate.now().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-        repairRequest.setTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
+        repairRequest.setDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        repairRequest.setTime(LocalTime.now().plusHours(3).format(DateTimeFormatter.ofPattern("HH:mm")));
         System.out.println(repairRequest);
         model.addAttribute("repairRequest", repairRequest);
         model.addAttribute("masters", userRoleRepository.findAllMasterRoles());
@@ -275,7 +275,7 @@ public class PersonalCabinetController {
         repairRequest.setDescription(description);
         repairRequest.setDate(date);
         repairRequest.setTime(time);
-        LocalDateTime dateTime = LocalDateTime.parse(date + " " + time, DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm"));
+        LocalDateTime dateTime = LocalDateTime.parse(date + " " + time, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         repairRequest.setBest_time_request(dateTime);
         repairRequest.setOwner(owner);
         repairRequest.setStatus(RepairStatus.ACCEPTED);
