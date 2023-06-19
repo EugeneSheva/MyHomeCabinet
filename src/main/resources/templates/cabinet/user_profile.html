@@ -111,32 +111,32 @@
                                         <p th:text="${apartment.building.name+'. '+apartment.building.address+', кв. '+ apartment.number}"></p>
                                         <div class="row">
                                             <div class="col-xs-12 col-md-6">
-                                                <img class="img-fluid" th:src="${apartment.building.img1 != null && !apartment.building.img1.isEmpty()} ?
-                                                @{${apartment.building.img1}} :  @{/images/placeholder.jpg}"
+                                                <img class="img-fluid" th:src="${apartment.img1 != null && !apartment.img1.isEmpty()} ?
+                                                @{${apartment.img1}} :  @{/images/placeholder.jpg}"
                                                  alt="">
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <div class="col-md-6">
-                                                        <img class="img-fluid mb-3" th:src="${apartment.building.img2 != null && !apartment.building.img2.isEmpty()} ?
-                                                    @{${apartment.building.img2}} :  @{/images/placeholder.jpg}"
+                                                        <img class="img-fluid mb-3" th:src="${apartment.img2 != null && !apartment.img2.isEmpty()} ?
+                                                    @{${apartment.img2}} :  @{/images/placeholder.jpg}"
                                                              alt="">
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <img class="img-fluid mb-3" th:src="${apartment.building.img3 != null && !apartment.building.img3.isEmpty()} ?
-                                                        @{${apartment.building.img3}} :  @{/images/placeholder.jpg}"
+                                                        <img class="img-fluid mb-3" th:src="${apartment.img3 != null && !apartment.img3.isEmpty()} ?
+                                                        @{${apartment.img3}} :  @{/images/placeholder.jpg}"
                                                          alt="">
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6">
-                                                        <img class="img-fluid mb-3" th:src="${apartment.building.img4 != null && !apartment.building.img4.isEmpty()} ?
-                                                        @{${apartment.building.img4}} :  @{/images/placeholder.jpg}"
+                                                        <img class="img-fluid mb-3" th:src="${apartment.img4 != null && !apartment.img4.isEmpty()} ?
+                                                        @{${apartment.img4}} :  @{/images/placeholder.jpg}"
                                                          alt="">
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <img class="img-fluid mb-3" th:src="${apartment.building.img5 != null && !apartment.building.img5.isEmpty()} ?
-                                                         @{${apartment.building.img5}} :  @{/images/placeholder.jpg}"
+                                                        <img class="img-fluid mb-3" th:src="${apartment.img5 != null && !apartment.img5.isEmpty()} ?
+                                                         @{${apartment.img5}} :  @{/images/placeholder.jpg}"
                                                           alt="">
                                                     </div>
                                                 </div>
