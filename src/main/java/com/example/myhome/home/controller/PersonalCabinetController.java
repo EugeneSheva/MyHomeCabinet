@@ -89,14 +89,23 @@ public class PersonalCabinetController {
         if (ownerDTO.getApartments()!=null && ownerDTO.getApartments().size()>0) {
             model.addAttribute("apartment", apartmentService.findApartmentDto(ownerDTO.getApartments().get(0).getId()));
             model.addAttribute("avgInvoicePriceInMonth", invoiceService.getAverageTotalPriceForApartmentLastYear(ownerDTO.getApartments().get(0).getId()));
+
+
+            ///1
             Map<String, Double>expenseLastMonth = invoiceComponentService.findExprncesLastMonthByApartment(ownerDTO.getApartments().get(0).getId());
             model.addAttribute("byMonthNames", new ArrayList<>(expenseLastMonth.keySet()));
             model.addAttribute("byMonthValues", new ArrayList<>(expenseLastMonth.values()));
-            Map<String, Double>expenseThisYear = invoiceComponentService.findExprncesThisYearByApartment(ownerDTO.getApartments().get(0).getId());
+            System.out.println("1 "+ expenseLastMonth);
+            System.out.println("2 "+ new ArrayList<>(expenseLastMonth.keySet()));
+            System.out.println("3 "+ new ArrayList<>(expenseLastMonth.values()));
+            System.out.println("4 "+ ownerDTO.getApartments().get(0).getId());
 
+            ///2
+            Map<String, Double>expenseThisYear = invoiceComponentService.findExprncesThisYearByApartment(ownerDTO.getApartments().get(0).getId());
             model.addAttribute("byYearName", new ArrayList<>(expenseThisYear.keySet()));
             model.addAttribute("byYearValue", new ArrayList<>(expenseThisYear.values()));
             model.addAttribute("monthsName", invoiceService.getListOfMonthName());
+
             model.addAttribute("apartExpenseEachMonthByYear", invoiceService.getListExpenseByApartmentByMonth(ownerDTO.getApartments().get(0).getId()));
 
         }
@@ -306,6 +315,7 @@ public class PersonalCabinetController {
     @GetMapping("/user/view")
     public String getUserProfilePage(Model model, Principal principal) {
         OwnerDTO ownerDTO = ownerDTOMapper.toDTOcabinetProfile(ownerService.findByLogin(principal.getName()));
+        System.out.println(ownerDTO);
         model.addAttribute("owner", ownerDTO);
         return "cabinet/user_profile";
     }

@@ -24,11 +24,18 @@ public class OwnerValidator implements Validator {
             e.rejectValue("first_name", "first_name.empty", "Заполните поле");
         } else if  (owner.getFirst_name().length()<2) {
             e.rejectValue("first_name", "first_name.empty", "Поле должно быть минимум 2 символа");
+        }  else if  (owner.getFirst_name().length()>50) {
+            e.rejectValue("first_name", "first_name.empty", "Слишком длинный текст");
         }
         if (owner.getLast_name() == null ||  owner.getLast_name().isEmpty()) {
             e.rejectValue("last_name", "last_name.empty", "Заполните поле");
         } else if  (owner.getLast_name().length()<2) {
             e.rejectValue("last_name", "last_name.empty", "Поле должно быть минимум 2 символа");
+        } else if  (owner.getLast_name().length()>50) {
+            e.rejectValue("last_name", "last_name.empty", "Слишком длинный текст");
+        }
+        if (owner.getFathers_name().length()>50) {
+            e.rejectValue("fathers_name", "fathers_name.empty", "Слишком длинный текст");
         }
 //        if (owner.getFathers_name() == null ||  owner.getFathers_name().isEmpty()) {
 //            e.rejectValue("fathers_name", "fathers_name.empty", "Заполните поле");
@@ -42,15 +49,33 @@ public class OwnerValidator implements Validator {
         } else if  (owner.getBirthdate().isBefore(LocalDate.now().minusYears(120))) {
             e.rejectValue("birthdate", "birthdate.empty", "Введите актуальную дату");
         }
+
         if (owner.getPhone_number() == null ||  owner.getPhone_number().isEmpty()) {
             e.rejectValue("phone_number", "phone_number.empty", "Заполните поле");
         } else if  (owner.getPhone_number().length()!=10) {
             e.rejectValue("phone_number", "phone_number.empty", "Размер поля 10 символов. Пример \"0630636363\".");
         }
+
+        if (owner.getViber() != null && owner.getViber().length()!=10) {
+            e.rejectValue("viber", "viber.empty", "Размер поля 10 символов");
+        }
+
+        if (owner.getTelegram() != null && owner.getTelegram().length()!=10) {
+            e.rejectValue("telegram", "telegram.empty", "Размер поля 10 символов");
+        }
+
         if (owner.getEmail() == null ||  owner.getEmail().isEmpty()) {
             e.rejectValue("email", "email.empty", "Заполните поле");
         } else if  (!isValidEmailAdress(owner.getEmail()) ) {
             e.rejectValue("email", "email.empty", "Неверный формат Email.");
+        } else if  (owner.getEmail().length() > 50) {
+            e.rejectValue("email", "email.empty", "Слишком длинный текст.");
+        }
+        if (owner.getDescription() != null && owner.getDescription().length()>200) {
+            e.rejectValue("description", "description.empty", "Слишком длинный текст");
+        }
+        if (owner.getPassword() != null && owner.getPassword().length()>50) {
+            e.rejectValue("password", "password.empty", "Слишком длинный текст");
         }
     }
 

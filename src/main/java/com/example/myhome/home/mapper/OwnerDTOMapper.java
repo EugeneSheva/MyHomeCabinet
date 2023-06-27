@@ -53,6 +53,10 @@ public class OwnerDTOMapper {
             dto.setLast_name(owner.getLast_name());
             dto.setFathers_name(owner.getFathers_name());
             dto.setEmail(owner.getEmail());
+            dto.setPhone_number(owner.getPhone_number());
+            dto.setTelegram(owner.getTelegram());
+            dto.setViber(owner.getViber());
+            dto.setDescription(owner.getDescription());
             dto.setFullName(owner.getFirst_name() +" "+ owner.getFathers_name()+" "+owner.getLast_name());
             if (owner.getApartments() != null)dto.setApartments(apartmentMapper.listFromApartmentToDTOshort(owner.getApartments()));
             dto.setUnreadMessageQuantity((long) owner.getUnreadMessages().size());

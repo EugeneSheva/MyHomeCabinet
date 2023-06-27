@@ -54,7 +54,7 @@
 
         <!-- Main content -->
         <section class="page_content">
-            <div class="row"  th:if="${owner.getApartments() == null or owner.getApartments().size() == 0}">
+            <div class="row" th:if="${owner.getApartments() == null or owner.getApartments().size() == 0}">
                 У пользователя нет квартир. Добавьте квартиру.
             </div>
             <div class="row" th:if="${owner.getApartments() != null and owner.getApartments().size() > 0}">
@@ -125,10 +125,12 @@
                                        th:text="#{lastMonth}">за
                                     предыдущий
                                     месяц</label>
+                                <h3 th:if="${byMonthValues==null or byMonthValues.size()==0}" style="text-align: center; margin-top: 200px;" th:text="#{noData}"></h3>
                                 <canvas id="donutChart1"
                                         style="min-height: 250px; height: 450px; max-height: 450px; max-width: 100%;"></canvas>
                             </div>
                             <div class="col-xs-12 col-lg-6">
+                                <h3 th:if="${byMonthValues==null or byYearValue.size()==0}" style="text-align: center; margin-top: 200px;" th:text="#{noData}"></h3>
                                 <label for="donutChart2" style="display: block; text-align: center;"
                                        th:text="#{thisYear}">за
                                     текущий год</label>
@@ -191,8 +193,8 @@
         var donutChartCanvas = $('#donutChart1').get(0).getContext('2d')
         var arrnames = [[${byMonthNames}]];
         var arrvalue = [[${byMonthValues}]];
-        console.log(arrnames);
-        console.log(arrvalue);
+        console.log('1.1 '+arrnames);
+        console.log('1.2 '+arrvalue);
 
         var donutData = {
             labels: arrnames,
@@ -229,8 +231,8 @@
         var donutChartCanvas = $('#donutChart2').get(0).getContext('2d')
         var arrnames = [[${byYearName}]];
         var arrvalue = [[${byYearValue}]];
-        console.log(arrnames);
-        console.log(arrvalue);
+        console.log('2.1 '+arrnames);
+        console.log('2.2 '+arrvalue);
         var donutData = {
             labels: arrnames,
             datasets: [
@@ -259,8 +261,8 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     var chartName = [[#{chartOfExpensesByMonthForAYear}]];
-    var months = /*[[${monthsName}]]*/ [];
-    var dataExpense = /*[[${apartExpenseEachMonthByYear}]]*/ [];
+    var months = [[${monthsName}]];
+    var dataExpense = [[${apartExpenseEachMonthByYear}]];
 
 
     console.log(months)

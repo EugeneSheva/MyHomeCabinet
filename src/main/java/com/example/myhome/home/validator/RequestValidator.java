@@ -35,6 +35,8 @@ public class RequestValidator implements Validator {
 
         if(request.getDescription() == null || request.getDescription().equalsIgnoreCase("")) {
             e.rejectValue("description", "description.empty", messageSource.getMessage("requests.description.empty", null, locale));
+        } else if(request.getDescription().length() > 200 ) {
+            e.rejectValue("description", "description.empty", messageSource.getMessage("requests.description.long", null, locale));
         }
         if(request.getBest_time_request() != null) {
             if(request.getBest_time_request().isBefore(LocalDateTime.now())) e.rejectValue("best_time_request", "best_time_request.incorrect", messageSource.getMessage("requests.best_time.incorrect", null, locale));

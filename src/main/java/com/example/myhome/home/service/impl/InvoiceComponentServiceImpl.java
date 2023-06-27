@@ -39,8 +39,9 @@ public class InvoiceComponentServiceImpl {
         Integer lastDayOfMonth =  LocalDate.now().minusMonths(1).with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth();
         LocalDate from = LocalDate.of(year, lastMonthValue, 01);
         LocalDate to = LocalDate.of(year, lastMonthValue, lastDayOfMonth);
-//        System.out.println("даты за посл месяц "+ from + " - " + to);
+        System.out.println("даты за посл месяц "+ from + " - " + to+", id="+id);
         List<InvoiceComponents> invoiceComponentsList = invoiceComponentRepository.findByInvoice_Apartment_IdAndInvoice_DateBetween(id, from, to);
+        System.out.println("Lost from repo " + invoiceComponentsList);
 
         Map<String, Double> resultMap = new HashMap<>();
         for (InvoiceComponents item : invoiceComponentsList) {
@@ -53,6 +54,7 @@ public class InvoiceComponentServiceImpl {
                 resultMap.put(name, value);
             }
         }
+        System.out.println("Map result " + resultMap);
 //        List<String> names = new ArrayList<>(resultMap.keySet());
 //        List<Double> values = new ArrayList<>(resultMap.values());
         return resultMap;
@@ -62,8 +64,9 @@ public class InvoiceComponentServiceImpl {
         Integer yearValue = LocalDate.now().getYear();
         LocalDate from = LocalDate.of(yearValue, 01, 01);
         LocalDate to = LocalDate.now();
-//        System.out.println("даты за посл год "+ from + " - " + to);
+        System.out.println("даты за посл год "+ from + " - " + to + ", id="+id);
         List<InvoiceComponents> invoiceComponentsList = invoiceComponentRepository.findByInvoice_Apartment_IdAndInvoice_DateBetween(id, from, to);
+        System.out.println("Lost from repo " + invoiceComponentsList);
 
         Map<String, Double> resultMap = new HashMap<>();
         for (InvoiceComponents item : invoiceComponentsList) {
@@ -76,6 +79,7 @@ public class InvoiceComponentServiceImpl {
                 resultMap.put(name, value);
             }
         }
+        System.out.println("Map result " + resultMap);
 //        List<String> names = new ArrayList<>(resultMap.keySet());
 //        List<Double> values = new ArrayList<>(resultMap.values());
         return resultMap;
