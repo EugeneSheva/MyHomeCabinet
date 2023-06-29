@@ -243,7 +243,6 @@ public class PersonalCabinetController {
     public String getRequestPage(Model model, Principal principal) {
         OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
         model.addAttribute("owner", ownerDTO);
-        model.addAttribute("repairRequests", repairRequestRepository.findAllByOwnerId(ownerDTO.getId()));
         FilterForm filterForm = new FilterForm();
         model.addAttribute("filterForm", filterForm);
         return "cabinet/requests";
@@ -271,7 +270,7 @@ public class PersonalCabinetController {
     @PostMapping("/request/save")
     public String saveRequest(@ModelAttribute RepairRequest request,
                               BindingResult bindingResult, @RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam("master") Long master,
-                              @RequestParam(name = "apartment") Long apartmentId,@RequestParam("description") String description,
+                              @RequestParam(name = "apartment", defaultValue = "0") Long apartmentId,@RequestParam("description") String description,
                               @RequestParam("date") String date,  @RequestParam("time") String time, Principal principal, Model model) throws IOException {
 
 
@@ -279,7 +278,7 @@ public class PersonalCabinetController {
         Owner owner = ownerService.findByLogin(principal.getName());
         RepairRequest repairRequest = new RepairRequest();
         repairRequest.setId(id);
-        repairRequest.setApartment(apartmentService.findById(apartmentId));
+        if (apartmentId>0) repairRequest.setApartment(apartmentService.findById(apartmentId));
         if (master > 0) repairRequest.setMaster_type(userRoleRepository.findById(master).orElseThrow());
         repairRequest.setDescription(description);
         repairRequest.setDate(date);
@@ -305,10 +304,10 @@ public class PersonalCabinetController {
     @GetMapping("/get-requests")
     public @ResponseBody Page<RepairRequestDTO> getRequests(@RequestParam Integer page,
                                                             @RequestParam Integer size,
-                                                            @RequestParam String filters) throws JsonProcessingException, IllegalAccessException {
+                                                            @RequestParam String filters, Principal principal) throws JsonProcessingException, IllegalAccessException {
+        OwnerDTO ownerDTO = ownerDTOMapper.toDTOcabinetProfile(ownerService.findByLogin(principal.getName()));
         Pageable pageable = PageRequest.of(page-1, size);
-        System.out.println(repairRequestService.findAll(pageable));
-        return repairRequestService.findAll(pageable);
+        return repairRequestService.findReqoestDtoByOwnerId(ownerDTO.getId(), pageable);
     }
 
 

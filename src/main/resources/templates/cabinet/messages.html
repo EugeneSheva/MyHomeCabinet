@@ -14,7 +14,9 @@
     <link rel="stylesheet" th:href="@{/dist/css/website.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
-    <link rel="stylesheet"  href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/css/tempus-dominus.min.css" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/css/tempus-dominus.min.css"
+          crossorigin="anonymous">
     <!-- Popperjs -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
             crossorigin="anonymous"></script>
@@ -38,7 +40,9 @@
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a th:href="@{/cabinet/}"><i class="fa fa-home" th:text="' '+#{homePage}"></i></a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/cabinet/}"><i class="fa fa-home"
+                                                                                     th:text="' '+#{homePage}"></i></a>
+                            </li>
                             <li class="breadcrumb-item active" th:text="#{messages}">Сообщения</li>
                         </ol>
                     </div><!-- /.col -->
@@ -56,7 +60,8 @@
                         <h3 class="card-title"></h3>
                         <div class="card-tools">
                             <div class="input-group input-group-sm">
-                                <input type="text" th:field="${filterForm.description}" id="description" class="form-control" placeholder="Поиск">
+                                <input type="text" th:field="${filterForm.description}" id="description"
+                                       class="form-control" placeholder="Поиск">
                                 <div class="input-group-append">
                                     <!--                        поиск-->
                                     <div class="btn btn-primary" onclick="changeFilterData()">
@@ -73,7 +78,7 @@
                             </button>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-sm"
-                                        th:onclick="'deleteSelected()'">
+                                        disabled="" id="deleteButton1" th:onclick="'deleteSelected()'">
                                     <i class="far fa-trash-alt"></i>
                                 </button>
                             </div>
@@ -93,30 +98,30 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-<!--                                <tr th:each="message : ${messages}" id="myList">-->
-<!--                                    <td>-->
-<!--                                        <div class="icheck-primary">-->
-<!--                                            <input type="checkbox" th:value="${message.id}" name="check1" value=""-->
-<!--                                                   id="check1">-->
-<!--                                            <label for="check1"></label>-->
-<!--                                        </div>-->
-<!--                                    </td>-->
+                                <!--                                <tr th:each="message : ${messages}" id="myList">-->
+                                <!--                                    <td>-->
+                                <!--                                        <div class="icheck-primary">-->
+                                <!--                                            <input type="checkbox" th:value="${message.id}" name="check1" value=""-->
+                                <!--                                                   id="check1">-->
+                                <!--                                            <label for="check1"></label>-->
+                                <!--                                        </div>-->
+                                <!--                                    </td>-->
 
-<!--                                    <td class="mailbox-name"><a style="display: block; color: black;"-->
-<!--                                                                th:text="${message.sender.first_name+' '+message.sender.last_name}"-->
-<!--                                                                th:href="@{{id}(id=${message.id})}"></a>-->
-<!--                                    </td>-->
+                                <!--                                    <td class="mailbox-name"><a style="display: block; color: black;"-->
+                                <!--                                                                th:text="${message.sender.first_name+' '+message.sender.last_name}"-->
+                                <!--                                                                th:href="@{{id}(id=${message.id})}"></a>-->
+                                <!--                                    </td>-->
 
-<!--                                    <td class="mailbox-subject"><b th:text="${message.subject}+' - '"></b><a-->
-<!--                                            style="display: block; color: black;"-->
-<!--                                            th:utext="${message.text}" th:href="@{{id}(id=${message.id})}"></a>-->
-<!--                                    </td>-->
+                                <!--                                    <td class="mailbox-subject"><b th:text="${message.subject}+' - '"></b><a-->
+                                <!--                                            style="display: block; color: black;"-->
+                                <!--                                            th:utext="${message.text}" th:href="@{{id}(id=${message.id})}"></a>-->
+                                <!--                                    </td>-->
 
-<!--                                    <td class="mailbox-date" th:text="${message.date}"-->
-<!--                                        th:href="@{{id}(id=${message.id})}">-->
+                                <!--                                    <td class="mailbox-date" th:text="${message.date}"-->
+                                <!--                                        th:href="@{{id}(id=${message.id})}">-->
 
-<!--                                    </td>-->
-<!--                                </tr>-->
+                                <!--                                    </td>-->
+                                <!--                                </tr>-->
                                 </tbody>
                             </table>
                             <nav aria-label="Page navigation " class="pagination_container"></nav>
@@ -130,7 +135,7 @@
                             </button>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default btn-sm"
-                                        th:onclick="'deleteSelected()'">
+                                        disabled="" id="deleteButton2" th:onclick="'deleteSelected()'">
                                     <i class="far fa-trash-alt"></i>
                                 </button>
                             </div>
@@ -162,7 +167,29 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+<script>
+    // disable delete button
+    const deleteButton1 = document.getElementById('deleteButton1');
+    const deleteButton2 = document.getElementById('deleteButton2');
 
+    function checkCheckboxes() {
+        const checkboxes = document.querySelectorAll('#messageTable input[type="checkbox"]');
+        const selectedCheckboxes = [];
+        checkboxes.forEach((checkbox) => {
+            if (checkbox.checked) {
+                selectedCheckboxes.push(checkbox);
+            }
+        });
+        console.log('selectedCheckboxes.length' + selectedCheckboxes.length);
+        if (selectedCheckboxes.length === 0) {
+            deleteButton1.disabled = true;
+            deleteButton2.disabled = true;
+        } else {
+            deleteButton1.disabled = false;
+            deleteButton2.disabled = false;
+        }
+    }
+</script>
 <script>
     $(function () {
         //Enable check and uncheck all functionality
@@ -180,7 +207,6 @@
             $(this).data('clicks', !clicks)
         })
 
-        //Handle starring for font awesome
         $('.mailbox-star').click(function (e) {
             e.preventDefault()
             //detect type
@@ -225,13 +251,16 @@
     let totalPagesCount = [[${totalPagesCount}]];
     var unreadMessId = [[${unreadMessagesId}]];
     let tableData;
-    $(document).ready(function(){
+    $(document).ready(function () {
         drawTable();
     });
-
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"
+        integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"
+        integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <!--<script th:src="@{/dist/js/websocketCabinet.js}"></script>-->
 </body>

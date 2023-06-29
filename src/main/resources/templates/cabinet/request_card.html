@@ -72,6 +72,8 @@
                                       th:value="${apart.id}"
                                       th:text="${apart.building.name+' кв. '+apart.number}"></option>
                           </select>
+                          <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('apartment')}" th:errors="*{apartment}"></h4>
+
                       </div>
                       <div class="row">
                           <div class="col-md-6">

@@ -306,7 +306,7 @@ function drawMessagesTableCabinet() {
             newText += '...'
         }
         newTableRow.innerHTML =
-            '<td><input type="checkbox" name="" id="" value="' + msg.id + '"></td>' +
+            '<td><input type="checkbox" onchange="checkCheckboxes()" name="" id="" value="' + msg.id + '"></td>' +
             '<td>' + msg.sender.first_name + ' ' + msg.sender.last_name + '</td>' +
             '<td><strong>' + msg.subject + '</strong> - ' + newText + '</td>' +
             '<td>' + formattedDate + '</td>';
@@ -633,7 +633,7 @@ function drawRequestsTableCabinet() {
             '<td><small class="label ' + ((request.status === 'Новое') ? 'label-primary' : (request.status === 'В работе') ? 'label-warning' : 'label-success') + '">' + request.status + '</small></td>' +
             '<td>' +
             '<div class="btn-group pull-right">' +
-            '<a class="btn btn-default btn-sm" href="/cabinet/request/delete/' + request.id + '"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
+            '<a class="btn btn-default btn-sm" href="/myhomecab/cabinet/request/delete/' + request.id + '"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
             '</div>' +
             '</td>';
 

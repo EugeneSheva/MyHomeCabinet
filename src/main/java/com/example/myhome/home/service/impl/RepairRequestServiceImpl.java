@@ -202,6 +202,18 @@ public class RepairRequestServiceImpl implements RepairRequestService {
 
         return new PageImpl<>(listDTO, pageable, repairRequests.getTotalElements());
     }
+    @Override
+    public Page<RepairRequestDTO> findReqoestDtoByOwnerId(Long id, Pageable pageable) {
+        Page<RepairRequest>repairRequestPage=repairRequestRepository.findAllByOwnerId(id, pageable);
+        List<RepairRequestDTO> repairRequestDTOList = new ArrayList<>();
+
+        for (RepairRequest repairRequest : repairRequestPage.getContent()) {
+            RepairRequestDTO repairRequestDTO = mapper.fromRequestToDTO(repairRequest);
+            repairRequestDTOList.add(repairRequestDTO);
+        }
+        return new PageImpl<>(repairRequestDTOList, pageable, repairRequestPage.getTotalElements());
+    }
+
 
 
 

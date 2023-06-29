@@ -21,5 +21,5 @@ public interface RepairRequestRepository extends JpaRepository<RepairRequest, Lo
 
     Page<RepairRequest> findAll(Pageable pageable);
 
-    public List<RepairRequest>findAllByOwnerId(Long id);
+    public Page<RepairRequest>findAllByOwnerId(Long id, Pageable pageable);
 }

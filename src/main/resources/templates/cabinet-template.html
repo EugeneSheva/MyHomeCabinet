@@ -90,18 +90,22 @@
         <!-- user panel  -->
         <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <div class="circular-image" style=" width: 50px; height: 50px;">
                 <img th:src="${owner.profile_picture != null && !owner.profile_picture.isEmpty()} ?
                                    @{${owner.profile_picture}} :  @{/images/placeholder.jpg}" class="user-image"
                      alt="User Image">
+                </div>
                 <span class="hidden-xs" style="color:grey;" th:text="${owner.last_name + ' ' + owner.first_name }">Иванов Иван</span>
             </a>
             <ul class="dropdown-menu">
                 <li class="user-header"
                     style="background-color: rgba(255,0,0,0.4); display:flex; flex-direction:column;
               justify-content:center;align-items:center;">
-                    <img th:src="${owner.profile_picture != null && !owner.profile_picture.isEmpty()} ?
+                    <div class="circular-image">
+                        <img th:src="${owner.profile_picture != null && !owner.profile_picture.isEmpty()} ?
                                    @{${owner.profile_picture}} :  @{/images/placeholder.jpg}" alt="user-avatar"
-                         class="img-circle img-fluid">
+                             class="img-circle img-fluid">
+                    </div>
                     <p style="margin: 0">
                         <b th:text="${owner.last_name + ' ' + owner.first_name + ' ' + owner.fathers_name}">Иванов
                             Иван</b>

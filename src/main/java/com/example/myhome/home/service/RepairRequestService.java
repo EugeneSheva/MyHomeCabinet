@@ -31,4 +31,6 @@ public interface RepairRequestService {
     void deleteRequestById(long request_id);
 
     Page<RepairRequestDTO> findAll(Pageable pageable);
+
+    Page<RepairRequestDTO> findReqoestDtoByOwnerId(Long id, Pageable pageable);
 }

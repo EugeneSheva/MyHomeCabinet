@@ -41,5 +41,9 @@ public class RequestValidator implements Validator {
         if(request.getBest_time_request() != null) {
             if(request.getBest_time_request().isBefore(LocalDateTime.now())) e.rejectValue("best_time_request", "best_time_request.incorrect", messageSource.getMessage("requests.best_time.incorrect", null, locale));
         }
+
+        if(request.getApartment() == null) {
+            e.rejectValue("apartment", "apartment.incorrect", messageSource.getMessage("requests.no.apartment", null, locale));
+        }
     }
 }
