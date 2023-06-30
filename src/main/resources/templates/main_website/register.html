@@ -50,8 +50,9 @@
                         <input type="password" placeholder="Повторите пароль" th:field="*{repassword}" th:styleappend="${#fields.hasErrors('password')} ? 'border: 0.5px solid red'">
                         <i class="fas fa-lock" th:styleappend="${#fields.hasErrors('password')} ? 'top:19%'"></i>
                     </div>
-                    <div class="row mt-4">
-                        <input type="checkbox" th:field="*{confirm}" style="display: inline; width:30px">Я согласен с политикой конфиденциальности
+                    <div class="row mt-4" style="display: inline;">
+                        <input type="checkbox" th:field="*{confirm}" style="width:13px">
+                        <h7 style=" font-size: 13px; padding-left: 5px; padding-right: 0px;">Я согласен с политикой конфиденциальности</h7>
                         <p th:if="${#fields.hasErrors('confirm')}" th:errors="*{confirm}" style="color: red; margin:0"></p>
                     </div>
                     <div class="row">

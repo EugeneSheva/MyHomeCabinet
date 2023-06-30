@@ -6,10 +6,10 @@
     <!-- Left navbar links -->
     <ul class="navbar-nav align-items-center">
         <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars" style="padding-top:9px;"></i></a>
         </li>
-        <li class="nav-item d-none d-sm-inline-block">
-            <a href="#" class="nav-link" th:text="#{personalCab}">Личный кабинет</a>
+        <li class="nav-item d-none d-sm-inline-block" style="padding-top:2px;">
+            <h7 th:text="#{personalCab}">Личный кабинет</h7>
         </li>
     </ul>
     <!-- Right navbar links -->
@@ -88,20 +88,18 @@
             </ul>
         </li>
         <!-- user panel  -->
-        <li class="dropdown user user-menu">
+        <li class="dropdown user user-menu" style="padding-top:5px;">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <div class="circular-image" style=" width: 50px; height: 50px;">
-                <img th:src="${owner.profile_picture != null && !owner.profile_picture.isEmpty()} ?
+                    <img th:src="${owner.profile_picture != null && !owner.profile_picture.isEmpty()} ?
                                    @{${owner.profile_picture}} :  @{/images/placeholder.jpg}" class="user-image"
-                     alt="User Image">
-                </div>
+                         alt="User Image" style="margin-top:-4px;">
                 <span class="hidden-xs" style="color:grey;" th:text="${owner.last_name + ' ' + owner.first_name }">Иванов Иван</span>
             </a>
             <ul class="dropdown-menu">
                 <li class="user-header"
                     style="background-color: rgba(255,0,0,0.4); display:flex; flex-direction:column;
               justify-content:center;align-items:center;">
-                    <div class="circular-image">
+                    <div class="circular-image" style=" width: 130px; height: 130px;">
                         <img th:src="${owner.profile_picture != null && !owner.profile_picture.isEmpty()} ?
                                    @{${owner.profile_picture}} :  @{/images/placeholder.jpg}" alt="user-avatar"
                              class="img-circle img-fluid">
@@ -116,7 +114,8 @@
                         <a th:href="@{/cabinet/user/view}" class="btn btn-warning" th:text="#{profile}">Профиль</a>
                     </div>
                     <div style="flex: 1; text-align: right;">
-                        <a th:href="@{/cabinet/logout}" class="btn btn-danger" th:text="#{exit}">Выйти</a>
+                        <a th:href="@{/cabinet/logout}" class="btn btn-danger" th:text="#{exit}" onclick="return confirmExit()">Выйти</a>
+
                     </div>
                 </li>
             </ul>
@@ -259,6 +258,12 @@
             });
         });
 
+    </script>
+    <script th:inline="javascript">
+        function confirmExit() {
+            var confirmMessage = [[#{confirmExit}]];
+            return confirm(confirmMessage);
+        }
     </script>
     <style>
 

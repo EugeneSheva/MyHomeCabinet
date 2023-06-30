@@ -272,6 +272,9 @@ textarea {
     border-radius: 50%;
     overflow: hidden;
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .circular-image::before {
@@ -287,8 +290,10 @@ textarea {
     display: block;
     position: absolute;
     top: 0;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
 }
+
 
 
 
