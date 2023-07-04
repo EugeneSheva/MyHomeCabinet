@@ -117,31 +117,31 @@
                                         <div class="row" style="margin-bottom: 0px;">
                                             <div class="col-xs-12 col-md-6">
                                                 <img class="img-fluid" th:src="${apartment.img1 != null && !apartment.img1.isEmpty()} ?
-                                                @{/images/{url}(url=${apartment.img1})} :  @{/images/placeholder.jpg}"
+                                                @{/img/{url}(url=${apartment.img1})} :  @{/images/placeholder.jpg}"
                                                      alt="">
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row" style="margin-bottom: 0px;">
                                                     <div class="col-md-6">
                                                         <img class="img-fluid mb-3" th:src="${apartment.img2 != null && !apartment.img2.isEmpty()} ?
-                                                    @{/images/{url}(url=${apartment.img2})} :  @{/images/placeholder.jpg}"
+                                                    @{/img/{url}(url=${apartment.img2})} :  @{/images/placeholder.jpg}"
                                                              alt="">
                                                     </div>
                                                     <div class="col-md-6">
                                                         <img class="img-fluid mb-3" th:src="${apartment.img3 != null && !apartment.img3.isEmpty()} ?
-                                                       @{/images/{url}(url=${apartment.img3})} :  @{/images/placeholder.jpg}"
+                                                       @{/img/{url}(url=${apartment.img3})} :  @{/images/placeholder.jpg}"
                                                              alt="">
                                                     </div>
                                                 </div>
                                                 <div class="row" style="margin-bottom: 0px;">
                                                     <div class="col-md-6">
                                                         <img class="img-fluid mb-3" th:src="${apartment.img4 != null && !apartment.img4.isEmpty()} ?
-                                                        @{/images/{url}(url=${apartment.img4})} :  @{/images/placeholder.jpg}"
+                                                        @{/img/{url}(url=${apartment.img4})} :  @{/images/placeholder.jpg}"
                                                              alt="">
                                                     </div>
                                                     <div class="col-md-6">
                                                         <img class="img-fluid mb-3" th:src="${apartment.img5 != null && !apartment.img5.isEmpty()} ?
-                                                         @{/images/{url}(url=${apartment.img5})} :  @{/images/placeholder.jpg}"
+                                                         @{/img/{url}(url=${apartment.img5})} :  @{/images/placeholder.jpg}"
                                                              alt="">
                                                     </div>
                                                 </div>
