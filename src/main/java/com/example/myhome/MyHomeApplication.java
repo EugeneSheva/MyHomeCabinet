@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.List;
 
-@SpringBootApplication(scanBasePackages = {"com.example.myhome.home", "com.example.myhome.util"})
+@SpringBootApplication(scanBasePackages = {"com.example.myhome.home", "com.example.myhome.util", })
 @EnableJpaRepositories(basePackages = {"com.example.myhome.home.repository", "com.example.myhome.home.service.registration"})
 @EnableEncryptableProperties
 @Log4j2

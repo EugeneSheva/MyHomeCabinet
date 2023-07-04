@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +10,7 @@
   <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
   <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
   <link rel="stylesheet" th:href="@{/plugins/bootstrap-datepicker/css/datepicker.css}">
-  <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}">
   <link rel="stylesheet" th:href="@{/dist/css/website.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -84,7 +84,7 @@
                                       </tr>
                                       </thead>
                                   <tbody>
-<!--                                      <tr class="invoice_row" data-href="/cabinet/invoice/734" data-key="734" th:each="invoice : ${invoiceList}">-->
+<!--                                      <tr> class="invoice_row" data-href="/cabinet/invoice/734" data-key="734" th:each="invoice : ${invoiceList}">-->
 
 <!--                                          <td><a style="display: block; color: black; text-decoration: none;" th:text="${T(java.lang.String).format('%010d',invoice.id)}"-->
 <!--                                          th:href="@{/cabinet/invoice/{id}(id=${invoice.id})}"></a></td>-->
@@ -109,6 +109,7 @@
     </section>
 
   </div>
+    <input type="hidden" id="apartment" name="apartment" th:value="${apartmentId != null ? apartmentId : 0}">
 
   <footer th:insert="~{cabinet-template :: footer}"></footer>
 </div>
@@ -153,6 +154,12 @@
     });
 
 </script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"
+        integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"
+        integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script th:src="@{/dist/js/websocketCabinet.js}"></script>
 </body>
 </html>

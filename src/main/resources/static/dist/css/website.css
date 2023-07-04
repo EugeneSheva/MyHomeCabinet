@@ -293,6 +293,20 @@ textarea {
     left: 50%;
     transform: translateX(-50%);
 }
+.nav-link {
+    width: 100%;
+}
+
+.nav-link.active {
+    background-color: rgba(0,255,0,0.2);
+    box-shadow: none;
+}
+
+.nav-link.active:hover {
+    background-color: rgba(0,255,0,0.4);
+}
+
+.nav-item .nav-link {margin:0;}
 
 
 

@@ -81,10 +81,20 @@ public class InvoiceServiceImpl implements InvoiceTemplateService, InvoiceServic
     }
 
     @Override
+    public Page<InvoiceDTO> findAllBySpecificationAndPageCabinet(FilterForm filters, Integer page, Integer size, Owner owner) {
+        List<InvoiceDTO> listDTO = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page-1, size);
+        Page<Invoice>invoiceList = invoiceRepository.findByFilters(filters.getDate() != null ? LocalDate.parse(filters.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null, filters.getStatus() != null ? InvoiceStatus.valueOf(filters.getStatus()) : null, filters.getApartment(), owner, pageable);
+        invoiceList.forEach(inv -> listDTO.add(mapper.fromInvoiceToDTO(inv)));
+
+        return new PageImpl<>(listDTO, pageable, invoiceList.getTotalElements());
+    }
+
+    @Override
     public Page<InvoiceDTO> findAllBySpecificationAndPageCabinet(FilterForm filters, Integer page, Integer size) {
         List<InvoiceDTO> listDTO = new ArrayList<>();
         Pageable pageable = PageRequest.of(page-1, size);
-        Page<Invoice>invoiceList = invoiceRepository.findByFilters(filters.getDate() != null ? LocalDate.parse(filters.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null, filters.getStatus() != null ? InvoiceStatus.valueOf(filters.getStatus()) : null, pageable);
+        Page<Invoice>invoiceList = invoiceRepository.findByFilters(filters.getDate() != null ? LocalDate.parse(filters.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null, filters.getStatus() != null ? InvoiceStatus.valueOf(filters.getStatus()) : null, null, null, pageable);
         invoiceList.forEach(inv -> listDTO.add(mapper.fromInvoiceToDTO(inv)));
 
         return new PageImpl<>(listDTO, pageable, invoiceList.getTotalElements());

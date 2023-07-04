@@ -1,7 +1,9 @@
 package com.example.myhome.home.repository;
 
+import com.example.myhome.home.model.Apartment;
 import com.example.myhome.home.model.Invoice;
 import com.example.myhome.home.model.InvoiceStatus;
+import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.specification.InvoiceSpecifications;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +40,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>, JpaSpec
     @Query("SELECT SUM(i.total_price) FROM Invoice i WHERE i.apartment.id = :apartmentId AND MONTH(i.dateFrom) = :month AND YEAR(i.dateFrom) = :year")
     Double getTotalPriceByApartmentIdAndMonthAndYear(@Param("apartmentId") Long apartmentId, @Param("month") Integer month, @Param("year") Integer year);
 
-    default Page<Invoice> findByFilters(LocalDate localDate, InvoiceStatus invoiceStatus, Pageable pageable) {
+    default Page<Invoice> findByFilters(LocalDate localDate, InvoiceStatus invoiceStatus, Long apartmentId, Owner owner, Pageable pageable) {
         System.out.println("date in repo "+ localDate);
         Specification<Invoice> spec = Specification.where(null);
 
@@ -48,6 +50,12 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>, JpaSpec
 
         if (invoiceStatus != null) {
             spec = spec.and(InvoiceSpecifications.hasStatus(invoiceStatus));
+        }
+        if (apartmentId != null && apartmentId > 0) {
+            spec = spec.and(InvoiceSpecifications.hasApartmentNumber(apartmentId));
+        }
+        if (owner != null) {
+            spec = spec.and(InvoiceSpecifications.hasOwner(owner));
         }
 
         return findAll(spec,pageable);

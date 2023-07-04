@@ -10,7 +10,7 @@
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/bootstrap-datepicker/css/datepicker.css}">
-    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}">
     <link rel="stylesheet" th:href="@{/dist/css/website.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
@@ -225,7 +225,7 @@
     function deleteSelected() {
         var result = confirm("Подтвердите удаление");
         if (result) {
-            var url = "/cabinet/message/deleteSelected";
+            var url = "/myhomecab/cabinet/message/deleteSelected";
             const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
             var ids = [];
             checkedBoxes.forEach((box) => {
@@ -246,7 +246,6 @@
 </script>
 <script th:src="@{/dist/js/pagination.js}"></script>
 <script th:inline="javascript">
-
     let globalTableName = 'messagesCabinet';
     let totalPagesCount = [[${totalPagesCount}]];
     var unreadMessId = [[${unreadMessagesId}]];
@@ -262,6 +261,6 @@
         integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-<!--<script th:src="@{/dist/js/websocketCabinet.js}"></script>-->
+<script th:src="@{/dist/js/websocketCabinet.js}"></script>
 </body>
 </html>

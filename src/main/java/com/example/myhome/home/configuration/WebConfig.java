@@ -1,11 +1,9 @@
 package com.example.myhome.home.configuration;
-import com.example.myhome.home.converter.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -13,7 +11,6 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-
 import java.util.Locale;
 
 
@@ -33,9 +30,9 @@ public class WebConfig implements WebMvcConfigurer {
         registry
                 .addResourceHandler("/img/**", "/images/**")
                 .addResourceLocations(prefix + uploadPath + "/", prefix + uploadPath + "/img/");
-//        registry
-//                .addResourceHandler("/img/**", "/images/**")
-//                .addResourceLocations("http://kino.avada-media-dev1.od.ua:9002/myhome/WEB-INF/classes/static/images/", "http://kino.avada-media-dev1.od.ua:9002/myhome/WEB-INF/classes/static/images", "http://kino.avada-media-dev1.od.ua:9002/WEB-INF/classes/static/images/", "http://kino.avada-media-dev1.od.ua:9002/WEB-INF/classes/static/images");
+        registry
+                .addResourceHandler("/myhomecab/**", "/myhomecab/images/**", "/images/**")
+                .addResourceLocations("classpath:/static/", "classpath:/static/images/");
         registry
                 .addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/");

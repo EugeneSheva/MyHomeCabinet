@@ -25,6 +25,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
                     + request.getRequestURI());
         }
 
-        response.sendRedirect(request.getContextPath() + "/admin/403");
+        response.sendRedirect(request.getContextPath() + "/cabinet/403");
     }
 }

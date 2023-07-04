@@ -12945,13 +12945,14 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
 
 .sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
 .sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active {
-  background-color: #007bff;
-  color: #fff;
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #212529;
+    box-shadow: none;
 }
 
 .sidebar-dark-primary .nav-sidebar.nav-legacy > .nav-item > .nav-link.active,
 .sidebar-light-primary .nav-sidebar.nav-legacy > .nav-item > .nav-link.active {
-  border-color: #007bff;
+  border-color: #171616;
 }
 
 .sidebar-dark-secondary .nav-sidebar > .nav-item > .nav-link.active,

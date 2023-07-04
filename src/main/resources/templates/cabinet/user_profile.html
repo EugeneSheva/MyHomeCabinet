@@ -10,7 +10,7 @@
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/bootstrap-datepicker/css/datepicker.css}">
-    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}">
     <link rel="stylesheet" th:href="@{/dist/css/website.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
@@ -85,7 +85,7 @@
                                                     <span class="pull-right" th:text="${owner.telegram}"></span>
                                                 </li>
                                                 <li class="list-group-item">
-                                                    <span th:text="#{email}">Email</span>
+                                                    <span th:text="#{email} + ': '">Email</span>
                                                     <span class="pull-right" th:text="${owner.email}"></span>
                                                 </li>
                                             </ul>
@@ -114,15 +114,14 @@
                                     </div>
                                     <div class="box-body">
                                         <p th:text="${apartment.building.name+'. '+apartment.building.address+', кв. '+ apartment.number}"></p>
-                                        <div class="row">
+                                        <div class="row" style="margin-bottom: 0px;">
                                             <div class="col-xs-12 col-md-6">
                                                 <img class="img-fluid" th:src="${apartment.img1 != null && !apartment.img1.isEmpty()} ?
                                                 @{/images/{url}(url=${apartment.img1})} :  @{/images/placeholder.jpg}"
-
                                                      alt="">
                                             </div>
                                             <div class="col-md-6">
-                                                <div class="row">
+                                                <div class="row" style="margin-bottom: 0px;">
                                                     <div class="col-md-6">
                                                         <img class="img-fluid mb-3" th:src="${apartment.img2 != null && !apartment.img2.isEmpty()} ?
                                                     @{/images/{url}(url=${apartment.img2})} :  @{/images/placeholder.jpg}"
@@ -134,7 +133,7 @@
                                                              alt="">
                                                     </div>
                                                 </div>
-                                                <div class="row">
+                                                <div class="row" style="margin-bottom: 0px;">
                                                     <div class="col-md-6">
                                                         <img class="img-fluid mb-3" th:src="${apartment.img4 != null && !apartment.img4.isEmpty()} ?
                                                         @{/images/{url}(url=${apartment.img4})} :  @{/images/placeholder.jpg}"
@@ -211,7 +210,13 @@
 <script th:src="@{/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"
+        integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"
+        integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script th:src="@{/dist/js/websocketCabinet.js}"></script>
 
 <script>
 </script>

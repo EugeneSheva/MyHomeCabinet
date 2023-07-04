@@ -8,22 +8,11 @@
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
-    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}">
 
 </head>
 <body class="hold-transition light-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
-<div class="wrapper">
 
-
-    <!-- navbar header/sidebar -->
-    <nav th:insert="~{main-template :: header}"></nav>
-    <aside th:insert="~{main-template :: sidebar}"></aside>
-    <!-- /.navbar header/sidebar -->
-
-    <!--content-header -->
-    <div class="content-wrapper">
-
-        <section class="content" style="display:flex; align-items:center; justify-content:center">
 
             <div style="display:flex; flex-direction:column; align-items:center; justify-content:center">
                 <svg style="width:400px" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 47.5 47.5" viewBox="0 0 47.5 47.5" id="warning"><defs><clipPath id="a"><path d="M0 38h38V0H0v38Z"></path></clipPath></defs><g clip-path="url(#a)" transform="matrix(1.25 0 0 -1.25 0 47.5)"><path fill="#ffcc4d" d="M0 0c-1.842 0-2.654 1.338-1.806 2.973l15.609 30.055c.848 1.635 2.238 1.635 3.087 0L32.499 2.973C33.349 1.338 32.536 0 30.693 0H0Z" transform="translate(3.653 2)"></path><path fill="#231f20" d="M0 0c0 1.302.961 2.108 2.232 2.108 1.241 0 2.233-.837 2.233-2.108v-11.938c0-1.271-.992-2.108-2.233-2.108-1.271 0-2.232.807-2.232 2.108V0Zm-.187-18.293a2.422 2.422 0 0 0 2.419 2.418 2.422 2.422 0 0 0 2.419-2.418 2.422 2.422 0 0 0-2.419-2.419 2.422 2.422 0 0 0-2.419 2.419" transform="translate(16.769 26.34)"></path></g></svg>
@@ -31,15 +20,6 @@
                 <h3>Произошла ошибка при отправке запроса</h3>
             </div>
 
-        </section>
-    </div>
-<!-- /.Main content -->
-
-
-<!-- Footer -->
-<footer th:insert="~{main-template :: footer}"></footer>
-<!-- /.Footer -->
-</div>
 
 
 <!-- REQUIRED SCRIPTS -->

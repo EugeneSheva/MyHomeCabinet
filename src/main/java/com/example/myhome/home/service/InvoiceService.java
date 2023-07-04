@@ -4,6 +4,7 @@ import com.example.myhome.home.dto.InvoiceDTO;
 import com.example.myhome.home.model.Invoice;
 import com.example.myhome.home.model.InvoiceComponents;
 import com.example.myhome.home.model.InvoiceTemplate;
+import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.model.filter.FilterForm;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -26,6 +27,7 @@ public interface InvoiceService {
     Page<Invoice> findAllBySpecificationAndPage(FilterForm filters, Integer page, Integer page_size);
 
     Page<InvoiceDTO> findAllBySpecificationAndPageCabinet(FilterForm filters, Integer page, Integer size);
+    Page<InvoiceDTO> findAllBySpecificationAndPageCabinet(FilterForm filters, Integer page, Integer size, Owner owner);
 
     Page<InvoiceDTO> findAllInvoicesByFiltersAndPage(FilterForm filters, Pageable pageable);
 

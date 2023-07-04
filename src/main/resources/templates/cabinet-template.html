@@ -6,7 +6,7 @@
     <!-- Left navbar links -->
     <ul class="navbar-nav align-items-center">
         <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars" style="padding-top:9px;"></i></a>
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button" style="padding-top: 10px;"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block" style="padding-top:2px;">
             <h7 th:text="#{personalCab}">Личный кабинет</h7>
@@ -79,7 +79,7 @@
             </a>
             <ul class="dropdown-menu">
 
-                <li class="header"
+                <li class="header" id="new_msg"
                     th:text="${owner.unreadMessageQuantity > 0} ? (#{newMessageQuant} + ' ' + ${owner.unreadMessageQuantity}): (#{noNewMessage})">
                     Нет новых сообщений
                 </li>
@@ -130,7 +130,7 @@
        class="main-sidebar sidebar-light-primary"
        style="color: #444444; font-weight: 600; box-shadow: none;">
     <!-- Brand Logo -->
-    <a th:href="@{/admin}" class="brand-link" style="margin-bottom: 20px; padding: 3px;">
+    <a th:href="@{/cabinet}" class="brand-link" style="margin-bottom: 20px; padding: 3px;">
       <span class="logo-lg"><img th:src="@{/images/namelogo.png}" alt="AdminLTE Logo"
                                  class="img"
                                  style="opacity: .8; width:75%; margin-inline:15%;"></span>
@@ -146,64 +146,74 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
                      with font-awesome or any other icon font library -->
-                <li class="nav-item">
+
+
+
+
+                <li class="nav-item" th:classappend="${indexPageActive} ? 'menu-open'">
                     <a href="#" class="nav-link">
                         <i class="fa fa-line-chart" aria-hidden="true"></i>
                         <p class="pl-1" th:text="#{summary}">
                             Сводка
-                            <i class="fas fa-angle-left right"></i>
                         </p>
+                        <i class="fas fa-angle-right right"></i>
                     </a>
-                    <ul class="nav nav-treeview" th:if=" ${owner.apartments.size>0}"
+                    <ul class="nav nav-treeview" th:styleappend="${indexPageActive} ? 'display:block'" th:if="${owner.apartments.size > 0}"
                         th:each="apartment : ${owner.apartments}" style="font-weight: 400">
                         <li class="nav-item dropdown-items">
-                            <a th:href="@{/cabinet/{id}(id=${apartment.id})}" class="nav-link dropdown-links"
+                            <a th:href="@{/cabinet/{id}(id=${apartment.id})}" class="nav-link dropdown-links" th:classappend="${apartmentId == apartment.id} ? 'active'"
                                style="margin:0">
+                                <i style="font-size: 16px;" class="fa fa-building-o fa-sm nav-icon"></i>
+                                <p th:text="${apartment.building.name + ' кв. ' + apartment.number}"></p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+
+
+
+                <li class="nav-item" th:classappend="${invoicesPageActive} ? 'menu-open'">
+                    <a href="#" class="nav-link">
+                        <i class="fa fa-files-o" aria-hidden="true"></i>
+                        <p class="pl-1" th:text="#{Invioces}">
+                            Квитанции
+                        </p>
+                        <i class="fas fa-angle-right right"></i>
+                    </a>
+                    <ul class="nav nav-treeview" th:if="${owner.apartments.size > 0}" th:each="apartment, iterStat : ${owner.apartments}" th:styleappend="${invoicesPageActive} ? 'display:block'" style="font-weight: 400">
+                        <li th:if="${iterStat.first}" class="nav-item dropdown-items">
+                            <a th:href="@{/cabinet/invoices}" class="nav-link dropdown-links" th:classappend="${allInvoicesPageActive} ? 'active'" style="margin:0">
+                                <i style="font-size: 16px;" class="fa fa-files-o fa-sm nav-icon"></i>
+                                <p>Все квитанции</p>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown-items">
+                            <a th:href="@{/cabinet/invoices/{id}(id=${apartment.id})}" class="nav-link dropdown-links" th:classappend="${apartmentId == apartment.id} ? 'active'" style="margin:0">
                                 <i style="font-size: 16px;" class="fa fa-building-o fa-sm nav-icon"></i>
                                 <p th:text="${apartment.building.name + ' кв. '+ apartment.number}"></p>
                             </a>
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fa fa-files-o" aria-hidden="true"></i>
-                        <p class="pl-1" th:text="#{Invioces}">
-                            Квитанции
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview" style="font-weight: 400">
-                        <li class="nav-item dropdown-items">
-                            <a th:href="@{/cabinet/invoices}" class="nav-link dropdown-links" style="margin:0">
-                                <i style="font-size: 16px;" class="fa fa-files-o fa-sm nav-icon"></i>
-                                <p>Все квитанции</p>
-                            </a>
-                        </li>
-                        <div th:if=" ${owner.apartments.size>0}" th:each="apartment : ${owner.apartments}">
-                            <li class="nav-item dropdown-items">
-                                <a th:href="@{/cabinet/invoices/{id}(id=${apartment.id})}"
-                                   class="nav-link dropdown-links"
-                                   style="margin:0">
-                                    <i style="font-size: 16px;" class="fa fa-building-o fa-sm nav-icon"></i>
-                                    <p th:text="${apartment.building.name + ' кв. '+ apartment.number}"></p>
-                                </a>
-                            </li>
-                        </div>
-                    </ul>
-                </li>
-                <li class="nav-item">
+
+
+
+
+                <li class="nav-item" th:classappend="${tariffsPageActive} ? 'menu-open'">
                     <a href="#" class="nav-link">
                         <i class="fa fa-money" aria-hidden="true"></i>
                         <p class="pl-1" th:text="#{tariffs}">
                             Тарифы
                             <i class="fas fa-angle-left right"></i>
                         </p>
+                        <i class="fas fa-angle-right right"></i>
                     </a>
-                    <ul class="nav nav-treeview" th:if=" ${owner.apartments.size>0}"
+                    <ul class="nav nav-treeview" th:styleappend="${tariffsPageActive} ? 'display:block'" th:if=" ${owner.apartments.size>0}"
                         th:each="apartment : ${owner.apartments}" style="font-weight: 400">
                         <li class="nav-item dropdown-items">
-                            <a th:href="@{/cabinet/tariffs/{id}(id=${apartment.id})}" class="nav-link dropdown-links"
+                            <a th:href="@{/cabinet/tariffs/{id}(id=${apartment.id})}" class="nav-link dropdown-links" th:classappend="${apartmentId == apartment.id} ? 'active'"
                                style="margin:0">
                                 <i style="font-size: 16px;" class="fa fa-building-o fa-sm nav-icon"></i>
                                 <p th:text="${apartment.building.name + ' кв. '+ apartment.number}"></p>
@@ -211,24 +221,30 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a th:href="@{/cabinet/messages}" class="nav-link">
+
+
+
+
+                <li class="nav-item" >
+                    <a th:href="@{/cabinet/messages}" class="nav-link" th:classappend="${messagesPageActive} ? 'active'">
                         <i class="fa fa-envelope-o" aria-hidden="true"></i>
                         <p class="pl-1" th:text="#{messages}">
                             Сообщения
                         </p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a th:href="@{/cabinet/requests}" class="nav-link">
+
+                <li class="nav-item" >
+                    <a th:href="@{/cabinet/requests}" class="nav-link" th:classappend="${requestsPageActive} ? 'active'">
                         <i class="fa fa-wrench" aria-hidden="true"></i>
                         <p class="pl-1" th:text="#{requestMaster}">
                             Вызов мастера
                         </p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a th:href="@{/cabinet/user/view}" class="nav-link">
+
+                <li class="nav-item" >
+                    <a th:href="@{/cabinet/user/view}" class="nav-link" th:classappend="${profilePageActive} ? 'active'">
                         <i class="fa fa-user-circle" aria-hidden="true" style="font-size: 14px"></i>
                         <p class="pl-1" th:text="#{profile}">
                             Профиль
@@ -242,6 +258,7 @@
     <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
 
     <script>
+        var unreadMessageQuantity = [[${owner.unreadMessageQuantity}]];
 
         let myLang = $(".my-lang");
         $(".lang-item").click(function () {

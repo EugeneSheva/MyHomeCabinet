@@ -1,38 +1,51 @@
 var stompClient = null;
 
 function connect() {
-    var socket = new SockJS('http://localhost:8880/websocket');
+    // var socket = new SockJS('http://localhost:8888/myhome/websocket');
+    var socket = new SockJS('http://slj.avada-media-dev1.od.ua:9002/myhome/websocket');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         console.log('Connected CAB: ' + frame);
-
         stompClient.subscribe('/topic/messages', function (messageItem) {
             console.log("поймано изменение")
             console.log(messageItem)
-            drawMessagesTableCabinet();
+            if (typeof globalTableName !== 'undefined' && globalTableName != null && globalTableName === 'messagesCabinet') processReceivedMessageItem(messageItem);
+            // processReceivedMessageItem(messageItem);
             var element = document.getElementById("bell");
-            element.style.color = "red";
+            element.style.color = "orange";
+            updateNewMessage();
+            console.log('globalTableName' + globalTableName);
         });
-
     });
-
-    // url = 'ws://localhost:8880';
-    // const socket = new WebSocket(url);
-
-    // socket.onopen = function(event) {
-    //     console.log('WebSocket connection established.');
-    // };
-    //
-    // socket.onmessage = function(event) {
-    //     const data = JSON.parse(event.data);
-    //     console.log('!!!777z!!!')
-    //     // const element = document.getElementById('data-display');
-    //     // element.innerText = data.text;
-    // };
 }
+function updateNewMessage() {
+    var newMsgElement = document.getElementById("new_msg");
+console.log('unreadMessageQuantity '+unreadMessageQuantity);
 
 
 
+    var newMessageQuantity = parseInt(unreadMessageQuantity) +1;
+
+    console.log('newMessageQuantity '+newMessageQuantity);
+
+    var currentLocale = navigator.language;
+
+    console.log('currentLocale' + currentLocale);
+
+    if (currentLocale === 'uk-UA') {
+        if (newMessageQuantity > 0) {
+            newMsgElement.innerHTML = "Нових повідомленнь " + newMessageQuantity;
+        } else {
+            newMsgElement.innerHTML = "Немає нових повідомленнь";
+        }
+    } else if (currentLocale === 'ru-UA') {
+        if (newMessageQuantity > 0) {
+            newMsgElement.innerHTML = "Новых сообщений " + newMessageQuantity;
+        } else {
+            newMsgElement.innerHTML = "Нет новых сообщений";
+        }
+    }
+}
 function processReceivedMessageItem(item) {
     console.log('msg 2'+JSON.parse(item.body));
     drawNewMessageRow(JSON.parse(item.body));
@@ -45,17 +58,19 @@ function drawNewMessageRow(msg) {
     let newTableRow = document.createElement('tr');
     newTableRow.style.cursor = 'pointer';
     newTableRow.class = 'invoice_row';
-    var index = msg.text.indexOf("<br>");
-    var text = msg.text.substring(3, index);
-    console.log("text" + text);
-    var newText = text.substring(0, 70);
+    newTableRow.style.color = '#191970';
+    newTableRow.style.fontWeight = 'bold';
+    var text = msg.text;
+    let strippedStr = text.replace(/(<([^>]+)>)/gi, "");
+    var newText = strippedStr.substring(0, 70);
     if (newText.length == 70) {
         newText += '...'
     }
-    console.log("newText" + newText)
+    console.log("msg.subject " + msg.subject)
+    console.log("newText " + newText)
     newTableRow.innerHTML =
         '<td><input type="checkbox" name="" id="" value="' + msg.id + '"></td>' +
-        '<td>' + msg.receiversName + '</td>' +
+        '<td>' + msg.sender.full_name + '</td>' +
         '<td><strong>' + msg.subject + '</strong> - ' + newText + '</td>' +
         '<td><p><strong>Новое сообщение</strong></p></td>';
     let row_children = newTableRow.children;
@@ -64,6 +79,7 @@ function drawNewMessageRow(msg) {
             window.location.href = '/admin/messages/' + msg.id;
         });
     }
+
     console.log('msg drawed');
     $("#messageTable tbody").prepend(newTableRow);
 

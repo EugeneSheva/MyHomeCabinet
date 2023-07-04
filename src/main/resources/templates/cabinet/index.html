@@ -10,7 +10,7 @@
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/bootstrap-datepicker/css/datepicker.css}">
-    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}">
     <link rel="stylesheet" th:href="@{/dist/css/website.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet"
@@ -64,7 +64,7 @@
                             <div class="col-xs-12 col-lg-4">
                                 <div class="small-box bg-green overflow-hidden" style="margin-bottom: 0px">
                                     <div class="inner">
-                                        <h3 th:text="${(apartment.balance != null ? apartment.balance : 'Не задан')+ ' грн.'}">
+                                        <h3 th:text="${(apartmentBalance != null ? apartmentBalance : 'Не задан')+ ' грн.'}">
 
                                         </h3>
                                         <p th:text="#{apartmentsBalance}">Баланс по квартире</p>
@@ -121,20 +121,15 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-xs-12 col-lg-6">
-                                <label for="donutChart1" style="display: block; text-align: center;"
-                                       th:text="#{lastMonth}">за
-                                    предыдущий
-                                    месяц</label>
+                                <label for="donutChart1" style="display: block; text-align: center;" th:text="#{lastMonth}">за предыдущий месяц</label>
                                 <h3 th:if="${byMonthValues==null or byMonthValues.size()==0}" style="text-align: center; margin-top: 200px;" th:text="#{noData}"></h3>
-                                <canvas id="donutChart1"
+                                <canvas th:if="${byMonthValues!=null and byMonthValues.size() gt 0}" id="donutChart1"
                                         style="min-height: 250px; height: 450px; max-height: 450px; max-width: 100%;"></canvas>
                             </div>
                             <div class="col-xs-12 col-lg-6">
-                                <h3 th:if="${byMonthValues==null or byYearValue.size()==0}" style="text-align: center; margin-top: 200px;" th:text="#{noData}"></h3>
-                                <label for="donutChart2" style="display: block; text-align: center;"
-                                       th:text="#{thisYear}">за
-                                    текущий год</label>
-                                <canvas id="donutChart2"
+                                <label for="donutChart2" style="display: block; text-align: center;" th:text="#{thisYear}">за текущий год</label>
+                                <h3 th:if="${byYearValue==null or byYearValue.size()==0}" style="text-align: center; margin-top: 200px;" th:text="#{noData}"></h3>
+                                <canvas th:if="${byYearValue!=null and byYearValue.size() gt 0}" id="donutChart2"
                                         style="min-height: 250px; height: 450px; max-height: 450px; max-width: 100%;"></canvas>
                             </div>
                         </div>
@@ -188,8 +183,7 @@
 <script th:inline="javascript">
     $(function () {
         //- DONUT CHART -
-        // Get context with jQuery - using jQuery's .get() method.
-        console.log()
+
         var donutChartCanvas = $('#donutChart1').get(0).getContext('2d')
         var arrnames = [[${byMonthNames}]];
         var arrvalue = [[${byMonthValues}]];
@@ -304,6 +298,13 @@
         })
     })
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"
+        integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"
+        integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script th:src="@{/dist/js/websocketCabinet.js}"></script>
 
 </body>
 </html>
