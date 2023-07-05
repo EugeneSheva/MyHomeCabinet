@@ -176,105 +176,105 @@ function getTableData(url, pageNumber, pageSize, pageFiltersString) {
 }
 
 //Функции, рисующие таблицы в зависимости от выбранной страницы
-function drawApartmentsTable() {
-
-    let pageFiltersString = JSON.stringify(gatherFilters());
-    let data = getTableData('/admin/apartments/get-apartments-page', currentPageNumber, currentPageSize, pageFiltersString);
-    let $apartmentsTable = $("#apartmentsTable tbody");
-    $apartmentsTable.html('');
-    for (const apartment of data.content) {
-        console.log("apartment" + apartment);
-        let newTableRow = document.createElement('tr');
-        newTableRow.style.cursor = 'pointer';
-        newTableRow.class = 'apartment_row';
-        newTableRow.innerHTML = '<td>' + apartment.number + '</td>' +
-            '<td>' + apartment.building.name + '</td>' +
-            '<td>' + apartment.section + '</td>' +
-            '<td>' + apartment.floor + '</td>' +
-            '<td>' + apartment.owner.fullName + '</td>' +
-            '<td>' + apartment.balance + '</td>' +
-            '<td>' +
-            '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
-            '<a href="edit/' + apartment.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil aria-hidden="true"></i></i></a>' +
-            '<a href="delete/' + apartment.id + '" class="btn btn-default btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></i></a>' +
-            '</div>' +
-            '</td>';
-        let row_children = newTableRow.children;
-        for (let j = 1; j < row_children.length - 1; j++) {
-            row_children[j].addEventListener('click', function () {
-                window.location.href = '/admin/apartments/' + apartment.id;
-            });
-        }
-
-        $apartmentsTable.append(newTableRow);
-    }
-    if (data.content.length === 0) {
-        let newTableRow = document.createElement('tr');
-        newTableRow.innerHTML = '<td colspan=7>Ничего не найдено...</td>';
-        $apartmentsTable.append(newTableRow);
-    }
-
-    drawPagination();
-
-}
-
-function drawInvoicesTable() {
-
-    let pageFiltersString = JSON.stringify(gatherFilters());
-    let data = getTableData('/admin/invoices/get-invoices', currentPageNumber, currentPageSize, pageFiltersString);
-    let $invoicesTableBody = $("#invoicesTable tbody");
-    $invoicesTableBody.html('');
-
-    for (const invoice of data.content) {
-        let date = new Date(invoice.date);
-        date.setDate(date.getDate() + 1);
-        const monthNames = ["January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ];
-        let month_string = monthNames[date.getMonth()] + ' ' + date.getFullYear();
-        let newTableRow = document.createElement('tr');
-        newTableRow.style.cursor = 'pointer';
-        newTableRow.class = 'invoice_row';
-        newTableRow.innerHTML = '<input type="hidden" value=' + invoice.id.toString() + '>' +
-            '<td><input type="checkbox" name="" id=""></td>' +
-            '<td>' + invoice.id.toString().padStart(10, '0') + '</td>' +
-            '<td>' +
-            '<small class="label ' + (invoice.status == 'PAID' ? 'label-success' : invoice.status == 'UNPAID' ? 'label-danger' : 'label-warning') + '">' +
-            invoice.status +
-            '</small>' +
-            '</td>' +
-            '<td>' + date.toISOString().split('T')[0] + '</td>' +
-            '<td>' + month_string + '</td>' +
-            '<td>' + invoice.apartment.fullName + '</td>' +
-            '<td>' + invoice.owner.fullName + '</td>' +
-            '<td><span>' + (invoice.completed ? 'Проведена' : 'Не проведена') + '</span></td>' +
-            '<td><span>' + invoice.total_price + '</span></td>' +
-            '<td>' +
-            '<div class="btn-group pull-right">' +
-            '<a class="btn btn-default btn-sm" href="/admin/invoices/update/' + invoice.id + '"><i class="fa fa-pencil"></i></a>' +
-            '<a class="btn btn-default btn-sm"' +
-            'data-url="/admin/invoices/delete/' + invoice.id + '"' +
-            'onclick="if(confirm(\'Удалить квитанцию?\')) window.location.href=this.dataset.url"><i class="fa fa-trash"></i></a>' +
-            '</div>' +
-            '</td>';
-        let row_children = newTableRow.children;
-        for (let j = 1; j < row_children.length - 1; j++) {
-            row_children[j].addEventListener('click', function () {
-                window.location.href = '/admin/invoices/' + invoice.id;
-            });
-        }
-
-        $invoicesTableBody.append(newTableRow);
-    }
-    if (data.content.length === 0) {
-        let newTableRow = document.createElement('tr');
-        newTableRow.innerHTML = '<td colspan=10>' + notFoundText + '</td>';
-        $invoicesTableBody.append(newTableRow);
-    }
-
-    drawPagination();
-
-}
+// function drawApartmentsTable() {
+//
+//     let pageFiltersString = JSON.stringify(gatherFilters());
+//     let data = getTableData('/admin/apartments/get-apartments-page', currentPageNumber, currentPageSize, pageFiltersString);
+//     let $apartmentsTable = $("#apartmentsTable tbody");
+//     $apartmentsTable.html('');
+//     for (const apartment of data.content) {
+//         console.log("apartment" + apartment);
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.style.cursor = 'pointer';
+//         newTableRow.class = 'apartment_row';
+//         newTableRow.innerHTML = '<td>' + apartment.number + '</td>' +
+//             '<td>' + apartment.building.name + '</td>' +
+//             '<td>' + apartment.section + '</td>' +
+//             '<td>' + apartment.floor + '</td>' +
+//             '<td>' + apartment.owner.fullName + '</td>' +
+//             '<td>' + apartment.balance + '</td>' +
+//             '<td>' +
+//             '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
+//             '<a href="edit/' + apartment.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil aria-hidden="true"></i></i></a>' +
+//             '<a href="delete/' + apartment.id + '" class="btn btn-default btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></i></a>' +
+//             '</div>' +
+//             '</td>';
+//         let row_children = newTableRow.children;
+//         for (let j = 1; j < row_children.length - 1; j++) {
+//             row_children[j].addEventListener('click', function () {
+//                 window.location.href = '/admin/apartments/' + apartment.id;
+//             });
+//         }
+//
+//         $apartmentsTable.append(newTableRow);
+//     }
+//     if (data.content.length === 0) {
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.innerHTML = '<td colspan=7>Ничего не найдено...</td>';
+//         $apartmentsTable.append(newTableRow);
+//     }
+//
+//     drawPagination();
+//
+// }
+//
+// function drawInvoicesTable() {
+//
+//     let pageFiltersString = JSON.stringify(gatherFilters());
+//     let data = getTableData('/admin/invoices/get-invoices', currentPageNumber, currentPageSize, pageFiltersString);
+//     let $invoicesTableBody = $("#invoicesTable tbody");
+//     $invoicesTableBody.html('');
+//
+//     for (const invoice of data.content) {
+//         let date = new Date(invoice.date);
+//         date.setDate(date.getDate() + 1);
+//         const monthNames = ["January", "February", "March", "April", "May", "June",
+//             "July", "August", "September", "October", "November", "December"
+//         ];
+//         let month_string = monthNames[date.getMonth()] + ' ' + date.getFullYear();
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.style.cursor = 'pointer';
+//         newTableRow.class = 'invoice_row';
+//         newTableRow.innerHTML = '<input type="hidden" value=' + invoice.id.toString() + '>' +
+//             '<td><input type="checkbox" name="" id=""></td>' +
+//             '<td>' + invoice.id.toString().padStart(10, '0') + '</td>' +
+//             '<td>' +
+//             '<small class="label ' + (invoice.status == 'PAID' ? 'label-success' : invoice.status == 'UNPAID' ? 'label-danger' : 'label-warning') + '">' +
+//             invoice.status +
+//             '</small>' +
+//             '</td>' +
+//             '<td>' + date.toISOString().split('T')[0] + '</td>' +
+//             '<td>' + month_string + '</td>' +
+//             '<td>' + invoice.apartment.fullName + '</td>' +
+//             '<td>' + invoice.owner.fullName + '</td>' +
+//             '<td><span>' + (invoice.completed ? 'Проведена' : 'Не проведена') + '</span></td>' +
+//             '<td><span>' + invoice.total_price + '</span></td>' +
+//             '<td>' +
+//             '<div class="btn-group pull-right">' +
+//             '<a class="btn btn-default btn-sm" href="/admin/invoices/update/' + invoice.id + '"><i class="fa fa-pencil"></i></a>' +
+//             '<a class="btn btn-default btn-sm"' +
+//             'data-url="/admin/invoices/delete/' + invoice.id + '"' +
+//             'onclick="if(confirm(\'Удалить квитанцию?\')) window.location.href=this.dataset.url"><i class="fa fa-trash"></i></a>' +
+//             '</div>' +
+//             '</td>';
+//         let row_children = newTableRow.children;
+//         for (let j = 1; j < row_children.length - 1; j++) {
+//             row_children[j].addEventListener('click', function () {
+//                 window.location.href = '/admin/invoices/' + invoice.id;
+//             });
+//         }
+//
+//         $invoicesTableBody.append(newTableRow);
+//     }
+//     if (data.content.length === 0) {
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.innerHTML = '<td colspan=10>' + notFoundText + '</td>';
+//         $invoicesTableBody.append(newTableRow);
+//     }
+//
+//     drawPagination();
+//
+// }
 
 function drawMessagesTableCabinet() {
     let pageFiltersString = JSON.stringify(gatherFilters());
@@ -328,52 +328,52 @@ function drawMessagesTableCabinet() {
 
 }
 
-function drawMessagesTableAdmin() {
-    let pageFiltersString = JSON.stringify(gatherFilters());
-    let data = getTableData('/admin/messages/get-messages', currentPageNumber, currentPageSize, pageFiltersString);
-    let $invoicesTableBody = $("#messageTable tbody");
-    $invoicesTableBody.html('');
-
-    for (const msg of data.content) {
-        let dateString = msg.date.toString();
-        let dateParts = dateString.split(",");
-        let year = parseInt(dateParts[0]);
-        let month = parseInt(dateParts[1]) - 1;
-        let day = parseInt(dateParts[2]);
-        let hours = parseInt(dateParts[3]);
-        let minutes = parseInt(dateParts[4]);
-        let date = new Date(year, month, day, hours, minutes);
-        let formattedDate = ("0" + date.getDate()).slice(-2) + "." + ("0" + (date.getMonth() + 1)).slice(-2) + "." + date.getFullYear() + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
-
-        let newTableRow = document.createElement('tr');
-        newTableRow.style.cursor = 'pointer';
-        newTableRow.class = 'invoice_row';
-        var text = msg.text;
-        let strippedStr = text.replace(/(<([^>]+)>)/gi, "");
-        var newText = strippedStr.substring(0, 70);
-        if (newText.length == 70) {
-            newText += '...'
-        }
-        newTableRow.innerHTML =
-            '<td><input type="checkbox" name="" id="" value="' + msg.id + '"></td>' +
-            '<td>' + msg.receiversName + '</td>' +
-            '<td><strong>' + msg.subject + '</strong> - ' + newText + '</td>' +
-            '<td>' + formattedDate + '</td>';
-        let row_children = newTableRow.children;
-        for (let j = 1; j < row_children.length - 1; j++) {
-            row_children[j].addEventListener('click', function () {
-                window.location.href = '/admin/messages/' + msg.id;
-            });
-        }
-        $invoicesTableBody.append(newTableRow);
-    }
-    if (data.content.length === 0) {
-        let newTableRow = document.createElement('tr');
-        newTableRow.innerHTML = '<td colspan=10>Ничего не найдено...</td>';
-        $invoicesTableBody.append(newTableRow);
-    }
-    drawPagination();
-}
+// function drawMessagesTableAdmin() {
+//     let pageFiltersString = JSON.stringify(gatherFilters());
+//     let data = getTableData('/admin/messages/get-messages', currentPageNumber, currentPageSize, pageFiltersString);
+//     let $invoicesTableBody = $("#messageTable tbody");
+//     $invoicesTableBody.html('');
+//
+//     for (const msg of data.content) {
+//         let dateString = msg.date.toString();
+//         let dateParts = dateString.split(",");
+//         let year = parseInt(dateParts[0]);
+//         let month = parseInt(dateParts[1]) - 1;
+//         let day = parseInt(dateParts[2]);
+//         let hours = parseInt(dateParts[3]);
+//         let minutes = parseInt(dateParts[4]);
+//         let date = new Date(year, month, day, hours, minutes);
+//         let formattedDate = ("0" + date.getDate()).slice(-2) + "." + ("0" + (date.getMonth() + 1)).slice(-2) + "." + date.getFullYear() + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+//
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.style.cursor = 'pointer';
+//         newTableRow.class = 'invoice_row';
+//         var text = msg.text;
+//         let strippedStr = text.replace(/(<([^>]+)>)/gi, "");
+//         var newText = strippedStr.substring(0, 70);
+//         if (newText.length == 70) {
+//             newText += '...'
+//         }
+//         newTableRow.innerHTML =
+//             '<td><input type="checkbox" name="" id="" value="' + msg.id + '"></td>' +
+//             '<td>' + msg.receiversName + '</td>' +
+//             '<td><strong>' + msg.subject + '</strong> - ' + newText + '</td>' +
+//             '<td>' + formattedDate + '</td>';
+//         let row_children = newTableRow.children;
+//         for (let j = 1; j < row_children.length - 1; j++) {
+//             row_children[j].addEventListener('click', function () {
+//                 window.location.href = '/admin/messages/' + msg.id;
+//             });
+//         }
+//         $invoicesTableBody.append(newTableRow);
+//     }
+//     if (data.content.length === 0) {
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.innerHTML = '<td colspan=10>Ничего не найдено...</td>';
+//         $invoicesTableBody.append(newTableRow);
+//     }
+//     drawPagination();
+// }
 
 function drawInvoicesInCabinetTable() {
 
@@ -400,7 +400,7 @@ function drawInvoicesInCabinetTable() {
         let row_children = newTableRow.children;
         for (let j = 1; j < row_children.length - 1; j++) {
             row_children[j].addEventListener('click', function () {
-                window.location.href = '/cabinet/invoice/' + invoice.id;
+                window.location.href = '/myhomecab/cabinet/invoice/' + invoice.id;
             });
         }
 
@@ -416,195 +416,195 @@ function drawInvoicesInCabinetTable() {
 
 }
 
-function drawAccountsTable() {
-    let pageFiltersString = JSON.stringify(gatherFilters());
-    let data = getTableData('/admin/accounts/get-accounts', currentPageNumber, currentPageSize, pageFiltersString);
-    let $accountsTableBody = $("#accountsTable tbody");
-    $accountsTableBody.html('');
+// function drawAccountsTable() {
+//     let pageFiltersString = JSON.stringify(gatherFilters());
+//     let data = getTableData('/admin/accounts/get-accounts', currentPageNumber, currentPageSize, pageFiltersString);
+//     let $accountsTableBody = $("#accountsTable tbody");
+//     $accountsTableBody.html('');
+//
+//     for (const account of data.content) {
+//
+//         let apartName = (account.apartment) ? account.apartment.fullName : '';
+//         let buildingName = (account.building) ? account.building.name : '';
+//         let ownerName = (account.owner) ? account.owner.fullName : '';
+//
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.style.cursor = 'pointer';
+//         newTableRow.class = 'account_row';
+//         newTableRow.innerHTML = '<td>' + account.id + '</td>' +
+//
+//             '<td>' +
+//             '<small class="label ' + ((account.isActive) ? 'label-success' : 'label-danger') + '">' +
+//             ((account.isActive) ? activeText : inactiveText) + '</small>' +
+//             '</td>' +
+//             '<td>' + apartName + '</td>' +
+//             '<td>' + buildingName + '</td>' +
+//             '<td>' + account.section + '</td>' +
+//             '<td>' + ownerName + '</td>' +
+//
+//             '<td style="color:' + ((account.balance > 0) ? 'green' : 'red') + '" >' + account.balance + '</td>' +
+//             '<td>' +
+//             '<div class="btn-group pull-right">' +
+//             '<a class="btn btn-default btn-sm" href="/admin/accounts/update/' + account.id + '"><i class="fa fa-pencil"></i></a>' +
+//             '<a class="btn btn-default btn-sm" data-url="/admin/accounts/delete/' + account.id + '"' +
+//             'onclick="if(confirm(\'Удалить лицевой счёт?\')) window.location.href=this.dataset.url"><i class="fa fa-trash"></i></a>' +
+//             '</div>' +
+//             '</td>' +
+//             '<input type="hidden" value=' + account.id + '>';
+//         let row_children = newTableRow.children;
+//         for (let j = 0; j < row_children.length - 2; j++) {
+//             row_children[j].addEventListener('click', function () {
+//                 window.location.href = '/admin/accounts/' + account.id;
+//             });
+//         }
+//
+//         $accountsTableBody.append(newTableRow);
+//     }
+//     if (data.content.length === 0) {
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.innerHTML = '<td colspan=8>Ничего не найдено...</td>';
+//         $accountsTableBody.append(newTableRow);
+//     }
+//
+//     drawPagination();
+// }
 
-    for (const account of data.content) {
+// function drawMetersTable() {
+//     let pageFiltersString = JSON.stringify(gatherFilters());
+//     let data = getTableData('/admin/meters/get-meters', currentPageNumber, currentPageSize, pageFiltersString);
+//     let $metersTable = $("#metersTable tbody");
+//     $metersTable.html('');
+//     for (const meter of data.content) {
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.style.cursor = 'pointer';
+//         newTableRow.class = 'meter_row';
+//         newTableRow.innerHTML = '<td><a href="/admin/buildings/' + meter.buildingID + '">' + meter.buildingName + '</a></td>' +
+//             '<td>' + meter.section + '</td>' +
+//             '<td>' + meter.apartmentNumber + '</td>' +
+//             '<td>' + meter.serviceName + '</td>' +
+//             '<td style="background-color: #DFD5; font-weight:bold; text-decoration:underline">' + meter.readings + '</td>' +
+//             '<td style="background-color: #DFD5; font-weight:bold; text-decoration:underline">' + meter.serviceUnitName + '</td>' +
+//             '<td>' +
+//             '<div class="btn-group pull-right">' +
+//             '<a class="btn btn-default btn-sm" href="/admin/meters/create-add?flat_id=' + meter.apartmentID + '&service_id=' + meter.serviceID + '" title="Снять новое показание счетчика" target="_blank" data-toggle="tooltip"><i class="fa fa-dashboard"></i></a>' +
+//             '<a class="btn btn-default btn-sm" href="/admin/meters/data?flat_id=' + meter.apartmentID + '&service_id=' + meter.serviceID + '" title="Открыть историю показаний для счетчика" data-toggle="tooltip"><i class="fa fa-eye"></i></a>' +
+//             '</div>' +
+//             '</td>';
+//         let row_children = newTableRow.children;
+//         for (let j = 0; j < row_children.length - 1; j++) {
+//             row_children[j].addEventListener('click', function () {
+//                 window.location.href = '/admin/meters/data?flat_id=' + meter.apartmentID + '&service_id=' + meter.serviceID;
+//             });
+//         }
+//
+//         $metersTable.append(newTableRow);
+//     }
+//     if (data.content.length === 0) {
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.innerHTML = '<td colspan=7>Ничего не найдено...</td>';
+//         $metersTable.append(newTableRow);
+//     }
+//     drawPagination();
+// }
 
-        let apartName = (account.apartment) ? account.apartment.fullName : '';
-        let buildingName = (account.building) ? account.building.name : '';
-        let ownerName = (account.owner) ? account.owner.fullName : '';
+// function drawMeterDataTable() {
+//     let params = new URL(document.location).searchParams;
+//     let apartment_id = params.get("flat_id");
+//     let service_id = params.get("service_id");
+//     let singleMeterFilters = {
+//         apartment: apartment_id,
+//         service: service_id,
+//         id: $("#id").val(),
+//         status: $("#status").val(),
+//         date: $("#datetime").val()
+//     };
+//
+//     let pageFiltersString = JSON.stringify(singleMeterFilters);
+//     let data = getTableData('/admin/meters/get-meter-data', currentPageNumber, currentPageSize, pageFiltersString);
+//
+//     let $metersTable = $("#metersTable tbody");
+//     $metersTable.html('');
+//     for (const meter of data.content) {
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.style.cursor = 'pointer';
+//         newTableRow.class = 'meter_row';
+//         let meter_date = new Date(meter.date);
+//         let meter_month = '' + (meter_date.getMonth() + 1) + '-' + meter_date.getFullYear();
+//         newTableRow.innerHTML = '<td>' + meter.id + '</td>' +
+//             '<td>' + meter.status + '</td>' +
+//             '<td>' + meter_date.toISOString().split('T')[0] + '</td>' +
+//             '<td>' + meter_month + '</td>' +
+//             '<td>' + meter.buildingName + '</td>' +
+//             '<td>' + meter.section + '</td>' +
+//             '<td>' + meter.apartmentNumber + '</td>' +
+//             '<td>' + meter.serviceName + '</td>' +
+//             '<td style="background-color: #DFD5; font-weight:bold; text-decoration:underline">' + meter.readings + '</td>' +
+//             '<td style="background-color: #DFD5; font-weight:bold; text-decoration:underline">' + meter.serviceUnitName + '</td>' +
+//             '<td>' +
+//             '<div class="btn-group pull-right">' +
+//             '<a class="btn btn-default btn-sm" href="/admin/meters/create-add?flat_id=' + meter.apartmentID + '&service_id=' + meter.serviceID + '" title="Снять новое показание счетчика" target="_blank" data-toggle="tooltip"><i class="fa fa-dashboard"></i></a>' +
+//             '<a class="btn btn-default btn-sm" href="/admin/meters/data?flat_id=' + meter.apartmentID + '&service_id=' + meter.serviceID + '" title="Открыть историю показаний для счетчика" data-toggle="tooltip"><i class="fa fa-eye"></i></a>' +
+//             '</div>' +
+//             '</td>';
+//         let row_children = newTableRow.children;
+//         for (let j = 0; j < row_children.length - 1; j++) {
+//             row_children[j].addEventListener('click', function () {
+//                 window.location.href = '/admin/meters/info/' + meter.id;
+//             });
+//         }
+//
+//         $metersTable.append(newTableRow);
+//     }
+//     if (data.content.length === 0) {
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.innerHTML = '<td colspan=7>Ничего не найдено...</td>';
+//         $metersTable.append(newTableRow);
+//     }
+//
+//     drawPagination();
+// }
 
-        let newTableRow = document.createElement('tr');
-        newTableRow.style.cursor = 'pointer';
-        newTableRow.class = 'account_row';
-        newTableRow.innerHTML = '<td>' + account.id + '</td>' +
-
-            '<td>' +
-            '<small class="label ' + ((account.isActive) ? 'label-success' : 'label-danger') + '">' +
-            ((account.isActive) ? activeText : inactiveText) + '</small>' +
-            '</td>' +
-            '<td>' + apartName + '</td>' +
-            '<td>' + buildingName + '</td>' +
-            '<td>' + account.section + '</td>' +
-            '<td>' + ownerName + '</td>' +
-
-            '<td style="color:' + ((account.balance > 0) ? 'green' : 'red') + '" >' + account.balance + '</td>' +
-            '<td>' +
-            '<div class="btn-group pull-right">' +
-            '<a class="btn btn-default btn-sm" href="/admin/accounts/update/' + account.id + '"><i class="fa fa-pencil"></i></a>' +
-            '<a class="btn btn-default btn-sm" data-url="/admin/accounts/delete/' + account.id + '"' +
-            'onclick="if(confirm(\'Удалить лицевой счёт?\')) window.location.href=this.dataset.url"><i class="fa fa-trash"></i></a>' +
-            '</div>' +
-            '</td>' +
-            '<input type="hidden" value=' + account.id + '>';
-        let row_children = newTableRow.children;
-        for (let j = 0; j < row_children.length - 2; j++) {
-            row_children[j].addEventListener('click', function () {
-                window.location.href = '/admin/accounts/' + account.id;
-            });
-        }
-
-        $accountsTableBody.append(newTableRow);
-    }
-    if (data.content.length === 0) {
-        let newTableRow = document.createElement('tr');
-        newTableRow.innerHTML = '<td colspan=8>Ничего не найдено...</td>';
-        $accountsTableBody.append(newTableRow);
-    }
-
-    drawPagination();
-}
-
-function drawMetersTable() {
-    let pageFiltersString = JSON.stringify(gatherFilters());
-    let data = getTableData('/admin/meters/get-meters', currentPageNumber, currentPageSize, pageFiltersString);
-    let $metersTable = $("#metersTable tbody");
-    $metersTable.html('');
-    for (const meter of data.content) {
-        let newTableRow = document.createElement('tr');
-        newTableRow.style.cursor = 'pointer';
-        newTableRow.class = 'meter_row';
-        newTableRow.innerHTML = '<td><a href="/admin/buildings/' + meter.buildingID + '">' + meter.buildingName + '</a></td>' +
-            '<td>' + meter.section + '</td>' +
-            '<td>' + meter.apartmentNumber + '</td>' +
-            '<td>' + meter.serviceName + '</td>' +
-            '<td style="background-color: #DFD5; font-weight:bold; text-decoration:underline">' + meter.readings + '</td>' +
-            '<td style="background-color: #DFD5; font-weight:bold; text-decoration:underline">' + meter.serviceUnitName + '</td>' +
-            '<td>' +
-            '<div class="btn-group pull-right">' +
-            '<a class="btn btn-default btn-sm" href="/admin/meters/create-add?flat_id=' + meter.apartmentID + '&service_id=' + meter.serviceID + '" title="Снять новое показание счетчика" target="_blank" data-toggle="tooltip"><i class="fa fa-dashboard"></i></a>' +
-            '<a class="btn btn-default btn-sm" href="/admin/meters/data?flat_id=' + meter.apartmentID + '&service_id=' + meter.serviceID + '" title="Открыть историю показаний для счетчика" data-toggle="tooltip"><i class="fa fa-eye"></i></a>' +
-            '</div>' +
-            '</td>';
-        let row_children = newTableRow.children;
-        for (let j = 0; j < row_children.length - 1; j++) {
-            row_children[j].addEventListener('click', function () {
-                window.location.href = '/admin/meters/data?flat_id=' + meter.apartmentID + '&service_id=' + meter.serviceID;
-            });
-        }
-
-        $metersTable.append(newTableRow);
-    }
-    if (data.content.length === 0) {
-        let newTableRow = document.createElement('tr');
-        newTableRow.innerHTML = '<td colspan=7>Ничего не найдено...</td>';
-        $metersTable.append(newTableRow);
-    }
-    drawPagination();
-}
-
-function drawMeterDataTable() {
-    let params = new URL(document.location).searchParams;
-    let apartment_id = params.get("flat_id");
-    let service_id = params.get("service_id");
-    let singleMeterFilters = {
-        apartment: apartment_id,
-        service: service_id,
-        id: $("#id").val(),
-        status: $("#status").val(),
-        date: $("#datetime").val()
-    };
-
-    let pageFiltersString = JSON.stringify(singleMeterFilters);
-    let data = getTableData('/admin/meters/get-meter-data', currentPageNumber, currentPageSize, pageFiltersString);
-
-    let $metersTable = $("#metersTable tbody");
-    $metersTable.html('');
-    for (const meter of data.content) {
-        let newTableRow = document.createElement('tr');
-        newTableRow.style.cursor = 'pointer';
-        newTableRow.class = 'meter_row';
-        let meter_date = new Date(meter.date);
-        let meter_month = '' + (meter_date.getMonth() + 1) + '-' + meter_date.getFullYear();
-        newTableRow.innerHTML = '<td>' + meter.id + '</td>' +
-            '<td>' + meter.status + '</td>' +
-            '<td>' + meter_date.toISOString().split('T')[0] + '</td>' +
-            '<td>' + meter_month + '</td>' +
-            '<td>' + meter.buildingName + '</td>' +
-            '<td>' + meter.section + '</td>' +
-            '<td>' + meter.apartmentNumber + '</td>' +
-            '<td>' + meter.serviceName + '</td>' +
-            '<td style="background-color: #DFD5; font-weight:bold; text-decoration:underline">' + meter.readings + '</td>' +
-            '<td style="background-color: #DFD5; font-weight:bold; text-decoration:underline">' + meter.serviceUnitName + '</td>' +
-            '<td>' +
-            '<div class="btn-group pull-right">' +
-            '<a class="btn btn-default btn-sm" href="/admin/meters/create-add?flat_id=' + meter.apartmentID + '&service_id=' + meter.serviceID + '" title="Снять новое показание счетчика" target="_blank" data-toggle="tooltip"><i class="fa fa-dashboard"></i></a>' +
-            '<a class="btn btn-default btn-sm" href="/admin/meters/data?flat_id=' + meter.apartmentID + '&service_id=' + meter.serviceID + '" title="Открыть историю показаний для счетчика" data-toggle="tooltip"><i class="fa fa-eye"></i></a>' +
-            '</div>' +
-            '</td>';
-        let row_children = newTableRow.children;
-        for (let j = 0; j < row_children.length - 1; j++) {
-            row_children[j].addEventListener('click', function () {
-                window.location.href = '/admin/meters/info/' + meter.id;
-            });
-        }
-
-        $metersTable.append(newTableRow);
-    }
-    if (data.content.length === 0) {
-        let newTableRow = document.createElement('tr');
-        newTableRow.innerHTML = '<td colspan=7>Ничего не найдено...</td>';
-        $metersTable.append(newTableRow);
-    }
-
-    drawPagination();
-}
-
-function drawRequestsTable() {
-    let pageFiltersString = JSON.stringify(gatherFilters());
-    let data = getTableData('/admin/requests/get-requests', currentPageNumber, currentPageSize, pageFiltersString);
-
-    let $requestsTable = $("#requestsTable tbody");
-    $requestsTable.html('');
-    for (const request of data.content) {
-        let newTableRow = document.createElement('tr');
-        newTableRow.style.cursor = 'pointer';
-        newTableRow.class = 'request_row';
-        newTableRow.innerHTML = '<td>' + request.id + '</td>' +
-            '<td>' + request.best_time + '</td>' +
-            '<td>' + request.masterTypeName + '</td>' +
-            '<td style="max-width: 200px; text-overflow: ellipsis; white-space: nowrap; overflow:hidden">' + request.description + '</td>' +
-            '<td><a href="/admin/apartments/' + request.apartmentID + '">кв. ' + request.apartmentNumber + ', ' + request.apartmentBuildingName + '</a></td>' +
-            '<td><a href="/admin/owners/' + request.ownerID + '">' + request.ownerFullName + '</a></td>' +
-            '<td>' + request.ownerPhoneNumber + '</td>' +
-            '<td><a href="/admin/admins/' + request.masterID + '">' + ((request.masterFullName != null) ? request.masterFullName : '') + '</a></td>' +
-            '<td><small class="label ' + ((request.statusName === 'Новое') ? 'label-primary' : (request.statusName === 'В работе') ? 'label-warning' : 'label-success') + '">' + request.statusName + '</small></td>' +
-            '<td>' +
-            '<div class="btn-group pull-right">' +
-            '<a class="btn btn-default btn-sm" href="/admin/requests/update/' + request.id + '"><i class="fa fa-pencil" aria-hidden="true"></i></a>' +
-            '<a class="btn btn-default btn-sm" href="/admin/requests/delete/' + request.id + '"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
-            '</div>' +
-            '</td>';
-        let row_children = newTableRow.children;
-        for (let j = 0; j < row_children.length - 1; j++) {
-            row_children[j].addEventListener('click', function () {
-                window.location.href = '/admin/requests/info/' + request.id;
-            });
-        }
-
-        $requestsTable.append(newTableRow);
-    }
-    if (data.content.length === 0) {
-        let newTableRow = document.createElement('tr');
-        newTableRow.innerHTML = '<td colspan=10>' + notFoundText + '</td>';
-        $requestsTable.append(newTableRow);
-    }
-    drawPagination();
-}
+// function drawRequestsTable() {
+//     let pageFiltersString = JSON.stringify(gatherFilters());
+//     let data = getTableData('/admin/requests/get-requests', currentPageNumber, currentPageSize, pageFiltersString);
+//
+//     let $requestsTable = $("#requestsTable tbody");
+//     $requestsTable.html('');
+//     for (const request of data.content) {
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.style.cursor = 'pointer';
+//         newTableRow.class = 'request_row';
+//         newTableRow.innerHTML = '<td>' + request.id + '</td>' +
+//             '<td>' + request.best_time + '</td>' +
+//             '<td>' + request.masterTypeName + '</td>' +
+//             '<td style="max-width: 200px; text-overflow: ellipsis; white-space: nowrap; overflow:hidden">' + request.description + '</td>' +
+//             '<td><a href="/admin/apartments/' + request.apartmentID + '">кв. ' + request.apartmentNumber + ', ' + request.apartmentBuildingName + '</a></td>' +
+//             '<td><a href="/admin/owners/' + request.ownerID + '">' + request.ownerFullName + '</a></td>' +
+//             '<td>' + request.ownerPhoneNumber + '</td>' +
+//             '<td><a href="/admin/admins/' + request.masterID + '">' + ((request.masterFullName != null) ? request.masterFullName : '') + '</a></td>' +
+//             '<td><small class="label ' + ((request.statusName === 'Новое') ? 'label-primary' : (request.statusName === 'В работе') ? 'label-warning' : 'label-success') + '">' + request.statusName + '</small></td>' +
+//             '<td>' +
+//             '<div class="btn-group pull-right">' +
+//             '<a class="btn btn-default btn-sm" href="/admin/requests/update/' + request.id + '"><i class="fa fa-pencil" aria-hidden="true"></i></a>' +
+//             '<a class="btn btn-default btn-sm" href="/admin/requests/delete/' + request.id + '"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
+//             '</div>' +
+//             '</td>';
+//         let row_children = newTableRow.children;
+//         for (let j = 0; j < row_children.length - 1; j++) {
+//             row_children[j].addEventListener('click', function () {
+//                 window.location.href = '/admin/requests/info/' + request.id;
+//             });
+//         }
+//
+//         $requestsTable.append(newTableRow);
+//     }
+//     if (data.content.length === 0) {
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.innerHTML = '<td colspan=10>' + notFoundText + '</td>';
+//         $requestsTable.append(newTableRow);
+//     }
+//     drawPagination();
+// }
 
 function drawRequestsTableCabinet() {
 
@@ -649,180 +649,180 @@ function drawRequestsTableCabinet() {
 
 }
 
-function drawOwnersTable() {
-    let pageFiltersString = JSON.stringify(gatherFilters());
-    let data = getTableData('/admin/owners/get-owners', currentPageNumber, currentPageSize, pageFiltersString);
-    let $ownersTable = $("#ownersTable tbody");
-    $ownersTable.html('');
-    for (const owner of data.content) {
+// function drawOwnersTable() {
+//     let pageFiltersString = JSON.stringify(gatherFilters());
+//     let data = getTableData('/admin/owners/get-owners', currentPageNumber, currentPageSize, pageFiltersString);
+//     let $ownersTable = $("#ownersTable tbody");
+//     $ownersTable.html('');
+//     for (const owner of data.content) {
+//
+//         const buildingLinks = owner.buildings.map(function (buildingObject) {
+//             return ('<p style="margin:0"><a href="/admin/buildings/' + buildingObject.id + '">' + buildingObject.name + '</a></p>')
+//         });
+//         const finalBuildingString = buildingLinks.join('');
+//         const apartmentLinks = owner.apartments.map(function (apartmentObject) {
+//             return ('<p style="margin:0; font-size:13px"><a href="/admin/apartments/' + apartmentObject.id + '">' + apartmentObject.fullName + '</a></p>')
+//         });
+//         const finalApartmentString = apartmentLinks.join('');
+//
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.style.cursor = 'pointer';
+//         newTableRow.class = 'owner_row';
+//         newTableRow.innerHTML = '<td>' + owner.id + '</td>' +
+//             '<td>' + owner.fullName + '</td>' +
+//             '<td>' + owner.phone_number + '</td>' +
+//             '<td>' + owner.email + '</td>' +
+//             '<td>' + finalBuildingString + '</td>' +
+//             '<td>' + finalApartmentString + '</td>' +
+//             '<td>' + owner.date + '</td>' +
+//             '<td>' + owner.status + '</td>' +
+//             '<td>' + owner.hasDebt + '</td>' +
+//             '<td>' +
+//             '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
+//             '<a href="newTo/' + owner.id + '" class="btn btn-default btn-sm"><i class="fa fa-envelope" aria-hidden="true"></i></a>' +
+//             '<a href="edit/' + owner.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>' +
+//             '<a href="delete/' + owner.id + '" class="btn btn-default btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></i></a>' +
+//             '</div>' +
+//             '</td>';
+//
+//         let row_children = newTableRow.children;
+//         for (let j = 0; j < row_children.length - 1; j++) {
+//             row_children[j].addEventListener('click', function () {
+//                 window.location.href = '/admin/owners/' + owner.id;
+//             });
+//         }
+//
+//         $ownersTable.append(newTableRow);
+//     }
+//     if (data.content.length === 0) {
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.innerHTML = '<td colspan=10>Ничего не найдено...</td>';
+//         $ownersTable.append(newTableRow);
+//     }
+//     drawPagination();
+// }
 
-        const buildingLinks = owner.buildings.map(function (buildingObject) {
-            return ('<p style="margin:0"><a href="/admin/buildings/' + buildingObject.id + '">' + buildingObject.name + '</a></p>')
-        });
-        const finalBuildingString = buildingLinks.join('');
-        const apartmentLinks = owner.apartments.map(function (apartmentObject) {
-            return ('<p style="margin:0; font-size:13px"><a href="/admin/apartments/' + apartmentObject.id + '">' + apartmentObject.fullName + '</a></p>')
-        });
-        const finalApartmentString = apartmentLinks.join('');
-
-        let newTableRow = document.createElement('tr');
-        newTableRow.style.cursor = 'pointer';
-        newTableRow.class = 'owner_row';
-        newTableRow.innerHTML = '<td>' + owner.id + '</td>' +
-            '<td>' + owner.fullName + '</td>' +
-            '<td>' + owner.phone_number + '</td>' +
-            '<td>' + owner.email + '</td>' +
-            '<td>' + finalBuildingString + '</td>' +
-            '<td>' + finalApartmentString + '</td>' +
-            '<td>' + owner.date + '</td>' +
-            '<td>' + owner.status + '</td>' +
-            '<td>' + owner.hasDebt + '</td>' +
-            '<td>' +
-            '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
-            '<a href="newTo/' + owner.id + '" class="btn btn-default btn-sm"><i class="fa fa-envelope" aria-hidden="true"></i></a>' +
-            '<a href="edit/' + owner.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>' +
-            '<a href="delete/' + owner.id + '" class="btn btn-default btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></i></a>' +
-            '</div>' +
-            '</td>';
-
-        let row_children = newTableRow.children;
-        for (let j = 0; j < row_children.length - 1; j++) {
-            row_children[j].addEventListener('click', function () {
-                window.location.href = '/admin/owners/' + owner.id;
-            });
-        }
-
-        $ownersTable.append(newTableRow);
-    }
-    if (data.content.length === 0) {
-        let newTableRow = document.createElement('tr');
-        newTableRow.innerHTML = '<td colspan=10>Ничего не найдено...</td>';
-        $ownersTable.append(newTableRow);
-    }
-    drawPagination();
-}
-
-function drawAdminsTable() {
-    let pageFiltersString = JSON.stringify(gatherFilters());
-    let data = getTableData('/admin/admins/get-admins', currentPageNumber, currentPageSize, pageFiltersString);
-    let $adminsTable = $("#adminsTable tbody");
-    $adminsTable.html('');
-    for (const admin of data.content) {
-        let newTableRow = document.createElement('tr');
-        newTableRow.style.cursor = 'pointer';
-        newTableRow.class = 'user-row';
-        newTableRow.innerHTML = '<td>' + admin.id + '</td>' +
-            '<td>' + admin.fullName + '</td>' +
-            '<td>' + admin.role + '</td>' +
-            '<td>' + admin.phone_number + '</td>' +
-            '<td>' + admin.email + '</td>' +
-            '<td>' + admin.active + '</td>' +
-            '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
-            '<a class="btn btn-default btn-sm invite_button" title="Отправить приглашение"><i class="fa fa-repeat"></i></a>' +
-            '<a href="/admin/admins/update/' + admin.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>' +
-            '<a href="/admin/admins/delete/' + admin.id + '" class="btn btn-default btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></i></a>' +
-            '</div>' +
-            '</td>';
-
-        let row_children = newTableRow.children;
-        for (let j = 0; j < row_children.length - 1; j++) {
-            row_children[j].addEventListener('click', function () {
-                window.location.href = '/admin/admins/' + admin.id;
-            });
-        }
-
-        $adminsTable.append(newTableRow);
-    }
-    if (data.content.length === 0) {
-        let newTableRow = document.createElement('tr');
-        newTableRow.innerHTML = '<td colspan=10>Ничего не найдено...</td>';
-        $adminsTable.append(newTableRow);
-    }
-    drawPagination();
-}
-
-function drawBuildingsTable() {
-
-    let pageFiltersString = JSON.stringify(gatherFilters());
-    let data = getTableData('/admin/buildings/get-buildings-page', currentPageNumber, currentPageSize, pageFiltersString);
-    let $buildingsTable = $("#buildingsTable tbody");
-    $buildingsTable.html('');
-    for (const building of data.content) {
-        let newTableRow = document.createElement('tr');
-        newTableRow.style.cursor = 'pointer';
-        newTableRow.class = 'building_row';
-        newTableRow.innerHTML = '<td>' + building.id + '</td>' +
-            '<td>' + building.name + '</td>' +
-            '<td>' + building.address + '</td>' +
-            '<td>' +
-            '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
-            '<a href="edit/' + building.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>' +
-            '<a href="delete/' + building.id + '" class="btn btn-default btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></i></a>' +
-            '</div>' +
-            '</td>';
-        let row_children = newTableRow.children;
-        for (let j = 0; j < row_children.length - 1; j++) {
-            row_children[j].addEventListener('click', function () {
-                window.location.href = '/admin/buildings/' + building.id;
-            });
-        }
-
-        $buildingsTable.append(newTableRow);
-    }
-    if (data.content.length === 0) {
-        let newTableRow = document.createElement('tr');
-        newTableRow.innerHTML = '<td colspan=4>Ничего не найдено...</td>';
-        $buildingsTable.append(newTableRow);
-    }
-    drawPagination();
-
-}
-
-function drawTransactionsTable() {
-
-    let pageFiltersString = JSON.stringify(gatherFilters());
-    let data = getTableData('/admin/cashbox/get-cashbox-page', currentPageNumber, currentPageSize, pageFiltersString);
-    let $cashboxTable = $("#cashboxTable tbody");
-    $cashboxTable.html('');
-    for (const cashbox of data.content) {
-        let date = new Date(cashbox.date);
-        let newTableRow = document.createElement('tr');
-        newTableRow.style.cursor = 'pointer';
-        newTableRow.class = 'cashbox_row';
-        let incomeExpenseItem = (cashbox.incomeExpenseItems) ? cashbox.incomeExpenseItems : notFoundText;
-        let ownerFullName = (cashbox.ownerFullName) ? cashbox.ownerFullName : notFoundText;
-        let apartmentAccount = (cashbox.apartmentAccount) ? cashbox.apartmentAccount : notFoundText;
-        newTableRow.innerHTML = '<td>' + cashbox.id + '</td>' +
-            '<td>' + date.toISOString().split('T')[0] + '</td>' +
-            '<td>' + ((cashbox.completed) ? 'Проведен' : 'Не проведен') + '</td>' +
-            '<td>' + incomeExpenseItem + '</td>' +
-            '<td>' + ownerFullName + '</td>' +
-            '<td>' + apartmentAccount + '</td>' +
-            '<td style="color: ' + (cashbox.amount > 0 ? 'green' : 'red') + '">' + cashbox.incomeExpenseType + '</td>' +
-            '<td style="color: ' + (cashbox.amount > 0 ? 'green' : 'red') + '">' + cashbox.amount + '</td>' +
-            '<td>' +
-            '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
-            '<a href="/admin/cashbox/edit/' + cashbox.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></a>' +
-            '<a href="/admin/cashbox/delete/' + cashbox.id + '" class="btn btn-default btn-sm"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
-            '</div>' +
-            '</td>';
-        let row_children = newTableRow.children;
-        for (let j = 0; j < row_children.length - 1; j++) {
-            row_children[j].addEventListener('click', function () {
-                window.location.href = '/admin/cashbox/' + cashbox.id;
-            });
-        }
-
-        $cashboxTable.append(newTableRow);
-    }
-    if (data.content.length === 0) {
-        let newTableRow = document.createElement('tr');
-        newTableRow.innerHTML = '<td colspan=9>Ничего не найдено...</td>';
-        $cashboxTable.append(newTableRow);
-    }
-    drawPagination();
-
-}
+// function drawAdminsTable() {
+//     let pageFiltersString = JSON.stringify(gatherFilters());
+//     let data = getTableData('/admin/admins/get-admins', currentPageNumber, currentPageSize, pageFiltersString);
+//     let $adminsTable = $("#adminsTable tbody");
+//     $adminsTable.html('');
+//     for (const admin of data.content) {
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.style.cursor = 'pointer';
+//         newTableRow.class = 'user-row';
+//         newTableRow.innerHTML = '<td>' + admin.id + '</td>' +
+//             '<td>' + admin.fullName + '</td>' +
+//             '<td>' + admin.role + '</td>' +
+//             '<td>' + admin.phone_number + '</td>' +
+//             '<td>' + admin.email + '</td>' +
+//             '<td>' + admin.active + '</td>' +
+//             '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
+//             '<a class="btn btn-default btn-sm invite_button" title="Отправить приглашение"><i class="fa fa-repeat"></i></a>' +
+//             '<a href="/admin/admins/update/' + admin.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>' +
+//             '<a href="/admin/admins/delete/' + admin.id + '" class="btn btn-default btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></i></a>' +
+//             '</div>' +
+//             '</td>';
+//
+//         let row_children = newTableRow.children;
+//         for (let j = 0; j < row_children.length - 1; j++) {
+//             row_children[j].addEventListener('click', function () {
+//                 window.location.href = '/admin/admins/' + admin.id;
+//             });
+//         }
+//
+//         $adminsTable.append(newTableRow);
+//     }
+//     if (data.content.length === 0) {
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.innerHTML = '<td colspan=10>Ничего не найдено...</td>';
+//         $adminsTable.append(newTableRow);
+//     }
+//     drawPagination();
+// }
+//
+// function drawBuildingsTable() {
+//
+//     let pageFiltersString = JSON.stringify(gatherFilters());
+//     let data = getTableData('/admin/buildings/get-buildings-page', currentPageNumber, currentPageSize, pageFiltersString);
+//     let $buildingsTable = $("#buildingsTable tbody");
+//     $buildingsTable.html('');
+//     for (const building of data.content) {
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.style.cursor = 'pointer';
+//         newTableRow.class = 'building_row';
+//         newTableRow.innerHTML = '<td>' + building.id + '</td>' +
+//             '<td>' + building.name + '</td>' +
+//             '<td>' + building.address + '</td>' +
+//             '<td>' +
+//             '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
+//             '<a href="edit/' + building.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></i></a>' +
+//             '<a href="delete/' + building.id + '" class="btn btn-default btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i></i></a>' +
+//             '</div>' +
+//             '</td>';
+//         let row_children = newTableRow.children;
+//         for (let j = 0; j < row_children.length - 1; j++) {
+//             row_children[j].addEventListener('click', function () {
+//                 window.location.href = '/admin/buildings/' + building.id;
+//             });
+//         }
+//
+//         $buildingsTable.append(newTableRow);
+//     }
+//     if (data.content.length === 0) {
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.innerHTML = '<td colspan=4>Ничего не найдено...</td>';
+//         $buildingsTable.append(newTableRow);
+//     }
+//     drawPagination();
+//
+// }
+//
+// function drawTransactionsTable() {
+//
+//     let pageFiltersString = JSON.stringify(gatherFilters());
+//     let data = getTableData('/admin/cashbox/get-cashbox-page', currentPageNumber, currentPageSize, pageFiltersString);
+//     let $cashboxTable = $("#cashboxTable tbody");
+//     $cashboxTable.html('');
+//     for (const cashbox of data.content) {
+//         let date = new Date(cashbox.date);
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.style.cursor = 'pointer';
+//         newTableRow.class = 'cashbox_row';
+//         let incomeExpenseItem = (cashbox.incomeExpenseItems) ? cashbox.incomeExpenseItems : notFoundText;
+//         let ownerFullName = (cashbox.ownerFullName) ? cashbox.ownerFullName : notFoundText;
+//         let apartmentAccount = (cashbox.apartmentAccount) ? cashbox.apartmentAccount : notFoundText;
+//         newTableRow.innerHTML = '<td>' + cashbox.id + '</td>' +
+//             '<td>' + date.toISOString().split('T')[0] + '</td>' +
+//             '<td>' + ((cashbox.completed) ? 'Проведен' : 'Не проведен') + '</td>' +
+//             '<td>' + incomeExpenseItem + '</td>' +
+//             '<td>' + ownerFullName + '</td>' +
+//             '<td>' + apartmentAccount + '</td>' +
+//             '<td style="color: ' + (cashbox.amount > 0 ? 'green' : 'red') + '">' + cashbox.incomeExpenseType + '</td>' +
+//             '<td style="color: ' + (cashbox.amount > 0 ? 'green' : 'red') + '">' + cashbox.amount + '</td>' +
+//             '<td>' +
+//             '<div class="btn-group" role="group" aria-label="Basic outlined button group">' +
+//             '<a href="/admin/cashbox/edit/' + cashbox.id + '" class="btn btn-default btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i></a>' +
+//             '<a href="/admin/cashbox/delete/' + cashbox.id + '" class="btn btn-default btn-sm"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
+//             '</div>' +
+//             '</td>';
+//         let row_children = newTableRow.children;
+//         for (let j = 0; j < row_children.length - 1; j++) {
+//             row_children[j].addEventListener('click', function () {
+//                 window.location.href = '/admin/cashbox/' + cashbox.id;
+//             });
+//         }
+//
+//         $cashboxTable.append(newTableRow);
+//     }
+//     if (data.content.length === 0) {
+//         let newTableRow = document.createElement('tr');
+//         newTableRow.innerHTML = '<td colspan=9>Ничего не найдено...</td>';
+//         $cashboxTable.append(newTableRow);
+//     }
+//     drawPagination();
+//
+// }
 
 function drawTable() {
 
