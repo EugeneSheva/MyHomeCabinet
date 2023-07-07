@@ -1,36 +1,40 @@
 var stompClient = null;
-
 function connect() {
     // var socket = new SockJS('http://localhost:8888/myhome/websocket');
     var socket = new SockJS('http://slj.avada-media-dev1.od.ua:9002/myhome/websocket');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
-        console.log('Connected CAB: ' + frame);
         stompClient.subscribe('/topic/messages', function (messageItem) {
-            console.log("поймано изменение")
-            console.log(messageItem)
-            if (typeof globalTableName !== 'undefined' && globalTableName != null && globalTableName === 'messagesCabinet') processReceivedMessageItem(messageItem);
-            // processReceivedMessageItem(messageItem);
-            var element = document.getElementById("bell");
-            element.style.color = "orange";
-            updateNewMessage();
-            console.log('globalTableName' + globalTableName);
+
+            $.ajax({
+                url: '/myhomecab/cabinet/get-unread-messages',
+                async: false,
+                type: 'GET',
+                success: function(response) {
+                    unreadMessId = response;
+                },
+            })
+
+            var mewMessId = JSON.parse(messageItem.body).id
+            for (let i = 0; i < unreadMessId.length; i++) {
+                if (unreadMessId[i] === mewMessId) {
+                    if (typeof globalTableName !== 'undefined' && globalTableName != null && globalTableName === 'messagesCabinet') processReceivedMessageItem(messageItem);
+                    // processReceivedMessageItem(messageItem);
+                    var element = document.getElementById("bell");
+                    element.style.color = "orange";
+                    updateNewMessage();
+                }
+            }
         });
     });
 }
+
 function updateNewMessage() {
     var newMsgElement = document.getElementById("new_msg");
-console.log('unreadMessageQuantity '+unreadMessageQuantity);
-
-
 
     var newMessageQuantity = parseInt(unreadMessageQuantity) +1;
 
-    console.log('newMessageQuantity '+newMessageQuantity);
-
     var currentLocale = navigator.language;
-
-    console.log('currentLocale' + currentLocale);
 
     if (currentLocale === 'uk-UA') {
         if (newMessageQuantity > 0) {
@@ -47,13 +51,10 @@ console.log('unreadMessageQuantity '+unreadMessageQuantity);
     }
 }
 function processReceivedMessageItem(item) {
-    console.log('msg 2'+JSON.parse(item.body));
     drawNewMessageRow(JSON.parse(item.body));
 
 }
 function drawNewMessageRow(msg) {
-    console.log("draw msg table with web socket")
-    console.log('msg success');
 
     let newTableRow = document.createElement('tr');
     newTableRow.style.cursor = 'pointer';
@@ -66,8 +67,7 @@ function drawNewMessageRow(msg) {
     if (newText.length == 70) {
         newText += '...'
     }
-    console.log("msg.subject " + msg.subject)
-    console.log("newText " + newText)
+
     newTableRow.innerHTML =
         '<td><input type="checkbox" name="" id="" value="' + msg.id + '"></td>' +
         '<td>' + msg.sender.full_name + '</td>' +
@@ -80,7 +80,6 @@ function drawNewMessageRow(msg) {
         });
     }
 
-    console.log('msg drawed');
     $("#messageTable tbody").prepend(newTableRow);
 
 }
