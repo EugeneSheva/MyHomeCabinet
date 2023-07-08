@@ -94,6 +94,8 @@ public class PersonalCabinetController {
     public String getStartPage(Model model, Principal principal) {
         OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
         model.addAttribute("owner", ownerDTO);
+        System.out.println("ownerDTO" + ownerDTO);
+        System.out.println("ownerDTO.getApartments()" + ownerDTO.getApartments());
         if (ownerDTO.getApartments() != null && ownerDTO.getApartments().size() > 0) {
             model.addAttribute("apartment", apartmentService.findApartmentDto(ownerDTO.getApartments().get(0).getId()));
             model.addAttribute("apartmentBalance", apartmentService.findById(ownerDTO.getApartments().get(0).getId()).getAccount().getBalance());
