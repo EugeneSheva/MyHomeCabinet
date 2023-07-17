@@ -17,11 +17,8 @@ import java.util.List;
 @Component
 public class ApartmentDTOMapper {
     @Autowired
-    private final BuildingDTOMapper buildingDTOMapper;
+    private  BuildingDTOMapper buildingDTOMapper;
 
-    public ApartmentDTOMapper(BuildingDTOMapper buildingDTOMapper) {
-        this.buildingDTOMapper = buildingDTOMapper;
-    }
 
     public Apartment fromDTOToApartment(ApartmentDTO dto) {
 

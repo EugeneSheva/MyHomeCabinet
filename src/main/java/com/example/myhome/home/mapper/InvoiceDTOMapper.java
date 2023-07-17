@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class InvoiceDTOMapper {
 
-    private final BuildingRepository buildingRepository;
-    private final AccountRepository accountRepository;
-    private final OwnerRepository ownerRepository;
-    private final ApartmentRepository apartmentRepository;
+    private  BuildingRepository buildingRepository;
+    private  AccountRepository accountRepository;
+    private  OwnerRepository ownerRepository;
+    private  ApartmentRepository apartmentRepository;
 
     public Invoice fromDTOToInvoice(InvoiceDTO dto) {
         if(dto == null) return null;

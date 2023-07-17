@@ -35,6 +35,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.w3c.dom.ls.LSOutput;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -139,27 +140,20 @@ public class PersonalCabinetController {
     }
 
     @GetMapping("/invoices")
-    public String getInvoicePageByOwner(Model model, FilterForm form, Principal principal) {
-        Page<Invoice> invoices;
-        if (form.getPage() == null) invoices = invoiceService.findAllBySpecificationAndPage(form, 1, 10);
-        else invoices = invoiceService.findAllBySpecificationAndPage(form, form.getPage() - 1, 10);
-        model.addAttribute("totalPagesCount", invoices.getTotalPages());
-        model.addAttribute("filter_form", form);
+    public String getInvoicePageByOwner(Model model, Principal principal) {
         OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
         model.addAttribute("owner", ownerDTO);
-        model.addAttribute("invoiceList", invoices);
         model.addAttribute("invoicesPageActive", true);
         model.addAttribute("allInvoicesPageActive", true);
         return "cabinet/invoices";
     }
 
+
+
     @GetMapping("/invoices/{id}")
     public String getInvoicePageByApartment(@PathVariable long id, Model model, Principal principal) {
         OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
         model.addAttribute("owner", ownerDTO);
-        List<Invoice> invoiceList = invoiceService.findAllByApartmentId(id);
-        model.addAttribute("invoiceList", invoiceList);
-        model.addAttribute("apart", apartmentService.findApartmentDto(id));
         model.addAttribute("invoicesPageActive", true);
         model.addAttribute("apartmentId", id);
         return "cabinet/invoices";
@@ -176,6 +170,15 @@ public class PersonalCabinetController {
         return "cabinet/invoice_card";
     }
 
+    @GetMapping(value = "/get-invoices-cabinet")
+    public @ResponseBody Page<InvoiceDTO> getInvoices(@RequestParam Integer page, @RequestParam Integer size,
+                                                      @RequestParam String filters, Principal principal) throws JsonProcessingException {
+        Owner owner = ownerService.findByLogin(principal.getName());
+        ObjectMapper mapper = new ObjectMapper();
+        FilterForm form = mapper.readValue(filters, FilterForm.class);
+        return invoiceService.findAllBySpecificationAndPageCabinet(form, page, size, owner);
+    }
+
     @GetMapping("/tariffs/{id}")
     public String getTariffsPage(@PathVariable long id, Model model, Principal principal) {
         OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
@@ -189,10 +192,9 @@ public class PersonalCabinetController {
     }
 
     @GetMapping("/messages")
-    public String getMessagesPage(Model model, Principal principal, @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 10) Pageable pageable) {
+    public String getMessagesPage(Model model, Principal principal) {
         OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
         model.addAttribute("owner", ownerDTO);
-        List<Message> messagesList = ownerService.findOwnerDTObyEmailWithMessages(principal.getName()).getMessages();
 
         List<Long> unreadMessagesId = ownerService
                 .findByLogin(principal.getName())
@@ -200,11 +202,7 @@ public class PersonalCabinetController {
                 .stream()
                 .map(Message::getId)
                 .collect(Collectors.toList());
-        Page<Message> messagesListPage = new PageImpl<>(messagesList, pageable, messagesList.size());
         model.addAttribute("unreadMessagesId", unreadMessagesId);
-
-        model.addAttribute("messages", messagesListPage);
-        model.addAttribute("totalPagesCount", messagesListPage.getTotalPages());
         model.addAttribute("filterForm", new FilterForm());
         model.addAttribute("messagesPageActive", true);
         return "cabinet/messages";
@@ -246,6 +244,27 @@ public class PersonalCabinetController {
         }
     }
 
+    @GetMapping("/get-messages")
+    public @ResponseBody Page<Message> getMessages(@RequestParam Integer page,
+                                                   @RequestParam Integer size,
+                                                   @RequestParam String filters, Principal principal) throws JsonProcessingException {
+        Owner owner = ownerService.findByLogin(principal.getName());
+        ObjectMapper mapper = new ObjectMapper();
+        FilterForm form = mapper.readValue(filters, FilterForm.class);
+        return messageService.findAllBySpecification(form, page, size, owner.getId());
+    }
+
+    @GetMapping("/get-unread-messages")
+    public @ResponseBody List<Long> getUnreadMessages(Principal principal) throws JsonProcessingException {
+        List<Long> unreadMessagesId = ownerService
+                .findByLogin(principal.getName())
+                .getUnreadMessages()
+                .stream()
+                .map(Message::getId)
+                .collect(Collectors.toList());
+        return unreadMessagesId;
+    }
+
 
     @GetMapping("/requests")
     public String getRequestPage(Model model, Principal principal) {
@@ -279,7 +298,7 @@ public class PersonalCabinetController {
     //
     @PostMapping("/request/save")
     public String saveRequest(@ModelAttribute RepairRequest request,
-                              BindingResult bindingResult, @RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam("master") Long master,
+                              BindingResult bindingResult, @RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam(name="master", defaultValue = "0") Long master,
                               @RequestParam(name = "apartment", defaultValue = "0") Long apartmentId, @RequestParam("description") String description,
                               @RequestParam("date") String date, @RequestParam("time") String time, Principal principal, Model model) throws IOException {
 
@@ -298,6 +317,7 @@ public class PersonalCabinetController {
         repairRequest.setRequest_date(LocalDateTime.now());
         repairRequest.setPhone_number(owner.getPhone_number());
 
+        System.out.println(repairRequest);
         validator.validate(repairRequest, bindingResult);
         if (bindingResult.hasErrors()) {
             OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
@@ -337,7 +357,7 @@ public class PersonalCabinetController {
     }
 
     @PostMapping("/user/save")
-    public String saveCoffee(@Valid @ModelAttribute("owner") OwnerDTO owner, BindingResult bindingResult, @RequestParam("img1") MultipartFile file, @RequestParam("newPassword") String newPassword, @RequestParam("repassword") String repassword, Principal principal) throws IOException {
+    public String saveOwner(@Valid @ModelAttribute("owner") OwnerDTO owner, BindingResult bindingResult, @RequestParam("img1") MultipartFile file, @RequestParam("newPassword") String newPassword, @RequestParam("repassword") String repassword, Principal principal) throws IOException {
         Locale locale = LocaleContextHolder.getLocale();
         Owner newOwner = ownerDTOMapper.toEntityСabinetEditProfile(owner);
         ownerValidator.validate(newOwner, bindingResult);
@@ -348,12 +368,13 @@ public class PersonalCabinetController {
             }
         }
         if (bindingResult.hasErrors()) {
-            System.out.println("bindingResult " + bindingResult);
-            return "cabinet/user_edit";
+                        return "cabinet/user_edit";
         } else if (!newPassword.equals(repassword)) {
+
             return "cabinet/user_edit";
         } else {
             Owner oldOwner = ownerService.findById(owner.getId());
+
             newOwner.setProfile_picture(ownerService.saveOwnerImage(owner.getId(), file));
             newOwner.setEnabled(oldOwner.getEnabled());
             if (newPassword != null && newPassword.length() > 0) {
@@ -372,34 +393,7 @@ public class PersonalCabinetController {
         return "redirect:/cabinet/user/view";
     }
 
-    @GetMapping(value = "/get-invoices-cabinet")
-    public @ResponseBody Page<InvoiceDTO> getInvoices(@RequestParam Integer page, @RequestParam Integer size,
-                                                      @RequestParam String filters, Principal principal) throws JsonProcessingException {
-        System.out.println("AJAX page size filter " + page + " " + size + " " + filters);
-        Owner owner = ownerService.findByLogin(principal.getName());
-        ObjectMapper mapper = new ObjectMapper();
-        FilterForm form = mapper.readValue(filters, FilterForm.class);
-        return invoiceService.findAllBySpecificationAndPageCabinet(form, page, size, owner);
-    }
 
-    @GetMapping("/get-messages")
-    public @ResponseBody Page<Message> getMessages(@RequestParam Integer page,
-                                                   @RequestParam Integer size,
-                                                   @RequestParam String filters, Principal principal) throws JsonProcessingException {
-        Owner owner = ownerService.findByLogin(principal.getName());
-        ObjectMapper mapper = new ObjectMapper();
-        FilterForm form = mapper.readValue(filters, FilterForm.class);
-        return messageService.findAllBySpecification(form, page, size, owner.getId());
-    }
 
-    @GetMapping("/get-unread-messages")
-    public @ResponseBody List<Long> getUnreadMessages(Principal principal) throws JsonProcessingException {
-        List<Long> unreadMessagesId = ownerService
-                .findByLogin(principal.getName())
-                .getUnreadMessages()
-                .stream()
-                .map(Message::getId)
-                .collect(Collectors.toList());
-        return unreadMessagesId;
-    }
+
 }

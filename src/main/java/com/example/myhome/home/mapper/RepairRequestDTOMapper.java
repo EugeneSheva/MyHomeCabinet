@@ -4,6 +4,7 @@ import com.example.myhome.home.dto.RepairRequestDTO;
 import com.example.myhome.home.model.*;
 import com.example.myhome.home.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
@@ -15,8 +16,10 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 public class RepairRequestDTOMapper {
 
-    private final UserRoleRepository repository;
-    private final MessageSource messageSource;
+    @Autowired
+    private  UserRoleRepository repository;
+    @Autowired
+    private  MessageSource messageSource;
 
     public RepairRequest fromDTOToRequest(RepairRequestDTO dto) {
         if(dto == null) return null;
@@ -45,7 +48,9 @@ public class RepairRequestDTOMapper {
         Long masterID = (request.getMaster() != null) ? request.getMaster().getId() : null;
         String masterFullName = (request.getMaster() != null) ? request.getMaster().getFullName() : null;
         Long masterTypeID = (request.getMaster_type() != null) ? request.getMaster_type().getId() : null;
-        String masterTypeName = (request.getMaster_type() != null) ? request.getMaster_type().getName() : messageSource.getMessage("any_specialist", null, LocaleContextHolder.getLocale());
+        System.out.println("request. " + request);
+        System.out.println("request.getMaster_type() " + request.getMaster_type());
+        String masterTypeName = (request.getMaster_type() != null && request.getMaster_type().getName() != null) ? request.getMaster_type().getName() : messageSource.getMessage("any_specialist", null, LocaleContextHolder.getLocale());
 
         return RepairRequestDTO.builder()
                 .id(request.getId())

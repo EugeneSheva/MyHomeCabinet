@@ -8,11 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class OwnerDTOMapper {
     @Autowired
-    private final ApartmentDTOMapper apartmentMapper;
+    private  ApartmentDTOMapper apartmentMapper;
 
-    public OwnerDTOMapper(ApartmentDTOMapper apartmentMapper) {
-        this.apartmentMapper = apartmentMapper;
-    }
 
     public Owner fromDTOToOwner(OwnerDTO dto){
 
