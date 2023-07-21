@@ -74,7 +74,7 @@
                                           <td><input type="date" class="my_filters"  id="date" name="date" style="width:100%; padding-block: 10px; padding-top: 5px; padding-bottom: 6px;"></td>
                                           <td>
                                               <select class="my_filters" id="status" name>
-                                                  <option value="" th:text="#{choise}">Выберите...</option>
+                                                  <option value="" disabled selected hidden></option>
                                                   <option th:each="status : ${T(com.example.myhome.home.model.InvoiceStatus).values()}"
                                                           th:value="${status}"
                                                           th:text="${status.name}"></option>
@@ -146,6 +146,21 @@
     let globalTableName = 'invoicesInCabinet';
     let totalPagesCount = [[${totalPagesCount}]];
     let tableData;
+
+    let paid;
+    let unpaid;
+    let partpaid;
+
+    if ([[${#locale.language == 'ru'}]]) {
+        paid = 'Оплачена';
+        unpaid = 'Не оплачена';
+        partpaid = 'Частично оплачена';
+
+    } else if ([[${#locale.language == 'uk'}]]) {
+        paid = 'Сплачена';
+        unpaid = 'Не сплачена';
+        partpaid = 'Частково сплачена';
+    }
 
     $(document).ready(function(){
 

@@ -385,15 +385,20 @@ function drawInvoicesInCabinetTable() {
     for (const invoice of data.content) {
         let date = new Date(invoice.date);
         date.setDate(date.getDate() + 1);
+        let day = date.getDate().toString().padStart(2, '0');
+        let month = (date.getMonth() + 1).toString().padStart(2, '0');
+        let year = date.getFullYear();
+        let formattedDate = day + '-' + month + '-' + year;
+
         let newTableRow = document.createElement('tr');
         newTableRow.style.cursor = 'pointer';
         newTableRow.class = 'invoice_row';
         newTableRow.innerHTML =
             '<td>' + invoice.id.toString().padStart(10, '0') + '</td>' +
-            '<td>' + date.toISOString().split('T')[0] + '</td>' +
+            '<td>' + formattedDate + '</td>' +
             '<td>' +
             '<small class="label ' + (invoice.status == 'PAID' ? 'label-success' : invoice.status == 'UNPAID' ? 'label-danger' : 'label-warning') + '">' +
-            invoice.status +
+            (invoice.status == 'PAID' ? paid : invoice.status == 'UNPAID' ? unpaid : partpaid) +
             '</small>' +
             '</td>' +
             '<td><span>' + invoice.total_price.toString() + '</span></td>';

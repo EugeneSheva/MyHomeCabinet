@@ -56,7 +56,7 @@
                       <h5 th:text="${message.sender.getFullName()}"><span class="mailbox-read-time pull-right" th:text="${message.date}">17.08.2022 - 16:46</span>
                       </h5>
                   </div>
-                  <div class="mailbox-read-message" th:text="${message.text}">
+                  <div class="mailbox-read-message" th:utext="${message.text}">
                   </div>
               </div>
               <div class="box-footer">

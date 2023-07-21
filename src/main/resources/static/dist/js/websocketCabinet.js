@@ -76,7 +76,7 @@ function drawNewMessageRow(msg) {
     let row_children = newTableRow.children;
     for (let j = 1; j < row_children.length - 1; j++) {
         row_children[j].addEventListener('click', function () {
-            window.location.href = '/admin/messages/' + msg.id;
+            window.location.href = '/myhomecab/admin/messages/' + msg.id;
         });
     }
 
