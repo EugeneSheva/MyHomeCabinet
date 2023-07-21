@@ -84,7 +84,11 @@ public class MappingUtils {
         dto.setBuilding(new BuildingDTO(apartment.getBuilding().getId(),apartment.getBuilding().getName()));
 //        dto.setFullName("кв. " + dto.getNumber() + ", " + dto.getBuilding().getName());
 //        dto.setBuilding(fromBuildingToDTO(apartment.getBuilding()));
-        dto.setAccountNo(apartment.getAccount().getId());
+        if (apartment.getAccount() != null) {
+            dto.setAccountNo(apartment.getAccount().getId());
+        } else {
+            dto.setAccountNo(0L);
+        }
 //        dto.setOwner(fromOwnerToDTO(apartment.getOwner()));
 
         return dto;

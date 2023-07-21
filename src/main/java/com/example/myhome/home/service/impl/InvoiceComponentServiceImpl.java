@@ -16,23 +16,6 @@ public class InvoiceComponentServiceImpl {
     @Autowired
     private InvoiceComponentRepository invoiceComponentRepository;
 
-
-    public List<InvoiceComponents> findAll() {
-        return invoiceComponentRepository.findAll();
-    }
-
-    public InvoiceComponents findAdminById(Long id) {
-        return invoiceComponentRepository.findById(id).orElseThrow(NotFoundException::new);
-    }
-
-    public InvoiceComponents save(InvoiceComponents invoiceComponents) {
-        return invoiceComponentRepository.save(invoiceComponents);
-    }
-
-    public void deleteById(Long id) {
-        invoiceComponentRepository.deleteById(id);
-    }
-
     public Map<String, Double> findExprncesLastMonthByApartment(Long id) {
         Integer year = LocalDate.now().getYear();
         Integer lastMonthValue = LocalDate.now().minusMonths(1).getMonthValue();

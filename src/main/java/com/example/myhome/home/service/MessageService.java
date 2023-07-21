@@ -10,13 +10,8 @@ import java.util.List;
 public interface MessageService {
     Message findById(Long id);
 
-    List<Message> findAll();
-
     Message save(Message message);
-
-    void deleteById(Long id);
 
     Page<Message> findAllBySpecification(FilterForm form, Integer page, Integer size, Long ownerId);
 
-    Page<Message> findAll(Pageable pageable);
 }

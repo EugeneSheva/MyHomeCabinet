@@ -48,9 +48,7 @@ public class RepairRequestDTOMapper {
         Long masterID = (request.getMaster() != null) ? request.getMaster().getId() : null;
         String masterFullName = (request.getMaster() != null) ? request.getMaster().getFullName() : null;
         Long masterTypeID = (request.getMaster_type() != null) ? request.getMaster_type().getId() : null;
-        System.out.println("request. " + request);
-        System.out.println("request.getMaster_type() " + request.getMaster_type());
-        String masterTypeName = (request.getMaster_type() != null && request.getMaster_type().getName() != null) ? request.getMaster_type().getName() : messageSource.getMessage("any_specialist", null, LocaleContextHolder.getLocale());
+        String masterTypeName = (request.getMaster_type() != null && request.getMaster_type().getName() != null) ? (request.getMaster_type().equals("ELECTRICIAN") ? messageSource.getMessage("electrican", null, LocaleContextHolder.getLocale()) :  messageSource.getMessage("plumber", null, LocaleContextHolder.getLocale())) : messageSource.getMessage("any_specialist", null, LocaleContextHolder.getLocale());
 
         return RepairRequestDTO.builder()
                 .id(request.getId())

@@ -13,74 +13,98 @@ import java.util.regex.Pattern;
 public class OwnerValidator implements Validator {
 
 
-        public boolean supports(Class clazz) {
-            return Owner.class.equals(clazz);
-        }
+    public boolean supports(Class clazz) {
+        return Owner.class.equals(clazz);
+    }
 
     @Override
     public void validate(Object obj, Errors e) {
         Owner owner = (Owner) obj;
-        if (owner.getFirst_name() == null ||  owner.getFirst_name().isEmpty()) {
+        if (owner.getFirst_name() == null || owner.getFirst_name().isEmpty()) {
             e.rejectValue("first_name", "first_name.empty", "Заполните поле");
-        } else if  (owner.getFirst_name().length()<2) {
+        } else if (owner.getFirst_name().length() < 2) {
             e.rejectValue("first_name", "first_name.empty", "Поле должно быть минимум 2 символа");
-        }  else if  (owner.getFirst_name().length()>50) {
-            e.rejectValue("first_name", "first_name.empty", "Слишком длинный текст");
+        } else if (owner.getFirst_name().length() > 50) {
+            e.rejectValue("first_name", "first_name.empty", "Слишком длинный текст (Максимум 50 символов)");
         }
-        if (owner.getLast_name() == null ||  owner.getLast_name().isEmpty()) {
+
+
+        if (owner.getLast_name() == null || owner.getLast_name().isEmpty()) {
             e.rejectValue("last_name", "last_name.empty", "Заполните поле");
-        } else if  (owner.getLast_name().length()<2) {
+        } else if (owner.getLast_name().length() < 2) {
             e.rejectValue("last_name", "last_name.empty", "Поле должно быть минимум 2 символа");
-        } else if  (owner.getLast_name().length()>50) {
-            e.rejectValue("last_name", "last_name.empty", "Слишком длинный текст");
+        } else if (owner.getLast_name().length() > 50) {
+            e.rejectValue("last_name", "last_name.empty", "Слишком длинный текст (Максимум 50 символов)");
         }
-        if (owner.getFathers_name().length()>50) {
-            e.rejectValue("fathers_name", "fathers_name.empty", "Слишком длинный текст");
+
+
+        if (owner.getFathers_name().length() > 50) {
+            e.rejectValue("fathers_name", "fathers_name.empty", "Слишком длинный текст (Максимум 50 символов)");
         }
+
+
 //        if (owner.getFathers_name() == null ||  owner.getFathers_name().isEmpty()) {
 //            e.rejectValue("fathers_name", "fathers_name.empty", "Заполните поле");
 //        } else if  (owner.getFathers_name().length()<2) {
 //            e.rejectValue("fathers_name", "fathers_name.empty", "Поле должно быть минимум 2 символа");
 //        }
+
+
         if (owner.getBirthdate() == null) {
             e.rejectValue("birthdate", "birthdate.empty", "Заполните поле");
-        } else if  (owner.getBirthdate().isAfter(LocalDate.now().minusYears(18L))) {
+        } else if (owner.getBirthdate().isAfter(LocalDate.now().minusYears(18L))) {
             e.rejectValue("birthdate", "birthdate.empty", "Пользователь должен быть совершеннолетним");
-        } else if  (owner.getBirthdate().isBefore(LocalDate.now().minusYears(120))) {
+        } else if (owner.getBirthdate().isBefore(LocalDate.now().minusYears(120))) {
             e.rejectValue("birthdate", "birthdate.empty", "Введите актуальную дату");
         }
 
-        if (owner.getPhone_number() == null ||  owner.getPhone_number().isEmpty()) {
+
+        if (owner.getPhone_number() == null || owner.getPhone_number().isEmpty()) {
             e.rejectValue("phone_number", "phone_number.empty", "Заполните поле");
-        } else if  (owner.getPhone_number().length()!=10) {
+        } else if (owner.getPhone_number().length() != 10) {
             e.rejectValue("phone_number", "phone_number.empty", "Размер поля 10 символов. Пример \"0630636363\".");
         }
 
-        if (owner.getViber() != null && owner.getViber().length()!=10) {
-            e.rejectValue("viber", "viber.empty", "Размер поля 10 символов");
+
+        if (owner.getViber() != null && owner.getViber().length() > 0) {
+            if (owner.getViber().length() != 10) {
+                e.rejectValue("viber", "viber.empty", "Размер поля 10 символов");
+            }
         }
 
-        if (owner.getTelegram() != null && owner.getTelegram().length()!=10) {
-            e.rejectValue("telegram", "telegram.empty", "Размер поля 10 символов");
+
+        if (owner.getTelegram() != null && owner.getTelegram().length() > 0) {
+            if (owner.getTelegram().length() != 10) {
+                e.rejectValue("telegram", "telegram.empty", "Размер поля 10 символов");
+            }
         }
 
-        if (owner.getEmail() == null ||  owner.getEmail().isEmpty()) {
+
+        if (owner.getEmail() == null || owner.getEmail().isEmpty()) {
             e.rejectValue("email", "email.empty", "Заполните поле");
-        } else if  (!isValidEmailAdress(owner.getEmail()) ) {
+        } else if (!isValidEmailAdress(owner.getEmail())) {
             e.rejectValue("email", "email.empty", "Неверный формат Email.");
-        } else if  (owner.getEmail().length() > 50) {
+        } else if (owner.getEmail().length() > 50) {
             e.rejectValue("email", "email.empty", "Слишком длинный текст.");
         }
-        if (owner.getDescription() != null && owner.getDescription().length()>200) {
-            e.rejectValue("description", "description.empty", "Слишком длинный текст");
+
+
+        if (owner.getDescription() != null && owner.getDescription().length() > 200) {
+            e.rejectValue("description", "description.empty", "Слишком длинный текст (Максимум 200 символов)");
         }
-        if (owner.getPassword() != null && owner.getPassword().length()>50) {
-            e.rejectValue("password", "password.empty", "Слишком длинный текст");
+
+
+        if (owner.getPassword() != null && owner.getPassword().length() > 0) {
+            if (owner.getPassword() != null && owner.getPassword().length() > 25) {
+                e.rejectValue("password", "password.empty", "Слишком длинный текст  (Максимум 25 символов)");
+            } else if (owner.getPassword() != null && owner.getPassword().length() < 8) {
+                e.rejectValue("password", "password.empty", "Минимум 8 символов");
+            }
         }
     }
 
     private boolean isValidEmailAdress(String email) {
-        Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9._-]+$");
+        Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9_-]+$");
         Pattern DOMAIN_PATTERN = Pattern.compile("^[A-Za-z0-9._-]+$");
 
         if (email == null || email.isBlank()) {
@@ -94,13 +118,36 @@ public class OwnerValidator implements Validator {
 
         String username = emailParts[0];
         String domain = emailParts[1];
+        System.out.println("username " + username);
+        System.out.println("domain " + domain);
 
-        if (username.length() > 25 || username.length() < 1 || !USERNAME_PATTERN.matcher(username).matches()) {
+
+        String[] domainParts = domain.split("\\.");
+
+        if (domainParts.length != 2) {
+            System.out.println("нет точки");
+            return false;
+        }
+        String domain1lvl = domainParts[1];
+        String domain2lvl = domainParts[0];
+
+
+        if (username.length() > 24 || username.length() < 1 || !USERNAME_PATTERN.matcher(username).matches()) {
             return false;
         }
         if (domain.length() > 15 || domain.length() < 2 || !DOMAIN_PATTERN.matcher(domain).matches()) {
             return false;
         }
+        if (domain1lvl.length() > 13 || domain1lvl.length() < 2) {
+            System.out.println("domain1lvl");
+            return false;
+        }
+        if (domain2lvl.length() > 12 || domain2lvl.length() < 1) {
+            System.out.println("domain2lvl");
+            return false;
+        }
+
+
         return true;
     }
 

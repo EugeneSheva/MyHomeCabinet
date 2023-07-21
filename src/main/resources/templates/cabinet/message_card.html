@@ -60,7 +60,7 @@
                   </div>
               </div>
               <div class="box-footer">
-                  <a href="/cabinet/message/delete/194" data-confirm="Удалить?" data-method="post">
+                  <a th:href="@{/cabinet/message/delete/{id}(id=${message.id})}" data-confirm="Удалить?" data-method="post">
                       <button type="button" class="btn btn-default"><i class="fa fa-trash-o" th:text="#{delete}"></i></button>
                   </a>
               </div>

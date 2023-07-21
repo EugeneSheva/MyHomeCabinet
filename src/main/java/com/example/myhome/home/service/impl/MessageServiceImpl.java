@@ -22,19 +22,11 @@ public class MessageServiceImpl implements MessageService {
     private String uploadPath;
     private final MessageRepository messageRepository;
 
-
     @Override
     public Message findById(Long id) { return messageRepository.findById(id).orElseThrow(() -> new NotFoundException());}
 
     @Override
-    public List<Message> findAll() { return messageRepository.findAll(); }
-
-    @Override
     public Message save(Message message) { return messageRepository.save(message); }
-
-    @Override
-    public void deleteById(Long id) { messageRepository.deleteById(id); }
-
 
     @Override
     public Page<Message> findAllBySpecification(FilterForm form, Integer page, Integer size, Long ownerId) {
@@ -46,8 +38,5 @@ public class MessageServiceImpl implements MessageService {
         return messageList;
     }
 
-    @Override
-    public Page<Message> findAll(Pageable pageable) {
-        return messageRepository.findAll(pageable);
-    }
+
 }

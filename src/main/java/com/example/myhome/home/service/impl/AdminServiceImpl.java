@@ -61,11 +61,11 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    @Override
-    public AdminDTO findAdminDTOById(Long id) {
-        Admin admin = findAdminById(id);
-        return mapper.fromAdminToDTO(admin);
-    }
+//    @Override
+//    public AdminDTO findAdminDTOById(Long id) {
+//        Admin admin = findAdminById(id);
+//        return mapper.fromAdminToDTO(admin);
+//    }
 
     @Override
     public Admin findAdminByLogin(String login) {
@@ -81,207 +81,199 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    @Override
-    public List<Admin> findAll() {
-        log.info("Getting all admins...");
-        List<Admin> list = adminRepository.findAll();
-        log.info("Found " + list.size() + " elements");
-        return list;
-    }
+//    @Override
+//    public List<Admin> findAll() {
+//        log.info("Getting all admins...");
+//        List<Admin> list = adminRepository.findAll();
+//        log.info("Found " + list.size() + " elements");
+//        return list;
+//    }
+//
+//    @Override
+//    public Page<Admin> findAll(Pageable pageable) {
+//        log.info("Getting all admins...");
+//        Page<Admin> initialPage = adminRepository.findAll(pageable);
+//        log.info("Found " + initialPage.getContent().size() + " elements (page " + pageable.getPageNumber()+1 + "/" + initialPage.getTotalPages() + ")");
+//        return initialPage;
+//    }
 
-    @Override
-    public Page<Admin> findAll(Pageable pageable) {
-        log.info("Getting all admins...");
-        Page<Admin> initialPage = adminRepository.findAll(pageable);
-        log.info("Found " + initialPage.getContent().size() + " elements (page " + pageable.getPageNumber()+1 + "/" + initialPage.getTotalPages() + ")");
-        return initialPage;
-    }
+//    @Override
+//    public List<AdminDTO> findAllDTO(){
+//        log.info("Getting all admins...");
+//        List<Admin> initialList = adminRepository.findAll();
+//        log.info("Found " + initialList.size() + " elements");
+//        initialList.forEach(System.out::println);
+//        return initialList.stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
+//    }
+//
+//    @Override
+//    public Page<AdminDTO> findAllDTO(Pageable pageable) {
+//        log.info("Getting all admins...");
+//        Page<Admin> initialPage = adminRepository.findAll(pageable);
+//        log.info("Found " + initialPage.getContent().size() + " elements (page " + pageable.getPageNumber()+1 + "/" + initialPage.getTotalPages() + ")");
+//        List<AdminDTO> listDTO = initialPage.getContent().stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
+//        log.info("Turned admins from DB into DTOs");
+//        return new PageImpl<>(listDTO, pageable, initialPage.getTotalPages());
+//    }
 
-    @Override
-    public List<AdminDTO> findAllDTO(){
-        log.info("Getting all admins...");
-        List<Admin> initialList = adminRepository.findAll();
-        log.info("Found " + initialList.size() + " elements");
-        initialList.forEach(System.out::println);
-        return initialList.stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
-    }
+//    @Override
+//    public Page<AdminDTO> findAllByFiltersAndPage(FilterForm filters, Pageable pageable) throws IllegalAccessException {
+//        log.info("Getting admins by specified filters and page...");
+//        Page<Admin> initialPage = adminRepository.findAll(buildSpecFromFilters(filters), pageable);
+//        log.info("Found " + initialPage.getContent().size() + " elements (page " + pageable.getPageNumber()+1 + "/" + initialPage.getTotalPages() + ")");
+//        List<AdminDTO> listDTO = initialPage.getContent().stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
+//        log.info("Turned admins from DB into DTOs");
+//        return new PageImpl<>(listDTO, pageable, initialPage.getTotalPages());
+//    }
 
-    @Override
-    public Page<AdminDTO> findAllDTO(Pageable pageable) {
-        log.info("Getting all admins...");
-        Page<Admin> initialPage = adminRepository.findAll(pageable);
-        log.info("Found " + initialPage.getContent().size() + " elements (page " + pageable.getPageNumber()+1 + "/" + initialPage.getTotalPages() + ")");
-        List<AdminDTO> listDTO = initialPage.getContent().stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
-        log.info("Turned admins from DB into DTOs");
-        return new PageImpl<>(listDTO, pageable, initialPage.getTotalPages());
-    }
+//    @Override
+//    public Long countAllMasters() {
+//
+//        Specification<Admin> spec = Specification.not(
+//                        AdminSpecifications.hasRole("Директор")
+//                                .or(AdminSpecifications.hasRole("Управляющий"))
+//                                .or(AdminSpecifications.hasRole("Бухгалтер")));
+//
+//        return adminRepository.count(spec);
+//    }
 
-    @Override
-    public Page<AdminDTO> findAllByFiltersAndPage(FilterForm filters, Pageable pageable) throws IllegalAccessException {
-        log.info("Getting admins by specified filters and page...");
-        Page<Admin> initialPage = adminRepository.findAll(buildSpecFromFilters(filters), pageable);
-        log.info("Found " + initialPage.getContent().size() + " elements (page " + pageable.getPageNumber()+1 + "/" + initialPage.getTotalPages() + ")");
-        List<AdminDTO> listDTO = initialPage.getContent().stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
-        log.info("Turned admins from DB into DTOs");
-        return new PageImpl<>(listDTO, pageable, initialPage.getTotalPages());
-    }
+//    @Override
+//    public Long countAllManagers() {
+//        Specification<Admin> spec = Specification.where(
+//                AdminSpecifications.hasRole("Директор")
+//                        .or(AdminSpecifications.hasRole("Управляющий"))
+//                        .or(AdminSpecifications.hasRole("Бухгалтер")));
+//
+//        return adminRepository.count(spec);
+//    }
 
-    @Override
-    public Long countAllMasters() {
+//    @Override
+//    public List<UserRole> getAllRoles() {
+//        return userRoleRepository.findAll();
+//    }
 
-        Specification<Admin> spec = Specification.not(
-                        AdminSpecifications.hasRole("Директор")
-                                .or(AdminSpecifications.hasRole("Управляющий"))
-                                .or(AdminSpecifications.hasRole("Бухгалтер")));
+//    @Override
+//    public Admin saveAdmin(Admin admin) {
+//        log.info("Trying to save admin...");
+//        log.info(admin.toString());
+//        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+//        if(admin.getDateOfRegistry() == null) admin.setDateOfRegistry(LocalDate.now());
+//        log.info("Encoded admin password for saving");
+//        try {
+//            Admin savedAdmin = adminRepository.save(admin);
+//            log.info("Save successful!");
+//            log.info(savedAdmin.toString());
+//            return savedAdmin;
+//        } catch (Exception e) {
+//            log.severe("Something went wrong during saving!");
+//            log.severe(e.getMessage());
+//            return null;
+//        }
+//    }
+//
+//    @Override
+//    public Admin saveAdmin(AdminDTO dto) {
+//        Admin admin = mapper.fromDTOToAdmin(dto);
+//        admin.setRole(userRoleRepository.getReferenceById(dto.getUserRoleID()));
+//        return saveAdmin(admin);
+//    }
 
-        return adminRepository.count(spec);
-    }
+//    @Override
+//    public void deleteAdminById(Long id) {
+//        log.info("Trying to delete admin with ID: " + id);
+//        try {
+//            adminRepository.deleteById(id);
+//            log.info("Delete successful");
+//        } catch (Exception e) {
+//            log.severe("Something went wrong during deletion!");
+//            log.severe(e.getMessage());
+//        }
+//    }
+//
+//    @Override
+//    public List<AdminDTO> findAllMasters(String search, Integer page) {
+//        Pageable pageable = PageRequest.of(page, 5);
+//
+//        Specification<Admin> spec = Specification.not(
+//                AdminSpecifications.hasRole("Директор")
+//            .or(AdminSpecifications.hasRole("Управляющий"))
+//            .or(AdminSpecifications.hasRole("Бухгалтер")))
+//            .and(AdminSpecifications.hasNameLike(search));
+//
+//        return adminRepository.findAll(spec, pageable)
+//                .stream()
+//                .map(mapper::fromAdminToDTO)
+//                .collect(Collectors.toList());
+//    }
 
-    @Override
-    public Long countAllManagers() {
-        Specification<Admin> spec = Specification.where(
-                AdminSpecifications.hasRole("Директор")
-                        .or(AdminSpecifications.hasRole("Управляющий"))
-                        .or(AdminSpecifications.hasRole("Бухгалтер")));
+//    public List<AdminDTO> findAllMasters() {
+//        Specification<Admin> spec = Specification.not(AdminSpecifications.hasRole("Директор")
+//                                .or(AdminSpecifications.hasRole("Управляющий"))
+//                                .or(AdminSpecifications.hasRole("Бухгалтер")));
+//
+//        return adminRepository.findAll(spec).stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
+//    }
 
-        return adminRepository.count(spec);
-    }
+//    @Override
+//    public List<AdminDTO> findAllManagers(String search, Integer page) {
+//        Pageable pageable = PageRequest.of(page, 5);
+//
+//        Specification<Admin> spec = Specification.where(
+//                AdminSpecifications.hasRole("Директор")
+//            .or(AdminSpecifications.hasRole("Управляющий"))
+//            .or(AdminSpecifications.hasRole("Администратор")))
+//            .and(AdminSpecifications.hasNameLike(search));
+//
+//        return adminRepository.findAll(spec, pageable)
+//                .stream()
+//                .map(mapper::fromAdminToDTO)
+//                .collect(Collectors.toList());
+//    }
 
-    @Override
-    public List<UserRole> getAllRoles() {
-        return userRoleRepository.findAll();
-    }
-
-    public List<UserRole> getMasterRoles() {
-        return userRoleRepository.findAllMasterRoles();
-    }
-
-    public List<UserRole> getManagerRoles() {
-        return userRoleRepository.findAllManagerRoles();
-    }
-
-    @Override
-    public Admin saveAdmin(Admin admin) {
-        log.info("Trying to save admin...");
-        log.info(admin.toString());
-        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
-        if(admin.getDateOfRegistry() == null) admin.setDateOfRegistry(LocalDate.now());
-        log.info("Encoded admin password for saving");
-        try {
-            Admin savedAdmin = adminRepository.save(admin);
-            log.info("Save successful!");
-            log.info(savedAdmin.toString());
-            return savedAdmin;
-        } catch (Exception e) {
-            log.severe("Something went wrong during saving!");
-            log.severe(e.getMessage());
-            return null;
-        }
-    }
-
-    @Override
-    public Admin saveAdmin(AdminDTO dto) {
-        Admin admin = mapper.fromDTOToAdmin(dto);
-        admin.setRole(userRoleRepository.getReferenceById(dto.getUserRoleID()));
-        return saveAdmin(admin);
-    }
-
-    @Override
-    public void deleteAdminById(Long id) {
-        log.info("Trying to delete admin with ID: " + id);
-        try {
-            adminRepository.deleteById(id);
-            log.info("Delete successful");
-        } catch (Exception e) {
-            log.severe("Something went wrong during deletion!");
-            log.severe(e.getMessage());
-        }
-    }
-
-    @Override
-    public List<AdminDTO> findAllMasters(String search, Integer page) {
-        Pageable pageable = PageRequest.of(page, 5);
-
-        Specification<Admin> spec = Specification.not(
-                AdminSpecifications.hasRole("Директор")
-            .or(AdminSpecifications.hasRole("Управляющий"))
-            .or(AdminSpecifications.hasRole("Бухгалтер")))
-            .and(AdminSpecifications.hasNameLike(search));
-
-        return adminRepository.findAll(spec, pageable)
-                .stream()
-                .map(mapper::fromAdminToDTO)
-                .collect(Collectors.toList());
-    }
-
-    public List<AdminDTO> findAllMasters() {
-        Specification<Admin> spec = Specification.not(AdminSpecifications.hasRole("Директор")
-                                .or(AdminSpecifications.hasRole("Управляющий"))
-                                .or(AdminSpecifications.hasRole("Бухгалтер")));
-
-        return adminRepository.findAll(spec).stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<AdminDTO> findAllManagers(String search, Integer page) {
-        Pageable pageable = PageRequest.of(page, 5);
-
-        Specification<Admin> spec = Specification.where(
-                AdminSpecifications.hasRole("Директор")
-            .or(AdminSpecifications.hasRole("Управляющий"))
-            .or(AdminSpecifications.hasRole("Администратор")))
-            .and(AdminSpecifications.hasNameLike(search));
-
-        return adminRepository.findAll(spec, pageable)
-                .stream()
-                .map(mapper::fromAdminToDTO)
-                .collect(Collectors.toList());
-    }
-
-    public List<AdminDTO> findAllManagers() {
-        Specification<Admin> spec = Specification.where(
-                        AdminSpecifications.hasRole("Директор")
-                        .or(AdminSpecifications.hasRole("Управляющий"))
-                        .or(AdminSpecifications.hasRole("Администратор")));
-
-        return adminRepository.findAll(spec).stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
-    }
+//    public List<AdminDTO> findAllManagers() {
+//        Specification<Admin> spec = Specification.where(
+//                        AdminSpecifications.hasRole("Директор")
+//                        .or(AdminSpecifications.hasRole("Управляющий"))
+//                        .or(AdminSpecifications.hasRole("Администратор")));
+//
+//        return adminRepository.findAll(spec).stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
+//    }
 
 //    @Override
 //    public List<Admin> getAdminsByRole(UserRole role) { return adminRepository.getAdminsByRole(role);}
 
-    @Override
-    public Specification<Admin> buildSpecFromFilters(FilterForm filters) throws IllegalAccessException {
+//    @Override
+//    public Specification<Admin> buildSpecFromFilters(FilterForm filters) throws IllegalAccessException {
+//
+//        if(!filters.filtersPresent()) return null;
+//
+//        log.info("Building specification from filters: " + filters.toString());
+//
+//        String name = filters.getName();
+//        UserRole role = userRoleRepository.findByName(filters.getRole()).orElse(null);
+//        String phone = filters.getPhone();
+//        String email = filters.getEmail();
+//        Boolean active = filters.getActive();
+//
+//        Specification<Admin> specification = Specification.where(AdminSpecifications.hasNameLike(name)
+//                                                            .and(AdminSpecifications.hasRole(role.getName()))
+//                                                            .and(AdminSpecifications.hasPhoneLike(phone))
+//                                                            .and(AdminSpecifications.hasEmailLike(email))
+//                                                            .and(AdminSpecifications.isActive(active)));
+//
+//        log.info("Specification built! " + specification);
+//
+//        return specification;
+//    }
 
-        if(!filters.filtersPresent()) return null;
-
-        log.info("Building specification from filters: " + filters.toString());
-
-        String name = filters.getName();
-        UserRole role = userRoleRepository.findByName(filters.getRole()).orElse(null);
-        String phone = filters.getPhone();
-        String email = filters.getEmail();
-        Boolean active = filters.getActive();
-
-        Specification<Admin> specification = Specification.where(AdminSpecifications.hasNameLike(name)
-                                                            .and(AdminSpecifications.hasRole(role.getName()))
-                                                            .and(AdminSpecifications.hasPhoneLike(phone))
-                                                            .and(AdminSpecifications.hasEmailLike(email))
-                                                            .and(AdminSpecifications.isActive(active)));
-
-        log.info("Specification built! " + specification);
-
-        return specification;
-    }
-
-    @Override
-    public List<AdminDTO> findMastersByType(Long typeID) {
-        UserRole role = userRoleRepository.getReferenceById(typeID);
-        Specification<Admin> spec = AdminSpecifications.hasRole(role.getName());
-        return adminRepository.findAll(spec).stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
-    }
-
-
+//    @Override
+//    public List<AdminDTO> findMastersByType(Long typeID) {
+//        UserRole role = userRoleRepository.getReferenceById(typeID);
+//        Specification<Admin> spec = AdminSpecifications.hasRole(role.getName());
+//        return adminRepository.findAll(spec).stream().map(mapper::fromAdminToDTO).collect(Collectors.toList());
+//    }
+//
+//
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Searching for user with username " + username);
@@ -290,15 +282,15 @@ public class AdminServiceImpl implements AdminService {
         return admin;
     }
 
-    public Page<AdminDTO> findAllBySpecification(FilterForm filters, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page-1, size);
-        List<AdminDTO> listDTO = new ArrayList<>();
-        Page<Admin>ownerList = adminRepository.findByFilters(filters.getName(), filters.getRole(), filters.getPhone(), filters.getEmail(), filters.getStatus(), pageable);
-        for (Admin admin : ownerList) {
-                    listDTO.add(new AdminDTO(admin.getId(), admin.getFirst_name(), admin.getLast_name(),
-                    admin.getPhone_number(), admin.getEmail(), admin.isActive(), admin.getRole().getName(),
-                    admin.getRole().getId()));
-        }
-        return new PageImpl<>(listDTO, pageable, ownerList.getTotalElements());
-    }
+//    public Page<AdminDTO> findAllBySpecification(FilterForm filters, Integer page, Integer size) {
+//        Pageable pageable = PageRequest.of(page-1, size);
+//        List<AdminDTO> listDTO = new ArrayList<>();
+//        Page<Admin>ownerList = adminRepository.findByFilters(filters.getName(), filters.getRole(), filters.getPhone(), filters.getEmail(), filters.getStatus(), pageable);
+//        for (Admin admin : ownerList) {
+//                    listDTO.add(new AdminDTO(admin.getId(), admin.getFirst_name(), admin.getLast_name(),
+//                    admin.getPhone_number(), admin.getEmail(), admin.isActive(), admin.getRole().getName(),
+//                    admin.getRole().getId()));
+//        }
+//        return new PageImpl<>(listDTO, pageable, ownerList.getTotalElements());
+//    }
 }

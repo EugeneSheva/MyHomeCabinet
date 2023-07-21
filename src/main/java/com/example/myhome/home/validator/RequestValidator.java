@@ -33,13 +33,25 @@ public class RequestValidator implements Validator {
         Locale locale = LocaleContextHolder.getLocale();
 
 
-        if(request.getDescription() == null || request.getDescription().equalsIgnoreCase("")) {
+        if (request.getDescription() == null || request.getDescription().equalsIgnoreCase("")) {
             e.rejectValue("description", "description.empty", messageSource.getMessage("requests.description.empty", null, locale));
-        } else if(request.getDescription().length() > 200 ) {
+        } else if (request.getDescription().length() > 200) {
             e.rejectValue("description", "description.empty", messageSource.getMessage("requests.description.long", null, locale));
         }
-        if(request.getBest_time_request() != null) {
-            if(request.getBest_time_request().isBefore(LocalDateTime.now())) e.rejectValue("best_time_request", "best_time_request.incorrect", messageSource.getMessage("requests.best_time.incorrect", null, locale));
+
+
+        if (request.getBest_time_request() != null) {
+            if (request.getBest_time_request().isBefore(LocalDateTime.now())) {
+                LocalDateTime now = LocalDateTime.now();
+                if (request.getBest_time_request().toLocalDate().isBefore(now.toLocalDate())) {
+                        e.rejectValue("best_time_request", "best_time_request.incorrect", messageSource.getMessage("requests.best_date.incorrect", null, locale));
+                }  else if (request.getBest_time_request().toLocalTime().isBefore(now.toLocalTime())) {
+                        e.rejectValue("time", "best_time_request.incorrect_time", messageSource.getMessage("requests.best_time.incorrect", null, locale));
+                    }
+                }
+        } else if (request.getBest_time_request() == null) {
+            e.rejectValue("best_time_request", "best_time_request.incorrect", messageSource.getMessage("requests.best_date-time.null", null, locale));
+
         }
 
         if(request.getApartment() == null) {

@@ -87,6 +87,8 @@
                               <div class="form-group">
                                   <h4 class="control-label" th:text="#{timeOfWork}">Время работ</h4>
                                   <input type="time" class="form-control" style="height: 48px;" th:field="*{time}">
+                                  <h4 style="color: red; font-weight: bold;" th:if="${#fields.hasErrors('time')}" th:errors="*{time}"></h4>
+
                               </div>
                           </div>
                       </div>

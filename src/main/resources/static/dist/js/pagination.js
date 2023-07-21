@@ -611,6 +611,7 @@ function drawRequestsTableCabinet() {
     let pageFiltersString = '';
     let data = getTableData('/myhomecab/cabinet/get-requests', currentPageNumber, currentPageSize, pageFiltersString);
 
+    console.log('status_new 2 ' + status_new)
     let $requestsTable = $("#requestsTable tbody");
     $requestsTable.html('');
     for (const request of data.content) {
@@ -630,7 +631,7 @@ function drawRequestsTableCabinet() {
             '<td>' + request.masterTypeName + '</td>' +
             '<td style="max-width: 200px; text-overflow: ellipsis; white-space: nowrap; overflow:hidden">' + request.description + '</td>' +
             '<td>' + request.best_time + '</td>' +
-            '<td><small class="label ' + ((request.status === 'Новое') ? 'label-primary' : (request.status === 'В работе') ? 'label-warning' : 'label-success') + '">' + request.status + '</small></td>' +
+            '<td><small class="label ' + ((request.status === 'ACCEPTED') ? 'label-primary' : (request.status === 'IN_WORK') ? 'label-warning' : 'label-success') + '">' + ((request.status === 'ACCEPTED') ? status_new : (request.status === 'IN_WORK') ? status_in_work : status_completed) + '</small></td>' +
             '<td>' +
             '<div class="btn-group pull-right">' +
             '<a class="btn btn-default btn-sm" href="/myhomecab/cabinet/request/delete/' + request.id + '"><i class="fa fa-trash" aria-hidden="true"></i></a>' +

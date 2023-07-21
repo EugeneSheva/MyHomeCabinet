@@ -6,7 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.Transient;
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,9 +25,12 @@ public class OwnerDTO {
     private Long id;
     private String text = "";
     private String profile_picture;
+    private MultipartFile profile_picture_file;
+
     private String first_name = "", last_name = "", fathers_name = "";
     private String fullName = "";
 
+    private String oldpassword;
     private String phone_number = "";
     private String email = "";
     private List<BuildingDTO> buildings = new ArrayList<>();

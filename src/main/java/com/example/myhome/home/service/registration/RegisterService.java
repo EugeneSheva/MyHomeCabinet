@@ -1,6 +1,5 @@
 package com.example.myhome.home.service.registration;
 
-import com.example.myhome.home.service.EmailService;
 import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.repository.OwnerRepository;
 import lombok.extern.java.Log;
@@ -10,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @Service
@@ -23,7 +21,7 @@ public class RegisterService {
     @Autowired private PasswordEncoder passwordEncoder;
 
     @Autowired private JavaMailSender mailSender;
-    @Autowired private EmailService emailService;
+
 
     @Autowired private ThreadPoolExecutor executor;
 
@@ -46,7 +44,7 @@ public class RegisterService {
                         +savedToken.getToken()+
                         "'>Press to confirm registration!</a>";
 
-        executor.execute(() -> emailService.send(savedOwner.getEmail(), html_template));
+//        executor.execute(() -> emailService.send(savedOwner.getEmail(), html_template));
 
     }
 

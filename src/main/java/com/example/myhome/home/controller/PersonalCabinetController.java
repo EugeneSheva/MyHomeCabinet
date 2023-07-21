@@ -22,21 +22,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.*;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.w3c.dom.ls.LSOutput;
-
 import javax.validation.Valid;
 import java.io.IOException;
 import java.security.Principal;
@@ -58,17 +54,6 @@ public class PersonalCabinetController {
     @Autowired
     private OwnerService ownerService;
     @Autowired
-    private AdminService adminService;
-    @Autowired
-    private UserRoleRepository userRoleRepository;
-
-    @Autowired
-    private PersistentTokenRepository repository;
-
-    @Autowired
-    private PersistentTokenBasedRememberMeServices rememberMeServices;
-
-    @Autowired
     private ApartmentServiceImpl apartmentService;
     @Autowired
     private InvoiceService invoiceService;
@@ -77,11 +62,14 @@ public class PersonalCabinetController {
     @Autowired
     private MessageService messageService;
     @Autowired
+    private RepairRequestService repairRequestService;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+    @Autowired
     private MessageRepository messageRepository;
     @Autowired
     private RepairRequestRepository repairRequestRepository;
-    @Autowired
-    private RepairRequestService repairRequestService;
     @Autowired
     private OwnerValidator ownerValidator;
     @Autowired
@@ -134,8 +122,6 @@ public class PersonalCabinetController {
         model.addAttribute("apartExpenseEachMonthByYear", invoiceService.getListExpenseByApartmentByMonth(id));
         model.addAttribute("indexPageActive", true);
         model.addAttribute("apartmentId", id);
-
-
         return "cabinet/index";
     }
 
@@ -147,7 +133,6 @@ public class PersonalCabinetController {
         model.addAttribute("allInvoicesPageActive", true);
         return "cabinet/invoices";
     }
-
 
 
     @GetMapping("/invoices/{id}")
@@ -220,6 +205,37 @@ public class PersonalCabinetController {
         model.addAttribute("message", message);
         model.addAttribute("messagesPageActive", true);
         return "cabinet/message_card";
+    }
+
+    @GetMapping("/message/delete/{id}")
+    public String deleteMsg(@PathVariable long id, Model model, Principal principal) {
+        OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
+        Owner owner = ownerService.findByLogin(principal.getName());
+        model.addAttribute("owner", ownerDTO);
+
+        Message message = messageService.findById(id);
+        List<Owner> receivers = message.getReceivers();
+        for (Owner receiver : receivers) {
+            if (receiver.equals(owner)) {
+                receivers.remove(owner);
+//                messages.remove(message);
+                break;
+            }
+        }
+        if (message.getUnreadReceivers().contains(owner)) message.getUnreadReceivers().remove(owner);
+        messageService.save(message);
+
+
+        List<Long> unreadMessagesId = ownerService
+                .findByLogin(principal.getName())
+                .getUnreadMessages()
+                .stream()
+                .map(Message::getId)
+                .collect(Collectors.toList());
+        model.addAttribute("unreadMessagesId", unreadMessagesId);
+        model.addAttribute("filterForm", new FilterForm());
+        model.addAttribute("messagesPageActive", true);
+        return "cabinet/messages";
     }
 
     @GetMapping("/message/deleteSelected")
@@ -298,7 +314,7 @@ public class PersonalCabinetController {
     //
     @PostMapping("/request/save")
     public String saveRequest(@ModelAttribute RepairRequest request,
-                              BindingResult bindingResult, @RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam(name="master", defaultValue = "0") Long master,
+                              BindingResult bindingResult, @RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam(name = "master", defaultValue = "0") Long master,
                               @RequestParam(name = "apartment", defaultValue = "0") Long apartmentId, @RequestParam("description") String description,
                               @RequestParam("date") String date, @RequestParam("time") String time, Principal principal, Model model) throws IOException {
 
@@ -322,6 +338,7 @@ public class PersonalCabinetController {
         if (bindingResult.hasErrors()) {
             OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
             model.addAttribute("owner", ownerDTO);
+            model.addAttribute("requestsPageActive", true);
             return "cabinet/request_card";
         }
         repairRequestRepository.save(repairRequest);
@@ -350,16 +367,30 @@ public class PersonalCabinetController {
     @GetMapping("/user/edit")
     public String getEditUserProfilePage(Model model, Principal principal) {
         OwnerDTO ownerDTO = ownerDTOMapper.toDTOcabinetEditProfile(ownerService.findByLogin(principal.getName()));
-        System.out.println("ownerDTO " + ownerDTO);
         model.addAttribute("owner", ownerDTO);
         model.addAttribute("profilePageActive", true);
         return "cabinet/user_edit";
     }
 
     @PostMapping("/user/save")
-    public String saveOwner(@Valid @ModelAttribute("owner") OwnerDTO owner, BindingResult bindingResult, @RequestParam("img1") MultipartFile file, @RequestParam("newPassword") String newPassword, @RequestParam("repassword") String repassword, Principal principal) throws IOException {
+
+    public String saveOwner(@Valid @ModelAttribute("owner") OwnerDTO owner, BindingResult bindingResult, @RequestParam("img1") MultipartFile file, @RequestParam("newPassword") String newPassword, @RequestParam("repassword") String repassword, @RequestParam("oldpassword") String oldpassword, Principal principal, Model model) throws IOException {
         Locale locale = LocaleContextHolder.getLocale();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         Owner newOwner = ownerDTOMapper.toEntityСabinetEditProfile(owner);
+        newOwner.setOldpassword(owner.getOldpassword());
+        Owner oldOwner = ownerService.findById(owner.getId());
+        System.out.println(owner);
+        if (oldpassword == null || oldpassword.isEmpty()) {
+            FieldError fileError = new FieldError("owner", "oldpassword", messageSource.getMessage("fieldIsEmpty", null, locale));
+            bindingResult.addError(fileError);
+        } else if (!encoder.matches(oldpassword, oldOwner.getPassword())){
+            FieldError fileError = new FieldError("owner", "oldpassword", messageSource.getMessage("wrongPass", null, locale));
+            bindingResult.addError(fileError);
+        }
+        if (newPassword != null && newPassword.length() > 0) {
+            newOwner.setPassword(newPassword);
+        }
         ownerValidator.validate(newOwner, bindingResult);
         if (file != null && !file.isEmpty()) {
             if (!file.getContentType().equals("image/jpg") && !file.getContentType().equals("image/jpeg") && !file.getContentType().equals("image/png")) {
@@ -368,20 +399,19 @@ public class PersonalCabinetController {
             }
         }
         if (bindingResult.hasErrors()) {
-                        return "cabinet/user_edit";
+            model.addAttribute("profilePageActive", true);
+            return "cabinet/user_edit";
         } else if (!newPassword.equals(repassword)) {
-
+            model.addAttribute("profilePageActive", true);
             return "cabinet/user_edit";
         } else {
-            Owner oldOwner = ownerService.findById(owner.getId());
-
-            newOwner.setProfile_picture(ownerService.saveOwnerImage(owner.getId(), file));
-            newOwner.setEnabled(oldOwner.getEnabled());
             if (newPassword != null && newPassword.length() > 0) {
                 newOwner.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
             } else {
                 newOwner.setPassword(oldOwner.getPassword());
             }
+            newOwner.setProfile_picture(ownerService.saveOwnerImage(owner.getId(), file));
+            newOwner.setEnabled(oldOwner.getEnabled());
             ownerService.save(newOwner);
             if (!principal.getName().equals(newOwner.getEmail())) {
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -392,8 +422,4 @@ public class PersonalCabinetController {
         }
         return "redirect:/cabinet/user/view";
     }
-
-
-
-
 }

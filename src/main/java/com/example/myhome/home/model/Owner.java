@@ -36,6 +36,8 @@ public class Owner {
 
     private String email;
     private String password;
+    @Transient
+    private String oldpassword;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthdate;
