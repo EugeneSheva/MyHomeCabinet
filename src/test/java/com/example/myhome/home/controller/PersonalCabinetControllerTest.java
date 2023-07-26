@@ -32,6 +32,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
@@ -242,6 +243,7 @@ class PersonalCabinetControllerTest {
         ownerDTO.setViber("0501111111");
         ownerDTO.setTelegram("0501111111");
         ownerDTO.setBirthdate(LocalDate.of(2000, 11, 11));
+        ownerDTO.setOldpassword("12345678");
 
         tariff = new Tariff();
         apartment.setTariff(tariff);
@@ -250,6 +252,7 @@ class PersonalCabinetControllerTest {
         owner = new Owner();
         owner.setUnreadMessages(unreadMessages);
         unreadReceivers.add(owner);
+        owner.setOldpassword("12345678");
 
 
         receivers = new ArrayList<>();
@@ -651,13 +654,16 @@ class PersonalCabinetControllerTest {
     @Test
     @WithMockUser(username = "user@example.com", password = "12345678")
     public void testSaveOwner() throws Exception {
-
         OwnerDTO ownerDTO = new OwnerDTO();
+        ownerDTO.setId(1L); // Установите значение id, если необходимо
+        ownerDTO.setOldpassword("12345678"); // Устанавливаем oldpassword в объекте OwnerDTO
 
-        when(ownerDTOMapper.toEntityСabinetEditProfile(any(OwnerDTO.class))).thenReturn(owner);
+        Owner oldOwner = new Owner(); // Создаем экземпляр класса Owner
+        String encodedPassword = new BCryptPasswordEncoder().encode("12345678"); // Закодируйте пароль
+        oldOwner.setPassword(encodedPassword); // Установите закодированный пароль в oldOwner
 
-        Owner oldOwner = owner;
-        when(ownerService.findById(anyLong())).thenReturn(owner);
+        doReturn(owner).when(ownerDTOMapper).toEntityСabinetEditProfile(any(OwnerDTO.class));
+        doReturn(oldOwner).when(ownerService).findById(anyLong());
 
         String savedImageName = "saved_image.jpg";
         when(ownerService.saveOwnerImage(anyLong(), any(MultipartFile.class))).thenReturn(savedImageName);
@@ -668,6 +674,7 @@ class PersonalCabinetControllerTest {
                         .file((MockMultipartFile) imageFile)
                         .param("newPassword", "new_password")
                         .param("repassword", "new_password")
+                        .param("oldpassword", "12345678")
                         .param("id", "1")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                 )

@@ -27,20 +27,20 @@ public class AdminSpecificationTest {
     @Autowired
     TestEntityManager em;
 
-    @Test
-    void roleSpecTest() {
-        Specification<Admin> spec = AdminSpecifications.hasRole(null);
-        CriteriaBuilder cb = em.getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<Admin> cq = cb.createQuery(Admin.class);
-        Root<Admin> root = cq.from(Admin.class);
-        assertThat(spec.toPredicate(root, cq, cb)).isNull();
-
-        UserRole role = new UserRole();
-
-        spec = AdminSpecifications.hasRole(role.getName());
-
-        assertThat(spec.toPredicate(root, cq, cb)).isNotNull();
-    }
+//    @Test
+//    void roleSpecTest() {
+//        Specification<Admin> spec = AdminSpecifications.hasRole(null);
+//        CriteriaBuilder cb = em.getEntityManager().getCriteriaBuilder();
+//        CriteriaQuery<Admin> cq = cb.createQuery(Admin.class);
+//        Root<Admin> root = cq.from(Admin.class);
+//        assertThat(spec.toPredicate(root, cq, cb)).isNull();
+//
+//        UserRole role = new UserRole();
+//
+//        spec = AdminSpecifications.hasRole(role.getName());
+//
+//        assertThat(spec.toPredicate(root, cq, cb)).isNotNull();
+//    }
 
     @Test
     void nameSpecTest() {

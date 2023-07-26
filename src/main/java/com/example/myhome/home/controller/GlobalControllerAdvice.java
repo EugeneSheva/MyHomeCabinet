@@ -34,15 +34,8 @@ public class GlobalControllerAdvice {
 
     @Autowired
     private PageRoleDisplayRepository repository;
-
-    @Autowired
-    private OwnerService ownerService;
-
     @Autowired
     private AdminServiceImpl adminService;
-
-    @Autowired
-    private AdminDTOMapper mapper;
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -6,6 +6,7 @@ import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.service.OwnerService;
 import com.example.myhome.home.service.registration.LoginRequest;
 import com.example.myhome.home.service.registration.RegisterService;
+
 import com.example.myhome.home.validator.NewOwnerValidator;
 import com.example.myhome.util.UserStatus;
 import lombok.extern.java.Log;
@@ -30,12 +31,11 @@ import java.time.LocalDateTime;
 
 @Controller
 @Log
+
 public class LoginController {
 
     @Autowired
     private RegisterService registerService;
-    @Autowired
-    private PersistentTokenRepository repository;
     @Autowired
     private NewOwnerValidator newOwnerValidator;
     @Autowired
@@ -97,12 +97,6 @@ public class LoginController {
         cookie.setMaxAge(0);
         cookie.setPath(StringUtils.hasLength(request.getContextPath()) ? request.getContextPath() : "/");
         response.addCookie(cookie);
-    }
-
-    void clearRememberMeTokens() {
-        CustomUserDetails details = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = details.getUsername();
-        repository.removeUserTokens(username);
     }
 
 }

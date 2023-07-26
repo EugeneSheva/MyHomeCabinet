@@ -33,6 +33,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.w3c.dom.ls.LSOutput;
+
 import javax.validation.Valid;
 import java.io.IOException;
 import java.security.Principal;
@@ -381,16 +383,23 @@ public class PersonalCabinetController {
         newOwner.setOldpassword(owner.getOldpassword());
         Owner oldOwner = ownerService.findById(owner.getId());
         System.out.println(owner);
+        System.out.println("oldpassword " + oldpassword);
+        System.out.println("oldOwner.getPassword() " + oldOwner.getPassword());
         if (oldpassword == null || oldpassword.isEmpty()) {
             FieldError fileError = new FieldError("owner", "oldpassword", messageSource.getMessage("fieldIsEmpty", null, locale));
             bindingResult.addError(fileError);
         } else if (!encoder.matches(oldpassword, oldOwner.getPassword())){
+            System.out.println("oldpassword " + oldpassword);
+            System.out.println("oldOwner.getPassword() " + oldOwner.getPassword());
             FieldError fileError = new FieldError("owner", "oldpassword", messageSource.getMessage("wrongPass", null, locale));
             bindingResult.addError(fileError);
+            System.out.println("Пароли разные");
+
         }
         if (newPassword != null && newPassword.length() > 0) {
             newOwner.setPassword(newPassword);
         }
+        System.out.println("newOwner" + newOwner);
         ownerValidator.validate(newOwner, bindingResult);
         if (file != null && !file.isEmpty()) {
             if (!file.getContentType().equals("image/jpg") && !file.getContentType().equals("image/jpeg") && !file.getContentType().equals("image/png")) {
@@ -398,10 +407,12 @@ public class PersonalCabinetController {
                 bindingResult.addError(fileError);
             }
         }
+        System.out.println("bindingResult" + bindingResult);
         if (bindingResult.hasErrors()) {
             model.addAttribute("profilePageActive", true);
             return "cabinet/user_edit";
         } else if (!newPassword.equals(repassword)) {
+
             model.addAttribute("profilePageActive", true);
             return "cabinet/user_edit";
         } else {
