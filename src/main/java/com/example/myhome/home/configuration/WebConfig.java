@@ -33,9 +33,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Value("${aws.bucket.name}")
     private String awsBucket;
-    @Autowired
-    OwnerService ownerService;
-    //for saving on AWS S3
+//    @Autowired
+//    OwnerService ownerService;
+//    //for saving on AWS S3
 
 //
 //    @Override
