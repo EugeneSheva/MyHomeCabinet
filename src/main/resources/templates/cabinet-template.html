@@ -114,7 +114,8 @@
                         <a th:href="@{/cabinet/user/view}" class="btn btn-warning" th:text="#{profile}">Профиль</a>
                     </div>
                     <div style="flex: 1; text-align: right;">
-                        <a th:href="@{/cabinet/logout}" class="btn btn-danger" th:text="#{exit}" onclick="return confirmExit()">Выйти</a>
+<!--                        <a th:href="@{/cabinet/logout}" class="btn btn-danger" th:text="#{exit}" onclick="return confirmExit()">Выйти</a>-->
+                        <a href="#" id="logoutLink" class="btn btn-danger" th:text="#{exit}">Logout</a>
 
                     </div>
                 </li>
@@ -253,6 +254,27 @@
                 </li>
             </ul>
         </nav>
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" data-backdrop="false" >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+<!--                    <div class="modal-header">-->
+<!--&lt;!&ndash;                        <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>&ndash;&gt;-->
+<!--                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--                            <span aria-hidden="true">&times;</span>-->
+<!--                        </button>-->
+<!--                    </div>-->
+                    <div class="modal-body">
+                        <h5 th:text="#{confirmExit}"></h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{cancel}">Cancel</button>
+                        <button type="button" class="btn btn-success" id="confirmLogout" th:text="#{exit}">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <!-- /.sidebar-menu -->
     </div>
     <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
@@ -277,12 +299,25 @@
 
     </script>
     <script th:inline="javascript">
-        function confirmExit() {
-            var confirmMessage = [[#{confirmExit}]];
-            return confirm(confirmMessage);
-        }
+
+// script for logout modal
+
+        var link = [[@{/cabinet/logout}]];
+
+        $(document).ready(function() {
+            $("#confirmLogout").click(function() {
+                window.location.href = link;
+            });
+
+            $("#logoutLink").click(function() {
+                $("#logoutModal").modal("show");
+            });
+        });
     </script>
     <style>
+        .modal-backdrop {
+            z-index: -1;
+        }
 
         .nav-link {
             padding-block: 12px;

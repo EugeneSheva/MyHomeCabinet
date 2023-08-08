@@ -639,7 +639,7 @@ function drawRequestsTableCabinet() {
             '<td><small class="label ' + ((request.status === 'ACCEPTED') ? 'label-primary' : (request.status === 'IN_WORK') ? 'label-warning' : 'label-success') + '">' + ((request.status === 'ACCEPTED') ? status_new : (request.status === 'IN_WORK') ? status_in_work : status_completed) + '</small></td>' +
             '<td>' +
             '<div class="btn-group pull-right">' +
-            '<a class="btn btn-default btn-sm" href="/myhomecab/cabinet/request/delete/' + request.id + '"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
+            '<a class="btn btn-default btn-sm" id="deleteButton" onclick="deleteRequest('+request.id+')" data-id="'+request.id+'" href="#"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
             '</div>' +
             '</td>';
 

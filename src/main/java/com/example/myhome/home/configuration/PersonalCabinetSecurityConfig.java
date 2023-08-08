@@ -1,4 +1,5 @@
-package com.example.myhome.home.configuration.security;
+package com.example.myhome.home.configuration;
+import com.example.myhome.home.service.impl.OwnerServiceImpl;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import javax.sql.DataSource;
 
@@ -26,7 +26,7 @@ public class PersonalCabinetSecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new CustomUserDetailsService();
+        return new OwnerServiceImpl();
     }
 
     @Bean
@@ -50,42 +50,35 @@ public class PersonalCabinetSecurityConfig {
     }
 
     @Bean
-    public PersistentTokenBasedRememberMeServices rememberMeServices() {
-        return new PersistentTokenBasedRememberMeServices("secretKey", userDetailsService(), persistentTokenRepository());
-    }
-
-    @Bean
     public SecurityFilterChain cabinetSecurityFilterChain(HttpSecurity http) throws Exception {
 
         log.info("setting up cabinet filter chain");
 
-        http.authenticationProvider(authenticationProviderOwner());
-        http.userDetailsService(userDetailsService());
-
         http
                 .antMatcher("/cabinet/**")
                 .authorizeRequests()
-                    .antMatchers("/dist/**").permitAll()
-                    .antMatchers("/images/**").permitAll()
-                    .antMatchers("/cabinet/site/register/**").permitAll()
-                    .anyRequest().authenticated()
+                .antMatchers("/dist/**").permitAll()
+                .antMatchers("/images/**").permitAll()
+                .antMatchers("/cabinet/site/register/**").permitAll()
+                .antMatchers("/reset-password/**", "/reset-password", "reset-password", "/**/reset-password").permitAll()
+                .antMatchers("/forgot-password/**", "/forgot-password", "forgot-password", "/**/forgot-password").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                    .loginPage("/cabinet/site/login").permitAll()
-                    .defaultSuccessUrl("/cabinet", true)
+                .loginPage("/cabinet/site/login").permitAll()
+                .defaultSuccessUrl("/cabinet", true)
 //                    .failureUrl("/cabinet/site/login?error=true")
                 .and()
                 .logout()
-                    .logoutSuccessUrl("/cabinet/site/login")
-                    .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID", "remember-me")
+                .logoutSuccessUrl("/cabinet/site/login")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID", "remember-me")
                 .and()
                 .rememberMe()
-                    .rememberMeServices(rememberMeServices())
-                    .tokenValiditySeconds(600);
+                .userDetailsService(userDetailsService())
+                .key("secretKey")
+                .tokenValiditySeconds(6000);
 
         return http.build();
     }
-
-
 }

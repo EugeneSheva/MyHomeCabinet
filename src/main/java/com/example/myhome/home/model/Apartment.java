@@ -76,6 +76,19 @@ public class Apartment {
         this.owner = owner;
     }
 
+    public Apartment(Long id, Long numb) {
+
+        this.id = id;
+        this.number = numb;
+    }
+
+    public Apartment(long l, long l1, Building test, Owner owner) {
+        this.id = l;
+        this.number = l1;
+        this.building = test;
+        this.owner = owner;
+    }
+
     @Override
     public String toString() {
         return "Apartment{" +

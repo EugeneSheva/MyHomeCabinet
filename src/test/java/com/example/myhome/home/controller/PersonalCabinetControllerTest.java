@@ -445,9 +445,11 @@ class PersonalCabinetControllerTest {
     @Test
     @WithMockUser(username = "user@example.com", password = "12345678")
     public void getUnreadMessages_shouldReturnListOfUnreadMessageIds() throws Exception {
-
+        List<Message>unreadMessages = new ArrayList<>();
+        unreadMessages.add(message1);
+        unreadMessages.add(message2);
         Owner owner = new Owner();
-        owner.setUnreadMessages(messagesList);
+        owner.setUnreadMessages(unreadMessages);
 
         when(ownerService.findByLogin(anyString())).thenReturn(owner);
 

@@ -1,7 +1,9 @@
 package com.example.myhome;
 
+
 import com.example.myhome.home.model.Admin;
-import com.example.myhome.home.repository.*;
+import com.example.myhome.home.repository.AdminRepository;
+import com.example.myhome.home.repository.UserRoleRepository;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,9 +28,14 @@ public class MyHomeApplication extends SpringBootServletInitializer {
     @Autowired private UserRoleRepository repository;
     @Autowired private AdminRepository adminRepository;
 
+
+
     public static void main(String[] args) {
         SpringApplication.run(MyHomeApplication.class, args);
+
+
     }
+
 
     @EventListener(ApplicationReadyEvent.class)
     @Transactional

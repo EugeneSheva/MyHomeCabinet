@@ -2,6 +2,8 @@ var stompClient = null;
 function connect() {
     // var socket = new SockJS('http://localhost:8888/myhome/websocket');
     var socket = new SockJS('http://slj.avada-media-dev1.od.ua:9002/myhome/websocket');
+
+
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         stompClient.subscribe('/topic/messages', function (messageItem) {
@@ -12,6 +14,7 @@ function connect() {
                 type: 'GET',
                 success: function(response) {
                     unreadMessId = response;
+                    unreadMessageQuantity = unreadMessId.length;
                 },
             })
 
@@ -26,13 +29,29 @@ function connect() {
                 }
             }
         });
+        stompClient.subscribe('/topic/delMessages', function () {
+            drawMessagesTableCabinet()
+
+            $.ajax({
+                url: '/myhomecab/cabinet/get-unread-messages',
+                async: false,
+                type: 'GET',
+                success: function(response) {
+                    unreadMessId = response;
+                    unreadMessageQuantity = unreadMessId.length;
+                },
+            })
+
+            updateNewMessage()
+        });
     });
+
 }
 
 function updateNewMessage() {
     var newMsgElement = document.getElementById("new_msg");
 
-    var newMessageQuantity = parseInt(unreadMessageQuantity) +1;
+    var newMessageQuantity = parseInt(unreadMessageQuantity);
 
     var currentLocale = navigator.language;
 

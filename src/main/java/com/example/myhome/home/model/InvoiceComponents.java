@@ -24,6 +24,18 @@ public class InvoiceComponents {
     @JoinColumn(name = "invoice_id")
     private Invoice invoice;
 
+    public InvoiceComponents(long l, Invoice invoice, Service service1, double p, double a) {
+        this.id = l;
+        this.invoice = invoice;
+        this.service = service1;
+        this.unit_price = p;
+        this.unit_amount = a;
+    }
+
+    public InvoiceComponents() {
+
+    }
+
     @Override
     public String toString() {
         return "InvoiceComponents{" +

@@ -1,81 +1,70 @@
 package com.example.myhome.services;
 
 import com.example.myhome.home.dto.RepairRequestDTO;
-import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.mapper.RepairRequestDTOMapper;
-import com.example.myhome.home.model.*;
-import com.example.myhome.home.model.filter.FilterForm;
-import com.example.myhome.home.repository.*;
-import com.example.myhome.home.service.AdminService;
-import com.example.myhome.home.service.ApartmentService;
-import com.example.myhome.home.service.OwnerService;
-import com.example.myhome.home.service.RepairRequestService;
+import com.example.myhome.home.model.RepairRequest;
+import com.example.myhome.home.repository.RepairRequestRepository;
+import com.example.myhome.home.service.impl.RepairRequestServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 
-import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class RequestServiceTest {
 
-    @Autowired
-    RepairRequestService repairRequestService;
-
-    @MockBean
-    RepairRequestRepository repairRequestRepository;
-
-    @MockBean private ApartmentService apartmentService;
-    @MockBean private OwnerService ownerService;
-    @MockBean private AdminService adminService;
-
-    @MockBean private ApartmentRepository apartmentRepository;
-    @MockBean private OwnerRepository ownerRepository;
-    @MockBean private AdminRepository adminRepository;
-    @MockBean private UserRoleRepository userRoleRepository;
-
-    RepairRequest request = new RepairRequest();
-    RepairRequestDTOMapper mapper = new RepairRequestDTOMapper();
+    private RepairRequestServiceImpl repairRequestService;
+    private RepairRequestRepository repairRequestRepository;
+    private RepairRequestDTOMapper mapper;
 
     @BeforeEach
-    void setupRequest() {
-        request.setId(1L);
-        request.setBest_time_request(LocalDateTime.now());
-        request.setOwner(new Owner());
-        request.setApartment(new Apartment());
-        request.setMaster(new Admin());
-        UserRole role = new UserRole();
-        role.setName("test");
-        request.setMaster_type(role);
-        request.setDescription("test");
-        request.setRequest_date(LocalDateTime.now());
-        request.setStatus(RepairStatus.ACCEPTED);
-        request.setComment("test");
+    void setUp() {
+        repairRequestRepository = mock(RepairRequestRepository.class);
+        mapper = mock(RepairRequestDTOMapper.class);
+        repairRequestService = new RepairRequestServiceImpl(repairRequestRepository, mapper);
     }
 
+    @Test
+    void testFindReqoestDtoByOwnerId() {
+        // Mock data
+        Long ownerId = 1L;
+        PageRequest pageable = PageRequest.of(0, 10);
+
+        RepairRequest repairRequest1 = new RepairRequest();
+        repairRequest1.setId(1L);
+        RepairRequest repairRequest2 = new RepairRequest();
+        repairRequest2.setId(2L);
+
+        List<RepairRequest> repairRequestList = Arrays.asList(repairRequest1, repairRequest2);
+
+        RepairRequestDTO dto1 = new RepairRequestDTO();
+        dto1.setId(1L);
+        RepairRequestDTO dto2 = new RepairRequestDTO();
+        dto2.setId(2L);
+
+        List<RepairRequestDTO> expectedDTOList = Arrays.asList(dto1, dto2);
+
+        when(repairRequestRepository.findAllByOwnerId(ownerId, pageable))
+                .thenReturn(new PageImpl<>(repairRequestList, pageable, repairRequestList.size()));
+        when(mapper.fromRequestToDTO(repairRequest1)).thenReturn(dto1);
+        when(mapper.fromRequestToDTO(repairRequest2)).thenReturn(dto2);
 
 
+        Page<RepairRequestDTO> result = repairRequestService.findReqoestDtoByOwnerId(ownerId, pageable);
 
 
-
-
-
-
-
-
+        assertEquals(expectedDTOList, result.getContent());
+        assertEquals(2, result.getTotalElements());
+    }
 }
+
+

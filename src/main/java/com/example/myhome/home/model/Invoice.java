@@ -67,6 +67,19 @@ public class Invoice implements Serializable {
 
     private double total_price;
 
+    public Invoice(long id, LocalDate localDate, Apartment apartment, double v, LocalDate dateFrom, LocalDate dateTo) {
+        this.id = id;
+        this.date = localDate;
+        this.apartment = apartment;
+        this.total_price = v;
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+    }
+
+    public Invoice() {
+
+    }
+
     public void addComponent(InvoiceComponents component) {
         component.setInvoice(this);
         components.add(component);

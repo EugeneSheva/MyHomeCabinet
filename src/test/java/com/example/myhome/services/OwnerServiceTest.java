@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -114,10 +116,6 @@ public class OwnerServiceTest {
         when(ownerRepository.save(any(Owner.class))).thenReturn(testOwner);
     }
 
-    @Test
-    void contextLoads() {
-
-    }
 
     @Test
     void findByIdTest() {
@@ -129,6 +127,22 @@ public class OwnerServiceTest {
     void findByLoginTest() {
         assertThat(ownerService.findByLogin(testOwner.getEmail())).isEqualTo(testOwner);
     }
+
+
+    @Test
+    public void testIsOwnerExistsByEmail_ExistingOwner() {
+        String email = "test@example.com";
+        Owner owner = new Owner();
+        owner.setEmail(email);
+        when(ownerRepository.findByEmail(email)).thenReturn(Optional.of(owner));
+
+        // Act
+        boolean result = ownerService.isOwnerExistsByEmail(email);
+
+        // Assert
+        assertTrue(result);
+    }
+
 
 
     @Test

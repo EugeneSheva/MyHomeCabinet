@@ -33,7 +33,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.w3c.dom.ls.LSOutput;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -81,6 +80,7 @@ public class PersonalCabinetController {
     @Autowired
     private MessageSource messageSource;
 
+
     @GetMapping
     public String getStartPage(Model model, Principal principal) {
         OwnerDTO ownerDTO = ownerService.findOwnerDTObyEmail(principal.getName());
@@ -103,6 +103,7 @@ public class PersonalCabinetController {
             model.addAttribute("apartExpenseEachMonthByYear", invoiceService.getListExpenseByApartmentByMonth(ownerDTO.getApartments().get(0).getId()));
             model.addAttribute("indexPageActive", true);
             model.addAttribute("apartmentId", ownerDTO.getApartments().get(0).getId());
+
         }
         return "cabinet/index";
     }
@@ -421,7 +422,12 @@ public class PersonalCabinetController {
             } else {
                 newOwner.setPassword(oldOwner.getPassword());
             }
+            // for local saving
             newOwner.setProfile_picture(ownerService.saveOwnerImage(owner.getId(), file));
+
+            // for saving to AWS S3
+//            newOwner.setProfile_picture(ownerService.saveOwnerImageS3(owner.getId(), file));
+
             newOwner.setEnabled(oldOwner.getEnabled());
             ownerService.save(newOwner);
             if (!principal.getName().equals(newOwner.getEmail())) {

@@ -7,11 +7,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 // --- ВЛАДЕЛЬЦЫ КВАРТИР ---
@@ -19,7 +22,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name="owners")
-public class Owner {
+public class Owner implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -105,11 +108,51 @@ public class Owner {
         this.password = request.getPassword();
     }
 
+    public Owner(long l) {
+        this.id = l;
+    }
+
     public String getFullName() {
         return this.first_name + ' ' + this.last_name + ' ' + this.fathers_name;
     }
 
-    public boolean isEnabled() {return this.enabled;}
+
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
+    }
 
     public OwnerDTO transformIntoDTO() {
         return OwnerDTO.builder()

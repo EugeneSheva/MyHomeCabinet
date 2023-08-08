@@ -29,5 +29,3 @@ public class OnRegistrationCompleteEvent extends ApplicationEvent {
         this.userDetails = userDetails;
     }
 }
-
-

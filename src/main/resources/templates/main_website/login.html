@@ -1,72 +1,88 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://thymeleaf.org">
-  <head>
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-      <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
-      <link rel="stylesheet" th:href="@{/dist/css/login.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/login.css}">
     <title>Login</title>
-      <link rel="icon" type="image/png" href="http://myhouse24.avada-media.ua/favicon.png">
-  </head>
-  <body>
+    <link rel="icon" type="image/png" href="http://myhouse24.avada-media.ua/favicon.png">
+</head>
+<body>
 
-    <div class="login-container">
-        <div class="login-box">
-            <a th:href="@{/}"><img th:src="@{/images/namelogo.png}" class="img-fluid" alt=""></a>
-            <br>
-            <form action="" method="post" th:object="${loginRequest}" th:action="@{/cabinet/site/login}">
-                <div class="credentials">
+<div class="login-container">
+    <div class="login-box">
+        <a th:href="@{/}"><img th:src="@{/images/namelogo.png}" class="img-fluid" alt=""></a>
+        <br>
+        <form action="" method="post" th:action="@{/cabinet/site/login}">
+            <div class="credentials">
                 <div class="row tabs">
                     <div class="col-md-6 text-center active-tab">
                         <p>Для жильца</p>
                     </div>
-<!--                    <a th:href="@{/admin/site/login}" class="col-md-6 text-center" style="color: black; text-decoration: none">-->
-                        <a th:href="@{http://slj.avada-media-dev1.od.ua:9002/myhome/admin/site/login}" class="col-md-6 text-center" style="color: black; text-decoration: none">
+                    <!--                    <a th:href="@{/admin/site/login}" class="col-md-6 text-center" style="color: black; text-decoration: none">-->
+                    <a th:href="@{http://slj.avada-media-dev1.od.ua:9002/myhome/admin/site/login}"
+                       class="col-md-6 text-center" style="color: black; text-decoration: none">
                         <p>Для администрации</p>
                     </a>
                 </div>
                 <p style="text-align: center; padding-block: 20px;">Вход в личный кабинет</p>
-                    <div style="color:red" th:if="${param.error}">
-                        Неверный логин или пароль.</div>
-                    <div th:if="${param.logout}">
-                        Вы вышли из аккаунта.</div>
+                <div style="color:red" th:if="${param.error}">
+                    Неверный логин или пароль.
+                </div>
+                <div th:if="${param.logout}">
+                    Вы вышли из аккаунта.
+                </div>
+                <p th:if="${password_reset}" th:text="${password_reset}" style="color: green">Заменили пароль</p>
                 <div class="row inputs">
-                    <input type="text" placeholder="E-mail или ID" th:field="*{username}" id="">
+                    <input type="text" placeholder="E-mail или ID" name="username" id="">
                     <i class="fas fa-envelope"></i>
                 </div>
                 <div class="row inputs">
-                    <input type="password" placeholder="Пароль" th:field="*{password}" id="">
+                    <input type="password" placeholder="Пароль" name="password" id="">
                     <i class="fas fa-lock"></i>
                 </div>
                 <div class="row mb-3">
-                    <input type="checkbox" name="remember-me" id="remember-me" style="display: inline; width:30px">Запомнить меня
+                    <input type="checkbox" name="remember-me" id="remember-me" style="display: inline; width:30px">Запомнить
+                    меня
                 </div>
                 <div class="row">
                     <button type="submit" class="btn btn-default btn-primary text-center">Вход</button>
                 </div>
                 <div class="row">
-                    <a th:href="@{/cabinet/site/register}" class="btn btn-default btn-primary text-center">Регистрация</a>
+                    <a th:href="@{/cabinet/site/register}"
+                       class="btn btn-default btn-primary text-center">Регистрация</a>
+                </div>
+                <div class="row" id="forgot-password">
+                    <a style="text-align: center" href="#" onclick="forgotPasswordHandler()">Забыли пароль?</a>
                 </div>
             </div>
-            </form>
-        </div>
+        </form>
     </div>
+</div>
 
-    <!-- Optional JavaScript; choose one of the two! -->
-
-    <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-    <!-- Option 2: Separate Popper and Bootstrap JS -->
-    <!--
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    -->
-
-   
-  </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<script>
+    function forgotPasswordHandler() {
+        let forgotPasswordRow = document.getElementById('forgot-password');
+        forgotPasswordRow.innerHTML = '<span style="width: 100%; text-align: center">для создания нового пароля</span>';
+        setTimeout(() => {
+            forgotPasswordRow.innerHTML += '<span style="width: 100%; text-align: center">и восстановления доступа к странице</span>'
+        }, 100);
+        setTimeout(() => {
+            forgotPasswordRow.innerHTML += '<span style="width: 100%; text-align: center">нажмите сюда</span>'
+        }, 200);
+        setTimeout(() => {
+            forgotPasswordRow.innerHTML += '<a href="/myhomecab/cabinet/forgot-password" class="btn btn-default btn-secondary btn-sm mybtn" style="color:white;font-weight:bold;text-decoration:none;">Сбросить пароль</a>';
+        }, 300);
+    }
+</script>
+</body>
 </html>

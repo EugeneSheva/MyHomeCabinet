@@ -8,18 +8,20 @@ import com.example.myhome.util.UserStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 
-public interface OwnerService {
+public interface OwnerService extends UserDetailsService {
 
     Owner findById(Long id);
 
     Owner findByLogin(String login);
 
     String saveOwnerImage(Long id, MultipartFile file1) throws IOException;
+//    String saveOwnerImageS3(Long id, MultipartFile file1) throws IOException;
 
     OwnerDTO findOwnerDTObyEmail(String mail);
 

@@ -38,7 +38,62 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired private ExcelHelper excelHelper;
 
+    @Override
+    public Page<InvoiceDTO> findAllBySpecificationAndPageCabinet(FilterForm filters, Integer page, Integer size, Owner owner) {
+        List<InvoiceDTO> listDTO = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page-1, size);
+        Page<Invoice>invoiceList = invoiceRepository.findByFilters(filters.getDate() != null ? LocalDate.parse(filters.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null, filters.getStatus() != null ? InvoiceStatus.valueOf(filters.getStatus()) : null, filters.getApartment(), owner, pageable);
+        invoiceList.forEach(inv -> listDTO.add(mapper.fromInvoiceToDTO(inv)));
 
+        return new PageImpl<>(listDTO, pageable, invoiceList.getTotalElements());
+    }
+
+    @Override
+    public Invoice findInvoiceById(Long invoice_id) {
+        log.info("Searching for invoice with ID: " + invoice_id);
+        try {
+            Invoice invoice = invoiceRepository.findById(invoice_id).orElseThrow(NotFoundException::new);
+            log.info("Invoice found! " + invoice);
+            return invoice;
+        } catch (NotFoundException e) {
+            log.severe("Invoice not found...");
+            log.severe(e.getMessage());
+            return null;
+        }
+    }
+    @Override
+    public List<String> getListOfMonthName() {
+        List<String>doubleList = new ArrayList<>();
+        LocalDate now = LocalDate.now();
+        LocalDate begin = now.minusMonths(11);
+        for (int i = 0; i < 12; i++) {
+            String tmp = begin.getMonth().name() + " " + begin.getYear();
+            doubleList.add(tmp);
+            begin = begin.plusMonths(1);
+        }
+        return doubleList;
+    }
+
+    @Override
+    public List<Double> getListExpenseByApartmentByMonth(Long id) {
+        List<Double>doubleList = new ArrayList<>();
+        LocalDate now = LocalDate.now();
+        LocalDate begin = now.minusMonths(11);
+        for (int i = 0; i < 12; i++) {
+            Double tmp = invoiceRepository.getTotalPriceByApartmentIdAndMonthAndYear(id, begin.getMonthValue(), begin.getYear());
+            if (tmp == null) tmp=0D;
+            doubleList.add(tmp);
+            begin = begin.plusMonths(1);
+        }
+        return doubleList;
+    }
+
+    @Override
+    public Double getAverageTotalPriceForApartmentLastYear(Long apartment) {
+        LocalDate lastYear = LocalDate.now().minusYears(1);
+        LocalDate today = LocalDate.now();
+        return invoiceRepository.getAverageTotalPriceForApartmentBetwenDate(apartment, lastYear, today);
+    }
 //    private static final String FILE_PATH = "C:\\Users\\OneSmiLe\\IdeaProjects\\MyHome\\src\\main\\resources\\static\\files\\";
 //
 //    @Override
@@ -73,15 +128,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 //        return invoiceRepository.findAll(specification, pageable);
 //    }
 
-    @Override
-    public Page<InvoiceDTO> findAllBySpecificationAndPageCabinet(FilterForm filters, Integer page, Integer size, Owner owner) {
-        List<InvoiceDTO> listDTO = new ArrayList<>();
-        Pageable pageable = PageRequest.of(page-1, size);
-        Page<Invoice>invoiceList = invoiceRepository.findByFilters(filters.getDate() != null ? LocalDate.parse(filters.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null, filters.getStatus() != null ? InvoiceStatus.valueOf(filters.getStatus()) : null, filters.getApartment(), owner, pageable);
-        invoiceList.forEach(inv -> listDTO.add(mapper.fromInvoiceToDTO(inv)));
 
-        return new PageImpl<>(listDTO, pageable, invoiceList.getTotalElements());
-    }
 
 //    @Override
 //    public Page<InvoiceDTO> findAllBySpecificationAndPageCabinet(FilterForm filters, Integer page, Integer size) {
@@ -113,19 +160,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 //        return invoiceRepository.findAllByOwnerId(id);
 //    }
 
-    @Override
-    public Invoice findInvoiceById(Long invoice_id) {
-        log.info("Searching for invoice with ID: " + invoice_id);
-        try {
-            Invoice invoice = invoiceRepository.findById(invoice_id).orElseThrow(NotFoundException::new);
-            log.info("Invoice found! " + invoice);
-            return invoice;
-        } catch (NotFoundException e) {
-            log.severe("Invoice not found...");
-            log.severe(e.getMessage());
-            return null;
-        }
-    }
+
 
 //    @Override
 //    public InvoiceDTO findInvoiceDTOById(Long invoice_id) {
@@ -445,39 +480,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 //        }
 //        return doubleList;
 //    }
-    @Override
-    public List<String> getListOfMonthName() {
-        List<String>doubleList = new ArrayList<>();
-        LocalDate now = LocalDate.now();
-        LocalDate begin = now.minusMonths(11);
-        for (int i = 0; i < 12; i++) {
-            String tmp = begin.getMonth().name() + " " + begin.getYear();
-            doubleList.add(tmp);
-            begin = begin.plusMonths(1);
-        }
-        return doubleList;
-    }
 
-    @Override
-    public List<Double> getListExpenseByApartmentByMonth(Long id) {
-        List<Double>doubleList = new ArrayList<>();
-        LocalDate now = LocalDate.now();
-        LocalDate begin = now.minusMonths(11);
-        for (int i = 0; i < 12; i++) {
-            Double tmp = invoiceRepository.getTotalPriceByApartmentIdAndMonthAndYear(id, begin.getMonthValue(), begin.getYear());
-            if (tmp == null) tmp=0D;
-            doubleList.add(tmp);
-            begin = begin.plusMonths(1);
-        }
-        return doubleList;
-    }
-
-    @Override
-    public Double getAverageTotalPriceForApartmentLastYear(Long apartment) {
-        LocalDate lastYear = LocalDate.now().minusYears(1);
-        LocalDate today = LocalDate.now();
-        return invoiceRepository.getAverageTotalPriceForApartmentBetwenDate(apartment, lastYear, today);
-    }
 
 //    @Override
 //    public void insertService(Invoice invoice, Sheet sheet, Row row) {

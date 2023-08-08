@@ -36,6 +36,11 @@ public class Service implements Iterable<Service> {
         this.unit = unit;
     }
 
+    public Service(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     @Override
     public Iterator<Service> iterator() {
         return null;

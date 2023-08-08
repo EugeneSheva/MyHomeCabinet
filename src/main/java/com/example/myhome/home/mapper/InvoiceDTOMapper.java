@@ -49,6 +49,7 @@ public class InvoiceDTOMapper {
     }
 
     public InvoiceDTO fromInvoiceToDTO(Invoice invoice) {
+        System.out.println(invoice);
         if(invoice == null) return null;
 
         InvoiceDTO dto = InvoiceDTO.builder()
@@ -70,6 +71,7 @@ public class InvoiceDTOMapper {
                             .build());
 
         Apartment apartment = invoice.getApartment();
+        System.out.println( "apartment  " + apartment);
         if(apartment != null) dto.setApartment(ApartmentDTO.builder()
                 .id(apartment.getId())
                 .fullName("кв." + apartment.getNumber() + ", " + apartment.getBuilding().getName())

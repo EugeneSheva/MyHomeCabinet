@@ -1,94 +1,92 @@
 package com.example.myhome.services;
 
-import com.example.myhome.home.model.Admin;
+import com.example.myhome.home.exception.NotFoundException;
 import com.example.myhome.home.model.Message;
-import com.example.myhome.home.model.Owner;
 import com.example.myhome.home.model.filter.FilterForm;
 import com.example.myhome.home.repository.MessageRepository;
-import com.example.myhome.home.service.MessageService;
-import org.junit.jupiter.api.BeforeAll;
+import com.example.myhome.home.service.impl.MessageServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@Service
+@RequiredArgsConstructor
 public class MessageServiceTest {
+    @Mock
+    private MessageRepository messageRepository;
 
-    @Autowired
-    private MessageService service;
-
-    @MockBean private MessageRepository repository;
-
-    static Message message;
-    static List<Message> messageList;
-    static Page<Message> messagePage;
-
-    @BeforeAll
-    static void setupObjects() {
-        message = new Message();
-        message.setId(1L);
-        message.setReceivers(List.of(new Owner(), new Owner()));
-        message.setDate(LocalDateTime.now());
-        message.setSender(new Admin());
-        message.setText("test");
-        message.setSubject("test");
-
-        messageList = List.of(message, message, message);
-        messagePage = new PageImpl<>(messageList, PageRequest.of(1,1), 1);
-
-    }
+    @InjectMocks
+    private MessageServiceImpl messageService;
 
     @BeforeEach
-    void setupMocks() {
-        when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(message));
-        when(repository.findAll()).thenReturn(messageList);
-        when(repository.save(any(Message.class))).thenReturn(message);
-        when(repository.findAll(any(Pageable.class))).thenReturn(messagePage);
-        when(repository.findAll(any(Specification.class) ,any(Pageable.class))).thenReturn(messagePage);
-        when(repository.findByFilters(anyString(), anyLong(), any(Pageable.class))).thenReturn(messagePage);
-
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void contextLoads() {
+    public void testFindById_ValidId_ReturnsMessage() {
+        // Arrange
+        Long messageId = 1L;
+        Message message = new Message();
+        message.setId(messageId);
+        when(messageRepository.findById(messageId)).thenReturn(Optional.of(message));
 
+        // Act
+        Message result = messageService.findById(messageId);
+
+        // Assert
+        assertEquals(message, result);
     }
 
     @Test
-    void findByIdTest() {
-        assertThat(service.findById(message.getId())).isEqualTo(message);
+    public void testFindById_InvalidId_ThrowsNotFoundException() {
+
+        Long invalidMessageId = 999L;
+        when(messageRepository.findById(invalidMessageId)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> messageService.findById(invalidMessageId));
     }
-
-
 
     @Test
-    void saveTest() {
-        assertThat(service.save(message)).isEqualTo(message);
+    public void testSave_ReturnsSavedMessage() {
+
+        Message messageToSave = new Message();
+        messageToSave.setText("Test message");
+        when(messageRepository.save(any(Message.class))).thenReturn(messageToSave);
+
+        Message result = messageService.save(messageToSave);
+
+        assertEquals(messageToSave, result);
     }
-
-
 
     @Test
-    void findAllBySpecificationTest() {
-        assertThat(service.findAllBySpecification(new FilterForm(), 1,1,1L)).isEqualTo(messagePage);
+    public void testFindAllBySpecification_ReturnsPageOfMessages() {
+        FilterForm filterForm = new FilterForm();
+        Integer page = 1;
+        Integer size = 10;
+        Long ownerId = 1L;
+
+        Page<Message> mockedPage = new PageImpl<>(List.of(new Message(), new Message()));
+        when(messageRepository.findByFilters(any(), anyLong(), any(Pageable.class))).thenReturn(mockedPage);
+
+        Page<Message> result = messageService.findAllBySpecification(filterForm, page, size, ownerId);
+
+        assertEquals(mockedPage, result);
     }
-
-
-
-
 }

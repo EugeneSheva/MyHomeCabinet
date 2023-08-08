@@ -66,6 +66,10 @@ public class Building {
         this.floors = floors;
     }
 
+    public Building(long l, String test) {
+        this.id = l;
+    }
+
     @Override
     public String toString() {
         return "Building{" +
